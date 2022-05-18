@@ -1,0 +1,9 @@
+{
+  "extends": "@lpack/common/template/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}

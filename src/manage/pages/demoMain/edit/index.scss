@@ -1,0 +1,33 @@
+.demo-detail {
+  &-toolbar {
+    .demo-detail-title {
+      color: #333;
+      font-size: 18px;
+    }
+    height: 55px;
+    padding: 0px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgb(241, 241, 241);
+  }
+  &-header {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    height: 44px;
+    line-height: 44px;
+    padding: 0px 20px;
+    &:before {
+      background-color: var(--primary-color);
+      content: "";
+      height: 12px;
+      margin-right: 6px;
+      width: 3px;
+    }
+  }
+  &-form {
+    background: rgb(248, 248, 248);
+    padding: 32px 0 16px;
+  }
+}

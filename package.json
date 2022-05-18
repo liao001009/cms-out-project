@@ -1,0 +1,115 @@
+{
+  "name": "@mk/demo",
+  "description": "mk样例模块",
+  "version": "1.0.0",
+  "author": "Landray",
+  "private": true,
+  "scripts": {
+    "postinstall": "lpack-mk postinstall",
+    "dev": "yarn run dev:manage",
+    "dev:desktop": "cross-env NODE_TARGET=desktop lpack-mk start  --remote",
+    "dev:manage": "cross-env NODE_TARGET=manage NODE_OPTIONS=--max_old_space_size=4096 lpack-mk start  --remote",
+    "dev:mobile": "cross-env NODE_TARGET=mobile lpack-mk start  --remote",
+    "build": "yarn run build:desktop && yarn run build:manage && yarn run build:mobile",
+    "build:desktop": "cross-env NODE_TARGET=desktop lpack-mk build",
+    "build:manage": "cross-env NODE_TARGET=manage lpack-mk build",
+    "build:mobile": "cross-env NODE_TARGET=mobile lpack-mk build",
+    "deploy": "node scripts/deploy.js",
+    "syncremote": "yarn lerna-ci syncremote  && yarn",
+    "lint-message": "echo 'Lint code before commit, refuse if error occurred'",
+    "lint-commit": "node ./node_modules/@lpack/common/scripts/commitlint.js",
+    "lint": "npx eslint ./**/*.{ts,tsx}",
+    "fix": "npx eslint ./**/*.{ts,tsx} --fix"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "lint-staged": {
+    "linters": {
+      "src/**/*.(ts|tsx)": [
+        "eslint --fix",
+        "git add"
+      ]
+    },
+    "ignore": []
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS && yarn run lint-commit",
+      "pre-commit": "yarn run lint-message"
+    }
+  },
+  "dependencies": {
+    "@ekp-infra/common": "^1.0.448",
+    "@ekp-infra/render": "^1.2.418",
+    "@ekp-infra/respect": "^0.0.214",
+    "@ekp-runtime/module": "^1.1.12",
+    "@ekp-runtime/render-module": "^0.0.227",
+    "@ekp-runtime/utils": "^0.0.310",
+    "@lui/core": "5.1.0-beta.166",
+    "@lui/icons": "5.1.0-beta.166",
+    "@mui/core": "^5.0.0-beta.16",
+    "antd": "^4.2.4",
+    "axios": "^0.18.0",
+    "lodash": "4.17.15",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-redux": "^7.1.0",
+    "react-router-dom": "^5.2.0",
+    "redux": "^4.0.1"
+  },
+  "devDependencies": {
+    "@babel/runtime": "^7.2.0",
+    "@commitlint/cli": "^8.2.0",
+    "@commitlint/config-conventional": "^8.2.0",
+    "@elements-toolkit/common": "^0.0.97",
+    "@elements-toolkit/scss": "^0.0.55",
+    "@elements-toolkit/utils": "^0.0.18",
+    "@lpack/boilerplate-generator-mk": "^1.0.76",
+    "@lpack/common": "^1.0.23",
+    "@rematch/core": "^1.0.6",
+    "@types/node": "^10.12.18",
+    "@types/react": "^17.0.1",
+    "@types/react-dom": "^17.0.1",
+    "@types/react-redux": "^7.1.0",
+    "@types/react-router": "^5.1.11",
+    "@types/react-router-dom": "^5.1.7",
+    "@types/webpack-env": "^1.13.6",
+    "cross-env": "^5.2.0",
+    "deploy-toolkit": "^0.1.0",
+    "fs-extra": "^7.0.1",
+    "husky": "^1.3.0",
+    "lerna-ci": "^0.0.4",
+    "lint-staged": "^8.1.0",
+    "react-motion": "^0.5.2",
+    "urijs": "^1.19.1"
+  },
+  "engines": {
+    "node": ">= 8.12.0",
+    "npm": ">= 3.0.0"
+  },
+  "lerna-ci": {
+    "syncremote": [
+      "@ekp-infra/common",
+      "@ekp-infra/render",
+      "@ekp-infra/respect",
+      "@ekp-runtime/module",
+      "@ekp-runtime/render-module",
+      "@ekp-runtime/utils",
+      "@elements-toolkit/common",
+      "@elements-toolkit/scss",
+      "@elements-toolkit/utils",
+      "@lpack/boilerplate-generator-mk",
+      "@lpack/common"
+    ]
+  },
+  "browserslist": [
+    "ie >= 9",
+    "Chrome >= 21",
+    "Firefox >= 1",
+    "Edge >= 13",
+    "last 3 versions"
+  ]
+}

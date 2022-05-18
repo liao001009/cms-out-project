@@ -1,0 +1,29 @@
+{
+  "name": "样例模块",
+  "menu": {
+    "demoMain": "基础样例",
+    "highCodeMain": "高代码样例",
+    "highCode": {
+      "admin": "管理端",
+      "user": "用户端"
+    }
+  },
+  "operation": {
+    "add": "新建",
+    "update": "编辑"
+  },
+  "demoMain": {
+    "fdName": "名称",
+    "fdDesc": "描述",
+    "fdOrder": "排序号",
+    "fdCreateTime": "创建时间",
+    "fdCreator": "创建人"
+  },
+  "demoCategory": {
+    "fdCreateTime": "创建时间",
+    "fdCreator": "创建人"
+  },
+  "header": {
+    "baseinfo": "基础信息"
+  }
+}

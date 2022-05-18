@@ -1,0 +1,61 @@
+image: node:12.17-alpine
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+stages:
+  - install
+  - build
+  # - build-image
+  - deploy
+# cache for common stuffs
+cache:
+  key: '$CI_COMMIT_REF_NAME'
+  paths:
+    - 'node_modules'
+    - '*.tar'
+install:
+  stage: install
+  script:
+    - 'node scripts/update-npm-token.js'
+    - 'yarn'
+  tags:
+    - linux
+  only:
+    - v*/daily
+    - v*/test
+    - v*/prerelease
+    - v*/master
+    - daily
+    - test
+    - prerelease
+    - master
+build:
+  stage: build
+  script:
+    - 'yarn run build'
+  only:
+    - v*/daily
+    - v*/test
+    - v*/prerelease
+    - v*/master
+    - daily
+    - test
+    - prerelease
+    - master
+  artifacts:
+    name: 'demo-$CI_COMMIT_REF_NAME'
+    expire_in: 3 days
+    paths:
+      - dist
+  tags:
+    - linux
+deploy:
+  stage: deploy
+  script:
+    - 'yarn run deploy'
+  only:
+    - v*/daily
+    - v*/test
+    - daily
+    - test
+  tags:
+    - linux

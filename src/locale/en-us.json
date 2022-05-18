@@ -1,0 +1,25 @@
+{
+  "name": "Demo",
+  "menu": {
+    "demoMain": "Basic",
+    "highCodeMain": "High Code",
+    "highCode": {
+      "admin": "Admin",
+      "user": "User"
+    }
+  },
+  "operation": {
+    "add": "Add",
+    "update": "Update"
+  },
+  "demoMain": {
+    "fdName": "name",
+    "fdDesc": "description",
+    "fdOrder": "order",
+    "fdCreateTime": "createTime",
+    "fdCreator": "creator"
+  },
+  "header": {
+    "baseinfo": "Base Info"
+  }
+}
