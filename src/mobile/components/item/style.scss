@@ -1,0 +1,14 @@
+.mui-item-default {
+  &-infos-item {
+    display: flex;
+    font-size: 12px;
+    line-height: 12px;
+    margin-top: 10px;
+    &-label {
+      color: #979db1;
+      margin-right: 16px;
+      max-width: 75px;
+      width: 50px;
+    }
+  }
+}

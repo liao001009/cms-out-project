@@ -1,29 +1,37 @@
 {
-  "name": "样例模块",
-  "menu": {
-    "demoMain": "基础样例",
-    "highCodeMain": "高代码样例",
-    "highCode": {
-      "admin": "管理端",
-      "user": "用户端"
+    "name": "框架外包项目管理",
+    "cmsProjectInfoTemplate": {
+        "name": "项目库模板"
+    },
+    "cmsProjectInfo": {
+        "form": {
+            "!{l47sgh46l1ahpgby3cb}": "预计结束日期",
+            "!{l47sgh496ph195ayp68}": "请输入",
+            "!{l47sgg0zn6wzc3ukv7}": "预计开始时间",
+            "!{l47sgg12fckhecvwwho}": "请输入",
+            "!{l47sgez8tcuawseqs2a}": "项目立项时间",
+            "!{l47sgezcgg3tpw1payl}": "请输入",
+            "!{l47sfd36r349zf59xxg}": "项目性质",
+            "!{l47sfrrsm8set33swh8}": "厂商驻场实施",
+            "!{l47sfrrrok1nmlb0tw}": "项目外包",
+            "!{l47sfd3bplubk8x7ajm}": "请输入",
+            "!{l47s8bsqziln6fgdbd}": "项目所属框架",
+            "!{l47sjeg41qyf3n63q5g}": "内部责任人",
+            "!{l47sjd9hp4ye7ccl0b}": "项目负责人",
+            "!{l47sjboxx5zvzn3c1kg}": "所属组/团队",
+            "!{l47sjaxpzb906zmknn}": "所属部门",
+            "!{l470lkjy8xm11z9ta7t}": "项目编号",
+            "!{l470lkk38gp25ho2dum}": "请输入",
+            "!{l470jwldimflokpfrzh}": "项目名称",
+            "!{l470jwlpnq3xw2ch55}": "请输入",
+            "!{l470kiqmfuah40n41sq}": "项目库"
+        },
+        "list": {
+            "ProjectInfo": "项目库"
+        }
+    },
+    "menu": {
+        "cmsProjectInfoTemplate": "项目库模板",
+        "mbvr4bpjdbc": "项目库"
     }
-  },
-  "operation": {
-    "add": "新建",
-    "update": "编辑"
-  },
-  "demoMain": {
-    "fdName": "名称",
-    "fdDesc": "描述",
-    "fdOrder": "排序号",
-    "fdCreateTime": "创建时间",
-    "fdCreator": "创建人"
-  },
-  "demoCategory": {
-    "fdCreateTime": "创建时间",
-    "fdCreator": "创建人"
-  },
-  "header": {
-    "baseinfo": "基础信息"
-  }
 }

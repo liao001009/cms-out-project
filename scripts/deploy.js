@@ -2,7 +2,7 @@ const { deploy, runShellCmd } = require('deploy-toolkit')
 const fs = require('fs-extra')
 const path = require('path')
 const ROOT_DIR = path.join(__dirname, '../')
-const moduleName = 'demo'
+const moduleName = 'cms-out-project'
 
 function getServerSsh () {
   const branchName = process.env.CI_COMMIT_REF_NAME || 'daily'

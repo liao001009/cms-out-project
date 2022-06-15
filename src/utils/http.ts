@@ -1,4 +1,7 @@
 // http实例
 import { Http } from '@ekp-infra/common'
-export default Http.build({ modulePrefixName: 'demo' })
+const basedataHttp = Http.build({ modulePrefixName: 'cms-out-basedata' })
+
+export { basedataHttp }
+export default Http.build({ modulePrefixName: 'cms-out-project' })
 

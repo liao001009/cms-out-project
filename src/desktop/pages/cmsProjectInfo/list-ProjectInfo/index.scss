@@ -1,0 +1,20 @@
+.lui-template-list {
+  padding: 16px;
+  &-toolbar {
+    display: flex;
+    margin-bottom: 15px;
+    justify-content: space-between;
+    align-items: center;
+  }
+  &-page {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+  }
+  &-criteria {
+    margin-bottom: 15px;
+    .left {
+      float: left;
+    }
+  }
+}

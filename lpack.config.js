@@ -3,9 +3,12 @@ const { MkPlugin } = require('@lpack/boilerplate-generator-mk/lib/webpack/plugin
 
 // 标准EKP有三端: 桌面端(desktop)、管理端(manage)、移动端(mobile)
 const entryName = process.env.NODE_TARGET || 'manage'
-const moduleName = 'demo'
+const moduleName = 'cms-out-project'
 
 // lpack配置
+/**
+ * @type {import('@lpack/common').Config}
+ */
 const lpackConfig = {
   // 开发服务器端口
   // port: 3000,
@@ -27,25 +30,26 @@ const lpackConfig = {
   // 变量，业务模块可通过process.env.xxx获取相关值
   variables: {
     // 开发环境模拟用户身份
-    xAuthDebugger: 'jm',
+    xAuthDebugger: 'caixy',
     // 模块名
     moduleName: moduleName,
     // 平台，desktop、manage、mobile
     platform: entryName,
     // 模块代理
-    modulesUrlPrefix: 'http://mktest.ywork.me/web',
+    modulesUrlPrefix: 'http://mksmoke.ywork.me/web',
     // 租户资源域名前缀
-    tenantUrlPrefix: 'http://mktest.ywork.me/web',
+    tenantUrlPrefix: 'http://mksmoke.ywork.me/web',
     // 组件库域名
     elementsUrlPrefix: {
-      manufact: 'http://mktest.ywork.me/web',
-      artifact: 'http://mktest.ywork.me/web'
+      manufact: 'http://mksmoke.ywork.me/web',
+      artifact: 'http://mksmoke.ywork.me/web'
+      // artifact: 'http://127.0.0.1:8008'
     },
-    // 多语言服务域名
-    langUrlPrefix: 'http://mktest.ywork.me/data/sys-lang',
+    // elementsUrlPrefix: 'http://127.0.0.1:8008',
     // 服务端域名
-    apiUrlPrefix: 'http://api.landray.com.cn/mock/458/data'
-    // apiUrlPrefix: 'https://mkdemo.landray.com.cn/data'
+    apiUrlPrefix: 'http://192.168.50.145:8101/data',
+    //多语言服务
+    langUrlPrefix: 'http://mksmoke.ywork.me/data/sys-lang'
   },
   webpack: {
     resolve: {
