@@ -4,9 +4,9 @@
 set -e
 
 echo "build image"
-docker image build -t demo .
+docker image build -t cms-out-project .
 
 echo "save image file"
-docker save -o demo.tar demo:latest
-docker image rm demo:latest
+docker save -o cms-out-project.tar cms-out-project:latest
+docker image rm cms-out-project:latest
 echo "done!"

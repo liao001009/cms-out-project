@@ -1,0 +1,31 @@
+.mui-sorter {
+  &-label {
+    margin-right: 5px;
+  }
+  &-icon {
+    position: relative;
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      display: block;
+      left: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+    }
+    &::before {
+      top: 4px;
+      border-bottom: 4px solid #d8d8d8;
+    }
+    &::after {
+      top: 10px;
+      border-top: 4px solid #d8d8d8;
+    }
+    &.asc::before {
+      border-bottom-color: #666;
+    }
+    &.desc::after {
+      border-top-color: #666;
+    }
+  }
+}

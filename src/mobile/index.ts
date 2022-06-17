@@ -2,7 +2,7 @@ import { Router } from '@ekp-infra/common'
 
 export default {
   // 模块名
-  name: 'demo',
+  name: 'cms-out-project',
   // 模块显示名
   label: ':name',
   // 类型：模块

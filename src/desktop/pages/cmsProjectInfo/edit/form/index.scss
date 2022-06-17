@@ -1,0 +1,29 @@
+.lui-xform {
+  background-color: #fff;
+  margin-top: 20px;
+  padding-bottom: 20px;
+  .ele-grid-item {
+    margin-left: -1px;
+    margin-top: -1px;
+    overflow: hidden;
+    padding:6px 40px;
+
+    .lui-form-item {
+      margin-bottom: 0;
+    }
+
+    .ele-xform-fieldset {
+      align-items: center;
+      &-wrap {
+        flex: 1;
+      }
+      &-label-wrap{
+        width: 9em;
+        max-width: 9em;
+      }
+    }
+    .ele-antd-form-item{
+      margin: 0;
+    }
+  }
+}

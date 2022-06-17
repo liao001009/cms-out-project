@@ -1,15 +1,13 @@
 {
   "semi": false,
   "singleQuote": true,
-  "trailingComma": "none",
+  "trailingComma": "all",
   "printWidth": 120,
   "spaceBeforeFunctionParen": true,
   "overrides": [
     {
       "files": ".prettierrc",
-      "options": {
-        "parser": "json"
-      }
+      "options": { "parser": "json" }
     }
   ]
 }

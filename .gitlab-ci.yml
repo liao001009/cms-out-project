@@ -42,7 +42,7 @@ build:
     - prerelease
     - master
   artifacts:
-    name: 'demo-$CI_COMMIT_REF_NAME'
+    name: 'cms-out-project-$CI_COMMIT_REF_NAME'
     expire_in: 3 days
     paths:
       - dist
