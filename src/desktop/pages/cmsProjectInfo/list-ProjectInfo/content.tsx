@@ -152,7 +152,6 @@ const Content: React.FC<IContentViewProps> = (props) => {
     (event) => {
       event.stopPropagation()
       $deleteAll({
-        history: history,
         api: api,
         selectedRows: selectedRows,
         refresh: refresh

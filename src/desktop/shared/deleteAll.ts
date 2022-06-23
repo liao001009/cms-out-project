@@ -9,7 +9,7 @@ import { EBtnType } from '@lui/core/es/components/Button'
  * @param api api请求对象
  * @param selectedRows 选中列 
  */
-export const $deleteAll = ({ api, selectedRows, history, refresh }) => {
+export const $deleteAll = ({ api, selectedRows, refresh }) => {
   // 未选中数据项
   if (!selectedRows || selectedRows.length === 0) {
     Message.info('请选择数据')
