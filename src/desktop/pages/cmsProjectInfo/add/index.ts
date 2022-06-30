@@ -1,5 +1,5 @@
 import { createElement as h } from 'react'
-import Content from './content'
+import Content from '@/desktop/pages/cmsProjectInfo/edit/content'
 
 export default {
   // 类型：模块
@@ -29,5 +29,9 @@ export default {
     type: 'content-list',
     // 内容渲染组件
     render: Content,
+    props: {
+      // 编辑模式：新建
+      mode: 'add'
+    }
   }
 }

@@ -1,0 +1,204 @@
+@mixin list-page($baseCls) {
+  .#{$baseCls} {
+    .lui-template-list {
+      padding: 16px;
+      &-toolbar {
+        display: flex;
+        margin-bottom: 15px;
+        justify-content: space-between;
+        align-items: center;
+      }
+      &-page {
+        display: flex;
+        justify-content: center;
+        margin-top: 15px;
+      }
+      &-criteria {
+        margin-bottom: 15px;
+        .left {
+          float: left;
+        }
+      }
+    }
+    
+  }
+
+}
+
+@mixin content-page($baseCls) {
+  .#{$baseCls}{
+    .lui-approve-template {
+      &-header {
+        display: flex;
+        height: 60px;
+        box-shadow: 0 -2px 4px 4px rgb(0 0 0 / 7%);
+        justify-content: space-between;
+        left: 0;
+        padding: 0 60px;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 999;
+        align-items: center;
+        background: #fff;
+        border: 1px solid #e6eaea;
+        button {
+          margin-left: 12px;
+        }
+      }
+      &-content {
+        padding: 60px 60px 0;
+        display: flex;
+        flex-direction: row;
+        background: #f0f2f5;
+        > * {
+          padding:24px;
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+
+@mixin content-bottom-page($baseCls) {
+  .#{$baseCls}{
+    .lui-approve-template {
+      &-header {
+        display: flex;
+        height: 60px;
+        box-shadow: 0 -2px 4px 4px rgb(0 0 0 / 7%);
+        justify-content: space-between;
+        left: 0;
+        padding: 0 60px;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 999;
+        align-items: center;
+        background: #fff;
+        border: 1px solid #e6eaea;
+        button {
+          margin-left: 12px;
+        }
+      }
+      &-content {
+        padding: 60px 60px 0 !important;
+        display: flex;
+        flex-direction: column !important;
+        background: #f0f2f5;
+        .tab{
+          margin-top: 20px;
+          .lui-template-list-table{
+            margin:0 24px 24px;
+          }
+          .lui-template-list-page{
+            display: flex;
+            justify-content: center;
+            .lui-pagination-main{
+              display: flex;
+              justify-content: center;
+            }
+          }
+        }
+        > * {
+          padding: 0 24px;
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+
+@mixin content-right-page($baseCls) {
+  .#{$baseCls}{
+    height: 100%;
+    .lui-approve-template {
+      display: flex;
+      height: 100%;
+      flex-direction: column;
+      &-header {
+        display: flex;
+        height: 60px;
+        box-shadow: 0 -2px 4px 4px rgb(0 0 0 / 7%);
+        justify-content: space-between;
+        left: 0;
+        padding: 0 60px;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 999;
+        align-items: center;
+        background: #fff;
+        border: 1px solid #e6eaea;
+        button {
+          margin-left: 12px;
+        }
+      }
+      &-content {
+        padding: 60px 60px 0;
+        display: flex;
+        flex-direction: row;
+        background: #f0f2f5;
+        overflow: hidden;
+        .left {
+          display: flex;
+          flex-direction: column;
+          overflow-x: hidden;
+        }
+        .right {
+          width: 370px;
+          min-width: 370px;
+          height: 100%;
+          overflow-y: auto;
+          opacity: 1;
+          border-left: 1px solid #eee;
+          transition: width .3s,opacity .3s;
+          position: relative;
+          ._audit-form-collapse-panel{
+            margin-bottom: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+@mixin form-page($baseCls,$labelWidth) {
+  .#{$baseCls}{
+    .lui-xform {
+      background-color: #fff;
+      padding-bottom: 20px;
+      // .lui-row {
+      //   padding: 0;
+      // }
+    
+      // .ele-xform-view {
+      //   margin-top: 3px;
+      // }
+      .ele-grid-item {
+        margin-left: -1px;
+        margin-top: -1px;
+        overflow: hidden;
+        padding:6px 40px;
+    
+        .lui-form-item {
+          margin-bottom: 0;
+        }
+    
+        .ele-xform-fieldset {
+          align-items: center;
+          &-wrap {
+            flex: 1;
+          }
+          &-label-wrap{
+            width: #{$labelWidth}em;
+            max-width: #{$labelWidth}em;
+          }
+        }
+        .ele-antd-form-item{
+          margin: 0;
+        }
+      }
+    }
+  }
+}

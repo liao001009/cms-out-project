@@ -2,7 +2,7 @@ import { Api } from '@ekp-infra/common'
 import http from '@/utils/http'
 import { IDemoMain } from '@/types/demoMain'
 
-const commonApi = Api.get<IDemoMain>('demoMain', http)
+const commonApi = Api.get<IDemoMain>('project/demoMain', http)
 
 const api = {
   ...commonApi,
