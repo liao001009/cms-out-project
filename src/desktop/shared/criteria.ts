@@ -7,19 +7,19 @@
  */
 export const $reduceCriteria = (originQuery, newValue) => {
   const newConditions = {
-    ...originQuery.conditions,
+    ...originQuery?.conditions,
     ...newValue.reduce((acc, cur) => {
       const { name, value } = cur
       if (value && value.length > 0) {
         if (value.length === 1) {
           // 单选
-          if(value[0].value){
-            if(typeof value[0].value === 'string'){
-              acc[name] = { $contains: value[0].value || undefined }
-            }else{
-              acc[name] = { $gte: value[0].value[0].value,$lte: value[0].value[1].value,}
+          if (value[0].value) {
+            if (typeof value[0].value === 'string') {
+              acc[name] = { $eq: value[0].value || undefined }
+            } else {
+              acc[name] = { $gte: value[0].value[0].value, $lte: value[0].value[1].value, }
             }
-          }else{
+          } else {
             acc[name] = null
           }
         } else {

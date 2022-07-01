@@ -5,7 +5,7 @@ export default {
   // 类型：模块
   type: 'page',
   // 页面标题
-  title: 'cms-out-manage:cmsProjectInfo.list.ProjectInfo',
+  title: 'cms-out-project:cmsProjectInfo.list.ProjectInfo',
   // 路由
   router: '/listProjectInfo',
   // 模块内容区
