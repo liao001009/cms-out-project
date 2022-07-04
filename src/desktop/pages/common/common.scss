@@ -1,32 +1,38 @@
+/* list页面*/
 @mixin list-page($baseCls) {
   .#{$baseCls} {
     .lui-template-list {
       padding: 16px;
+
       &-toolbar {
         display: flex;
         margin-bottom: 15px;
         justify-content: space-between;
         align-items: center;
       }
+
       &-page {
         display: flex;
         justify-content: center;
         margin-top: 15px;
       }
+
       &-criteria {
         margin-bottom: 15px;
+
         .left {
           float: left;
         }
       }
     }
-    
+
   }
 
 }
 
+/* 正常页面*/
 @mixin content-page($baseCls) {
-  .#{$baseCls}{
+  .#{$baseCls} {
     .lui-approve-template {
       &-header {
         display: flex;
@@ -42,17 +48,21 @@
         align-items: center;
         background: #fff;
         border: 1px solid #e6eaea;
+
         button {
           margin-left: 12px;
         }
       }
+
       &-content {
         padding: 60px 60px 0;
         display: flex;
         flex-direction: row;
         background: #f0f2f5;
+        margin: 0;
+
         > * {
-          padding:24px;
+          padding: 24px;
           width: 100%;
         }
       }
@@ -60,8 +70,9 @@
   }
 }
 
+/* 底部有table的页面*/
 @mixin content-bottom-page($baseCls) {
-  .#{$baseCls}{
+  .#{$baseCls} {
     .lui-approve-template {
       &-header {
         display: flex;
@@ -77,29 +88,37 @@
         align-items: center;
         background: #fff;
         border: 1px solid #e6eaea;
+
         button {
           margin-left: 12px;
         }
       }
+
       &-content {
         padding: 60px 60px 0 !important;
         display: flex;
         flex-direction: column !important;
         background: #f0f2f5;
-        .tab{
+        margin: 0;
+
+        .tab {
           margin-top: 20px;
-          .lui-template-list-table{
-            margin:0 24px 24px;
+
+          .lui-template-list-table {
+            margin: 0 24px 24px;
           }
-          .lui-template-list-page{
+
+          .lui-template-list-page {
             display: flex;
             justify-content: center;
-            .lui-pagination-main{
+
+            .lui-pagination-main {
               display: flex;
               justify-content: center;
             }
           }
         }
+
         > * {
           padding: 0 24px;
           width: 100%;
@@ -109,13 +128,16 @@
   }
 }
 
+/* 右边有流程的页面*/
 @mixin content-right-page($baseCls) {
-  .#{$baseCls}{
+  .#{$baseCls} {
     height: 100%;
+
     .lui-approve-template {
       display: flex;
       height: 100%;
       flex-direction: column;
+
       &-header {
         display: flex;
         height: 60px;
@@ -130,21 +152,35 @@
         align-items: center;
         background: #fff;
         border: 1px solid #e6eaea;
+
         button {
           margin-left: 12px;
         }
       }
+
       &-content {
         padding: 60px 60px 0;
         display: flex;
         flex-direction: row;
         background: #f0f2f5;
         overflow: hidden;
+        margin: 0;
+
         .left {
           display: flex;
           flex-direction: column;
           overflow-x: hidden;
+          padding: 0;
+
+          .form {
+            width: 100%;
+
+            .lui-xform {
+              margin-top: 0;
+            }
+          }
         }
+
         .right {
           width: 370px;
           min-width: 370px;
@@ -152,9 +188,10 @@
           overflow-y: auto;
           opacity: 1;
           border-left: 1px solid #eee;
-          transition: width .3s,opacity .3s;
+          transition: width .3s, opacity .3s;
           position: relative;
-          ._audit-form-collapse-panel{
+
+          ._audit-form-collapse-panel {
             margin-bottom: 0;
           }
         }
@@ -163,15 +200,15 @@
   }
 }
 
-@mixin form-page($baseCls,$labelWidth) {
-  .#{$baseCls}{
+@mixin form-page($baseCls, $labelWidth) {
+  .#{$baseCls} {
     .lui-xform {
       background-color: #fff;
       padding-bottom: 20px;
       // .lui-row {
       //   padding: 0;
       // }
-    
+
       // .ele-xform-view {
       //   margin-top: 3px;
       // }
@@ -179,23 +216,30 @@
         margin-left: -1px;
         margin-top: -1px;
         overflow: hidden;
-        padding:6px 40px;
-    
+        padding: 6px 40px;
+
         .lui-form-item {
           margin-bottom: 0;
         }
-    
+
         .ele-xform-fieldset {
           align-items: center;
+
           &-wrap {
             flex: 1;
+
+            .ele-xform-radio-group-row .ele-radio-text {
+              padding-right: 0 !important;
+            }
           }
-          &-label-wrap{
+
+          &-label-wrap {
             width: #{$labelWidth}em;
             max-width: #{$labelWidth}em;
           }
         }
-        .ele-antd-form-item{
+
+        .ele-antd-form-item {
           margin: 0;
         }
       }

@@ -24,7 +24,7 @@ const XForm = (props) => {
 
   useEffect(() => {
     init()
-    if (Object.keys(value).length) {
+    if (Object.keys(value).length && value.fdFrame) {
       form.setFieldsValue({
         fdFrame: value.fdFrame.fdId
       })
