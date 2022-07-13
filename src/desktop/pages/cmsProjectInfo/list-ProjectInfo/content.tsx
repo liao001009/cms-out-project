@@ -11,11 +11,12 @@ import { useAdd } from '@/desktop/shared/add'
 import { $deleteAll } from '@/desktop/shared/deleteAll'
 import ListImport from '@/desktop/components/listImport'
 import './index.scss'
-
+import { Auth } from '@ekp-infra/common'
+const bacls = 'projectInfo-list'
 const Content: React.FC<IContentViewProps> = (props) => {
   const { status, data, queryChange, query, refresh, history } = props
   const { content, totalSize, pageSize } = data
-  const [modalVisible,setModalVisible] = useState<boolean>(false)
+  const [modalVisible, setModalVisible] = useState<boolean>(false)
 
   // 表格列定义
   const columns = useMemo(
@@ -90,19 +91,19 @@ const Content: React.FC<IContentViewProps> = (props) => {
       {
         title: '项目立项时间',
         dataIndex: 'fdProjectDate',
-        render: (value) => value && mk.getFormatTime(value, 'YYYY-MM-DD HH:mm')
+        render: (value) => value && mk.getFormatTime(value, 'YYYY-MM-DD')
       },
       /*预计开始时间*/
       {
         title: '预计开始时间',
         dataIndex: 'fdStartDate',
-        render: (value) => value && mk.getFormatTime(value, 'YYYY-MM-DD HH:mm')
+        render: (value) => value && mk.getFormatTime(value, 'YYYY-MM-DD')
       },
       /*预计结束日期*/
       {
         title: '预计结束日期',
         dataIndex: 'fdEndDate',
-        render: (value) => value && mk.getFormatTime(value, 'YYYY-MM-DD HH:mm')
+        render: (value) => value && mk.getFormatTime(value, 'YYYY-MM-DD')
       }
     ],
     []
@@ -184,13 +185,13 @@ const Content: React.FC<IContentViewProps> = (props) => {
     (value, values) => {
       const conditions = $reduceCriteria(query, values)
       let conditionsCompare = {} as any
-      if(conditions.fdFrame){
+      if (conditions.fdFrame) {
         conditionsCompare = {
           'fdFrame.fdName': { ...conditions.fdFrame },
           ...conditions
         }
         delete conditionsCompare.fdFrame
-      }else{
+      } else {
         conditionsCompare = {
           ...conditions
         }
@@ -198,7 +199,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
       queryChange &&
         queryChange({
           ...query,
-          conditions:conditionsCompare
+          conditions: conditionsCompare
         })
     },
     [query]
@@ -245,109 +246,124 @@ const Content: React.FC<IContentViewProps> = (props) => {
   )
 
   return (
+
     <React.Fragment>
-      <div className="lui-template-list">
-        <div className="lui-template-list-criteria">
-          <div className="left">
-            {/* 搜索 */}
-            <Input.Search allowClear placeholder="请输入关键词搜索" onSearch={handleSearch} />
+      <div className={bacls}>
+        <div className="lui-template-list">
+          <div className="lui-template-list-criteria">
+            <div className="left">
+              {/* 搜索 */}
+              <Input.Search allowClear placeholder="请输入关键词搜索" onSearch={handleSearch} />
+            </div>
+            <div className="right">
+              {/* 筛选器 */}
+              <Criteria key="criteria" onChange={handleCriteriaChange}>
+                <Criteria.Input name="fdCode" title="项目编号"></Criteria.Input>
+                <Criteria.Input name="fdFrame" title="项目所属框架"></Criteria.Input>
+                <Criteria.Criterion
+                  canMulti={false}
+                  options={[
+                    {
+                      text: '不限',
+                      value: ''
+                    },
+                    {
+                      text: '项目外包',
+                      value: '1'
+                    },
+                    {
+                      text: '厂商驻场实施 ',
+                      value: '2'
+                    }
+                  ]}
+                  name="fdProjectNature"
+                  title="项目性质"
+                ></Criteria.Criterion>
+                <Criteria.Org orgType={2} title="所属部门" name="fdBelongDept.fdId"></Criteria.Org>
+                <Criteria.Org orgType={2} title="所属组/团队" name="fdBelongTeam.fdId"></Criteria.Org>
+                <Criteria.Org orgType={8} title="项目负责人" name="fdProjectPrincipal.fdId"></Criteria.Org>
+                <Criteria.Org orgType={8} title="内部责任人" name="fdInnerPrincipal.fdId"></Criteria.Org>
+                <Criteria.Calendar
+                  options={Criteria.Calendar.buildOptions()}
+                  name="fdProjectDate"
+                  title="项目立项时间"
+                ></Criteria.Calendar>
+                <Criteria.Calendar
+                  options={Criteria.Calendar.buildOptions()}
+                  name="fdStartDate"
+                  title="预计开始时间"
+                ></Criteria.Calendar>
+                <Criteria.Calendar
+                  options={Criteria.Calendar.buildOptions()}
+                  name="fdEndDate"
+                  title="预计结束日期"
+                ></Criteria.Calendar>
+              </Criteria>
+            </div>
           </div>
-          <div className="right">
-            {/* 筛选器 */}
-            <Criteria key="criteria" onChange={handleCriteriaChange}>
-              <Criteria.Input name="fdCode" title="项目编号"></Criteria.Input>
-              <Criteria.Input name="fdFrame" title="项目所属框架"></Criteria.Input>
-              <Criteria.Criterion
-                canMulti={false}
-                options={[
-                  {
-                    text: '不限',
-                    value: ''
-                  },
-                  {
-                    text: '项目外包',
-                    value: '1'
-                  },
-                  {
-                    text: '厂商驻场实施 ',
-                    value: '2'
-                  }
-                ]}
-                name="fdProjectNature"
-                title="项目性质"
-              ></Criteria.Criterion>
-              <Criteria.Org orgType={2} title="所属部门" name="fdBelongDept.fdId"></Criteria.Org>
-              <Criteria.Org orgType={2} title="所属组/团队" name="fdBelongTeam.fdId"></Criteria.Org>
-              <Criteria.Org orgType={8} title="项目负责人" name="fdProjectPrincipal.fdId"></Criteria.Org>
-              <Criteria.Org orgType={8} title="内部责任人" name="fdInnerPrincipal.fdId"></Criteria.Org>
-              <Criteria.Calendar
-                options={Criteria.Calendar.buildOptions()}
-                name="fdProjectDate"
-                title="项目立项时间"
-              ></Criteria.Calendar>
-              <Criteria.Calendar
-                options={Criteria.Calendar.buildOptions()}
-                name="fdStartDate"
-                title="预计开始时间"
-              ></Criteria.Calendar>
-              <Criteria.Calendar
-                options={Criteria.Calendar.buildOptions()}
-                name="fdEndDate"
-                title="预计结束日期"
-              ></Criteria.Calendar>
-            </Criteria>
-          </div>
-        </div>
-        <div className="lui-template-list-toolbar">
-          <div className="left">
-            <Operation key="operation" onChange={handleSorter}>
-              {/* 排序 */}
-              <Operation.SortGroup>
-                <Operation.Sort key="fdCreateTime" name="fdCreateTime" title="创建时间"></Operation.Sort>
-              </Operation.SortGroup>
-            </Operation>
-          </div>
-          <div className="right">
-            <Space>
-              <Button onClick={refresh}>
-                <Icon name="redo" />
-              </Button>
-              {/* 操作栏 */}
-              <React.Fragment>
-                <Button type="primary" onClick={handleAdd}>
-                  新建
+          <div className="lui-template-list-toolbar">
+            <div className="left">
+              <Operation key="operation" onChange={handleSorter}>
+                {/* 排序 */}
+                <Operation.SortGroup>
+                  <Operation.Sort key="fdCreateTime" name="fdCreateTime" title="创建时间"></Operation.Sort>
+                </Operation.SortGroup>
+              </Operation>
+            </div>
+            <div className="right">
+              <Space>
+                <Button onClick={refresh}>
+                  <Icon name="redo" />
                 </Button>
-                <Button type="default" onClick={handleDeleteAll}>
-                  批量删除
-                </Button>
-                <Button type="default" onClick={handleImportData}>
-                  导入
-                </Button>
-              </React.Fragment>
-            </Space>
+                {/* 操作栏 */}
+                <React.Fragment>
+                  <Auth.Auth
+                    authURL='/cmsProjectInfo/add'
+                    authModuleName='cms-out-manage'
+                    unauthorizedPage={null}
+                  >
+                    <Button type="primary" onClick={handleAdd}>
+                      新建
+                    </Button>
+                  </Auth.Auth>
+                  <Auth.Auth
+                    authURL='/cmsProjectInfo/delete'
+                    authModuleName='cms-out-manage'
+                    unauthorizedPage={null}
+                  >
+                    <Button type="default" onClick={handleDeleteAll}>
+                      批量删除
+                    </Button>
+                  </Auth.Auth>
+                  <Button type="default" onClick={handleImportData}>
+                    导入
+                  </Button>
+                </React.Fragment>
+              </Space>
+            </div>
           </div>
-        </div>
-        <div className="lui-template-list-table">
-          <Table loading={status === 'loading'} {...tableProps} onRow={onRowClick} />
-        </div>
-        <div className="lui-template-list-page">
-          {totalSize ? (
-            <Pagination
-              showQuickJumper
-              showSizeChanger
-              refresh={true}
-              total={totalSize}
-              pageSize={pageSize}
-              onChange={handlePage}
-              onRefresh={refresh}
-            />
-          ) : null}
+          <div className="lui-template-list-table">
+            <Table loading={status === 'loading'} {...tableProps} onRow={onRowClick} />
+          </div>
+          <div className="lui-template-list-page">
+            {totalSize ? (
+              <Pagination
+                showQuickJumper
+                showSizeChanger
+                refresh={true}
+                total={totalSize}
+                pageSize={pageSize}
+                onChange={handlePage}
+                onRefresh={refresh}
+              />
+            ) : null}
+          </div>
         </div>
       </div>
-      <ListImport  
-        fdEntityName='com.landray.cms.out.project.core.entity.CmsProjectInfo'
+      <ListImport
+        fdEntityName='com.landray.cms.out.manage.core.entity.project.CmsProjectInfo'
         visible={modalVisible}
-        onCancle={()=>setModalVisible(false)}
+        onCancle={() => setModalVisible(false)}
       />
     </React.Fragment>
   )

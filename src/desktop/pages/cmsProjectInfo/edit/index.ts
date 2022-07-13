@@ -30,6 +30,10 @@ export default {
     type: 'content-view',
     // 内容渲染组件
     render: Content,
+    props: {
+      // 编辑模式：新建
+      mode: 'edit'
+    },
     // 请求
     dataUrl: ({ param }) =>
       api.edit({

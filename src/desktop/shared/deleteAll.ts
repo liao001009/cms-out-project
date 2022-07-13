@@ -28,11 +28,11 @@ export const $deleteAll = ({ api, selectedRows, refresh }) => {
             Message.success('删除成功')
             refresh?.()
           } else {
-            Message.error(res.data.exMsg || '删除失败')
+            Message.error(res.msg || '删除失败')
           }
         })
         .catch((error) => {
-          const errorMes = error.response.data && error.response.data.data.exMsg
+          const errorMes = error.response.msg && error.response.data.data.exMsg
           Message.error(errorMes || '删除失败')
         })
     }
