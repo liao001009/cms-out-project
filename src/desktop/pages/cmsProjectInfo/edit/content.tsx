@@ -36,7 +36,6 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
     // 表单机制数据
     if (formComponentRef.current) {
       const formValues = await formComponentRef.current.getValue() || {}
-      debugger
       if(mode==='add'){
         values = {
           ...values,
