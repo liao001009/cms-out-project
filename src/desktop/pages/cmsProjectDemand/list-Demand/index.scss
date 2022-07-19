@@ -1,0 +1,5 @@
+@import '../../common/common.scss';
+
+$baseCls: project-demand-list;
+
+@include list-page($baseCls)

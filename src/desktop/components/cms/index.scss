@@ -1,0 +1,38 @@
+.record-modal {
+  .lui-template-list-page {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+
+    .lui-pagination-rc-pagination {
+      padding: 0;
+
+      .lui-pagination-main {
+        display: flex;
+        justify-content: center;
+      }
+    }
+  }
+}
+
+.multiple-input {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  min-width: 0;
+  padding: 4px 6px;
+  color: rgba(0, 0, 0, .85);
+  font-size: 14px;
+  line-height: 1.5;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  -webkit-transition: all .3s;
+  transition: all .3s;
+  cursor: pointer;
+}
+
+.multiple-input:hover {
+  border: 1px solid #4285f4;
+}
