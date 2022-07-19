@@ -1,0 +1,275 @@
+import { IContentViewProps } from '@ekp-runtime/module'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { Input, Message, Modal, Pagination } from '@lui/core'
+import Tag from '@antd/tag'
+import Table, { useTable } from '@elem/mk-table'
+import Criteria from '@elem/criteria'
+import { $reduceCriteria } from '@/desktop/shared/criteria'
+import './index.scss'
+import { criertiaObj } from '@/desktop/pages/common/common'
+
+export enum EShowStatus {
+  /** 查看 */
+  'view' = 'view',
+  /** 编辑 */
+  'edit' = 'edit',
+  /** 添加 */
+  'add' = 'add'
+}
+
+export interface IProps extends IContentViewProps {
+  /** 回调调整明细表事件 */
+  onChangeProps?: (v, r) => void
+  /** function */
+  onChange?: (v) => void
+  /** 组件状态 */
+  showStatus?: EShowStatus
+  /** 组件数据 */
+  value?: any
+  /** 请求体 */
+  apiRequest?: any
+  /** 表格表头 */
+  columnsProps?: Array<any>
+  /** 选中名称 */
+  chooseFdName?: string
+  /** 弹窗标题 */
+  modalTitle?: string
+  /** 渲染筛选 */
+  criteriaKey?: any
+  /** apiKey */
+  apiKey: any
+  /** apiName */
+  apiName: string
+  /** 要改变的筛选项,将$eq改成$contains */
+  criteriaProps?: any
+  /** 行号 */
+  rowIndex?: number
+  /** 默认的表格列筛选 */
+  defaultTableCriteria?: any
+  /** 渲染底部 */
+  showFooter?: boolean
+  /** 多选 */
+  multiple?: boolean
+  /** 是否展示筛选 */
+  showCriteria?:boolean
+  /** 扩展 */
+  [key: string]: any
+}
+
+const XformModal: React.FC<IProps> = (props) => {
+
+  const {
+    onChange,
+    showStatus,
+    value,
+    criteriaKey,
+    query = {},
+    queryChange,
+    history,
+    chooseFdName = '',
+    columnsProps = [],
+    modalTitle = '标题',
+    apiKey,
+    apiName,
+    onChangeProps,
+    criteriaProps = [],
+    rowIndex=0,
+    defaultTableCriteria = {},
+    showFooter = false,
+    multiple = false,
+    showCriteria = true,
+    otherData={},
+    showOther=false
+  } = props
+
+  console.log('props',props)
+
+  const [listData, setListData] = useState<any>([])
+  const [visible, setVisible] = useState<boolean>(false)
+  const [fdName, setFdName] = useState<string>(value && value.fdName || '')
+  /** 组装表格列头筛选项 */
+  const getDefaultTableColumns = () => {
+    if (Object.keys(defaultTableCriteria).length <= 0) return {}
+    const newConditions = {}
+    Object.keys(defaultTableCriteria).forEach(key => {
+      const newConditionsKey = {}
+      newConditionsKey[defaultTableCriteria[key]['searchKey']] = defaultTableCriteria[key]['searchValue']
+      newConditions[key] = defaultTableCriteria[key]['searchValue'] && newConditionsKey
+    })
+    return {
+      conditions: { ...newConditions }
+    }
+  }
+  /** 为了兼容特殊筛选组装表格列头筛选项如外包人员评审调级，调级结果弹窗筛选 */
+  const getOtherDefaultTableColumns = () => {
+    const postData = props.$$form.current.getFieldsValue()[props.$$tableName].values.length &&  props.$$form.current.getFieldsValue()[props.$$tableName].values[rowIndex]
+    if(!postData.fdPost)return {}
+    const postFilter = otherData.length && otherData?.find(item=>item.value===postData.fdPost.fdId)
+    if (Object.keys(defaultTableCriteria).length <= 0) return {}
+    const newConditions = {}
+    Object.keys(defaultTableCriteria).forEach(key => {
+      const newConditionsKey = {}
+      newConditionsKey[defaultTableCriteria[key]['searchKey']] = postFilter.fdFrame.fdName || ''
+      newConditions[key] = postFilter.fdFrame.fdName && newConditionsKey
+    })
+    return {
+      conditions: { ...newConditions }
+    }
+  }
+
+  useEffect(() => {
+    if (showStatus === EShowStatus.add || showStatus === EShowStatus.edit) {
+      if(showOther)return
+      getListData({
+        ...getDefaultTableColumns()
+      })
+    }
+  }, [JSON.stringify(defaultTableCriteria),JSON.stringify(otherData),showOther])
+
+  useEffect(() => {
+    if (showStatus === EShowStatus.add || showStatus === EShowStatus.edit) {
+      if(showOther && visible){
+        const postData = props.$$form.current.getFieldsValue()[props.$$tableName].values.length &&  props.$$form.current.getFieldsValue()[props.$$tableName].values[rowIndex]
+        if(!postData.fdPost){
+          Message.warning('请选择姓名')
+          return
+        }
+        getListData({
+          ...getOtherDefaultTableColumns()
+        })
+      }
+    }
+  }, [JSON.stringify(defaultTableCriteria),JSON.stringify(otherData),showOther,visible])
+
+  const getListData = async (data) => {
+    try {
+      const res = await apiKey[apiName](data)
+      setListData(res.data)
+    } catch (error) {
+      Message.error(error)
+    }
+  }
+  // 表格列定义
+  const columns = useMemo(() => columnsProps, [])
+  // 表格hook
+  const { tableProps, selectedRows } = useTable({
+    // 数据源
+    data: listData?.content || [],
+    // 列定义
+    columns,
+    // 显示序号列
+    serial: true,
+    // 支持行选择
+    rowSelection: multiple,
+  })
+  // 分页操作 
+  const handlePage = useCallback(
+    (pageNo: number, pageSize: number) => {
+      queryChange({ ...query, pageNo, pageSize })
+    },
+    [query]
+  )
+  // 行点击
+  const onRowClick = useCallback(
+    (record) => {
+      return !multiple ? {
+        onClick: () => {
+          onChange && onChange(record)
+          setVisible(false)
+          setFdName(record[chooseFdName])
+          // @ts-ignore
+          onChangeProps && onChangeProps(record, rowIndex)
+        }
+      } : {}
+    },
+    [history]
+  )
+  /** 筛选 */
+  const handleCriteriaChange = useCallback(
+    (value, values) => {
+      const conditions = $reduceCriteria(query, values)
+      const newConditions = {}
+      criteriaProps.length && criteriaProps.map(item => {
+        newConditions[item] = conditions[item] ? {
+          $contains: conditions[item]['$eq']
+        } : undefined
+      })
+      getListData({
+        ...query,
+        conditions: { ...conditions, ...newConditions }
+      })
+    },
+    [query]
+  )
+
+  // 确定按钮
+  const handleOk = useCallback(() => {
+    setVisible(false)
+    const newData = listData?.content.length && listData?.content.filter(item => selectedRows.includes(item.fdId))
+    onChange && onChange(newData)
+  }, [listData, selectedRows])
+
+  return (
+    <React.Fragment>
+      <div>
+        {
+          showStatus === 'edit' || showStatus === 'add' ? Array.isArray(value) ? (
+            <div className='multiple-input' onClick={() => setVisible(true)}>
+              {
+                selectedRows.length ? selectedRows.map(item => {
+                  return <Tag key={item}>{listData?.content.length && listData?.content.find(itemChild => itemChild.fdId === item).fdName}</Tag>
+                }) : showStatus === 'edit' ? value.map(item => {
+                  return <Tag key={item.fdId}>{item.fdName}</Tag>
+                }) : <span style={{ color: '#c3c3c3' }}>请选择</span>
+              }
+            </div>
+          ) : (
+            <Input placeholder='请输入' readOnly onClick={() => setVisible(true)} value={fdName} />
+          ) : (
+            <span>
+              {
+                Array.isArray(value) ? value.map(item => item.fdName).join(',') : value && value[chooseFdName]
+              }
+            </span>
+          )
+        }
+      </div>
+      <Modal
+        visible={visible}
+        destroyOnClose={true}
+        title={modalTitle}
+        mask={true}
+        width={'1100px'}
+        className='record-modal'
+        onCancel={() => setVisible(false)}
+        onOk={() => handleOk()}
+        footer={showFooter ? undefined : null}
+      >
+        <div className="lui-template-list-table">
+          {
+            showCriteria ? (
+              <Criteria key="criteria" expandable={true} onChange={handleCriteriaChange}>
+                {
+                  criteriaKey ? criertiaObj[criteriaKey] : null
+                }
+              </Criteria>
+            ) : null
+          }
+          
+          <Table {...tableProps} onRow={onRowClick} />
+        </div>
+        <div className="lui-template-list-page">
+          {listData.totalSize ? (
+            <Pagination
+              total={listData.totalSize}
+              pageSize={listData.pageSize}
+              onChange={handlePage}
+            />
+          ) : null}
+        </div>
+      </Modal>
+    </React.Fragment>
+  )
+}
+
+export default XformModal

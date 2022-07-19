@@ -5,7 +5,7 @@ export const useAdd = () => {
   const [visible, setVisible] = useState<boolean>(false)
   let refresh = () => { return }
   // 发起新建
-  const $add = useCallback(({ api, refresh: _refresh, history }) => {
+  const $add = useCallback(({ refresh: _refresh }) => {
     setVisible(true)
     refresh = _refresh // 缓存refresh函数
   }, [])

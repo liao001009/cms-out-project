@@ -1,0 +1,14 @@
+.mui-template-list {
+  &-header,
+  &-toolbar {
+    padding: 12px;
+  }
+  .mui-list {
+    background: #f8f8f8;
+    padding: 0 0 15px;
+  }
+  .mui-list-item {
+    background: #fff;
+    margin: 15px;
+  }
+}
