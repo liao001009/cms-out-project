@@ -17,8 +17,6 @@ export interface ICmsProjectSelectInfo extends IBaseType {
   fdOwner: Partial<IOrgElement>
   //拥有者部门
   fdOwnerDept: Partial<IOrgElement>
-  //文档标题
-  fdSubject: string
   //文档状态
   fdProcessStatus: string
   //发布时间

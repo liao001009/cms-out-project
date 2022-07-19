@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { IContentViewProps } from '@ekp-runtime/render-module'
-import { EShowStatus } from '@/utils/showStatus'
+import { EShowStatus } from '@/types/showStatus'
 import XformSelect from '@/desktop/components/form/XformSelect'
 import { fmtMsg } from '@ekp-infra/respect'
 
