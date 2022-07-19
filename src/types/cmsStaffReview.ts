@@ -45,6 +45,4 @@ export interface ICmsStaffReview extends IBaseType {
   fdSupplies: any
   //项目需求
   fdProjectDemand: any
-  //主题
-  fdSubject: string
 }

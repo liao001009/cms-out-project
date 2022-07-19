@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { IContentViewProps } from '@ekp-runtime/render-module'
 import { Input } from '@lui/core'
-import { EShowStatus } from '@/utils/showStatus'
+import { EShowStatus } from '@/types/showStatus'
 
 export interface IProps extends IContentViewProps {
   /** 组件状态 */
