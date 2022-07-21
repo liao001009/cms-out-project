@@ -19,7 +19,7 @@ const { confirm } = Modal
 const baseCls = 'project-demand-content'
 
 const Content: React.FC<IContentViewProps> = props => {
-  const { data,  history } = props
+  const { data, history } = props
   // 模板id
   const templateId = useMemo(() => {
     return data?.fdTemplate?.fdId
@@ -149,7 +149,7 @@ const Content: React.FC<IContentViewProps> = props => {
   }, [])
 
   const handleOrder = useCallback(() => {
-    history.goto('')
+    history.goto(`/cmsOrderResponse/add/${data.fdId}`)
   }, [history])
 
   return (
