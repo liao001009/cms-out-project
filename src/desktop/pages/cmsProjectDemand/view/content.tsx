@@ -163,7 +163,7 @@ const Content: React.FC<IContentViewProps> = props => {
   }, [])
 
   const handleOrder = useCallback(() => {
-    history.goto('')
+    history.goto(`/cmsOrderResponse/add/${data.fdId}`)
   }, [history])
 
   // 提交按钮
