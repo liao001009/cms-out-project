@@ -174,10 +174,23 @@ const Content: React.FC<IContentViewProps> = (props) => {
   const handleCriteriaChange = useCallback(
     (value, values) => {
       const conditions = $reduceCriteria(query, values)
+      console.log('conditions',conditions)
+      let conditionsCompare = {} as any
+      if (conditions['fdProject.fdName'] || conditions['fdFrame.fdName']) {
+        conditionsCompare = {
+          ...conditions,
+          'fdProject.fdName': conditions['fdProject.fdName'] && { $contains: conditions['fdProject.fdName'].$eq },
+          'fdFrame.fdName': conditions['fdFrame.fdName'] && { $contains: conditions['fdFrame.fdName'].$eq },
+        }
+      } else {
+        conditionsCompare = {
+          ...conditions
+        }
+      }
       queryChange &&
         queryChange({
           ...query,
-          conditions
+          conditions:conditionsCompare
         })
     },
     [query]
@@ -234,8 +247,8 @@ const Content: React.FC<IContentViewProps> = (props) => {
           <div className="right">
             {/* 筛选器 */}
             <Criteria key="criteria" onChange={handleCriteriaChange}>
-              <Criteria.Input name="fdProject" title="项目名称"></Criteria.Input>
-              <Criteria.Input name="fdFrame" title="所属框架"></Criteria.Input>
+              <Criteria.Input name="fdProject.fdName" title="项目名称"></Criteria.Input>
+              <Criteria.Input name="fdFrame.fdName" title="所属框架"></Criteria.Input>
               <Criteria.Calendar
                 options={Criteria.Calendar.buildOptions()}
                 name="fdCreateTime"
