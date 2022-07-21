@@ -219,6 +219,7 @@ const XformModal: React.FC<IProps> = (props) => {
                 selectedRows.length ? selectedRows.map(item => {
                   return <Tag key={item}>{listData?.content.length && listData?.content.find(itemChild => itemChild.fdId === item).fdName}</Tag>
                 }) : showStatus === 'edit' ? value.map(item => {
+                  console.log('itemlistData',item)
                   return <Tag key={item.fdId}>{item.fdName}</Tag>
                 }) : <span style={{ color: '#c3c3c3' }}>请选择</span>
               }

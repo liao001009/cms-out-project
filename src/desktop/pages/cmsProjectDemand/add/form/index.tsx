@@ -44,11 +44,11 @@ const XForm = (props) => {
   // 框架数据
   const [levelData, setLevelData] = useState<any>([])
   // 是否指定供应商单选
-  const [isSuppler,setIsSuppler] = useState<boolean>(value.fdSupplierRange==='1')
+  const [isSuppler,setIsSuppler] = useState<boolean>(false)
   // 设计类需求子类显隐
-  const [isFrameChild,setIsFrameChild] = useState<boolean>(value.fdFrame.fdName === '设计类')
+  const [isFrameChild,setIsFrameChild] = useState<boolean>(false)
   // 供应商范围
-  const [isSupplierRange,setIsSupplierRange] = useState<boolean>(value.fdIsAppoint === '1')
+  const [isSupplierRange,setIsSupplierRange] = useState<boolean>(false)
   // 指定供应商值
   const [assignSupplier,setAssignSupplier] = useState<string | undefined>('')
 
