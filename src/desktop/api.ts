@@ -1,14 +1,12 @@
-// 请使用@形式去引用，不要使用相对路径！！！！！
-
 import CmsProjectInfoAdd from '@/desktop/pages/cmsProjectInfo/edit/content'
 import CmsProjectInfoEdit from '@/desktop/pages/cmsProjectInfo/edit/content'
 import CmsProjectInfoList from '@/desktop/pages/cmsProjectInfo/list-ProjectInfo/content'
 import CmsProjectInfoView from '@/desktop/pages/cmsProjectInfo/view/content'
 
-import CmsProjectWrittenAdd from '@/desktop/pages/cmsProjectWritten/add/content'
-import CmsProjectWrittenEdit from '@/desktop/pages/cmsProjectWritten/edit/content'
-import CmsProjectWrittenView from '@/desktop/pages/cmsProjectWritten/view/content'
-import CmsProjectWrittenList from '@/desktop/pages/cmsProjectWritten/list-Written/content'
+import CmsProjectDemandAdd from '@/desktop/pages/cmsProjectDemand/add/content'
+import CmsProjectDemandEdit from '@/desktop/pages/cmsProjectDemand/edit/content'
+import CmsProjectDemandView from '@/desktop/pages/cmsProjectDemand/view/content'
+import CmsProjectDemandList from '@/desktop/pages/cmsProjectDemand/list-Demand/content'
 
 
 export {
@@ -16,8 +14,8 @@ export {
   CmsProjectInfoEdit,
   CmsProjectInfoList,
   CmsProjectInfoView,
-  CmsProjectWrittenAdd,
-  CmsProjectWrittenEdit,
-  CmsProjectWrittenView,
-  CmsProjectWrittenList
+  CmsProjectDemandAdd,
+  CmsProjectDemandEdit,
+  CmsProjectDemandView,
+  CmsProjectDemandList
 }
