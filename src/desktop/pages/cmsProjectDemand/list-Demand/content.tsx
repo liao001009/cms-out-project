@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { IContentViewProps } from '@ekp-runtime/render-module'
 import Icon from '@lui/icons'
-import { Input, Button, Space, Pagination } from '@lui/core'
+import { Input, Button, Space, Pagination, Tooltip } from '@lui/core'
 import Criteria from '@elem/criteria'
 import { $reduceCriteria } from '@/desktop/shared/criteria'
 import Operation from '@elem/operation'
@@ -98,17 +98,23 @@ const Content: React.FC<IContentViewProps> = (props) => {
           return option.label
         }
       },
-      /*undefined*/
+      /*当前处理环节*/
       {
-        title: '',
-        dataIndex: 'lbpm_current_processor',
-        render: (value) => value
+        title: '当前处理环节',
+        dataIndex: 'currentNodeNames',
+        render (_, row) {
+          const value = row?.mechanisms?.lbpmProcess?.lbpm_current_node?.currentNodeNames || '--'
+          return <Tooltip title={value}>{value}</Tooltip>
+        },
       },
-      /*undefined*/
+      /*当前处理人*/
       {
-        title: '',
-        dataIndex: 'lbpm_current_node',
-        render: (value) => value
+        title: '当前处理人',
+        dataIndex: 'currentHandlerNames',
+        render (_, row) {
+          const value = row?.mechanisms?.lbpmProcess?.lbpm_current_processor?.currentHandlerNames || '--'
+          return <Tooltip title={value}>{value}</Tooltip>
+        },
       }
     ],
     []
@@ -174,10 +180,23 @@ const Content: React.FC<IContentViewProps> = (props) => {
   const handleCriteriaChange = useCallback(
     (value, values) => {
       const conditions = $reduceCriteria(query, values)
+      console.log('conditions',conditions)
+      let conditionsCompare = {} as any
+      if (conditions['fdProject.fdName'] || conditions['fdFrame.fdName']) {
+        conditionsCompare = {
+          ...conditions,
+          'fdProject.fdName': conditions['fdProject.fdName'] && { $contains: conditions['fdProject.fdName'].$eq },
+          'fdFrame.fdName': conditions['fdFrame.fdName'] && { $contains: conditions['fdFrame.fdName'].$eq },
+        }
+      } else {
+        conditionsCompare = {
+          ...conditions
+        }
+      }
       queryChange &&
         queryChange({
           ...query,
-          conditions
+          conditions:conditionsCompare
         })
     },
     [query]
@@ -234,8 +253,8 @@ const Content: React.FC<IContentViewProps> = (props) => {
           <div className="right">
             {/* 筛选器 */}
             <Criteria key="criteria" onChange={handleCriteriaChange}>
-              <Criteria.Input name="fdProject" title="项目名称"></Criteria.Input>
-              <Criteria.Input name="fdFrame" title="所属框架"></Criteria.Input>
+              <Criteria.Input name="fdProject.fdName" title="项目名称"></Criteria.Input>
+              <Criteria.Input name="fdFrame.fdName" title="所属框架"></Criteria.Input>
               <Criteria.Calendar
                 options={Criteria.Calendar.buildOptions()}
                 name="fdCreateTime"

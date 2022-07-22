@@ -44,13 +44,13 @@ const XForm = (props) => {
   // 框架数据
   const [levelData, setLevelData] = useState<any>([])
   // 是否指定供应商单选
-  const [isSuppler,setIsSuppler] = useState<boolean>(false)
+  const [isSuppler,setIsSuppler] = useState<boolean>(value.fdSupplierRange==='1')
   // 设计类需求子类显隐
-  const [isFrameChild,setIsFrameChild] = useState<boolean>(false)
+  const [isFrameChild,setIsFrameChild] = useState<boolean>(value.fdFrame.fdName === '设计类')
   // 供应商范围
-  const [isSupplierRange,setIsSupplierRange] = useState<boolean>(false)
+  const [isSupplierRange,setIsSupplierRange] = useState<boolean>(value.fdIsAppoint === '1')
   // 指定供应商值
-  const [assignSupplier,setAssignSupplier] = useState<string | undefined>('')
+  const [assignSupplier,setAssignSupplier] = useState<string | undefined>(value.fdSupplier.fdName)
 
 
   useEffect(() => {
@@ -1108,11 +1108,11 @@ const XForm = (props) => {
                         refFieldName: '$fd_supplier_name$'
                       }}
                       columnsProps={supplierColumns}
-                      chooseFdName='fdSupplierName'
+                      chooseFdName='fdName'
                       apiKey={apiSupplier}
                       apiName={'listSupplierInfo'}
                       criteriaKey='supplierCriertia'
-                      showStatus='add'
+                      showStatus='edit'
                       criteriaProps={['fdOrgCode', 'fdFrame.fdName']}
                       modalTitle='供应商选择'
                       showFooter={true}
