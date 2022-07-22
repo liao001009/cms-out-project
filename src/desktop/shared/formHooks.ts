@@ -221,7 +221,8 @@ const VALUE_EXECUTOR = {
       // 明细表
       if (names.length > 1) {
         const [tableName, colName] = names
-        values[tableName]?.values?.forEach((value) => {
+        values[tableName]?.values && values[tableName]?.values?.forEach((value) => {
+          if(!value) return          
           const { mechanismValue, mechanismKey } = value[colName]
           targetMechanisms.push(...mechanismValue)
           value[colName] = mechanismKey
@@ -238,7 +239,9 @@ const VALUE_EXECUTOR = {
         targetMechanisms = value
         values[name] = name
       }
-      mechanisms[VALUE_EXECUTOR.attachmentDict.key].push(...targetMechanisms)
+      if(targetMechanisms.length){
+        mechanisms[VALUE_EXECUTOR.attachmentDict.key].push(...targetMechanisms)
+      }
     }
   }
 }

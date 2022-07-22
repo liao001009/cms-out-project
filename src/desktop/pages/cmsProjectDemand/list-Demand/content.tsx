@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { IContentViewProps } from '@ekp-runtime/render-module'
 import Icon from '@lui/icons'
-import { Input, Button, Space, Pagination } from '@lui/core'
+import { Input, Button, Space, Pagination, Tooltip } from '@lui/core'
 import Criteria from '@elem/criteria'
 import { $reduceCriteria } from '@/desktop/shared/criteria'
 import Operation from '@elem/operation'
@@ -98,17 +98,23 @@ const Content: React.FC<IContentViewProps> = (props) => {
           return option.label
         }
       },
-      /*undefined*/
+      /*当前处理环节*/
       {
-        title: '',
-        dataIndex: 'lbpm_current_processor',
-        render: (value) => value
+        title: '当前处理环节',
+        dataIndex: 'currentNodeNames',
+        render (_, row) {
+          const value = row?.mechanisms?.lbpmProcess?.lbpm_current_node?.currentNodeNames || '--'
+          return <Tooltip title={value}>{value}</Tooltip>
+        },
       },
-      /*undefined*/
+      /*当前处理人*/
       {
-        title: '',
-        dataIndex: 'lbpm_current_node',
-        render: (value) => value
+        title: '当前处理人',
+        dataIndex: 'currentHandlerNames',
+        render (_, row) {
+          const value = row?.mechanisms?.lbpmProcess?.lbpm_current_processor?.currentHandlerNames || '--'
+          return <Tooltip title={value}>{value}</Tooltip>
+        },
       }
     ],
     []

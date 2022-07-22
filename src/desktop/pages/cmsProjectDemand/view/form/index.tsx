@@ -8,7 +8,6 @@ import LayoutGrid from '@/desktop/components/form/LayoutGrid'
 import GridItem from '@/desktop/components/form/GridItem'
 import XformDescription from '@/desktop/components/form/XformDescription'
 import XformFieldset from '@/desktop/components/form/XformFieldset'
-import XformRelation from '@/desktop/components/form/XformRelation'
 import XformInput from '@/desktop/components/form/XformInput'
 import XformAddress from '@/desktop/components/form/XformAddress'
 import XformRadio from '@/desktop/components/form/XformRadio'
@@ -1189,8 +1188,10 @@ const XForm = (props) => {
                       layout={'vertical'}
                       columns={[
                         {
-                          type: XformRelation,
+                          type: CMSXformModal,
                           controlProps: {
+                            modalTitle: '供应商',
+                            chooseFdName: 'fdName',
                             title: fmtMsg(':cmsProjectDemand.form.!{l5j1xs1sd2qc3t4rrrk}', '供应商名称'),
                             name: 'fdSupplier',
                             renderMode: 'select',
@@ -1198,24 +1199,10 @@ const XForm = (props) => {
                             rowCount: 3,
                             modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
                             isForwardView: 'no',
-                            options: [
-                              {
-                                fdName: '选项1',
-                                fdId: '1'
-                              },
-                              {
-                                fdName: '选项2',
-                                fdId: '2'
-                              },
-                              {
-                                fdName: '选项3',
-                                fdId: '3'
-                              }
-                            ],
                             desktop: {
-                              type: XformRelation
+                              type: CMSXformModal
                             },
-                            type: XformRelation,
+                            type: CMSXformModal,
                             relationCfg: {
                               appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
                               xformName: '供应商信息',
@@ -1237,32 +1224,20 @@ const XForm = (props) => {
                           label: fmtMsg(':cmsProjectDemand.form.!{l5j1xs1sd2qc3t4rrrk}', '供应商名称')
                         },
                         {
-                          type: XformRelation,
+                          type: CMSXformModal,
                           controlProps: {
+                            modalTitle: '人员信息',
+                            chooseFdName: 'fdName',
                             title: fmtMsg(':cmsProjectDemand.form.!{l5j22y5le315op72brr}', '姓名'),
                             name: 'fdOutName',
                             renderMode: 'select',
                             direction: 'column',
                             rowCount: 3,
                             modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
-                            options: [
-                              {
-                                fdName: '选项1',
-                                fdId: '1'
-                              },
-                              {
-                                fdName: '选项2',
-                                fdId: '2'
-                              },
-                              {
-                                fdName: '选项3',
-                                fdId: '3'
-                              }
-                            ],
                             desktop: {
-                              type: XformRelation
+                              type: CMSXformModal
                             },
-                            type: XformRelation,
+                            type: CMSXformModal,
                             relationCfg: {
                               appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
                               xformName: '外包人员信息',
@@ -1285,7 +1260,7 @@ const XForm = (props) => {
                           label: fmtMsg(':cmsProjectDemand.form.!{l5j22y5le315op72brr}', '姓名')
                         },
                         {
-                          type: XformRelation,
+                          type: XformSelect,
                           controlProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5j233a3cz5onu9osf9}', '岗位名称'),
                             name: 'fdPost',
@@ -1294,24 +1269,11 @@ const XForm = (props) => {
                             rowCount: 3,
                             modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
                             isForwardView: 'no',
-                            options: [
-                              {
-                                fdName: '选项1',
-                                fdId: '1'
-                              },
-                              {
-                                fdName: '选项2',
-                                fdId: '2'
-                              },
-                              {
-                                fdName: '选项3',
-                                fdId: '3'
-                              }
-                            ],
+                            options: postData,
                             desktop: {
-                              type: XformRelation
+                              type: XformSelect
                             },
-                            type: XformRelation,
+                            type: XformSelect,
                             relationCfg: {
                               appCode: '1g776q10pw10w5j2w27q4fgr1u02jiv194w0',
                               xformName: '岗位信息',
@@ -1333,33 +1295,20 @@ const XForm = (props) => {
                           label: fmtMsg(':cmsProjectDemand.form.!{l5j233a3cz5onu9osf9}', '岗位名称')
                         },
                         {
-                          type: XformRelation,
+                          type: XformSelect,
                           controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j237hamltd6k6b6pe}', '所属框架'),
+                            title: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架'),
                             name: 'fdFrame',
                             renderMode: 'select',
                             direction: 'column',
                             rowCount: 3,
                             modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
                             isForwardView: 'no',
-                            options: [
-                              {
-                                fdName: '选项1',
-                                fdId: '1'
-                              },
-                              {
-                                fdName: '选项2',
-                                fdId: '2'
-                              },
-                              {
-                                fdName: '选项3',
-                                fdId: '3'
-                              }
-                            ],
+                            options: frameData,
                             desktop: {
-                              type: XformRelation
+                              type: XformSelect
                             },
-                            type: XformRelation,
+                            type: XformSelect,
                             relationCfg: {
                               appCode: '1g776q10pw10w5j2w27q4fgr1u02jiv194w0',
                               xformName: '框架信息',
@@ -1372,13 +1321,13 @@ const XForm = (props) => {
                             showStatus: 'view'
                           },
                           labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j237hamltd6k6b6pe}', '所属框架'),
+                            title: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架'),
                             desktop: {
                               layout: 'vertical'
                             },
                             labelTextAlign: 'left'
                           },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5j237hamltd6k6b6pe}', '所属框架')
+                          label: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架')
                         },
                         {
                           type: XformInput,
@@ -1518,7 +1467,7 @@ const XForm = (props) => {
                               type: XformRadio
                             },
                             type: XformRadio,
-                            showStatus: 'view'
+                            showStatus: 'edit'
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5j26cqoz3wzsifnnwa}', '是否合格'),
@@ -1541,7 +1490,7 @@ const XForm = (props) => {
                               type: XformTextarea
                             },
                             type: XformTextarea,
-                            showStatus: 'view'
+                            showStatus: 'edit'
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5j26p7w7agm9t6dzoh}', '备注'),
