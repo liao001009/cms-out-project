@@ -105,7 +105,23 @@ const Content: React.FC<IContentViewProps> = props => {
       return
     }
     // 提交
-    api.add(values as any).then(res => {
+    api.add({
+      ...values,
+      fdFrame:{
+        fdId:values.fdFrame
+      },
+      cmsProjectDemandWork: values.cmsProjectDemandWork && values.cmsProjectDemandWork.values || undefined,
+      cmsProjectDemandDetail: values.cmsProjectDemandDetail && values.cmsProjectDemandDetail.values.map(item=>({
+        ...item,
+        fdPost:{
+          fdId:item.fdPost
+        },
+        fdSkillLevel:{
+          fdId:item.fdSkillLevel
+        }
+      })) || undefined,
+      cmsProjectDemandSupp: values.cmsProjectDemandSupp && values.cmsProjectDemandSupp.values || undefined,
+    }).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
           history.goBack()

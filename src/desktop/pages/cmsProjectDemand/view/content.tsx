@@ -150,10 +150,8 @@ const Content: React.FC<IContentViewProps> = props => {
     })
   }, [])
 
-  const toPrintPage = useCallback(() => {
-    // const params = `?fdEntityName=${'com.landray.km.hr.core.entity.HrAudit'}&fdType=${'normal'}&fdEntityCode=${'km-HRrevive'}`
-    const params = `?fdEntityName=${'com.landray.cms.out.project.core.entity.CmsProjectDemand'}&fdType=${'normal'}&fdEntityCode=${'cms-project'}`
-    history.goto(`/cmsProjectDemand/print/${data.fdId}${params}`)
+  const handleOrder = useCallback(() => {
+    history.goto(`/cmsOrderResponse/add/${data.fdId}`)
   }, [history])
 
   const handleEnterWritten = useCallback(()=>{
@@ -173,8 +171,9 @@ const Content: React.FC<IContentViewProps> = props => {
           <div className='buttons'>
             <Button type='default' onClick={handleEnterWritten}>{fmtMsg(':cmsProjectWritten.form.!{l5hz6ugsxfxlg2nyfs7}', '录入笔试成绩')}</Button>
             
-            <Button onClick={toPrintPage}>打印</Button>
+            <Button type='default' onClick={handleOrder}>订单响应</Button>
             {data.fdProcessStatus !== '30' ? <Button type='primary' onClick={() => handleSave(false)}>提交</Button> : null}
+            <Button type='default' onClick={() => handleSave(true)}>暂存</Button>
             <Button type='primary' onClick={handleEdit}>编辑</Button>
             <Button type='default' onClick={handleDel}>删除</Button>
             <Button type='default' onClick={handleClose}>关闭</Button>

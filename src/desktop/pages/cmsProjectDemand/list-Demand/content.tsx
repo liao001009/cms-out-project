@@ -15,7 +15,7 @@ import './index.scss'
 const baseCls = 'project-demand-list'
 const Content: React.FC<IContentViewProps> = (props) => {
   const { status, data, queryChange, query, refresh, history } = props
-  const { content, totalSize, pageSize, offset } = data
+  const { content, totalSize, pageSize } = data
   const [templateData, setTemplateData] = useState<any>({})
   useEffect(() => {
     loadTemplateData()
@@ -40,13 +40,13 @@ const Content: React.FC<IContentViewProps> = (props) => {
       {
         title: '项目名称',
         dataIndex: 'fdProject',
-        render: (value) => value
+        render: (value) => value && value.fdName
       },
       /*所属框架*/
       {
         title: '所属框架',
         dataIndex: 'fdFrame',
-        render: (value) => value
+        render: (value) => value && value.fdName
       },
       /*创建时间*/
       {
@@ -200,14 +200,6 @@ const Content: React.FC<IContentViewProps> = (props) => {
               }, {})
           })
       }
-      // 分页
-      if (curSorter.type === 'paging') {
-        queryChange &&
-          queryChange({
-            ...query,
-            pageNo: curSorter.value || 1
-          })
-      }
     },
     [query, queryChange]
   )
@@ -259,9 +251,6 @@ const Content: React.FC<IContentViewProps> = (props) => {
               <Operation.SortGroup>
                 <Operation.Sort key="fdCreateTime" name="fdCreateTime" title="创建时间"></Operation.Sort>
               </Operation.SortGroup>
-              {totalSize && (
-                <Operation.Paging name="pageNo" value={offset / pageSize} pageSize={pageSize} total={totalSize} />
-              )}
             </Operation>
           </div>
           <div className="right">

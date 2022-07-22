@@ -8,7 +8,6 @@ import LayoutGrid from '@/desktop/components/form/LayoutGrid'
 import GridItem from '@/desktop/components/form/GridItem'
 import XformDescription from '@/desktop/components/form/XformDescription'
 import XformFieldset from '@/desktop/components/form/XformFieldset'
-import XformRelation from '@/desktop/components/form/XformRelation'
 import XformInput from '@/desktop/components/form/XformInput'
 import XformAddress from '@/desktop/components/form/XformAddress'
 import XformRadio from '@/desktop/components/form/XformRadio'
@@ -23,7 +22,8 @@ import { projectColumns, supplierColumns } from '@/desktop/pages/common/common'
 import apiFrameInfo from '@/api/cmsFrameInfo'
 import apiProject from '@/api/cmsProjectInfo'
 import apiSupplier from '@/api/cmsSupplierInfo'
-
+import apiPostInfo from '@/api/cmsPostInfo'
+import apiLevelInfo from '@/api/cmsLevelInfo'
 
 const MECHANISMNAMES = {}
 
@@ -34,18 +34,23 @@ const XForm = (props) => {
     cmsProjectDemandWork: createRef() as any,
     cmsProjectDemandDetail: createRef() as any,
     cmsProjectDemandSupp: createRef() as any,
-    cmsProjectDemandOrder: createRef() as any
   })
   const { formRef: formRef, value: value } = props
   const [form] = Form.useForm()
   // 框架数据
   const [frameData, setFrameData] = useState<any>([])
+  // 框架数据
+  const [postData, setPostData] = useState<any>([])
+  // 框架数据
+  const [levelData, setLevelData] = useState<any>([])
   // 是否指定供应商单选
-  const [isSuppler,setIsSuppler] = useState<boolean>(false)
+  const [isSuppler,setIsSuppler] = useState<boolean>(value.fdSupplierRange==='1')
   // 设计类需求子类显隐
-  const [isFrameChild,setIsFrameChild] = useState<boolean>(false)
+  const [isFrameChild,setIsFrameChild] = useState<boolean>(value.fdFrame.fdName === '设计类')
   // 供应商范围
-  const [isSupplierRange,setIsSupplierRange] = useState<boolean>(false)
+  const [isSupplierRange,setIsSupplierRange] = useState<boolean>(value.fdIsAppoint === '1')
+  // 指定供应商值
+  const [assignSupplier,setAssignSupplier] = useState<string | undefined>('')
 
 
   useEffect(() => {
@@ -63,6 +68,26 @@ const XForm = (props) => {
         return item
       })
       setFrameData(frameArr)
+      const resPost = await apiPostInfo.listPostInfo({})
+      const postArr = resPost.data.content.map(i => {
+        const item = {
+          value: i.fdId,
+          label: i.fdName,
+          ...i
+        }
+        return item
+      })
+      setPostData(postArr)
+      const resLevel = await apiLevelInfo.list({})
+      const levelArr = resLevel.data.content.map(i => {
+        const item = {
+          value: i.fdId,
+          label: i.fdName,
+          ...i
+        }
+        return item
+      })
+      setLevelData(levelArr)
     } catch (error) {
       console.log('error', error)
     }
@@ -427,7 +452,14 @@ const XForm = (props) => {
                       serialType={'empty'}
                       optionSource={'custom'}
                       showStatus="edit"
-                      onChange={(v)=>setIsSupplierRange(v==='1')}
+                      onChange={(v)=>{
+                        setIsSupplierRange(v==='1')
+                        form.setFieldsValue({
+                          fdIsAppoint:undefined,
+                          fdSupplier:undefined
+                        })
+                        setAssignSupplier(undefined)
+                      }}
                     ></XformRadio>
                   </Form.Item>
                 </XformFieldset>
@@ -467,7 +499,13 @@ const XForm = (props) => {
                             serialType={'empty'}
                             optionSource={'custom'}
                             showStatus="edit"
-                            onChange={(v) => setIsSuppler(v === '1')}
+                            onChange={(v) =>{
+                              setIsSuppler(v === '1')
+                              form.setFieldsValue({
+                                fdSupplier:undefined
+                              })
+                              setAssignSupplier(undefined)
+                            } }
                           ></XformRadio>
                         </Form.Item>
                       </XformFieldset>
@@ -492,6 +530,7 @@ const XForm = (props) => {
                                 showStatus='add'
                                 modalTitle='供应商选择'
                                 criteriaProps={['fdOrgCode', 'fdFrame.fdName']}
+                                onChange={(v)=>setAssignSupplier(v.fdName)}
                               />
                             </Form.Item>
                           </XformFieldset>
@@ -501,7 +540,6 @@ const XForm = (props) => {
                   </Fragment>
                 )
               }
-              
               {
                 isFrameChild && (
                   <GridItem column={1} row={11} rowSpan={1} columnSpan={40}>
@@ -547,172 +585,6 @@ const XForm = (props) => {
                   </GridItem>
                 )
               }
-              
-              <GridItem column={1} row={14} rowSpan={1} columnSpan={20}>
-                <XformFieldset
-                  labelTextAlign={'left'}
-                  mobileContentAlign={'right'}
-                  title={fmtMsg(':cmsProjectDemand.form.!{l5hx79yiywiixyt0gwo}', '评审时间')}
-                  layout={'horizontal'}
-                >
-                  <Form.Item name={'fdApprovalTime'}>
-                    <XformDatetime
-                      {...sysProps}
-                      placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hx79yk16674uklzee}', '请输入')}
-                      dataPattern={'yyyy/MM/dd'}
-                      passValue={true}
-                      showStatus="view"
-                    ></XformDatetime>
-                  </Form.Item>
-                </XformFieldset>
-              </GridItem>
-              <GridItem column={21} row={14} rowSpan={1} columnSpan={4}>
-                <XformFieldset compose={true}>
-                  <Form.Item name={'fdCol1rfdbf'}>
-                    <XformDescription
-                      {...sysProps}
-                      defaultTextValue={fmtMsg(':cmsProjectDemand.form.!{l5hxh9fpx14ur0jgeue}', '人数区间')}
-                      showStatus="edit"
-                    ></XformDescription>
-                  </Form.Item>
-                </XformFieldset>
-              </GridItem>
-              <GridItem column={25} row={14} rowSpan={1} columnSpan={4}>
-                <Form.Item name={'fdLowPerson'}>
-                  <XformNumber
-                    {...sysProps}
-                    placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hxk7elmfxiucq54kd}', '请输入')}
-                    numberFormat={{
-                      formatType: 'base'
-                    }}
-                    showStatus="edit"
-                  ></XformNumber>
-                </Form.Item>
-              </GridItem>
-              <GridItem column={29} row={14} rowSpan={1} columnSpan={4}>
-                <XformFieldset compose={true}>
-                  <Form.Item name={'fdColUso4hd'}>
-                    <XformDescription
-                      {...sysProps}
-                      defaultTextValue={fmtMsg(':cmsProjectDemand.form.!{l5hxjc3iktyguac1yn8}', '至')}
-                      showStatus="edit"
-                    ></XformDescription>
-                  </Form.Item>
-                </XformFieldset>
-              </GridItem>
-              <GridItem column={33} row={14} rowSpan={1} columnSpan={4}>
-                <Form.Item name={'fdUpPerson'}>
-                  <XformNumber
-                    {...sysProps}
-                    placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hxlsau5eqmbbchfv8}', '请输入')}
-                    numberFormat={{
-                      formatType: 'base'
-                    }}
-                    fdSysNumber={{}}
-                    label={fmtMsg(':cmsProjectDemand.form.!{l5hxlsauo7w98rlogbn}', '人数区间上限')}
-                    showStatus="edit"
-                  ></XformNumber>
-                </Form.Item>
-              </GridItem>
-              <GridItem column={1} row={17} rowSpan={1} columnSpan={40}>
-                <XformFieldset
-                  labelTextAlign={'left'}
-                  mobileContentAlign={'right'}
-                  title={fmtMsg(':cmsProjectDemand.form.!{l5jfuzfeh4xamxk7vb4}', '发布供应商')}
-                  layout={'horizontal'}
-                >
-                  <Form.Item name={'fdSupplies'}>
-                    <XformRelation
-                      {...sysProps}
-                      renderMode={'mullist'}
-                      direction={'column'}
-                      rowCount={3}
-                      modelName={'com.landray.sys.xform.core.entity.design.SysXFormDesign'}
-                      isForwardView={'no'}
-                      options={[
-                        {
-                          fdName: '选项1',
-                          fdId: '1'
-                        },
-                        {
-                          fdName: '选项2',
-                          fdId: '2'
-                        },
-                        {
-                          fdName: '选项3',
-                          fdId: '3'
-                        }
-                      ]}
-                      multi={true}
-                      relationCfg={{
-                        appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
-                        xformName: '供应商信息',
-                        modelId: '1g777qg92w10wcf2w1jiihhv3oqp4s6nr9w0',
-                        tableType: 'main',
-                        tableName: 'mk_model_20220705vk0ha',
-                        showFields: '$供应商名称$',
-                        refFieldName: '$fd_supplier_name$'
-                      }}
-                      datasource={{
-                        queryCollection: {
-                          linkType: '$and',
-                          query: []
-                        },
-                        sorters: [],
-                        columns: [
-                          {
-                            name: 'fd_supplier_name',
-                            label: '供应商名称'
-                          },
-                          {
-                            name: 'fd_org_code',
-                            label: '组织机构代码'
-                          },
-                          {
-                            name: 'fd_cooperation_status',
-                            label: '供应商合作状态'
-                          },
-                          {
-                            name: 'fd_supplier_email',
-                            label: '供应商邮箱'
-                          },
-                          {
-                            name: 'fd_supplier_simple_name',
-                            label: '供应商简称'
-                          },
-                          {
-                            name: 'fd_desc',
-                            label: '供应商简介'
-                          }
-                        ],
-                        filters: [
-                          {
-                            name: 'fd_supplier_name',
-                            label: '供应商名称'
-                          },
-                          {
-                            name: 'fdFrame',
-                            label: '所属框架'
-                          }
-                        ],
-                        isListThrough: true
-                      }}
-                      showStatus="edit"
-                    ></XformRelation>
-                  </Form.Item>
-                </XformFieldset>
-              </GridItem>
-              <GridItem column={37} row={14} rowSpan={1} columnSpan={4}>
-                <XformFieldset compose={true}>
-                  <Form.Item name={'fdColSgzhna'}>
-                    <XformDescription
-                      {...sysProps}
-                      defaultTextValue={fmtMsg(':cmsProjectDemand.form.!{l5hxjtwrindzux1zywk}', '人')}
-                      showStatus="edit"
-                    ></XformDescription>
-                  </Form.Item>
-                </XformFieldset>
-              </GridItem>
               <GridItem
                 column={26}
                 row={14}
@@ -769,11 +641,6 @@ const XForm = (props) => {
                 >
                   <Form.Item
                     name={'fdCreator'}
-                    rules={[
-                      {
-                        validator: lengthValidator(60)
-                      }
-                    ]}
                   >
                     <XformAddress
                       {...sysProps}
@@ -783,7 +650,7 @@ const XForm = (props) => {
                       }}
                       range={'all'}
                       preSelectType={'fixed'}
-                      showStatus="edit"
+                      showStatus="readOnly"
                     ></XformAddress>
                   </Form.Item>
                 </XformFieldset>
@@ -796,6 +663,60 @@ const XForm = (props) => {
                   layout={'horizontal'}
                 >
                   <Form.Item name={'fdCreateTime'}>
+                    <XformDatetime
+                      {...sysProps}
+                      placeholder={'请输入'}
+                      dataPattern={'yyyy-MM-dd'}
+                      showStatus="readOnly"
+                    ></XformDatetime>
+                  </Form.Item>
+                </XformFieldset>
+              </GridItem>
+              <GridItem column={1} row={14} rowSpan={1} columnSpan={20}>
+                <XformFieldset
+                  labelTextAlign={'left'}
+                  mobileContentAlign={'right'}
+                  title={fmtMsg(':cmsProjectDemand.form.!{l5jh2jka2sj0dsajqjh}', '预计入场时间')}
+                  layout={'horizontal'}
+                  required={true}
+
+                >
+                  <Form.Item 
+                    name={'fdAdmissionTime'}
+                    rules={[
+                      {
+                        required: true,
+                        message: fmtMsg(':required', '内容不能为空')
+                      }
+                    ]}
+                  >
+                    <XformDatetime
+                      {...sysProps}
+                      placeholder={'请输入'}
+                      dataPattern={'yyyy-MM-dd'}
+                      showStatus="edit"
+                    ></XformDatetime>
+                  </Form.Item>
+                </XformFieldset>
+              </GridItem>
+              <GridItem column={21} row={14} rowSpan={1} columnSpan={20}>
+                <XformFieldset
+                  labelTextAlign={'left'}
+                  mobileContentAlign={'right'}
+                  title={fmtMsg(':cmsProjectDemand.form.!{l5jh2mex4elh46zftko}', '要求响应时间')}
+                  layout={'horizontal'}
+                  required={true}
+
+                >
+                  <Form.Item 
+                    name={'fdResponseTime'}
+                    rules={[
+                      {
+                        required: true,
+                        message: fmtMsg(':required', '内容不能为空')
+                      }
+                    ]}
+                  >
                     <XformDatetime
                       {...sysProps}
                       placeholder={'请输入'}
@@ -964,7 +885,9 @@ const XForm = (props) => {
                       ]}
                       canAddRow={true}
                       canDeleteRow={true}
-                      canImport={true}
+                      canImport={false}
+                      canExport={false}
+                      canExpand={false}
                       showStatus="edit"
                     ></XformDetailTable>
                   </Form.Item>
@@ -1003,83 +926,19 @@ const XForm = (props) => {
                       layout={'vertical'}
                       columns={[
                         {
-                          type: XformDatetime,
-                          controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5jh2jka2sj0dsajqjh}', '预计入场时间'),
-                            name: 'fdAdmissionTime',
-                            placeholder: fmtMsg(':cmsProjectDemand.form.!{l5jh2jkboc2keesgybs}', '请输入'),
-                            dataPattern: 'yyyy-MM-dd HH:mm',
-                            desktop: {
-                              type: XformDatetime
-                            },
-                            showStatus: 'edit'
-                          },
-                          labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5jh2jka2sj0dsajqjh}', '预计入场时间'),
-                            desktop: {
-                              layout: 'vertical'
-                            }
-                          },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5jh2jka2sj0dsajqjh}', '预计入场时间'),
-                          options: {
-                            validateRules: {
-                              required: true,
-                              message: fmtMsg(':required', '内容不能为空')
-                            }
-                          }
-                        },
-                        {
-                          type: XformDatetime,
-                          controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5jh2mex4elh46zftko}', '要求响应时间'),
-                            name: 'fdResponseTime',
-                            placeholder: fmtMsg(':cmsProjectDemand.form.!{l5jh2meyd19wv6uamf}', '请输入'),
-                            dataPattern: 'yyyy-MM-dd HH:mm',
-                            desktop: {
-                              type: XformDatetime
-                            },
-                            showStatus: 'edit'
-                          },
-                          labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5jh2mex4elh46zftko}', '要求响应时间'),
-                            desktop: {
-                              layout: 'vertical'
-                            }
-                          },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5jh2mex4elh46zftko}', '要求响应时间'),
-                          options: {
-                            validateRules: {
-                              required: true,
-                              message: fmtMsg(':required', '内容不能为空')
-                            }
-                          }
-                        },
-                        {
-                          type: XformRelation,
+                          type: XformSelect,
                           controlProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5hvhou5kykloq4ftbr}', '岗位'),
                             name: 'fdPost',
                             renderMode: 'singlelist',
                             direction: 'column',
                             rowCount: 3,
+                            placeholder: fmtMsg(':cmsProjectDemand.form.!{l5hur3x33mxezfwee47}', '请输入'),
                             modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
                             isForwardView: 'no',
-                            options: [
-                              {
-                                fdName: '选项1',
-                                fdId: '1'
-                              },
-                              {
-                                fdName: '选项2',
-                                fdId: '2'
-                              },
-                              {
-                                fdName: '选项3',
-                                fdId: '3'
-                              }
-                            ],
+                            options: postData,
                             desktop: {
-                              type: XformRelation
+                              type: XformSelect
                             },
                             relationCfg: {
                               appCode: '1g776q10pw10w5j2w27q4fgr1u02jiv194w0',
@@ -1090,51 +949,7 @@ const XForm = (props) => {
                               showFields: '$岗位名称$',
                               refFieldName: '$fd_post_name$'
                             },
-                            datasource: {
-                              queryCollection: {
-                                linkType: '$and',
-                                query: []
-                              },
-                              sorters: [],
-                              columns: [
-                                {
-                                  name: 'fd_post_name',
-                                  label: '岗位名称'
-                                },
-                                {
-                                  name: 'fd_base_require',
-                                  label: '基本要求'
-                                },
-                                {
-                                  name: 'fd_core_require',
-                                  label: '核心要求'
-                                },
-                                {
-                                  name: 'fdFrame',
-                                  label: '框架类型'
-                                }
-                              ],
-                              filters: [
-                                {
-                                  name: 'fd_post_name',
-                                  label: '岗位名称'
-                                },
-                                {
-                                  name: 'fd_base_require',
-                                  label: '基本要求'
-                                },
-                                {
-                                  name: 'fd_core_require',
-                                  label: '核心要求'
-                                },
-                                {
-                                  name: 'fdFrame',
-                                  label: '框架类型'
-                                }
-                              ],
-                              isListThrough: true
-                            },
-                            type: XformRelation,
+                            type: XformSelect,
                             showStatus: 'edit'
                           },
                           labelProps: {
@@ -1153,31 +968,19 @@ const XForm = (props) => {
                           }
                         },
                         {
-                          type: XformRelation,
+                          type: XformSelect,
                           controlProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5hvhr73mut7qpku1m}', '技能等级'),
                             name: 'fdSkillLevel',
                             renderMode: 'singlelist',
                             direction: 'column',
                             rowCount: 3,
+                            placeholder: fmtMsg(':cmsProjectDemand.form.!{l5hur3x33mxezfwee47}', '请输入'),
                             modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
                             isForwardView: 'no',
-                            options: [
-                              {
-                                fdName: '选项1',
-                                fdId: '1'
-                              },
-                              {
-                                fdName: '选项2',
-                                fdId: '2'
-                              },
-                              {
-                                fdName: '选项3',
-                                fdId: '3'
-                              }
-                            ],
+                            options: levelData,
                             desktop: {
-                              type: XformRelation
+                              type: XformSelect
                             },
                             relationCfg: {
                               appCode: '1g776q10pw10w5j2w27q4fgr1u02jiv194w0',
@@ -1188,76 +991,23 @@ const XForm = (props) => {
                               showFields: '$级别名称$',
                               refFieldName: '$fd_level_name$'
                             },
-                            outParams: {
-                              params: [
-                                {
-                                  sourceField: {
-                                    fdType: 'text',
-                                    fdName: 'fdSkillRemand',
-                                    tableName: 'cmsProjectDemandDetail'
-                                  },
-                                  targetField: {
-                                    fdType: 'textarea',
-                                    fdName: 'fd_remark',
-                                    tableName: 'main'
-                                  }
+                            type: XformSelect,
+                            showStatus: 'edit',
+                            controlActions: {
+                              'onChange': [{
+                                function: (v, r) => {
+                                  const levelItem = levelData.find(item=>item.fdId===v)
+                                  sysProps.$$form.current.updateFormItemProps('cmsProjectDemandDetail', {
+                                    rowValue: {
+                                      rowNum: r,
+                                      value: {
+                                        fdSkillRemand: levelItem.fdRemark,
+                                      }
+                                    }
+                                  })
                                 }
-                              ]
-                            },
-                            datasource: {
-                              queryCollection: {
-                                linkType: '$and',
-                                query: []
-                              },
-                              sorters: [],
-                              columns: [
-                                {
-                                  name: 'fd_level_name',
-                                  label: '级别名称'
-                                },
-                                {
-                                  name: 'fd_remark',
-                                  label: '学历与经验要求'
-                                },
-                                {
-                                  name: 'fdFrame',
-                                  label: '框架类型'
-                                },
-                                {
-                                  name: 'fdCreator',
-                                  label: '创建人'
-                                },
-                                {
-                                  name: 'fdCreateTime',
-                                  label: '创建时间'
-                                }
-                              ],
-                              filters: [
-                                {
-                                  name: 'fd_level_name',
-                                  label: '级别名称'
-                                },
-                                {
-                                  name: 'fd_remark',
-                                  label: '学历与经验要求'
-                                },
-                                {
-                                  name: 'fdFrame',
-                                  label: '框架类型'
-                                },
-                                {
-                                  name: 'fdCreator',
-                                  label: '创建人'
-                                },
-                                {
-                                  name: 'fdCreateTime',
-                                  label: '创建时间'
-                                }
-                              ],
-                              isListThrough: true
-                            },
-                            type: XformRelation,
-                            showStatus: 'edit'
+                              }]
+                            }
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5hvhr73mut7qpku1m}', '技能等级'),
@@ -1272,7 +1022,8 @@ const XForm = (props) => {
                               required: true,
                               message: fmtMsg(':required', '内容不能为空')
                             }
-                          }
+                          },
+                          
                         },
                         {
                           type: XformNumber,
@@ -1315,7 +1066,7 @@ const XForm = (props) => {
                               type: XformInput
                             },
                             type: XformInput,
-                            showStatus: 'view'
+                            showStatus: 'readOnly'
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5hvhi5ruejee5eeyv}', '经验和技能要求'),
@@ -1329,9 +1080,61 @@ const XForm = (props) => {
                       ]}
                       canAddRow={true}
                       canDeleteRow={true}
-                      canImport={true}
+                      canImport={false}
+                      canExport={false}
+                      canExpand={false}
                       showStatus="edit"
                     ></XformDetailTable>
+                  </Form.Item>
+                </XformFieldset>
+              </GridItem>
+              <GridItem column={1} row={17} rowSpan={1} columnSpan={40}>
+                <XformFieldset
+                  labelTextAlign={'left'}
+                  mobileContentAlign={'right'}
+                  title={fmtMsg(':cmsProjectDemand.form.!{l5jfuzfeh4xamxk7vb4}', '发布供应商')}
+                  layout={'horizontal'}
+                >
+                  <Form.Item name={'fdSupplies'}>
+                    <CMSXformModal
+                      {...props}
+                      relationCfg={{
+                        appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
+                        xformName: '供应商信息',
+                        modelId: '1g777qg92w10wcf2w1jiihhv3oqp4s6nr9w0',
+                        tableType: 'main',
+                        tableName: 'mk_model_20220705vk0ha',
+                        showFields: '$供应商名称$',
+                        refFieldName: '$fd_supplier_name$'
+                      }}
+                      columnsProps={supplierColumns}
+                      chooseFdName='fdSupplierName'
+                      apiKey={apiSupplier}
+                      apiName={'listSupplierInfo'}
+                      criteriaKey='supplierCriertia'
+                      showStatus='add'
+                      criteriaProps={['fdOrgCode', 'fdFrame.fdName']}
+                      modalTitle='供应商选择'
+                      showFooter={true}
+                      multiple={true}
+                      defaultTableCriteria={{
+                        'fdSupplierName':{
+                          searchKey:'$contains',
+                          searchValue:assignSupplier || undefined
+                        }
+                      }}
+                      onChange={(v)=>{
+                        // 给明细表默认加行数并赋值默认数据
+                        const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectDemandSupp').values
+                        const newValuesData = v.length && v.filter(item=>!valuesData.map(itemChild=>itemChild.fdSupplier.fdId).includes(item.fdId))
+                        sysProps.$$form.current.updateFormItemProps('cmsProjectDemandSupp', {
+                          rowValue: newValuesData.map(item=>({
+                            fdFrame: item.fdFrame,
+                            fdSupplier: { ...item }
+                          })) 
+                        })
+                      }}
+                    />
                   </Form.Item>
                 </XformFieldset>
               </GridItem>
@@ -1361,7 +1164,7 @@ const XForm = (props) => {
                       $$tableType="detail"
                       $$tableName="cmsProjectDemandSupp"
                       title={fmtMsg(':cmsProjectDemand.form.!{l5hvsnakv4ck8q22sqp}', '发布供应商')}
-                      defaultRowNumber={1}
+                      defaultRowNumber={0}
                       mobileRender={['simple']}
                       pcSetting={['pagination']}
                       showNumber={true}
@@ -1369,8 +1172,14 @@ const XForm = (props) => {
                       hiddenLabel={true}
                       columns={[
                         {
-                          type: XformRelation,
+                          type: CMSXformModal,
                           controlProps: {
+                            apiKey: apiSupplier,
+                            apiName: 'listSupplierInfo',
+                            criteriaKey: 'supplierCriertia',
+                            chooseFdName: 'fdSupplierName',
+                            criteriaProps: ['fdOrgCode', 'fdFrame.fdName'],
+                            columnsProps: supplierColumns,
                             title: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称'),
                             name: 'fdSupplier',
                             renderMode: 'singlelist',
@@ -1378,24 +1187,10 @@ const XForm = (props) => {
                             rowCount: 3,
                             modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
                             isForwardView: 'no',
-                            options: [
-                              {
-                                fdName: '选项1',
-                                fdId: '1'
-                              },
-                              {
-                                fdName: '选项2',
-                                fdId: '2'
-                              },
-                              {
-                                fdName: '选项3',
-                                fdId: '3'
-                              }
-                            ],
                             desktop: {
-                              type: XformRelation
+                              type: CMSXformModal
                             },
-                            type: XformRelation,
+                            type: CMSXformModal,
                             relationCfg: {
                               appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
                               xformName: '供应商信息',
@@ -1405,82 +1200,7 @@ const XForm = (props) => {
                               showFields: '$供应商名称$',
                               refFieldName: '$fd_supplier_name$'
                             },
-                            datasource: {
-                              queryCollection: {
-                                linkType: '$and',
-                                query: []
-                              },
-                              sorters: [],
-                              columns: [
-                                {
-                                  name: 'fd_supplier_name',
-                                  label: '供应商名称'
-                                },
-                                {
-                                  name: 'fd_org_code',
-                                  label: '组织机构代码'
-                                },
-                                {
-                                  name: 'fd_cooperation_status',
-                                  label: '供应商合作状态'
-                                },
-                                {
-                                  name: 'fd_supplier_email',
-                                  label: '供应商邮箱'
-                                },
-                                {
-                                  name: 'fd_supplier_simple_name',
-                                  label: '供应商简称'
-                                },
-                                {
-                                  name: 'fd_admin_account',
-                                  label: '开通管理员账号'
-                                },
-                                {
-                                  name: 'fdFrame',
-                                  label: '所属框架'
-                                },
-                                {
-                                  name: 'fd_desc',
-                                  label: '供应商简介'
-                                }
-                              ],
-                              filters: [
-                                {
-                                  name: 'fd_supplier_name',
-                                  label: '供应商名称'
-                                },
-                                {
-                                  name: 'fd_org_code',
-                                  label: '组织机构代码'
-                                },
-                                {
-                                  name: 'fd_cooperation_status',
-                                  label: '供应商合作状态'
-                                },
-                                {
-                                  name: 'fd_supplier_email',
-                                  label: '供应商邮箱'
-                                },
-                                {
-                                  name: 'fd_supplier_simple_name',
-                                  label: '供应商简称'
-                                },
-                                {
-                                  name: 'fd_admin_account',
-                                  label: '开通管理员账号'
-                                },
-                                {
-                                  name: 'fdFrame',
-                                  label: '所属框架'
-                                },
-                                {
-                                  name: 'fd_desc',
-                                  label: '供应商简介'
-                                }
-                              ],
-                              isListThrough: true
-                            },
+                            
                             showStatus: 'edit'
                           },
                           labelProps: {
@@ -1493,7 +1213,7 @@ const XForm = (props) => {
                           label: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称')
                         },
                         {
-                          type: XformRelation,
+                          type: XformSelect,
                           controlProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架'),
                             name: 'fdFrame',
@@ -1502,24 +1222,11 @@ const XForm = (props) => {
                             rowCount: 3,
                             modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
                             isForwardView: 'no',
-                            options: [
-                              {
-                                fdName: '选项1',
-                                fdId: '1'
-                              },
-                              {
-                                fdName: '选项2',
-                                fdId: '2'
-                              },
-                              {
-                                fdName: '选项3',
-                                fdId: '3'
-                              }
-                            ],
+                            options: frameData,
                             desktop: {
-                              type: XformRelation
+                              type: XformSelect
                             },
-                            type: XformRelation,
+                            type: XformSelect,
                             relationCfg: {
                               appCode: '1g776q10pw10w5j2w27q4fgr1u02jiv194w0',
                               xformName: '框架信息',
@@ -1529,7 +1236,7 @@ const XForm = (props) => {
                               showFields: '$框架名称$',
                               refFieldName: '$fd_name$'
                             },
-                            showStatus: 'view'
+                            showStatus: 'readOnly'
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架'),
@@ -1546,11 +1253,11 @@ const XForm = (props) => {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5jfsj2yyw86i6eb5z}', '上次发布需求时间'),
                             name: 'fdLastTime',
                             placeholder: fmtMsg(':cmsProjectDemand.form.!{l5jfsj2zv2npau0ak0g}', '请输入'),
-                            dataPattern: 'yyyy-MM-dd HH:mm',
+                            dataPattern: 'yyyy-MM-dd',
                             desktop: {
                               type: XformDatetime
                             },
-                            showStatus: 'view'
+                            showStatus: 'edit'
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5jfsj2yyw86i6eb5z}', '上次发布需求时间'),
@@ -1585,7 +1292,9 @@ const XForm = (props) => {
                       ]}
                       canAddRow={true}
                       canDeleteRow={true}
-                      canImport={true}
+                      canImport={false}
+                      canExport={false}
+                      canExpand={false}
                       showStatus="edit"
                     ></XformDetailTable>
                   </Form.Item>
