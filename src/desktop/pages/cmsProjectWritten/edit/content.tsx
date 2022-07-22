@@ -1,29 +1,21 @@
-import React, { createElement as h, useRef } from 'react'
-import { Module } from '@ekp-infra/common'
+import React, { createElement as h, useCallback, useRef } from 'react'
 import { IContentViewProps } from '@ekp-runtime/render-module'
 import Icon from '@lui/icons'
-import { Loading, Breadcrumb, Button, Message, Modal } from '@lui/core'
+import { Breadcrumb, Button, Message, Modal } from '@lui/core'
 import { EBtnType } from '@lui/core/es/components/Button'
 import XForm from './form'
 import api from '@/api/cmsProjectWritten'
 import './index.scss'
 
 Message.config({ maxCount: 1 })
-// 流程页签
-const LBPMTabs = Module.getComponent('sys-lbpm', 'LBPMTabs', { loading: <Loading /> })
-// 流程机制
-const LBPMFormFragment = Module.getComponent('sys-lbpm', 'LBPMFormFragment', { loading: <Loading /> })
-// 权限机制
-const RightFragment = Module.getComponent('sys-right', 'RightFragment', { loading: <Loading /> })
-// 打印机制
-// const PrintRuntime = Module.getComponent('sys-mech-print', 'PrintRuntimeFRagment', { loading: <React.Fragment></React.Fragment> })
 
+const bacls = 'cmsProjectWritten-content'
 const Content: React.FC<IContentViewProps> = props => {
   const { data, history, routerPrefix } = props
+  
+  
   // 机制组件引用
   const formComponentRef = useRef<any>()
-  const lbpmComponentRef = useRef<any>()
-  const rightComponentRef = useRef<any>()
 
   // 校验
   const _validate = async (isDraft: boolean) => {
@@ -34,13 +26,6 @@ const Content: React.FC<IContentViewProps> = props => {
         return false
       }
     }
-    // 流程校验
-    if (lbpmComponentRef.current) {
-      const lbpmErrors = await lbpmComponentRef.current.getErrors()
-      if (lbpmErrors?.length > 0 && !isDraft) {
-        return false
-      }
-    }
     return true
   }
 
@@ -48,13 +33,6 @@ const Content: React.FC<IContentViewProps> = props => {
   const _formatValue = async (isDraft: boolean) => {
     let values = {
       ...data,
-      // 操作状态
-      docOperation: isDraft ? '10' : '20',
-      //  机制数据
-      mechanisms: {
-        ...data.mechanisms || {},
-        // sys-xform、lbpmProcess、sys-right、……
-      } as { [key: string]: any }
     }
     // 表单机制数据
     if (formComponentRef.current) {
@@ -63,14 +41,6 @@ const Content: React.FC<IContentViewProps> = props => {
         ...values,
         ...formValues
       }
-    }
-    // 流程机制数据
-    if (lbpmComponentRef.current) {
-      values.mechanisms['lbpmProcess'] = await lbpmComponentRef.current.getValue(isDraft)
-    }
-    // 权限机制数据
-    if (rightComponentRef.current) {
-      values.mechanisms['sys-right'] = await rightComponentRef.current?.getValue(isDraft)
     }
     return values
   }
@@ -84,10 +54,7 @@ const Content: React.FC<IContentViewProps> = props => {
         return false
       }
     }
-    // 提交前流程预处理
-    if (lbpmComponentRef.current && isDraft) {
-      await lbpmComponentRef.current.checkSaveStatus?.()
-    }
+   
     return true
   }
 
@@ -143,61 +110,33 @@ const Content: React.FC<IContentViewProps> = props => {
     })
   }
 
+  // 关闭
+  const handleClose = useCallback(() => {
+    history.goBack()
+  }, [])
+  
   return (
-    <div className='lui-approve-template'>
-      {/* 操作区 */}
-      <div className='lui-approve-template-header'>
-        <Breadcrumb>
-          <Breadcrumb.Item>项目管理</Breadcrumb.Item>
-          <Breadcrumb.Item>编辑</Breadcrumb.Item>
-        </Breadcrumb>
-        <div className='buttons'>
-          <Button type='primary' onClick={() => handleSave(true)}>暂存</Button>
-          <Button type='default' onClick={handleDelete}>删除</Button>
-        </div>
-      </div>
-      {/* 内容区 */}
-      <div className='lui-approve-template-content'>
-        <div className='left'>
-          {/* 表单信息 */}
-          <div className='form'>
-            <XForm formRef={formComponentRef} value={data || {}} />
-          </div>
-          {/* 机制页签 */}
-          <div className='tabs'>
-            <LBPMTabs
-              fdId={data?.fdTemplate?.fdId}
-              processId={data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId}
-              getFormValue={() => formComponentRef.current && formComponentRef.current.getValue()}
-              extra={[
-                {
-                  key: 'right',
-                  name: '权限管理',
-                  children: (
-                    <RightFragment
-                      wrapperRef={rightComponentRef}
-                      hasFlow={true}
-                      mechanism={data?.mechanisms && data?.mechanisms['sys-right']}
-                      getFormValue={() => formComponentRef.current && formComponentRef.current.getValue()} />
-                  )
-                }
-              ]} />
+    <div className={bacls}>
+      <div className='lui-approve-template'>
+        {/* 操作区 */}
+        <div className='lui-approve-template-header'>
+          <Breadcrumb>
+            <Breadcrumb.Item>项目管理</Breadcrumb.Item>
+            <Breadcrumb.Item>编辑</Breadcrumb.Item>
+          </Breadcrumb>
+          <div className='buttons'>
+            <Button type='primary' onClick={() => handleSave(true)}>暂存</Button>
+            <Button type='default' onClick={handleDelete}>删除</Button>
+            <Button type='default' onClick={handleClose}>关闭</Button>
           </div>
         </div>
-        <div className='right'>
-          {/* 审批操作 */}
-          <div className='lui-approve-template-main'>
-            <LBPMFormFragment
-              auditType='audit'
-              approveLayout='right'
-              wrappedComponentRef={lbpmComponentRef}
-              moduleCode='cms-out-project'
-              mechanism={{
-                formId: data?.fdTemplate?.fdId,
-                processTemplateId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdTemplateId,
-                processId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId
-              }}
-              getFormValue={() => formComponentRef.current && formComponentRef.current.getValue()} />
+        {/* 内容区 */}
+        <div className='lui-approve-template-content'>
+          <div className='left'>
+            {/* 表单信息 */}
+            <div className='form'>
+              <XForm formRef={formComponentRef} {...props}  value={data || {}} />
+            </div>
           </div>
         </div>
       </div>

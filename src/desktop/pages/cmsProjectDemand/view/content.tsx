@@ -5,6 +5,7 @@ import { Loading, Breadcrumb, Button, Message, Modal } from '@lui/core'
 import XForm from './form'
 import api from '@/api/cmsProjectDemand'
 import './index.scss'
+import { fmtMsg } from '@ekp-infra/respect'
 
 Message.config({ maxCount: 1 })
 // 流程页签
@@ -20,6 +21,7 @@ const baseCls = 'project-demand-content'
 
 const Content: React.FC<IContentViewProps> = props => {
   const { data,  history } = props
+  
   // 模板id
   const templateId = useMemo(() => {
     return data?.fdTemplate?.fdId
@@ -154,6 +156,11 @@ const Content: React.FC<IContentViewProps> = props => {
     history.goto(`/cmsProjectDemand/print/${data.fdId}${params}`)
   }, [history])
 
+  const handleEnterWritten = useCallback(()=>{
+    history.goto(`/cmsProjectWritten/add/${data.fdId}`)
+  }, [history])
+
+
   return (
     <div className={baseCls}>
       <div className='lui-approve-template'>
@@ -164,6 +171,8 @@ const Content: React.FC<IContentViewProps> = props => {
             <Breadcrumb.Item>查看</Breadcrumb.Item>
           </Breadcrumb>
           <div className='buttons'>
+            <Button type='default' onClick={handleEnterWritten}>{fmtMsg(':cmsProjectWritten.form.!{l5hz6ugsxfxlg2nyfs7}', '录入笔试成绩')}</Button>
+            
             <Button onClick={toPrintPage}>打印</Button>
             {data.fdProcessStatus !== '30' ? <Button type='primary' onClick={() => handleSave(false)}>提交</Button> : null}
             <Button type='primary' onClick={handleEdit}>编辑</Button>
