@@ -9,6 +9,7 @@ import { EOperationType, ESysLbpmProcessStatus } from '@/utils/status'
 import { getFlowStatus } from '@/desktop/shared/util'
 //@ts-ignore
 import Status, { EStatusType } from '@elements/status'
+import { fmtMsg } from '@ekp-infra/respect'
 
 Message.config({ maxCount: 1 })
 // 流程页签
@@ -166,6 +167,11 @@ const Content: React.FC<IContentViewProps> = props => {
     history.goto(`/cmsOrderResponse/add/${data.fdId}`)
   }, [history])
 
+  
+  const handleEnterWritten = useCallback(()=>{
+    history.goto(`/cmsProjectWritten/add/${data.fdId}`)
+  }, [history])
+
   // 提交按钮
   const _btn_submit = useMemo(() => {
     const submitBtn = <Button type='primary' onClick={() => handleSave(false)}>提交</Button>
@@ -217,7 +223,6 @@ const Content: React.FC<IContentViewProps> = props => {
         </Auth.Auth>
     )
   }, [flowData, params])
-
   return (
     <Auth.Auth
       authURL='/cmsProjectDemand/get'
@@ -239,6 +244,7 @@ const Content: React.FC<IContentViewProps> = props => {
               {_btn_submit}
               {_btn_edit}
               {_btn_delete}
+              <Button type='default' onClick={handleEnterWritten}>{fmtMsg(':cmsProjectWritten.form.!{l5hz6ugsxfxlg2nyfs7}', '录入笔试成绩')}</Button>
               <Button type='default' onClick={handleOrder}>订单响应</Button>
               <Button type='default' onClick={handleClose}>关闭</Button>
             </div>

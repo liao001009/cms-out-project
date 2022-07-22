@@ -11,28 +11,43 @@ export interface IProps extends IContentViewProps {
   showStatus?: EShowStatus
   /** 组件数据 */
   value?: any
-  /** apiKey */
-  apiKey: any
-  /** apiName */
-  apiName: string
+  /** 请求体 */
+  apiRequest: any
   /** 请求参数 */
-  propsParams: { id: string }
+  propsParams?: any
   /** 显示下拉框值指定key */
   showFdName: string
+  /** 任意类型 */
+  [key: string]: any
 }
 
 const XformGetDataSelect: React.FC<IProps> = (props) => {
-  const { onChange, showStatus, value, apiKey, apiName, propsParams, showFdName } = props
+  const {onChange, showStatus, value, apiRequest, propsParams, showFdName, rowIndex, name, $$form, $$tableName } = props
   const [listData, setListData] = useState<any>([])   //接口返回数据
   const [defaultVal, setDefaultVal] = useState<string>('') //默认值
+  
+  // useEffect(()=>{
+  //   //明细表 下拉框改变事件
+  //   if(!value && name === 'cmsSupplierPostPriceDe.fdLevel' ) {
+  //     $$form?.current.customOnChange((values) => {
+  //       const fdFrameId = values[$$tableName].values[rowIndex].fdFrame
+  //       if(fdFrameId){
+  //         const newParam = { conditions: { 'fdFrame.fdId': { '$eq': fdFrameId } } }
+  //         initData(newParam)
+  //       }
+  //     })
+  //     return 
+  //   }
+  // },[name , rowIndex])
 
-
+  
   useEffect(() => {
-    setDefaultVal(value?.fdId)
-    if (showStatus === EShowStatus.add || showStatus === EShowStatus.edit || showStatus === EShowStatus.readOnly) {
+    console.log('props----',props)
+    if(showStatus === EShowStatus.add || showStatus === EShowStatus.edit || showStatus === EShowStatus.readOnly ){
+      setDefaultVal(value?.fdId)
       initData(propsParams)
     }
-  }, [])
+  },[])
 
   const handleChange = useCallback((val) => {
     setDefaultVal(val)
@@ -41,7 +56,9 @@ const XformGetDataSelect: React.FC<IProps> = (props) => {
 
   const initData = async (propsParams) => {
     try {
-      const res = await apiKey[apiName](propsParams)
+      const newParams = {...propsParams}
+      newParams?.name && delete newParams?.name
+      const res = await apiRequest(newParams)
       const newValue = res?.data?.content.map((item) => {
         const newItem = {
           value: item.fdId,
@@ -50,11 +67,13 @@ const XformGetDataSelect: React.FC<IProps> = (props) => {
         return newItem
       })
 
+      console.log('newValue----',newValue)
+      
       setListData(newValue) //下拉框数组
-      //只读情况下给下拉框默认值
       if (showStatus === EShowStatus.readOnly) {
-        onChange?.(res?.data?.content?.[0]?.fdId || '')
-        setDefaultVal(res?.data?.content?.[0]?.fdId || '')
+        const fdId = res?.data?.content?.[0]?.fdId || ''
+        onChange?.(fdId)
+        setDefaultVal(fdId)
       }
     } catch (error) {
       console.error(error)
@@ -62,7 +81,6 @@ const XformGetDataSelect: React.FC<IProps> = (props) => {
   }
 
   return (
-
     <div>
       {
         showStatus === EShowStatus.add || showStatus === EShowStatus.edit || showStatus === EShowStatus.readOnly ?
@@ -76,7 +94,6 @@ const XformGetDataSelect: React.FC<IProps> = (props) => {
           /> :
           <span>{value && value[showFdName]}</span>
       }
-
     </div>
   )
 }

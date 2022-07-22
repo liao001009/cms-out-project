@@ -16,15 +16,25 @@ import XformRelation from '@/desktop/components/form/XformRelation'
 import XformInput from '@/desktop/components/form/XformInput'
 import XformSelect from '@/desktop/components/form/XformSelect'
 import XformCheckbox from '@/desktop/components/form/XformCheckbox'
+import XformGetDataSelect from '@/desktop/components/cms/XformGetDataSelect'
+import apiSupplier from '@/api/cmsSupplierInfo'
+import { Module } from '@ekp-infra/common'
 
 const MECHANISMNAMES = {}
 
+const CmsOutStaffInfoDialog = Module.getComponent('cms-out-supplier', 'CmsOutStaffInfoDialog')
+
 const XForm = (props) => {
+  const paramId = props?.match?.params?.id
+  console.log('paramID-----', paramId)
+  //序号	组织信息/所属供应商	姓名	岗位	定级级别	状态信息	当前项目
+  
   const detailForms = useRef({
     cmsProjectWrittenDe: createRef() as any
   })
   const { formRef: formRef, value: value } = props
   const [form] = Form.useForm()
+  
   // 对外暴露接口
   useApi({
     form,
@@ -195,8 +205,9 @@ const XForm = (props) => {
                     hiddenLabel={true}
                     columns={[
                       {
-                        type: XformRelation,
+                        type: CmsOutStaffInfoDialog,
                         controlProps: {
+                          projectDemand: {paramId}, 
                           title: fmtMsg(':cmsProjectWritten.form.!{l5i2iuv598u3ufwarkj}', '姓名'),
                           name: 'fdInterviewName',
                           renderMode: 'singlelist',
@@ -218,7 +229,7 @@ const XForm = (props) => {
                             }
                           ],
                           desktop: {
-                            type: XformRelation
+                            type: CmsOutStaffInfoDialog
                           },
                           relationCfg: {
                             appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
@@ -229,7 +240,7 @@ const XForm = (props) => {
                             showFields: '$姓名$',
                             refFieldName: '$fd_name$'
                           },
-                          type: XformRelation,
+                          type: CmsOutStaffInfoDialog,
                           isForwardView: 'no',
                           datasource: {
                             queryCollection: {
@@ -344,9 +355,11 @@ const XForm = (props) => {
                         }
                       },
                       {
-                        type: XformRelation,
+                        type: XformGetDataSelect,
                         controlProps: {
                           title: fmtMsg(':cmsProjectWritten.form.!{l5i2e44y9gjv4vhmjr5}', '供应商名称'),
+                          apiRequest: apiSupplier.listSupplierInfo,
+                          propsParams: {},
                           name: 'fdSupplier',
                           renderMode: 'select',
                           direction: 'column',
@@ -368,7 +381,7 @@ const XForm = (props) => {
                             }
                           ],
                           desktop: {
-                            type: XformRelation
+                            type: XformGetDataSelect
                           },
                           relationCfg: {
                             appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
