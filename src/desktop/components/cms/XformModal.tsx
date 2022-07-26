@@ -54,8 +54,6 @@ export interface IProps extends IContentViewProps {
   showCriteria?: boolean
   /**接口参数(不在conditions里面的) */
   params?: any
-  /**已勾选的值 */
-  selectArr?: Array<any>
   /** 扩展 */
   [key: string]: any
 }
@@ -85,16 +83,19 @@ const XformModal: React.FC<IProps> = (props) => {
     otherData = {},
     showOther = false,
     params = {},
-    selectArr = []
   } = props
 
 
   const [listData, setListData] = useState<any>([])
   const [visible, setVisible] = useState<boolean>(false)
   const [fdName, setFdName] = useState<string>(value && value.fdName || '')
+  // 多选时，选中的数据
   const [selectedRowsData, setSelectedRows] = useState<any>([])
+  // 表单传过来的初始值，为了点击取消时，还原数据
   const [initSelectedArr, setInitSelectArr] = useState<any>(value)
+  // 用来判断是按了确认按钮还是取消按钮
   const [flag, setFlag] = useState<boolean>(false)
+
   /** 组装表格列头筛选项 */
   const getDefaultTableColumns = () => {
     if (Object.keys(defaultTableCriteria).length <= 0) return {}
@@ -217,10 +218,25 @@ const XformModal: React.FC<IProps> = (props) => {
           $contains: conditions[item]['$eq']
         } : undefined
       })
-      getListData({
-        ...query,
-        conditions: { ...conditions, ...newConditions }
-      })
+      if (defaultTableCriteria) {
+
+        const defaultConditions = {}
+        Object.keys(defaultTableCriteria).forEach(key => {
+          const defaultConditionsKey = {}
+          defaultConditionsKey[defaultTableCriteria[key]['searchKey']] = defaultTableCriteria[key]['searchValue']
+          defaultConditions[key] = defaultTableCriteria[key]['searchValue'] && defaultConditionsKey
+        })
+        getListData({
+          ...query,
+          conditions: { ...conditions, ...newConditions, ...defaultConditions }
+        })
+      } else {
+        getListData({
+          ...query,
+          conditions: { ...conditions, ...newConditions }
+        })
+      }
+
     },
     [query]
   )
