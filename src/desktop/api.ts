@@ -13,6 +13,17 @@ import CmsStaffReviewEdit from '@/desktop/pages/cmsStaffReview/edit/content'
 import CmsStaffReviewView from '@/desktop/pages/cmsStaffReview/view/content'
 import CmsStaffReviewList from '@/desktop/pages/cmsStaffReview/list-StaffReview/content'
 
+import CmsProjectInterviewAdd from '@/desktop/pages/cmsProjectInterview/edit/content'
+import CmsProjectInterviewEdit from '@/desktop/pages/cmsProjectInterview/edit/content'
+import CmsProjectInterviewList from '@/desktop/pages/cmsProjectInterview/list-Interview/content'
+import CmsProjectInterviewView from '@/desktop/pages/cmsProjectInterview/view/content'
+
+import CmsProjectWrittenAdd from '@/desktop/pages/cmsProjectWritten/edit/content'
+import CmsProjectWrittenEdit from '@/desktop/pages/cmsProjectWritten/edit/content'
+import CmsProjectWrittenList from '@/desktop/pages/cmsProjectWritten/list-Written/content'
+import CmsProjectWrittenView from '@/desktop/pages/cmsProjectWritten/view/content'
+
+
 export {
   CmsProjectInfoAdd,
   CmsProjectInfoEdit,
@@ -25,5 +36,13 @@ export {
   CmsStaffReviewAdd,
   CmsStaffReviewEdit,
   CmsStaffReviewView,
-  CmsStaffReviewList
+  CmsStaffReviewList,
+  CmsProjectInterviewAdd,
+  CmsProjectInterviewEdit,
+  CmsProjectInterviewList,
+  CmsProjectInterviewView,
+  CmsProjectWrittenAdd,
+  CmsProjectWrittenEdit,
+  CmsProjectWrittenList,
+  CmsProjectWrittenView
 }
