@@ -10,6 +10,8 @@ import { getFlowStatus } from '@/desktop/shared/util'
 //@ts-ignore
 import Status, { EStatusType } from '@elements/status'
 import { fmtMsg } from '@ekp-infra/respect'
+import apiLbpm from '@/api/cmsLbpm'
+import Axios from 'axios'
 
 Message.config({ maxCount: 1 })
 // 流程页签
@@ -35,9 +37,38 @@ const Content: React.FC<IContentViewProps> = props => {
   const formComponentRef = useRef<any>()
   const lbpmComponentRef = useRef<any>()
   const rightComponentRef = useRef<any>()
-  
+    
   const [flowData, setFlowData] = useState<any>({}) // 流程数据
   const [roleArr, setRoleArr] = useState<any>([])   // 流程角色
+  const [materialVis, setMaterialVis] = useState<boolean>(true)
+
+  /** 获取资料上传节点 */
+  const getCurrentNode = async () => {
+    try {
+      const nodeInfosData = await apiLbpm.getCurrentNodeInfo({
+        processInstanceId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId
+      })
+      const url = mk.getSysConfig('apiUrlPrefix') + '/cms-out-manage/cmsOutManageCommon/loadNodeExtendPropertiesOnProcess'
+      const processData = await Axios.post(url, {
+        fdId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId
+      })
+      if (nodeInfosData.data.currentNodeCards.length || processData.data.length) {
+        const newArr = processData.data.filter(item => {
+          return nodeInfosData.data.currentNodeCards.find(item2 => item.nodeId === item2.fdNodeId && item2.fdCurrentHandlers.some(item3 => item3.id === mk.getSysConfig('currentUser').fdId))
+        })
+        setMaterialVis(newArr.length ? newArr[0].extendProperty.supplierApprove === 'false' ? false : true : false)
+      } else {
+        setMaterialVis(false)
+      }
+    } catch (error) {
+      console.error('errortest2', error)
+      setMaterialVis(false)
+    }
+  }
+  useEffect(() => {
+    getCurrentNode()
+  }, [])
+
   useEffect(() => {
     mk.on('SYS_LBPM_AUDIT_FORM_INIT_DATA', (val) => {
       val?.roles && setRoleArr(val.roles)
@@ -122,7 +153,14 @@ const Content: React.FC<IContentViewProps> = props => {
       return
     }
     // 提交
-    api.update(values as any).then(res => {
+    api.update({
+      ...values,
+      fdFrame:values.fdFrame,
+      cmsProjectDemandWork: values.cmsProjectDemandWork && values.cmsProjectDemandWork.values || undefined,
+      cmsProjectDemandDetail: values.cmsProjectDemandDetail && values.cmsProjectDemandDetail.values || undefined,
+      cmsProjectDemandSupp: values.cmsProjectDemandSupp && values.cmsProjectDemandSupp.values || undefined,
+      cmsProjectDemandOrder: values.cmsProjectDemandOrder && values.cmsProjectDemandOrder.values || undefined,
+    }).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
           history.goBack()
@@ -175,6 +213,10 @@ const Content: React.FC<IContentViewProps> = props => {
   const handleEnterInterview = useCallback(()=>{
     history.goto(`/cmsProjectInterview/add/${data.fdId}`)
   }, [history])
+
+  const handleEnterSelectInfo = useCallback(()=>{
+    history.goto(`/cmsProjectSelectInfo/add/${data.fdId}`)
+  },[history])
 
   // 提交按钮
   const _btn_submit = useMemo(() => {
@@ -249,6 +291,7 @@ const Content: React.FC<IContentViewProps> = props => {
               {_btn_submit}
               {_btn_edit}
               {_btn_delete}
+              <Button type='default' onClick={handleEnterSelectInfo}>{fmtMsg(':menu.!{mctpwprd794p}', '发布中选信息')}</Button>
               <Button type='default' onClick={handleEnterWritten}>{fmtMsg(':cmsProjectWritten.form.!{l5hz6ugsxfxlg2nyfs7}', '录入笔试成绩')}</Button>
               <Button type='default' onClick={handleEnterInterview}>{fmtMsg(':cmsProjectInterview.form.!{l5hz6ugsxfxlg2nyfs7}', '录入面试成绩')}</Button>
             
@@ -262,7 +305,7 @@ const Content: React.FC<IContentViewProps> = props => {
             <div className='left'>
               {/* 表单信息 */}
               <div className='form'>
-                <XForm formRef={formComponentRef} value={data || {}} />
+                <XForm formRef={formComponentRef} value={data || {}} materialVis={materialVis} />
               </div>
               {/* 机制页签 */}
               <div className='tabs'>

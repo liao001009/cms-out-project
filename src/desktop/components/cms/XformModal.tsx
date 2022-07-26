@@ -14,7 +14,9 @@ export enum EShowStatus {
   /** 编辑 */
   'edit' = 'edit',
   /** 添加 */
-  'add' = 'add'
+  'add' = 'add',
+  /** 只读 */
+  'readOnly' = 'readOnly'
 }
 
 export interface IProps extends IContentViewProps {
@@ -277,16 +279,24 @@ const XformModal: React.FC<IProps> = (props) => {
     const newData = listData?.content.length && listData?.content.filter(item => initSelectedArr.includes(item.fdId))
     onChange && onChange(newData)
   }
+
+  const readOnlyStyle = {
+    'background': '#f5f5f5',
+    'color': 'rgba(0,0,0,.25)',
+    'cursor': 'not-allowed',
+    'pointerEvents':'none'
+  } as any
+
   return (
     <React.Fragment>
       <div>
         {
-          showStatus === 'edit' || showStatus === 'add' ? Array.isArray(value) ? (
-            <div className='multiple-input' onClick={() => setVisible(true)}>
+          showStatus === 'edit' || showStatus === 'add' || showStatus==='readOnly'? Array.isArray(value) ? (
+            <div className='multiple-input' style={showStatus==='readOnly' ? readOnlyStyle:{}} onClick={() => setVisible(true)}>
               {renderTag()}
             </div>
           ) : (
-            <Input placeholder='请输入' readOnly onClick={() => setVisible(true)} value={fdName} />
+            <Input placeholder='请输入' disabled={showStatus==='readOnly'} onClick={() => setVisible(true)} value={fdName} />
           ) : (
             <span>
               {

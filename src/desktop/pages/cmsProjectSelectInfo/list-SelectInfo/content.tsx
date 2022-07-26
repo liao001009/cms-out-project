@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { IContentViewProps } from '@ekp-runtime/render-module'
 import Icon from '@lui/icons'
 import { Input, Button, Space, Pagination } from '@lui/core'
@@ -7,14 +7,32 @@ import { $reduceCriteria } from '@/desktop/shared/criteria'
 import Operation from '@elem/operation'
 import Table, { useTable } from '@elem/mk-table'
 import api from '@/api/cmsProjectSelectInfo'
-import { useAdd } from '@/desktop/shared/add'
+import apiTemplate from '@/api/cmsProjectSelectInfoTemplate'
 import { $deleteAll } from '@/desktop/shared/deleteAll'
 import './index.scss'
 
+
+const baseCls = 'project-selectInfo-list'
 const Content: React.FC<IContentViewProps> = (props) => {
   const { status, data, queryChange, query, refresh, history } = props
   const { content, totalSize, pageSize, offset } = data
+  const [templateData, setTemplateData] = useState<any>({})
+  useEffect(() => {
+    loadTemplateData()
+  }, [])
 
+  const loadTemplateData = async () => {
+    try {
+      const res = await apiTemplate.list({
+        sorts: { fdCreateTime: 'desc' },
+        columns: ['fdId', 'fdName', 'fdCode', 'fdCreator', 'fdCreateTime'],
+        ...query
+      })
+      setTemplateData(res?.data?.content[0])
+    } catch (error) {
+      console.error(error)
+    }
+  }
   // 表格列定义
   const columns = useMemo(
     () => [
@@ -126,24 +144,15 @@ const Content: React.FC<IContentViewProps> = (props) => {
   })
   console.log(selectedRows)
 
-  /** 操作函数集 */
-
-  //新建
-  const {
-    $add: $add,
-  } = useAdd('/cmsProjectSelectInfo/add/!{selectedRow}')
+  // 新建
   const handleAdd = useCallback(
     (event) => {
       event.stopPropagation()
-      $add({
-        history: history,
-        api: api,
-        selectedRows: selectedRows,
-        refresh: refresh
-      })
+      history.goto(`/cmsProjectSelectInfo/add/${templateData.fdId}`)
     },
-    [history, selectedRows, refresh]
+    [history, selectedRows, refresh,templateData]
   )
+
   //批量删除
   const handleDeleteAll = useCallback(
     (event) => {
@@ -230,7 +239,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
   )
 
   return (
-    <React.Fragment>
+    <div className={baseCls}>
       <div className="lui-template-list">
         <div className="lui-template-list-criteria">
           <div className="left">
@@ -306,7 +315,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
           ) : null}
         </div>
       </div>
-    </React.Fragment>
+    </div>
   )
 }
 

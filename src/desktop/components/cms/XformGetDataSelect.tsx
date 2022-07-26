@@ -22,7 +22,7 @@ export interface IProps extends IContentViewProps {
 }
 
 const XformGetDataSelect: React.FC<IProps> = (props) => {
-  const {onChange, showStatus, value, apiRequest, propsParams, showFdName, rowIndex, name, $$form, $$tableName } = props
+  const {onChange, showStatus, value, apiRequest, propsParams, showFdName } = props
   const [listData, setListData] = useState<any>([])   //接口返回数据
   const [defaultVal, setDefaultVal] = useState<string>('') //默认值
   

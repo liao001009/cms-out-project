@@ -42,7 +42,7 @@ const XForm = (props) => {
     cmsProjectDemandSupp: createRef() as any,
     cmsProjectDemandOrder: createRef() as any
   })
-  const { formRef: formRef, value: value } = props
+  const { formRef: formRef, value: value,materialVis } = props
   const [form] = Form.useForm()
   // 框架数据
   const [frameData, setFrameData] = useState<any>([])
@@ -551,106 +551,112 @@ const XForm = (props) => {
                   </Form.Item>
                 </XformFieldset>
               </GridItem>
-              <GridItem column={1} row={15} rowSpan={1} columnSpan={20}>
-                <XformFieldset
-                  labelTextAlign={'left'}
-                  mobileContentAlign={'right'}
-                  title={fmtMsg(':cmsProjectDemand.form.!{l5hx79yiywiixyt0gwo}', '评审时间')}
-                  layout={'horizontal'}
-                  required={true}
-                >
-                  <Form.Item 
-                    name={'fdApprovalTime'}
-                    rules={[
-                      {
-                        required: true,
-                        message: fmtMsg(':required', '内容不能为空')
-                      }
-                    ]}
-                  >
-                    <XformDatetime
-                      {...sysProps}
-                      placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hx79yk16674uklzee}', '请输入')}
-                      dataPattern={'yyyy/MM/dd'}
-                      passValue={true}
-                      showStatus="edit"
-                    ></XformDatetime>
-                  </Form.Item>
-                </XformFieldset>
-              </GridItem>
-              <GridItem column={21} row={15} rowSpan={1} columnSpan={6} style={{display:'flex',alignItems:'center'}}>
-                <XformFieldset 
-                  compose={true}
-                  required={true}
-                  layout={'horizontal'}
-                  title={fmtMsg(':cmsProjectDemand.form.!{l5hxh9fpx14ur0jgeue}', '人数区间')}
-                >
-                </XformFieldset>
-              </GridItem>
-              <GridItem column={27} row={15} rowSpan={1} columnSpan={6}>
-                <Form.Item 
-                  name={'fdLowPerson'}
-                  rules={[
-                    {
-                      required: true,
-                      message: fmtMsg(':required', '内容不能为空')
-                    }
-                  ]}
-                >
-                  <XformNumber
-                    {...sysProps}
-                    placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hxk7elmfxiucq54kd}', '请输入')}
-                    numberFormat={{
-                      formatType: 'base'
-                    }}
-                    showStatus="edit"
-                  ></XformNumber>
-                </Form.Item>
-              </GridItem>
-              <GridItem column={32} row={15} rowSpan={1} columnSpan={1}>
-                <XformFieldset compose={true}>
-                  <Form.Item name={'fdColUso4hd'}>
-                    <XformDescription
-                      {...sysProps}
-                      defaultTextValue={fmtMsg(':cmsProjectDemand.form.!{l5hxjc3iktyguac1yn8}', '至')}
-                      showStatus="view"
-                    ></XformDescription>
-                  </Form.Item>
-                </XformFieldset>
-              </GridItem>
-              <GridItem column={33} row={15} rowSpan={1} columnSpan={7}>
-                <Form.Item 
-                  name={'fdUpPerson'}
-                  rules={[
-                    {
-                      required: true,
-                      message: fmtMsg(':required', '内容不能为空')
-                    }
-                  ]}
-                >
-                  <XformNumber
-                    {...sysProps}
-                    placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hxlsau5eqmbbchfv8}', '请输入')}
-                    numberFormat={{
-                      formatType: 'base'
-                    }}
-                    fdSysNumber={{}}
-                    label={fmtMsg(':cmsProjectDemand.form.!{l5hxlsauo7w98rlogbn}', '人数区间上限')}
-                    showStatus="edit"
-                  ></XformNumber>
-                </Form.Item>
-              </GridItem>
-              <GridItem column={39} row={15} rowSpan={1} columnSpan={1}>
-                <XformFieldset compose={true}>
-                  <Form.Item name={'fdColSgzhna'}>
-                    <XformDescription
-                      {...sysProps}
-                      defaultTextValue={fmtMsg(':cmsProjectDemand.form.!{l5hxjtwrindzux1zywk}', '人')}
-                      showStatus="view"
-                    ></XformDescription>
-                  </Form.Item>
-                </XformFieldset>
-              </GridItem>
+              {
+                materialVis || value.fdApprovalTime ? (
+                  <Fragment>
+                    <GridItem column={1} row={15} rowSpan={1} columnSpan={20}>
+                      <XformFieldset
+                        labelTextAlign={'left'}
+                        mobileContentAlign={'right'}
+                        title={fmtMsg(':cmsProjectDemand.form.!{l5hx79yiywiixyt0gwo}', '评审时间')}
+                        layout={'horizontal'}
+                        required={true}
+                      >
+                        <Form.Item 
+                          name={'fdApprovalTime'}
+                          rules={[
+                            {
+                              required: true,
+                              message: fmtMsg(':required', '内容不能为空')
+                            }
+                          ]}
+                        >
+                          <XformDatetime
+                            {...sysProps}
+                            placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hx79yk16674uklzee}', '请输入')}
+                            dataPattern={'yyyy/MM/dd'}
+                            passValue={true}
+                            showStatus={materialVis? 'edit':'view'}
+                          ></XformDatetime>
+                        </Form.Item>
+                      </XformFieldset>
+                    </GridItem>
+                    <GridItem column={21} row={15} rowSpan={1} columnSpan={6} style={{display:'flex',alignItems:'center'}}>
+                      <XformFieldset 
+                        compose={true}
+                        required={true}
+                        layout={'horizontal'}
+                        title={fmtMsg(':cmsProjectDemand.form.!{l5hxh9fpx14ur0jgeue}', '人数区间')}
+                      >
+                      </XformFieldset>
+                    </GridItem>
+                    <GridItem column={27} row={15} rowSpan={1} columnSpan={6}>
+                      <Form.Item 
+                        name={'fdLowPerson'}
+                        rules={[
+                          {
+                            required: true,
+                            message: fmtMsg(':required', '内容不能为空')
+                          }
+                        ]}
+                      >
+                        <XformNumber
+                          {...sysProps}
+                          placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hxk7elmfxiucq54kd}', '请输入')}
+                          numberFormat={{
+                            formatType: 'base'
+                          }}
+                          showStatus={materialVis? 'edit':'view'}
+                        ></XformNumber>
+                      </Form.Item>
+                    </GridItem>
+                    <GridItem column={32} row={15} rowSpan={1} columnSpan={1}>
+                      <XformFieldset compose={true}>
+                        <Form.Item name={'fdColUso4hd'}>
+                          <XformDescription
+                            {...sysProps}
+                            defaultTextValue={fmtMsg(':cmsProjectDemand.form.!{l5hxjc3iktyguac1yn8}', '至')}
+                            showStatus="view"
+                          ></XformDescription>
+                        </Form.Item>
+                      </XformFieldset>
+                    </GridItem>
+                    <GridItem column={33} row={15} rowSpan={1} columnSpan={7}>
+                      <Form.Item 
+                        name={'fdUpPerson'}
+                        rules={[
+                          {
+                            required: true,
+                            message: fmtMsg(':required', '内容不能为空')
+                          }
+                        ]}
+                      >
+                        <XformNumber
+                          {...sysProps}
+                          placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hxlsau5eqmbbchfv8}', '请输入')}
+                          numberFormat={{
+                            formatType: 'base'
+                          }}
+                          fdSysNumber={{}}
+                          label={fmtMsg(':cmsProjectDemand.form.!{l5hxlsauo7w98rlogbn}', '人数区间上限')}
+                          showStatus={materialVis? 'edit':'view'}
+                        ></XformNumber>
+                      </Form.Item>
+                    </GridItem>
+                    <GridItem column={39} row={15} rowSpan={1} columnSpan={1}>
+                      <XformFieldset compose={true}>
+                        <Form.Item name={'fdColSgzhna'}>
+                          <XformDescription
+                            {...sysProps}
+                            defaultTextValue={fmtMsg(':cmsProjectDemand.form.!{l5hxjtwrindzux1zywk}', '人')}
+                            showStatus="view"
+                          ></XformDescription>
+                        </Form.Item>
+                      </XformFieldset>
+                    </GridItem>
+                  </Fragment>
+                ) : null
+              }
 
               <GridItem
                 column={26}
@@ -1397,28 +1403,28 @@ const XForm = (props) => {
                           },
                           label: fmtMsg(':cmsProjectDemand.form.!{l5j2509v6emztje7u2j}', '邮箱')
                         },
-                        {
-                          type: XformInput,
-                          controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j25jer26thjw90iqm}', '电话'),
-                            maxLength: 100,
-                            name: 'fdPhone',
-                            placeholder: fmtMsg(':cmsProjectDemand.form.!{l5j25jeuplifqvy528s}', '请输入'),
-                            desktop: {
-                              type: XformInput
-                            },
-                            type: XformInput,
-                            showStatus: 'view'
-                          },
-                          labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j25jer26thjw90iqm}', '电话'),
-                            desktop: {
-                              layout: 'vertical'
-                            },
-                            labelTextAlign: 'left'
-                          },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5j25jer26thjw90iqm}', '电话')
-                        },
+                        // {
+                        //   type: XformInput,
+                        //   controlProps: {
+                        //     title: fmtMsg(':cmsProjectDemand.form.!{l5j25jer26thjw90iqm}', '电话'),
+                        //     maxLength: 100,
+                        //     name: 'fdPhone',
+                        //     placeholder: fmtMsg(':cmsProjectDemand.form.!{l5j25jeuplifqvy528s}', '请输入'),
+                        //     desktop: {
+                        //       type: XformInput
+                        //     },
+                        //     type: XformInput,
+                        //     showStatus: 'view'
+                        //   },
+                        //   labelProps: {
+                        //     title: fmtMsg(':cmsProjectDemand.form.!{l5j25jer26thjw90iqm}', '电话'),
+                        //     desktop: {
+                        //       layout: 'vertical'
+                        //     },
+                        //     labelTextAlign: 'left'
+                        //   },
+                        //   label: fmtMsg(':cmsProjectDemand.form.!{l5j25jer26thjw90iqm}', '电话')
+                        // },
                         {
                           type: Upload,
                           controlProps: {
@@ -1467,7 +1473,7 @@ const XForm = (props) => {
                               type: XformRadio
                             },
                             type: XformRadio,
-                            showStatus: 'edit'
+                            showStatus: materialVis? 'edit':'view'
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5j26cqoz3wzsifnnwa}', '是否合格'),
@@ -1490,7 +1496,7 @@ const XForm = (props) => {
                               type: XformTextarea
                             },
                             type: XformTextarea,
-                            showStatus: 'edit'
+                            showStatus: materialVis? 'edit':'view'
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5j26p7w7agm9t6dzoh}', '备注'),
