@@ -158,6 +158,10 @@ const Content: React.FC<IContentViewProps> = props => {
     history.goto(`/cmsProjectWritten/add/${data.fdId}`)
   }, [history])
 
+  const handleEnterInterview = useCallback(()=>{
+    history.goto(`/cmsProjectInterview/add/${data.fdId}`)
+  }, [history])
+  
 
   return (
     <div className={baseCls}>
@@ -170,6 +174,7 @@ const Content: React.FC<IContentViewProps> = props => {
           </Breadcrumb>
           <div className='buttons'>
             <Button type='default' onClick={handleEnterWritten}>{fmtMsg(':cmsProjectWritten.form.!{l5hz6ugsxfxlg2nyfs7}', '录入笔试成绩')}</Button>
+            <Button type='default' onClick={handleEnterInterview}>{fmtMsg(':cmsProjectInterview.form.!{l5hz6ugsxfxlg2nyfs7}', '录入面试成绩')}</Button>
             
             <Button type='default' onClick={handleOrder}>订单响应</Button>
             {data.fdProcessStatus !== '30' ? <Button type='primary' onClick={() => handleSave(false)}>提交</Button> : null}

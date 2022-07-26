@@ -1,7 +1,7 @@
-import React, { useRef, createRef } from 'react'
+import React, { useRef, createRef, useEffect, useState } from 'react'
 import './index.scss'
 import { fmtMsg } from '@ekp-infra/respect'
-import { Form } from '@lui/core'
+import { Form, Message } from '@lui/core'
 import { useApi, useSystem } from '@/desktop/shared/formHooks'
 import XformAppearance from '@/desktop/components/form/XformAppearance'
 import LayoutGrid from '@/desktop/components/form/LayoutGrid'
@@ -13,10 +13,14 @@ import XformNumber from '@/desktop/components/form/XformNumber'
 import XformAddress from '@/desktop/components/form/XformAddress'
 import XformSelect from '@/desktop/components/form/XformSelect'
 import XformDetailTable from '@/desktop/components/form/XformDetailTable'
-import XformRelation from '@/desktop/components/form/XformRelation'
 import XformInput from '@/desktop/components/form/XformInput'
+import apiSupplier from '@/api/cmsSupplierInfo'
+import { Module } from '@ekp-infra/common'
+import { EShowStatus } from '@/types/showStatus'
 
 const MECHANISMNAMES = {}
+
+const CmsOutStaffInfoDialog = Module.getComponent('cms-out-supplier', 'CmsOutStaffInfoDialog')
 
 const XForm = (props) => {
   const detailForms = useRef({
@@ -24,6 +28,50 @@ const XForm = (props) => {
   })
   const { formRef: formRef, value: value } = props
   const [form] = Form.useForm()
+
+  const [supplierData, setSupplierData] = useState<any>([])
+  useEffect(() => {
+    if(props.mode==='add'){
+      value.fdProjectDemand=props?.match?.params?.id
+    }
+    init()
+  }, [])
+  const init = async () => {
+    try {
+      const res = await apiSupplier.listSupplierInfo({})
+      const arr = res.data.content.map(i => {
+        const item = {
+          value: i.fdId,
+          label: i.fdName,
+          ...i
+        }
+        return item
+      })
+      setSupplierData(arr)
+    } catch (error) {
+      console.log('error', error)
+    }
+  }
+  const checkDetailWS =  (val)=>{
+    const cmsProjectInterDetail = form.getFieldValue('cmsProjectInterDetail')
+    const arr: any  = []
+    cmsProjectInterDetail?.values?.forEach((v, r) => {
+      if(!v.fdInterviewScores) return
+      const fdInterviewPass = val <= v.fdInterviewScores ? '1' : '0'
+      sysProps.$$form.current.updateFormItemProps('cmsProjectInterDetail', {
+        rowValue: {
+          rowNum: r,
+          value: {
+            fdInterviewPass: fdInterviewPass,
+          }
+        }
+      })
+      if(!arr.includes(v.fdSupplier) && fdInterviewPass==='1'){
+        arr.push(v.fdSupplier)
+      }
+    })
+  }
+
   // 对外暴露接口
   useApi({
     form,
@@ -103,7 +151,14 @@ const XForm = (props) => {
                 layout={'horizontal'}
                 required={true}
               >
-                <Form.Item name={'fdQualifiedMark'}>
+                <Form.Item name={'fdQualifiedMark'}
+                  rules={[
+                    {
+                      required: true,
+                      message: fmtMsg(':required', '内容不能为空')
+                    }
+                  ]}
+                >
                   <XformNumber
                     {...sysProps}
                     placeholder={fmtMsg(':cmsProjectInterview.form.!{l5hzdv832ve43rgmhqh}', '请输入')}
@@ -111,6 +166,7 @@ const XForm = (props) => {
                       formatType: 'base'
                     }}
                     showStatus="edit"
+                    onChange = {(v)=> checkDetailWS(v) }
                   ></XformNumber>
                 </Form.Item>
               </XformFieldset>
@@ -134,11 +190,17 @@ const XForm = (props) => {
                     {...sysProps}
                     org={{
                       orgTypeArr: ['8'],
-                      defaultValueType: 'null'
+                      defaultValueType: 'fixed'
                     }}
                     range={'all'}
                     preSelectType={'fixed'}
-                    showStatus="edit"
+                    showStatus={EShowStatus.readOnly}
+                    defaultValue={
+                      {
+                        fdId: mk.getSysConfig().currentUser.fdId,
+                        fdName: mk.getSysConfig().currentUser.fdName,
+                      }
+                    }
                   ></XformAddress>
                 </Form.Item>
               </XformFieldset>
@@ -155,12 +217,14 @@ const XForm = (props) => {
                     {...sysProps}
                     placeholder={'请输入'}
                     dataPattern={'yyyy-MM-dd'}
-                    showStatus="edit"
+                    showStatus={EShowStatus.readOnly}
+                    defaultValueType='now'
+                    defaultValue={new Date().getTime()}
                   ></XformDatetime>
                 </Form.Item>
               </XformFieldset>
             </GridItem>
-            <GridItem column={1} row={6} columnSpan={2} rowSpan={1}>
+            {/* <GridItem column={1} row={6} columnSpan={2} rowSpan={1}>
               <XformFieldset
                 labelTextAlign={'left'}
                 mobileContentAlign={'right'}
@@ -194,7 +258,7 @@ const XForm = (props) => {
                   ></XformSelect>
                 </Form.Item>
               </XformFieldset>
-            </GridItem>
+            </GridItem> */}
             <GridItem
               column={2}
               row={6}
@@ -238,7 +302,7 @@ const XForm = (props) => {
                     hiddenLabel={true}
                     columns={[
                       {
-                        type: XformRelation,
+                        type: CmsOutStaffInfoDialog,
                         controlProps: {
                           title: fmtMsg(':cmsProjectInterview.form.!{l5i2iuv598u3ufwarkj}', '姓名'),
                           name: 'fdInterviewName',
@@ -262,7 +326,7 @@ const XForm = (props) => {
                             }
                           ],
                           desktop: {
-                            type: XformRelation
+                            type: CmsOutStaffInfoDialog
                           },
                           relationCfg: {
                             appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
@@ -273,102 +337,17 @@ const XForm = (props) => {
                             showFields: '$姓名$',
                             refFieldName: '$fd_name$'
                           },
-                          type: XformRelation,
-                          datasource: {
-                            queryCollection: {
-                              linkType: '$and',
-                              query: []
-                            },
-                            sorters: [],
-                            columns: [
-                              {
-                                name: 'fd_name',
-                                label: '姓名'
-                              },
-                              {
-                                name: 'fd_inner_team',
-                                label: '当前所属招证内部团队'
-                              },
-                              {
-                                name: 'fd_project',
-                                label: '当前项目'
-                              },
-                              {
-                                name: 'fd_entry_date',
-                                label: '参加工作日期'
-                              },
-                              {
-                                name: 'fd_confirm_level',
-                                label: '定级级别'
-                              },
-                              {
-                                name: 'fdSupplier',
-                                label: '组织信息/所属供应商'
-                              },
-                              {
-                                name: 'fd_work_address',
-                                label: '工作地'
-                              },
-                              {
-                                name: 'fd_current_project_nature',
-                                label: '当前项目性质'
-                              },
-                              {
-                                name: 'fd_first_entrance_date',
-                                label: '首次入场时间'
-                              },
-                              {
-                                name: 'fd_last_upgrade_date',
-                                label: '上次调级时间'
-                              },
-                              {
-                                name: 'fd_status_info',
-                                label: '状态信息'
+                          type: CmsOutStaffInfoDialog,
+                          onChangeProps : async (v, r)=>{
+                            sysProps.$$form.current.updateFormItemProps('cmsProjectInterDetail', {
+                              rowValue: {
+                                rowNum: r,
+                                value: {
+                                  fdSupplier:v.fdSupplier.fdId,
+                                  fdEmail: v.fdEmail,
+                                }
                               }
-                            ],
-                            filters: [
-                              {
-                                name: 'fd_name',
-                                label: '姓名'
-                              },
-                              {
-                                name: 'fd_project',
-                                label: '当前项目'
-                              },
-                              {
-                                name: 'fd_inner_team',
-                                label: '当前所属招证内部团队'
-                              },
-                              {
-                                name: 'fd_confirm_level',
-                                label: '定级级别'
-                              },
-                              {
-                                name: 'fdSupplier',
-                                label: '组织信息/所属供应商'
-                              },
-                              {
-                                name: 'fd_work_address',
-                                label: '工作地'
-                              },
-                              {
-                                name: 'fd_first_entrance_date',
-                                label: '首次入场时间'
-                              },
-                              {
-                                name: 'fd_last_upgrade_date',
-                                label: '上次调级时间'
-                              },
-                              {
-                                name: 'fd_current_project_nature',
-                                label: '当前项目性质'
-                              },
-                              {
-                                name: 'fd_status_info',
-                                label: '状态信息'
-                              }
-                            ],
-                            isListThrough: true
+                            })
                           },
                           showStatus: 'edit'
                         },
@@ -389,41 +368,6 @@ const XForm = (props) => {
                       {
                         type: XformSelect,
                         controlProps: {
-                          title: fmtMsg(':cmsProjectInterview.form.!{l5q3jamudzqrim6stpg}', '单选下拉框1'),
-                          maxLength: 50,
-                          name: 'fdColZgcc49',
-                          placeholder: fmtMsg(':cmsProjectInterview.form.!{l5q3jamx4wexfjfyjsn}', '请输入'),
-                          options: [
-                            {
-                              label: fmtMsg(':cmsProjectInterview.form.!{l5q3jamzuxmmwh88b5o}', '选项1'),
-                              value: '1'
-                            },
-                            {
-                              label: fmtMsg(':cmsProjectInterview.form.!{l5q3jan1q1awh3zk55q}', '选项2'),
-                              value: '2'
-                            },
-                            {
-                              label: fmtMsg(':cmsProjectInterview.form.!{l5q3jan3nk5lq6o8b2}', '选项3'),
-                              value: '3'
-                            }
-                          ],
-                          optionSource: 'custom',
-                          desktop: {
-                            type: XformSelect
-                          },
-                          showStatus: 'edit'
-                        },
-                        labelProps: {
-                          title: fmtMsg(':cmsProjectInterview.form.!{l5q3jamudzqrim6stpg}', '单选下拉框1'),
-                          desktop: {
-                            layout: 'vertical'
-                          }
-                        },
-                        label: fmtMsg(':cmsProjectInterview.form.!{l5q3jamudzqrim6stpg}', '单选下拉框1')
-                      },
-                      {
-                        type: XformRelation,
-                        controlProps: {
                           title: fmtMsg(':cmsProjectInterview.form.!{l5i2e44y9gjv4vhmjr5}', '供应商名称'),
                           name: 'fdSupplier',
                           renderMode: 'select',
@@ -431,22 +375,9 @@ const XForm = (props) => {
                           rowCount: 3,
                           modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
                           isForwardView: 'no',
-                          options: [
-                            {
-                              fdName: '选项1',
-                              fdId: '1'
-                            },
-                            {
-                              fdName: '选项2',
-                              fdId: '2'
-                            },
-                            {
-                              fdName: '选项3',
-                              fdId: '3'
-                            }
-                          ],
+                          options: supplierData,
                           desktop: {
-                            type: XformRelation
+                            type: XformSelect
                           },
                           relationCfg: {
                             appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
@@ -457,8 +388,8 @@ const XForm = (props) => {
                             showFields: '$供应商名称$',
                             refFieldName: '$fd_supplier_name$'
                           },
-                          type: XformRelation,
-                          showStatus: 'edit'
+                          type: XformSelect,
+                          showStatus: EShowStatus.readOnly
                         },
                         labelProps: {
                           title: fmtMsg(':cmsProjectInterview.form.!{l5i2e44y9gjv4vhmjr5}', '供应商名称'),
@@ -479,7 +410,7 @@ const XForm = (props) => {
                             type: XformInput
                           },
                           type: XformInput,
-                          showStatus: 'edit'
+                          showStatus: EShowStatus.readOnly
                         },
                         labelProps: {
                           title: fmtMsg(':cmsProjectInterview.form.!{l5i2r5c8ax8fakvlo08}', '邮箱'),
@@ -502,7 +433,28 @@ const XForm = (props) => {
                             type: XformNumber
                           },
                           type: XformNumber,
-                          showStatus: 'edit'
+                          showStatus: 'edit',
+                          controlActions: {
+                            'onChange': [{
+                              function: (v, r) => {
+                                const fdQualifiedMark = form.getFieldValue('fdQualifiedMark')
+                                if(!fdQualifiedMark){
+                                  Message.error('请输入合格分数线', 1)
+                                  return 
+                                }
+                                const fdInterviewPass = v>=fdQualifiedMark ? '1' : '0'
+                                sysProps.$$form.current.updateFormItemProps('cmsProjectInterDetail', {
+                                  rowValue: {
+                                    rowNum: r,
+                                    value: {
+                                      fdInterviewPass: fdInterviewPass,
+                                    }
+                                  }
+                                })
+                                checkDetailWS(fdQualifiedMark)
+                              }
+                            }]
+                          }
                         },
                         labelProps: {
                           title: fmtMsg(':cmsProjectInterview.form.!{l5i2r9d4aemiawkvbr}', '面试得分'),
@@ -568,7 +520,11 @@ const XForm = (props) => {
               rowSpan={1}
               columnSpan={1}
             ></GridItem>
-            <GridItem column={1} row={5} columnSpan={2} rowSpan={1}>
+            <GridItem column={1} row={5} columnSpan={2} rowSpan={1}
+              style={{
+                display: 'none'
+              }}
+            >
               <XformFieldset
                 labelTextAlign={'left'}
                 mobileContentAlign={'right'}
@@ -576,7 +532,14 @@ const XForm = (props) => {
                 layout={'horizontal'}
               >
                 <Form.Item name={'fdProjectDemand'}>
-                  <XformRelation
+                  <XformInput
+                    {...sysProps}
+                    placeholder={fmtMsg(':cmsProjectInterview.form.!{l5hz9wxdne6ahfqosua}', '请输入')}
+                    showStatus="edit"
+                  ></XformInput>
+                  
+
+                  {/* <XformRelation
                     {...sysProps}
                     renderMode={'select'}
                     direction={'column'}
@@ -607,7 +570,7 @@ const XForm = (props) => {
                     }}
                     isForwardView={'no'}
                     showStatus="edit"
-                  ></XformRelation>
+                  ></XformRelation> */}
                 </Form.Item>
               </XformFieldset>
             </GridItem>
