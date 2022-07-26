@@ -81,7 +81,11 @@
             "!{l5hzdv832ve43rgmhqh}": "请输入",
             "!{l5hz9wxb6v3gf05totp}": "笔试时间",
             "!{l5hz9wxdne6ahfqosua}": "请输入",
-            "!{l5hz6ugsxfxlg2nyfs7}": "录入笔试成绩"
+            "!{l5hz6ugsxfxlg2nyfs7}": "录入笔试成绩",
+            "!{l3lb8gpoaz0xj1znu5e}": "高中",
+            "!{l3lb8gpqsa1dkyunv4g}": "专科",
+            "!{l3lb8gptifemq19c12}": "本科",
+            "!{l3lb8gpvwi2j25x1zbt}": "研究生"
         },
         "fdCreateTime": "创建时间",
         "fdCreator": "创建者",
