@@ -171,6 +171,10 @@ const Content: React.FC<IContentViewProps> = props => {
   const handleEnterWritten = useCallback(()=>{
     history.goto(`/cmsProjectWritten/add/${data.fdId}`)
   }, [history])
+  
+  const handleEnterInterview = useCallback(()=>{
+    history.goto(`/cmsProjectInterview/add/${data.fdId}`)
+  }, [history])
 
   // 提交按钮
   const _btn_submit = useMemo(() => {
@@ -181,6 +185,7 @@ const Content: React.FC<IContentViewProps> = props => {
       return null
     }
   }, [data, flowData, params])
+  
 
 
   // 编辑按钮
@@ -245,6 +250,9 @@ const Content: React.FC<IContentViewProps> = props => {
               {_btn_edit}
               {_btn_delete}
               <Button type='default' onClick={handleEnterWritten}>{fmtMsg(':cmsProjectWritten.form.!{l5hz6ugsxfxlg2nyfs7}', '录入笔试成绩')}</Button>
+              <Button type='default' onClick={handleEnterInterview}>{fmtMsg(':cmsProjectInterview.form.!{l5hz6ugsxfxlg2nyfs7}', '录入面试成绩')}</Button>
+            
+
               <Button type='default' onClick={handleOrder}>订单响应</Button>
               <Button type='default' onClick={handleClose}>关闭</Button>
             </div>

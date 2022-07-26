@@ -1,6 +1,5 @@
 import { createElement as h } from 'react'
-import api from '@/api/cmsProjectInterview'
-import Content from './content'
+import Content from '@/desktop/pages/cmsProjectInterview/edit/content'
 
 export default {
   // 类型：模块
@@ -8,7 +7,7 @@ export default {
   // 页面标题
   title: '新建',
   // 路由
-  router: '/add/:templateId',
+  router: '/add/:id',
   // 页面是否全屏，默认false
   fullscreen: true,
   // 临时解决方案，等runtime完善fullscreen逻辑后移除
@@ -21,7 +20,7 @@ export default {
       bottom: 0,
       overflow: 'auto',
       'zIndex': 99,
-      backgroundColor: '#fff'
+      backgroundColor: '#f0f2f5'
     }
   }, props.children),
   // 模块内容区
@@ -31,10 +30,14 @@ export default {
     // 内容渲染组件
     render: Content,
     // 请求
-    dataUrl: ({ param }) =>
-      api.init({
-        fdTemplate: { fdId: param.templateId },
-        mechanisms: { load: '*' }
-      })
+    // dataUrl: ({ param }) =>
+    //   api.init({
+    //     fdTemplate: { fdId: param.templateId },
+    //     mechanisms: { load: '*' }
+    //   })
+    props: {
+      // 编辑模式：新建
+      mode: 'add'
+    }
   }
 }
