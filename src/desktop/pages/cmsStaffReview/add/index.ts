@@ -8,7 +8,7 @@ export default {
   // 页面标题
   title: '新建',
   // 路由
-  router: '/add/:templateId',
+  router: '/add/:templateId/:id',
   // 页面是否全屏，默认false
   fullscreen: true,
   // 临时解决方案，等runtime完善fullscreen逻辑后移除
@@ -34,6 +34,7 @@ export default {
     dataUrl: ({ param }) =>
       api.init({
         fdTemplate: { fdId: param.templateId },
+        fdProjectDemand: { fdId: param.id },
         mechanisms: { load: '*' }
       })
   }

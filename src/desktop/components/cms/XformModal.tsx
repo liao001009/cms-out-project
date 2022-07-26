@@ -51,7 +51,11 @@ export interface IProps extends IContentViewProps {
   /** 多选 */
   multiple?: boolean
   /** 是否展示筛选 */
-  showCriteria?:boolean
+  showCriteria?: boolean
+  /**接口参数(不在conditions里面的) */
+  params?: any
+  /**已勾选的值 */
+  selectArr?: Array<any>
   /** 扩展 */
   [key: string]: any
 }
@@ -73,20 +77,24 @@ const XformModal: React.FC<IProps> = (props) => {
     apiName,
     onChangeProps,
     criteriaProps = [],
-    rowIndex=0,
+    rowIndex = 0,
     defaultTableCriteria = {},
     showFooter = false,
     multiple = false,
     showCriteria = true,
-    otherData={},
-    showOther=false
+    otherData = {},
+    showOther = false,
+    params = {},
+    selectArr = []
   } = props
 
-  console.log('props',props)
 
   const [listData, setListData] = useState<any>([])
   const [visible, setVisible] = useState<boolean>(false)
   const [fdName, setFdName] = useState<string>(value && value.fdName || '')
+  const [selectedRowsData, setSelectedRows] = useState<any>([])
+  const [initSelectedArr, setInitSelectArr] = useState<any>(value)
+  const [flag, setFlag] = useState<boolean>(false)
   /** 组装表格列头筛选项 */
   const getDefaultTableColumns = () => {
     if (Object.keys(defaultTableCriteria).length <= 0) return {}
@@ -96,15 +104,21 @@ const XformModal: React.FC<IProps> = (props) => {
       newConditionsKey[defaultTableCriteria[key]['searchKey']] = defaultTableCriteria[key]['searchValue']
       newConditions[key] = defaultTableCriteria[key]['searchValue'] && newConditionsKey
     })
+    if (params && Object.keys(params).length) {
+      return {
+        conditions: { ...newConditions },
+        ...params
+      }
+    }
     return {
       conditions: { ...newConditions }
     }
   }
   /** 为了兼容特殊筛选组装表格列头筛选项如外包人员评审调级，调级结果弹窗筛选 */
   const getOtherDefaultTableColumns = () => {
-    const postData = props.$$form.current.getFieldsValue()[props.$$tableName].values.length &&  props.$$form.current.getFieldsValue()[props.$$tableName].values[rowIndex]
-    if(!postData.fdPost)return {}
-    const postFilter = otherData.length && otherData?.find(item=>item.value===postData.fdPost.fdId)
+    const postData = props.$$form.current.getFieldsValue()[props.$$tableName].values.length && props.$$form.current.getFieldsValue()[props.$$tableName].values[rowIndex]
+    if (!postData.fdPost) return {}
+    const postFilter = otherData.length && otherData?.find(item => item.value === postData.fdPost.fdId)
     if (Object.keys(defaultTableCriteria).length <= 0) return {}
     const newConditions = {}
     Object.keys(defaultTableCriteria).forEach(key => {
@@ -119,18 +133,18 @@ const XformModal: React.FC<IProps> = (props) => {
 
   useEffect(() => {
     if (showStatus === EShowStatus.add || showStatus === EShowStatus.edit) {
-      if(showOther)return
+      if (showOther) return
       getListData({
         ...getDefaultTableColumns()
       })
     }
-  }, [JSON.stringify(defaultTableCriteria),JSON.stringify(otherData),showOther])
+  }, [JSON.stringify(defaultTableCriteria), JSON.stringify(otherData), showOther])
 
   useEffect(() => {
     if (showStatus === EShowStatus.add || showStatus === EShowStatus.edit) {
-      if(showOther && visible){
-        const postData = props.$$form.current.getFieldsValue()[props.$$tableName].values.length &&  props.$$form.current.getFieldsValue()[props.$$tableName].values[rowIndex]
-        if(!postData.fdPost){
+      if (showOther && visible) {
+        const postData = props.$$form.current.getFieldsValue()[props.$$tableName].values.length && props.$$form.current.getFieldsValue()[props.$$tableName].values[rowIndex]
+        if (!postData.fdPost) {
           Message.warning('请选择姓名')
           return
         }
@@ -139,8 +153,7 @@ const XformModal: React.FC<IProps> = (props) => {
         })
       }
     }
-  }, [JSON.stringify(defaultTableCriteria),JSON.stringify(otherData),showOther,visible])
-
+  }, [JSON.stringify(defaultTableCriteria), JSON.stringify(otherData), showOther, visible])
   const getListData = async (data) => {
     try {
       const res = await apiKey[apiName](data)
@@ -151,6 +164,7 @@ const XformModal: React.FC<IProps> = (props) => {
   }
   // 表格列定义
   const columns = useMemo(() => columnsProps, [])
+
   // 表格hook
   const { tableProps, selectedRows } = useTable({
     // 数据源
@@ -160,8 +174,17 @@ const XformModal: React.FC<IProps> = (props) => {
     // 显示序号列
     serial: true,
     // 支持行选择
-    rowSelection: multiple,
+    rowSelection: multiple ? {
+      selectedRowKeys: selectedRowsData,
+      multiple
+    } : false,
   })
+  useEffect(() => {
+    setSelectedRows([...selectedRows])
+  }, [selectedRows])
+  useEffect(() => {
+    multiple && setSelectedRows(value.map(i => i.fdId))
+  }, [])
   // 分页操作 
   const handlePage = useCallback(
     (pageNo: number, pageSize: number) => {
@@ -205,24 +228,46 @@ const XformModal: React.FC<IProps> = (props) => {
   // 确定按钮
   const handleOk = useCallback(() => {
     setVisible(false)
+    setFlag(true)
     const newData = listData?.content.length && listData?.content.filter(item => selectedRows.includes(item.fdId))
+    setInitSelectArr(newData)
     onChange && onChange(newData)
   }, [listData, selectedRows])
 
+  const renderTag = () => {
+    if (flag) {
+      if (selectedRows && selectedRows.length) {
+        const newData = listData?.content.length && listData?.content.filter(item => selectedRows.includes(item.fdId))
+        return newData.map(i => {
+          return <Tag key={i.fdId}>{i.fdName}</Tag>
+        })
+      } else {
+        return <span style={{ color: '#c3c3c3' }}>请选择</span>
+      }
+    } else {
+      if (initSelectedArr && initSelectedArr.length) {
+        return initSelectedArr.map(i => {
+          return <Tag key={i.fdId}>{i.fdName}</Tag>
+        })
+      } else {
+        return <span style={{ color: '#c3c3c3' }}>请选择</span>
+      }
+    }
+  }
+  const handleCancel = () => {
+    setFlag(false)
+    setVisible(false)
+    setSelectedRows(value.map(i => i.fdId))
+    const newData = listData?.content.length && listData?.content.filter(item => initSelectedArr.includes(item.fdId))
+    onChange && onChange(newData)
+  }
   return (
     <React.Fragment>
       <div>
         {
           showStatus === 'edit' || showStatus === 'add' ? Array.isArray(value) ? (
             <div className='multiple-input' onClick={() => setVisible(true)}>
-              {
-                selectedRows.length ? selectedRows.map(item => {
-                  return <Tag key={item}>{listData?.content.length && listData?.content.find(itemChild => itemChild.fdId === item).fdName}</Tag>
-                }) : showStatus === 'edit' ? value.map(item => {
-                  console.log('itemlistData',item)
-                  return <Tag key={item.fdId}>{item.fdName}</Tag>
-                }) : <span style={{ color: '#c3c3c3' }}>请选择</span>
-              }
+              {renderTag()}
             </div>
           ) : (
             <Input placeholder='请输入' readOnly onClick={() => setVisible(true)} value={fdName} />
@@ -242,7 +287,7 @@ const XformModal: React.FC<IProps> = (props) => {
         mask={true}
         width={'1100px'}
         className='record-modal'
-        onCancel={() => setVisible(false)}
+        onCancel={() => handleCancel()}
         onOk={() => handleOk()}
         footer={showFooter ? undefined : null}
       >
@@ -256,7 +301,7 @@ const XformModal: React.FC<IProps> = (props) => {
               </Criteria>
             ) : null
           }
-          
+
           <Table {...tableProps} onRow={onRowClick} />
         </div>
         <div className="lui-template-list-page">
@@ -269,7 +314,7 @@ const XformModal: React.FC<IProps> = (props) => {
           ) : null}
         </div>
       </Modal>
-    </React.Fragment>
+    </React.Fragment >
   )
 }
 

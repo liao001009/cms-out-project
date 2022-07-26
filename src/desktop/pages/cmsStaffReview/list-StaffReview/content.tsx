@@ -1,20 +1,45 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, useEffect, useState } from 'react'
 import { IContentViewProps } from '@ekp-runtime/render-module'
 import Icon from '@lui/icons'
-import { Input, Button, Space, Pagination } from '@lui/core'
-import Criteria from '@elem/criteria'
-import { $reduceCriteria } from '@/desktop/shared/criteria'
+import { Input, Button, Space, Pagination, Tooltip } from '@lui/core'
+// import Criteria from '@elem/criteria'
+// import { $reduceCriteria } from '@/desktop/shared/criteria'
 import Operation from '@elem/operation'
 import Table, { useTable } from '@elem/mk-table'
 import api from '@/api/cmsStaffReview'
-import { useAdd } from '@/desktop/shared/add'
 import { $deleteAll } from '@/desktop/shared/deleteAll'
+import apiTemplate from '@/api/cmsStaffReviewTemplate'
 import './index.scss'
-
+const baseCls = 'project-review-list'
 const Content: React.FC<IContentViewProps> = (props) => {
   const { status, data, queryChange, query, refresh, history } = props
   const { content, totalSize, pageSize, offset } = data
+  const [templateData, setTemplateData] = useState<any>({})
 
+  useEffect(() => {
+    loadTemplateData()
+  }, [])
+
+  const loadTemplateData = async () => {
+    try {
+      const res = await apiTemplate.list({
+        sorts: { fdCreateTime: 'desc' },
+        columns: ['fdId', 'fdName', 'fdCode', 'fdCreator', 'fdCreateTime'],
+        ...query
+      })
+      setTemplateData(res?.data?.content[0])
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  const renderFdSupplies = (data) => {
+    const newData = data.map((i) => {
+      const str = i.fdName + ','
+      return str
+    })
+    newData[data.length - 1] = newData[data.length - 1].split(',')[0]
+    return newData
+  }
   // 表格列定义
   const columns = useMemo(
     () => [
@@ -34,19 +59,73 @@ const Content: React.FC<IContentViewProps> = (props) => {
       {
         title: '中选供应商',
         dataIndex: 'fdSupplies',
-        render: (value) => value
+        render: (value) => value && renderFdSupplies(value)
       },
-      /*undefined*/
+      /**文档状态 */
       {
-        title: '',
-        dataIndex: 'lbpm_current_processor',
-        render: (value) => value
+        title: '文档状态',
+        dataIndex: 'fdProcessStatus',
+        render: (value) => {
+          const options = [
+            {
+              value: '00',
+              label: '废弃'
+            },
+            {
+              value: '10',
+              label: '草稿'
+            },
+            {
+              value: '11',
+              label: '驳回'
+            },
+            {
+              value: '12',
+              label: '撤回'
+            },
+            {
+              value: '20',
+              label: '待审'
+            },
+            {
+              value: '21',
+              label: '挂起'
+            },
+            {
+              value: '29',
+              label: '异常'
+            },
+            {
+              value: '30',
+              label: '结束'
+            }
+          ]
+          const option = options.find((option) => option.value === value)
+
+          if (!option) {
+            return value
+          }
+
+          return option.label
+        }
       },
-      /*undefined*/
+      /*当前处理环节*/
       {
-        title: '',
-        dataIndex: 'lbpm_current_node',
-        render: (value) => value
+        title: '当前处理环节',
+        dataIndex: 'currentNodeNames',
+        render (_, row) {
+          const value = row?.mechanisms?.lbpmProcess?.lbpm_current_node?.currentNodeNames || '--'
+          return <Tooltip title={value}>{value}</Tooltip>
+        },
+      },
+      /*当前处理人*/
+      {
+        title: '当前处理人',
+        dataIndex: 'currentHandlerNames',
+        render (_, row) {
+          const value = row?.mechanisms?.lbpmProcess?.lbpm_current_processor?.currentHandlerNames || '--'
+          return <Tooltip title={value}>{value}</Tooltip>
+        },
       }
     ],
     []
@@ -79,18 +158,12 @@ const Content: React.FC<IContentViewProps> = (props) => {
   /** 操作函数集 */
 
   //新建
-  const { $add: $add } = useAdd('/cmsStaffReview/add/!{selectedRow}')
   const handleAdd = useCallback(
     (event) => {
       event.stopPropagation()
-      $add({
-        history: history,
-        api: api,
-        selectedRows: selectedRows,
-        refresh: refresh
-      })
+      history.goto((`/cmsStaffReview/add/${templateData.fdId}/1g8d6ik6jw1jwcmurw2n9tcmotgbk5u3ecw0`))
     },
-    [history, selectedRows, refresh]
+    [history, selectedRows, refresh, templateData]
   )
   //批量删除
   const handleDeleteAll = useCallback(
@@ -116,18 +189,18 @@ const Content: React.FC<IContentViewProps> = (props) => {
     })
   }, [])
 
-  /** 筛选 */
-  const handleCriteriaChange = useCallback(
-    (value, values) => {
-      const conditions = $reduceCriteria(query, values)
-      queryChange &&
-        queryChange({
-          ...query,
-          conditions
-        })
-    },
-    [query]
-  )
+  // /** 筛选 */
+  // const handleCriteriaChange = useCallback(
+  //   (value, values) => {
+  //     const conditions = $reduceCriteria(query, values)
+  //     queryChange &&
+  //       queryChange({
+  //         ...query,
+  //         conditions
+  //       })
+  //   },
+  //   [query]
+  // )
 
   /** 排序 */
   const handleSorter = useCallback(
@@ -170,7 +243,11 @@ const Content: React.FC<IContentViewProps> = (props) => {
     (record) => {
       return {
         onClick: () => {
-          history.goto(`/cmsStaffReview/view/${record.fdId}`)
+          if (record.fdProcessStatus < 20) {
+            history.goto(`/cmsStaffReview/edit/${record.fdId}`)
+          } else {
+            history.goto(`/cmsStaffReview/view/${record.fdId}`)
+          }
         }
       }
     },
@@ -179,87 +256,89 @@ const Content: React.FC<IContentViewProps> = (props) => {
 
   return (
     <React.Fragment>
-      <div className="lui-template-list">
-        <div className="lui-template-list-criteria">
-          <div className="left">
-            {/* 搜索 */}
-            <Input.Search allowClear placeholder="请输入关键词搜索" onSearch={handleSearch} />
+      <div className={`${baseCls}`}>
+        <div className="lui-template-list">
+          <div className="lui-template-list-criteria">
+            <div className="left">
+              {/* 搜索 */}
+              {/* <Input.Search allowClear placeholder="请输入关键词搜索" onSearch={handleSearch} /> */}
+            </div>
+            <div className="right">
+              {/* 筛选器 */}
+              {/* <Criteria key="criteria" onChange={handleCriteriaChange}>
+                <Criteria.Org orgType={8} title="创建人" name="fdCreator.fdId"></Criteria.Org>
+                <Criteria.Calendar
+                  options={Criteria.Calendar.buildOptions()}
+                  name="fdCreateTime"
+                  title="创建时间"
+                ></Criteria.Calendar>
+                <Criteria.Calendar
+                  options={Criteria.Calendar.buildOptions()}
+                  name="fdRealWritTime"
+                  title="实际笔试时间"
+                ></Criteria.Calendar>
+                <Criteria.Calendar
+                  options={Criteria.Calendar.buildOptions()}
+                  name="fdRealViewTime"
+                  title="实际面试时间"
+                ></Criteria.Calendar>
+                <Criteria.Org orgType={8} title="项目负责人" name="fdProjectLeader.fdId"></Criteria.Org>
+                <Criteria.Input name="fdSupplies" title="中选供应商"></Criteria.Input>
+                <Criteria.Criterion
+                  canMulti={false}
+                  options={[]}
+                  name="lbpm_current_processor"
+                  title=""
+                ></Criteria.Criterion>
+                <Criteria.Criterion canMulti={false} options={[]} name="lbpm_current_node" title=""></Criteria.Criterion>
+              </Criteria> */}
+            </div>
           </div>
-          <div className="right">
-            {/* 筛选器 */}
-            <Criteria key="criteria" onChange={handleCriteriaChange}>
-              <Criteria.Org orgType={8} title="创建人" name="fdCreator.fdId"></Criteria.Org>
-              <Criteria.Calendar
-                options={Criteria.Calendar.buildOptions()}
-                name="fdCreateTime"
-                title="创建时间"
-              ></Criteria.Calendar>
-              <Criteria.Calendar
-                options={Criteria.Calendar.buildOptions()}
-                name="fdRealWritTime"
-                title="实际笔试时间"
-              ></Criteria.Calendar>
-              <Criteria.Calendar
-                options={Criteria.Calendar.buildOptions()}
-                name="fdRealViewTime"
-                title="实际面试时间"
-              ></Criteria.Calendar>
-              <Criteria.Org orgType={8} title="项目负责人" name="fdProjectLeader.fdId"></Criteria.Org>
-              <Criteria.Input name="fdSupplies" title="中选供应商"></Criteria.Input>
-              <Criteria.Criterion
-                canMulti={false}
-                options={[]}
-                name="lbpm_current_processor"
-                title=""
-              ></Criteria.Criterion>
-              <Criteria.Criterion canMulti={false} options={[]} name="lbpm_current_node" title=""></Criteria.Criterion>
-            </Criteria>
-          </div>
-        </div>
-        <div className="lui-template-list-toolbar">
-          <div className="left">
-            <Operation key="operation" onChange={handleSorter}>
-              {/* 排序 */}
-              <Operation.SortGroup>
-                <Operation.Sort key="fdCreateTime" name="fdCreateTime" title="创建时间"></Operation.Sort>
-              </Operation.SortGroup>
-              {totalSize && (
-                <Operation.Paging name="pageNo" value={offset / pageSize} pageSize={pageSize} total={totalSize} />
-              )}
-            </Operation>
-          </div>
-          <div className="right">
-            <Space>
-              <Button onClick={refresh}>
-                <Icon name="redo" />
-              </Button>
-              {/* 操作栏 */}
-              <React.Fragment>
-                <Button type="primary" onClick={handleAdd}>
-                  新建
+          <div className="lui-template-list-toolbar">
+            {/* 排序 */}
+            <div className="left">
+              {/* <Operation key="operation" onChange={handleSorter}>
+                <Operation.SortGroup>
+                  <Operation.Sort key="fdCreateTime" name="fdCreateTime" title="创建时间"></Operation.Sort>
+                </Operation.SortGroup>
+                {totalSize && (
+                  <Operation.Paging name="pageNo" value={offset / pageSize} pageSize={pageSize} total={totalSize} />
+                )}
+              </Operation> */}
+            </div>
+            <div className="right">
+              <Space>
+                <Button onClick={refresh}>
+                  <Icon name="redo" />
                 </Button>
-                <Button type="default" onClick={handleDeleteAll}>
-                  批量删除
-                </Button>
-              </React.Fragment>
-            </Space>
+                {/* 操作栏 */}
+                <React.Fragment>
+                  <Button type="primary" onClick={handleAdd}>
+                    新建
+                  </Button>
+                  <Button type="default" onClick={handleDeleteAll}>
+                    批量删除
+                  </Button>
+                </React.Fragment>
+              </Space>
+            </div>
           </div>
-        </div>
-        <div className="lui-template-list-table">
-          <Table loading={status === 'loading'} {...tableProps} onRow={onRowClick} />
-        </div>
-        <div className="lui-template-list-page">
-          {totalSize ? (
-            <Pagination
-              showQuickJumper
-              showSizeChanger
-              refresh={true}
-              total={totalSize}
-              pageSize={pageSize}
-              onChange={handlePage}
-              onRefresh={refresh}
-            />
-          ) : null}
+          <div className="lui-template-list-table">
+            <Table loading={status === 'loading'} {...tableProps} onRow={onRowClick} />
+          </div>
+          <div className="lui-template-list-page">
+            {totalSize ? (
+              <Pagination
+                showQuickJumper
+                showSizeChanger
+                refresh={true}
+                total={totalSize}
+                pageSize={pageSize}
+                onChange={handlePage}
+                onRefresh={refresh}
+              />
+            ) : null}
+          </div>
         </div>
       </div>
     </React.Fragment>

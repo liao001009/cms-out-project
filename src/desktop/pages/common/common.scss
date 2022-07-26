@@ -177,6 +177,10 @@
 
             .lui-xform {
               margin-top: 0;
+
+              .lui-row {
+                padding-bottom: 8px;
+              }
             }
           }
         }
@@ -190,6 +194,7 @@
           border-left: 1px solid #eee;
           transition: width .3s, opacity .3s;
           position: relative;
+          background: #fff;
 
           ._audit-form-collapse-panel {
             margin-bottom: 0;

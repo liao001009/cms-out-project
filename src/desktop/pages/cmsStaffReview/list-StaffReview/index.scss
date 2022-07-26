@@ -1,8 +1,5 @@
-.lui-template-list {
-  &-criteria {
-    margin-bottom: 15px;
-    .left {
-      float: left;
-    }
-  }
-}
+@import '../../common/common.scss';
+
+$baseCls: project-review-list;
+
+@include list-page($baseCls)

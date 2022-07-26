@@ -63,7 +63,14 @@ export default [
             return {
               templateData: lbpmTemplate[0],
               fdLbpmTemplateId: lbpmTemplate[0] && lbpmTemplate[0].fdId,
-              elements: lbpmTemplateContent.elements
+              elements: lbpmTemplateContent.elements,
+              moduleCode: 'cms-out-manage-staffReview',
+              innerForm: [
+                {
+                  fdSystemCode: 'INNER_SYSTEM', // 系统标示
+                  fdModuleCode: 'cms-out-manage-staffReview' // 模块标识
+                }
+              ]
             }
           }
         } catch {}
