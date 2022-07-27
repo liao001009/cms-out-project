@@ -11,6 +11,7 @@ import { useAdd } from '@/desktop/shared/add'
 import { $deleteAll } from '@/desktop/shared/deleteAll'
 import './index.scss'
 
+const baseCls = 'cmsProjectInterview-list'
 const Content: React.FC<IContentViewProps> = (props) => {
   const { status, data, queryChange, query, refresh, history } = props
   const { content, totalSize, pageSize, offset } = data
@@ -174,7 +175,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
   )
 
   return (
-    <React.Fragment>
+    <div className={baseCls}>
       <div className="lui-template-list">
         <div className="lui-template-list-criteria">
           <div className="left">
@@ -232,7 +233,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
           ) : null}
         </div>
       </div>
-    </React.Fragment>
+    </div>
   )
 }
 
