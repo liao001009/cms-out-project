@@ -13,7 +13,6 @@ import { fmtMsg } from '@ekp-infra/respect'
 import apiLbpm from '@/api/cmsLbpm'
 import apiSelectInfo from '@/api/cmsProjectSelectInfo'
 import Axios from 'axios'
-import CMSListView from '@/desktop/components/listview/index'
 import { projectSelectInfocolumns, staffReviewColumns } from '../../common/common'
 import apiTemplate from '@/api/cmsStaffReviewTemplate'
 import apiStaffReviewList from '@/api/cmsStaffReview'
@@ -28,7 +27,7 @@ const LBPMFormFragment = Module.getComponent('sys-lbpm', 'LBPMFormFragment', { l
 // 权限机制
 const RightFragment = Module.getComponent('sys-right', 'RightFragment', { loading: <Loading /> })
 
-const List = Module.getComponent('cms-out-manage', 'CmsListView', { loading: <Loading /> })
+const CmsListView = Module.getComponent('cms-out-manage', 'CmsListView', { loading: <Loading /> })
 
 const { confirm } = Modal
 
@@ -347,7 +346,7 @@ const Content: React.FC<IContentViewProps> = props => {
                     面试
                   </TabPane>
                   <TabPane tab="外包人员评审" key="3" >
-                    <List
+                    <CmsListView
                       apiRequest={apiStaffReviewList.listStaffReview}
                       columns={staffReviewColumns}
                       params={staffReviewParams}
@@ -355,7 +354,7 @@ const Content: React.FC<IContentViewProps> = props => {
                     />
                   </TabPane>
                   <TabPane tab="中选信息" key="4">
-                    <CMSListView 
+                    <CmsListView 
                       history={history}
                       params={{
                         conditions: {
