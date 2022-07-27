@@ -8,6 +8,11 @@ import CmsProjectDemandEdit from '@/desktop/pages/cmsProjectDemand/edit/content'
 import CmsProjectDemandView from '@/desktop/pages/cmsProjectDemand/view/content'
 import CmsProjectDemandList from '@/desktop/pages/cmsProjectDemand/list-Demand/content'
 
+import CmsProjectSelectInfoAdd from '@/desktop/pages/cmsProjectSelectInfo/add/content'
+import CmsProjectSelectInfoEdit from '@/desktop/pages/cmsProjectSelectInfo/edit/content'
+import CmsProjectSelectInfoView from '@/desktop/pages/cmsProjectSelectInfo/view/content'
+import CmsProjectSelectInfoList from '@/desktop/pages/cmsProjectSelectInfo/list-SelectInfo/content'
+
 import CmsStaffReviewAdd from '@/desktop/pages/cmsStaffReview/add/content'
 import CmsStaffReviewEdit from '@/desktop/pages/cmsStaffReview/edit/content'
 import CmsStaffReviewView from '@/desktop/pages/cmsStaffReview/view/content'
@@ -33,6 +38,10 @@ export {
   CmsProjectDemandEdit,
   CmsProjectDemandView,
   CmsProjectDemandList,
+  CmsProjectSelectInfoAdd,
+  CmsProjectSelectInfoEdit,
+  CmsProjectSelectInfoView,
+  CmsProjectSelectInfoList,
   CmsStaffReviewAdd,
   CmsStaffReviewEdit,
   CmsStaffReviewView,
