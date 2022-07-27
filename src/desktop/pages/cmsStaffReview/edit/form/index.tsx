@@ -281,6 +281,7 @@ const XForm = (props) => {
                           type: XformSelect,
                           controlProps: {
                             title: fmtMsg(':cmsStaffReview.form.!{l5j0l4chmvb5xkzogfj}', '供应商'),
+                            placeholder: fmtMsg(':cmsStaffReview.form.!{l5j0nahkr64j4nuj3ea}', '请输入'),
                             name: 'fdSupplier',
                             label: 'fdName',
                             renderMode: 'select',
@@ -330,6 +331,7 @@ const XForm = (props) => {
                           type: XformSelect,
                           controlProps: {
                             title: fmtMsg(':cmsStaffReview.form.!{l5j0m5k1v80p3j6skmo}', '姓名'),
+                            placeholder: fmtMsg(':cmsStaffReview.form.!{l5j0nahkr64j4nuj3ea}', '请输入'),
                             name: 'fdOutName',
                             renderMode: 'select',
                             direction: 'column',

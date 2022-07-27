@@ -14,9 +14,9 @@ import apiLbpm from '@/api/cmsLbpm'
 import apiSelectInfo from '@/api/cmsProjectSelectInfo'
 import Axios from 'axios'
 import CMSListView from '@/desktop/components/listview/index'
-import { projectSelectInfocolumns } from '../../common/common'
+import { projectSelectInfocolumns, staffReviewColumns } from '../../common/common'
 import apiTemplate from '@/api/cmsStaffReviewTemplate'
-
+import apiStaffReviewList from '@/api/cmsStaffReview'
 
 const { TabPane } = Tabs
 
@@ -27,6 +27,8 @@ const LBPMTabs = Module.getComponent('sys-lbpm', 'LBPMTabs', { loading: <Loading
 const LBPMFormFragment = Module.getComponent('sys-lbpm', 'LBPMFormFragment', { loading: <Loading /> })
 // 权限机制
 const RightFragment = Module.getComponent('sys-right', 'RightFragment', { loading: <Loading /> })
+
+const List = Module.getComponent('cms-out-manage', 'CmsListView', { loading: <Loading /> })
 
 const { confirm } = Modal
 
@@ -76,6 +78,10 @@ const Content: React.FC<IContentViewProps> = props => {
   }
   useEffect(() => {
     getCurrentNode()
+    mk.on('SYS_LBPM_AUDIT_FORM_INIT_DATA', (val) => {
+      val?.roles && setRoleArr(val.roles)
+    })
+    loadTemplateData()
   }, [])
 
   const loadTemplateData = async () => {
@@ -90,13 +96,6 @@ const Content: React.FC<IContentViewProps> = props => {
       console.error(error)
     }
   }
-  useEffect(() => {
-    mk.on('SYS_LBPM_AUDIT_FORM_INIT_DATA', (val) => {
-      val?.roles && setRoleArr(val.roles)
-    })
-    loadTemplateData()
-  }, [])
-  console.log('templateData5559', templateData)
   // 校验
   const _validate = async (isDraft: boolean) => {
     // 表单校验
@@ -295,6 +294,14 @@ const Content: React.FC<IContentViewProps> = props => {
         </Auth.Auth>
     )
   }, [flowData, params])
+  const staffReviewParams = {
+    conditions: {
+      'fdProjectDemand.fdId': {
+        '$eq': data.fdId
+      }
+    }
+  }
+  const staffReviewRoute = '/cmsStaffReview/view'
   return (
     <Auth.Auth
       authURL='/cmsProjectDemand/get'
@@ -340,7 +347,12 @@ const Content: React.FC<IContentViewProps> = props => {
                     面试
                   </TabPane>
                   <TabPane tab="外包人员评审" key="3" >
-                    外包人员评审
+                    <List
+                      apiRequest={apiStaffReviewList.listStaffReview}
+                      columns={staffReviewColumns}
+                      params={staffReviewParams}
+                      onRowUrl={staffReviewRoute}
+                    />
                   </TabPane>
                   <TabPane tab="中选信息" key="4">
                     <CMSListView apiRequest={apiSelectInfo.listSelectInfo} columns={projectSelectInfocolumns} />
