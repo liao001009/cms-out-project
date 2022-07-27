@@ -292,7 +292,7 @@ const XformModal: React.FC<IProps> = (props) => {
       <div>
         {
           showStatus === 'edit' || showStatus === 'add' || showStatus === 'readOnly' ? multiple ? (
-            <div className='multiple-input' style={showStatus==='readOnly' ? readOnlyStyle:{}} onClick={() => setVisible(true)}>
+            <div className='multiple-input' style={showStatus === 'readOnly' ? readOnlyStyle : {}} onClick={() => setVisible(true)}>
               {renderTag()}
             </div>
           ) : (

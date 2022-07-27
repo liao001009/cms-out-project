@@ -1,7 +1,7 @@
-import React, { useCallback, useMemo, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { IContentViewProps } from '@ekp-runtime/render-module'
 import Icon from '@lui/icons'
-import { Button, Space, Pagination, Tooltip } from '@lui/core'
+import { Button, Space, Pagination } from '@lui/core'
 // import Criteria from '@elem/criteria'
 // import { $reduceCriteria } from '@/desktop/shared/criteria'
 import Table, { useTable } from '@elem/mk-table'
@@ -9,6 +9,7 @@ import api from '@/api/cmsStaffReview'
 import { $deleteAll } from '@/desktop/shared/deleteAll'
 import apiTemplate from '@/api/cmsStaffReviewTemplate'
 import './index.scss'
+import { staffReviewColumns } from '@/desktop/pages/common/common'
 const baseCls = 'project-review-list'
 const Content: React.FC<IContentViewProps> = (props) => {
   const { status, data, queryChange, query, refresh, history } = props
@@ -31,104 +32,104 @@ const Content: React.FC<IContentViewProps> = (props) => {
       console.error(error)
     }
   }
-  const renderFdSupplies = (data) => {
-    const newData = data.map((i) => {
-      const str = i.fdName + ','
-      return str
-    })
-    newData[data.length - 1] = newData[data.length - 1].split(',')[0]
-    return newData
-  }
-  // 表格列定义
-  const columns = useMemo(
-    () => [
-      /*主题*/
-      {
-        title: '主题',
-        dataIndex: 'fdSubject',
-        render: (value) => value
-      },
-      /*项目负责人*/
-      {
-        title: '项目负责人',
-        dataIndex: 'fdProjectLeader',
-        render: (value) => value && value.fdName
-      },
-      /*中选供应商*/
-      {
-        title: '中选供应商',
-        dataIndex: 'fdSupplies',
-        render: (value) => value && renderFdSupplies(value)
-      },
-      /**文档状态 */
-      {
-        title: '文档状态',
-        dataIndex: 'fdProcessStatus',
-        render: (value) => {
-          const options = [
-            {
-              value: '00',
-              label: '废弃'
-            },
-            {
-              value: '10',
-              label: '草稿'
-            },
-            {
-              value: '11',
-              label: '驳回'
-            },
-            {
-              value: '12',
-              label: '撤回'
-            },
-            {
-              value: '20',
-              label: '待审'
-            },
-            {
-              value: '21',
-              label: '挂起'
-            },
-            {
-              value: '29',
-              label: '异常'
-            },
-            {
-              value: '30',
-              label: '结束'
-            }
-          ]
-          const option = options.find((option) => option.value === value)
+  // const renderFdSupplies = (data) => {
+  //   const newData = data.map((i) => {
+  //     const str = i.fdName + ','
+  //     return str
+  //   })
+  //   newData[data.length - 1] = newData[data.length - 1].split(',')[0]
+  //   return newData
+  // }
+  // // 表格列定义
+  // const columns = useMemo(
+  //   () => [
+  //     /*主题*/
+  //     {
+  //       title: '主题',
+  //       dataIndex: 'fdSubject',
+  //       render: (value) => value
+  //     },
+  //     /*项目负责人*/
+  //     {
+  //       title: '项目负责人',
+  //       dataIndex: 'fdProjectLeader',
+  //       render: (value) => value && value.fdName
+  //     },
+  //     /*中选供应商*/
+  //     {
+  //       title: '中选供应商',
+  //       dataIndex: 'fdSupplies',
+  //       render: (value) => value && renderFdSupplies(value)
+  //     },
+  //     /**文档状态 */
+  //     {
+  //       title: '文档状态',
+  //       dataIndex: 'fdProcessStatus',
+  //       render: (value) => {
+  //         const options = [
+  //           {
+  //             value: '00',
+  //             label: '废弃'
+  //           },
+  //           {
+  //             value: '10',
+  //             label: '草稿'
+  //           },
+  //           {
+  //             value: '11',
+  //             label: '驳回'
+  //           },
+  //           {
+  //             value: '12',
+  //             label: '撤回'
+  //           },
+  //           {
+  //             value: '20',
+  //             label: '待审'
+  //           },
+  //           {
+  //             value: '21',
+  //             label: '挂起'
+  //           },
+  //           {
+  //             value: '29',
+  //             label: '异常'
+  //           },
+  //           {
+  //             value: '30',
+  //             label: '结束'
+  //           }
+  //         ]
+  //         const option = options.find((option) => option.value === value)
 
-          if (!option) {
-            return value
-          }
+  //         if (!option) {
+  //           return value
+  //         }
 
-          return option.label
-        }
-      },
-      /*当前处理环节*/
-      {
-        title: '当前处理环节',
-        dataIndex: 'currentNodeNames',
-        render (_, row) {
-          const value = row?.mechanisms?.lbpmProcess?.lbpm_current_node?.currentNodeNames || '--'
-          return <Tooltip title={value}>{value}</Tooltip>
-        },
-      },
-      /*当前处理人*/
-      {
-        title: '当前处理人',
-        dataIndex: 'currentHandlerNames',
-        render (_, row) {
-          const value = row?.mechanisms?.lbpmProcess?.lbpm_current_processor?.currentHandlerNames || '--'
-          return <Tooltip title={value}>{value}</Tooltip>
-        },
-      }
-    ],
-    []
-  )
+  //         return option.label
+  //       }
+  //     },
+  //     /*当前处理环节*/
+  //     {
+  //       title: '当前处理环节',
+  //       dataIndex: 'currentNodeNames',
+  //       render (_, row) {
+  //         const value = row?.mechanisms?.lbpmProcess?.lbpm_current_node?.currentNodeNames || '--'
+  //         return <Tooltip title={value}>{value}</Tooltip>
+  //       },
+  //     },
+  //     /*当前处理人*/
+  //     {
+  //       title: '当前处理人',
+  //       dataIndex: 'currentHandlerNames',
+  //       render (_, row) {
+  //         const value = row?.mechanisms?.lbpmProcess?.lbpm_current_processor?.currentHandlerNames || '--'
+  //         return <Tooltip title={value}>{value}</Tooltip>
+  //       },
+  //     }
+  //   ],
+  //   []
+  // )
 
   // 表格hook
   const { tableProps, selectedRows } = useTable({
@@ -137,7 +138,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
     // 显示序号列
     serial: true,
     // 列定义
-    columns,
+    columns: staffReviewColumns,
     // 支持行选择
     rowSelection: true,
     // 表格搜索，含筛选、排序

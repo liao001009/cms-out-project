@@ -1,7 +1,6 @@
 import React from 'react'
 import Criteria from '@elem/criteria'
 import { Tooltip } from '@lui/core'
-
 // 供应商
 export const supplierColumns = [
   /*供应商名称*/
@@ -368,6 +367,101 @@ export const projectSelectInfocolumns = [
     }
   }
 ]
+const renderFdSupplies = (data) => {
+  const newData = data.map((i) => {
+    const str = i.fdName + ','
+    return str
+  })
+  newData[data.length - 1] = newData[data.length - 1].split(',')[0]
+  return newData
+}
+
+export const staffReviewColumns = [
+  /*主题*/
+  {
+    title: '主题',
+    dataIndex: 'fdSubject',
+    render: (value) => value
+  },
+  /*项目负责人*/
+  {
+    title: '项目负责人',
+    dataIndex: 'fdProjectLeader',
+    render: (value) => value && value.fdName
+  },
+  /*中选供应商*/
+  {
+    title: '中选供应商',
+    dataIndex: 'fdSupplies',
+    render: (value) => value && renderFdSupplies(value)
+  },
+  /**文档状态 */
+  {
+    title: '文档状态',
+    dataIndex: 'fdProcessStatus',
+    render: (value) => {
+      const options = [
+        {
+          value: '00',
+          label: '废弃'
+        },
+        {
+          value: '10',
+          label: '草稿'
+        },
+        {
+          value: '11',
+          label: '驳回'
+        },
+        {
+          value: '12',
+          label: '撤回'
+        },
+        {
+          value: '20',
+          label: '待审'
+        },
+        {
+          value: '21',
+          label: '挂起'
+        },
+        {
+          value: '29',
+          label: '异常'
+        },
+        {
+          value: '30',
+          label: '结束'
+        }
+      ]
+      const option = options.find((option) => option.value === value)
+
+      if (!option) {
+        return value
+      }
+
+      return option.label
+    }
+  },
+  /*当前处理环节*/
+  {
+    title: '当前处理环节',
+    dataIndex: 'currentNodeNames',
+    render (_, row) {
+      const value = row?.mechanisms?.lbpmProcess?.lbpm_current_node?.currentNodeNames || '--'
+      return <Tooltip title={value}>{value}</Tooltip>
+    },
+  },
+  /*当前处理人*/
+  {
+    title: '当前处理人',
+    dataIndex: 'currentHandlerNames',
+    render (_, row) {
+      const value = row?.mechanisms?.lbpmProcess?.lbpm_current_processor?.currentHandlerNames || '--'
+      return <Tooltip title={value}>{value}</Tooltip>
+    },
+  }
+]
 // 供应商筛选
 export const supplierCriertia = () => {
   return (
@@ -553,7 +647,7 @@ export const presonCriertia = () => {
   )
 }
 
-export const projectSelectInfoCriertia = () =>{
+export const projectSelectInfoCriertia = () => {
   return (
     <React.Fragment>
       <Criteria.Org orgType={8} title="创建人" name="fdCreator.fdId"></Criteria.Org>
