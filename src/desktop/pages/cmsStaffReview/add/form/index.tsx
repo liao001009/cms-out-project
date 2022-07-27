@@ -280,9 +280,9 @@ const XForm = (props) => {
                           type: XformSelect,
                           controlProps: {
                             title: fmtMsg(':cmsStaffReview.form.!{l5j0l4chmvb5xkzogfj}', '供应商'),
+                            placeholder: fmtMsg(':cmsProjectDemand.form.!{l5hur3x33mxezfwee47}', '请输入'),
                             name: 'fdSupplier',
                             label: 'fdName',
-                            renderMode: 'select',
                             direction: 'column',
                             rowCount: 3,
                             modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
@@ -329,8 +329,8 @@ const XForm = (props) => {
                           type: XformSelect,
                           controlProps: {
                             title: fmtMsg(':cmsStaffReview.form.!{l5j0m5k1v80p3j6skmo}', '姓名'),
+                            placeholder: fmtMsg(':cmsProjectDemand.form.!{l5hur3x33mxezfwee47}', '请输入'),
                             name: 'fdOutName',
-                            renderMode: 'select',
                             direction: 'column',
                             rowCount: 3,
                             modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
@@ -557,6 +557,9 @@ const XForm = (props) => {
                       apiName={'listSupplierInfo'}
                       showStatus={EShowStatus.add}
                       criteriaKey='supplierCriertia'
+                      onChange={(v) => form.setFieldsValue({
+                        fdSupplies: v
+                      })}
                       defaultTableCriteria={{
                         'fdId': {
                           'searchKey': '$in',

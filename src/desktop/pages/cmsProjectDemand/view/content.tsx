@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useMemo, useState, useEffect} from 'react'
+import React, { useRef, useCallback, useMemo, useState, useEffect } from 'react'
 import { Auth, Module } from '@ekp-infra/common'
 import { IContentViewProps } from '@ekp-runtime/render-module'
 import { Loading, Breadcrumb, Button, Message, Modal } from '@lui/core'
@@ -10,6 +10,7 @@ import { getFlowStatus } from '@/desktop/shared/util'
 //@ts-ignore
 import Status, { EStatusType } from '@elements/status'
 import { fmtMsg } from '@ekp-infra/respect'
+import apiTemplate from '@/api/cmsStaffReviewTemplate'
 
 Message.config({ maxCount: 1 })
 // 流程页签
@@ -24,7 +25,7 @@ const { confirm } = Modal
 const baseCls = 'project-demand-content'
 
 const Content: React.FC<IContentViewProps> = props => {
-  const { data,match,  history } = props
+  const { data, match, history } = props
   const params = match?.params
 
   // 模板id
@@ -35,15 +36,31 @@ const Content: React.FC<IContentViewProps> = props => {
   const formComponentRef = useRef<any>()
   const lbpmComponentRef = useRef<any>()
   const rightComponentRef = useRef<any>()
-  
+
   const [flowData, setFlowData] = useState<any>({}) // 流程数据
   const [roleArr, setRoleArr] = useState<any>([])   // 流程角色
+  /**外包人员评审模板 */
+  const [templateData, setTemplateData] = useState<any>({})
+
+  const loadTemplateData = async () => {
+    try {
+      const res = await apiTemplate.list({
+        //@ts-ignore
+        sorts: { fdCreateTime: 'desc' },
+        columns: ['fdId', 'fdName', 'fdCode', 'fdCreator', 'fdCreateTime'],
+      })
+      setTemplateData(res?.data?.content[0])
+    } catch (error) {
+      console.error(error)
+    }
+  }
   useEffect(() => {
     mk.on('SYS_LBPM_AUDIT_FORM_INIT_DATA', (val) => {
       val?.roles && setRoleArr(val.roles)
     })
+    loadTemplateData()
   }, [])
-
+  console.log('templateData5559', templateData)
   // 校验
   const _validate = async (isDraft: boolean) => {
     // 表单校验
@@ -167,11 +184,18 @@ const Content: React.FC<IContentViewProps> = props => {
     history.goto(`/cmsOrderResponse/add/${data.fdId}`)
   }, [history])
 
-  
-  const handleEnterWritten = useCallback(()=>{
+
+  const handleEnterWritten = useCallback(() => {
     history.goto(`/cmsProjectWritten/add/${data.fdId}`)
   }, [history])
 
+  const handleEnterInterview = useCallback(() => {
+    history.goto(`/cmsProjectInterview/add/${data.fdId}`)
+  }, [history])
+
+  const handleEnterStaffReview = useCallback(() => {
+    history.goto(`/cmsStaffReview/add/${templateData.fdId}/${data.fdId}`)
+  }, [history, templateData])
   // 提交按钮
   const _btn_submit = useMemo(() => {
     const submitBtn = <Button type='primary' onClick={() => handleSave(false)}>提交</Button>
@@ -245,6 +269,8 @@ const Content: React.FC<IContentViewProps> = props => {
               {_btn_edit}
               {_btn_delete}
               <Button type='default' onClick={handleEnterWritten}>{fmtMsg(':cmsProjectWritten.form.!{l5hz6ugsxfxlg2nyfs7}', '录入笔试成绩')}</Button>
+              <Button type='default' onClick={handleEnterInterview}>{fmtMsg(':cmsProjectInterview.form.!{l5hz6ugsxfxlg2nyfs7}', '录入面试成绩')}</Button>
+              <Button type='default' onClick={handleEnterStaffReview}>{fmtMsg(':cmsProjectInterview.form.!{l5j0eriwqaq645oi9c}', '外包人员评审')}</Button>
               <Button type='default' onClick={handleOrder}>订单响应</Button>
               <Button type='default' onClick={handleClose}>关闭</Button>
             </div>

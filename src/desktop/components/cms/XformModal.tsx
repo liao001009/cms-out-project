@@ -184,7 +184,7 @@ const XformModal: React.FC<IProps> = (props) => {
     setSelectedRows([...selectedRows])
   }, [selectedRows])
   useEffect(() => {
-    multiple && setSelectedRows(value.map(i => i.fdId))
+    multiple && setSelectedRows(value && value.map(i => i.fdId) || [])
   }, [])
   // 分页操作 
   const handlePage = useCallback(
@@ -281,7 +281,7 @@ const XformModal: React.FC<IProps> = (props) => {
     <React.Fragment>
       <div>
         {
-          showStatus === 'edit' || showStatus === 'add' ? Array.isArray(value) ? (
+          showStatus === 'edit' || showStatus === 'add' ? multiple ? (
             <div className='multiple-input' onClick={() => setVisible(true)}>
               {renderTag()}
             </div>
