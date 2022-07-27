@@ -1,7 +1,7 @@
 import React, { useRef, useCallback, useMemo, useState, useEffect} from 'react'
 import { Auth, Module } from '@ekp-infra/common'
 import { IContentViewProps } from '@ekp-runtime/render-module'
-import { Loading, Breadcrumb, Button, Message, Modal } from '@lui/core'
+import { Loading, Breadcrumb, Button, Message, Modal,Tabs } from '@lui/core'
 import XForm from './form'
 import api from '@/api/cmsProjectDemand'
 import './index.scss'
@@ -11,7 +11,13 @@ import { getFlowStatus } from '@/desktop/shared/util'
 import Status, { EStatusType } from '@elements/status'
 import { fmtMsg } from '@ekp-infra/respect'
 import apiLbpm from '@/api/cmsLbpm'
+import apiSelectInfo from '@/api/cmsProjectSelectInfo'
 import Axios from 'axios'
+import CMSListView from '@/desktop/components/listview/index'
+import { projectSelectInfocolumns } from '../../common/common'
+
+
+const { TabPane } = Tabs 
 
 Message.config({ maxCount: 1 })
 // 流程页签
@@ -306,6 +312,22 @@ const Content: React.FC<IContentViewProps> = props => {
               {/* 表单信息 */}
               <div className='form'>
                 <XForm formRef={formComponentRef} value={data || {}} materialVis={materialVis} />
+              </div>
+              <div className='lui-btns-tabs'>
+                <Tabs defaultActiveKey="1">
+                  <TabPane tab="笔试 " key="1">
+                  笔试
+                  </TabPane>
+                  <TabPane tab="面试" key="2">
+                  面试
+                  </TabPane>
+                  <TabPane tab="外包人员评审" key="3" >
+                  外包人员评审
+                  </TabPane>
+                  <TabPane tab="中选信息" key="4">
+                    <CMSListView apiRequest={apiSelectInfo.listSelectInfo} columns={projectSelectInfocolumns} />
+                  </TabPane>
+                </Tabs>
               </div>
               {/* 机制页签 */}
               <div className='tabs'>
