@@ -278,6 +278,89 @@ export const outStaffInfoColumns = [
     }
   }
 ]
+// 表格列定义
+export const projectSelectInfocolumns = [
+  /*主题*/
+  {
+    title: '主题',
+    dataIndex: 'fdSubject',
+    render: (value) => value
+  },
+  /*项目名称*/
+  {
+    title: '项目名称',
+    dataIndex: 'fdProject',
+    render: (value) => value && value.fdName
+  },
+  /*中选供应商*/
+  {
+    title: '中选供应商',
+    dataIndex: 'fdSelectedSupplier',
+    render: (value) => value && value.fdName
+  },
+  /*落选供应商*/
+  {
+    title: '落选供应商',
+    dataIndex: 'fdFailSupplier',
+    render: (value) => value && value.fdName
+  },
+  /*undefined*/
+  {
+    title: '',
+    dataIndex: 'lbpm_current_processor',
+    render: (value) => value
+  },
+  /*undefined*/
+  {
+    title: '',
+    dataIndex: 'lbpm_current_node',
+    render: (value) => value
+  },
+  /*文档状态*/
+  {
+    title: '文档状态',
+    dataIndex: 'fdProcessStatus',
+    render: (value) => {
+      const options = [
+        {
+          value: '00',
+          label: '废弃'
+        },
+        {
+          value: '10',
+          label: '草稿'
+        },
+        {
+          value: '11',
+          label: '驳回'
+        },
+        {
+          value: '20',
+          label: '待审'
+        },
+        {
+          value: '21',
+          label: '挂起'
+        },
+        {
+          value: '29',
+          label: '异常'
+        },
+        {
+          value: '30',
+          label: '结束'
+        }
+      ]
+      const option = options.find((option) => option.value === value)
+
+      if (!option) {
+        return value
+      }
+
+      return option.label
+    }
+  }
+]
 // 供应商筛选
 export const supplierCriertia = () => {
   return (
@@ -463,8 +546,27 @@ export const presonCriertia = () => {
   )
 }
 
+export const projectSelectInfoCriertia = () =>{
+  return (
+    <React.Fragment>
+      <Criteria.Org orgType={8} title="创建人" name="fdCreator.fdId"></Criteria.Org>
+      <Criteria.Calendar
+        options={Criteria.Calendar.buildOptions()}
+        name="fdCreateTime"
+        title="创建时间"
+      ></Criteria.Calendar>
+      <Criteria.Input name="fdSubject" title="主题"></Criteria.Input>
+      <Criteria.Input name="fdProject" title="项目名称"></Criteria.Input>
+      <Criteria.Input name="fdSelectedSupplier" title="中选供应商"></Criteria.Input>
+      <Criteria.Input name="fdFailSupplier" title="落选供应商"></Criteria.Input>
+    </React.Fragment>
+  )
+}
+
 export const criertiaObj = {
   supplierCriertia: supplierCriertia(),
   projectCriertia: projectCriertia(),
   presonCriertia: presonCriertia(),
+  projectSelectInfoCriertia: projectSelectInfoCriertia(),
+
 }

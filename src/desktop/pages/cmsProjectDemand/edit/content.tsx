@@ -129,19 +129,9 @@ const Content: React.FC<IContentViewProps> = props => {
     // 编辑暂存
     saveApi({
       ...values,
-      fdFrame:{
-        fdId:values.fdFrame
-      },
+      fdFrame:values.fdFrame,
       cmsProjectDemandWork: values.cmsProjectDemandWork && values.cmsProjectDemandWork.values || undefined,
-      cmsProjectDemandDetail: values.cmsProjectDemandDetail && values.cmsProjectDemandDetail.values.map(item=>({
-        ...item,
-        fdPost:{
-          fdId:item.fdPost
-        },
-        fdSkillLevel:{
-          fdId:item.fdSkillLevel
-        }
-      })) || undefined,
+      cmsProjectDemandDetail: values.cmsProjectDemandDetail && values.cmsProjectDemandDetail.values || undefined,
       cmsProjectDemandSupp: values.cmsProjectDemandSupp && values.cmsProjectDemandSupp.values || undefined,
     }).then(res => {
       if (res.success) {

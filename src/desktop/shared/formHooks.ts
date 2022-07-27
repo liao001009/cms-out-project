@@ -222,7 +222,7 @@ const VALUE_EXECUTOR = {
       if (names.length > 1) {
         const [tableName, colName] = names
         values[tableName]?.values && values[tableName]?.values?.forEach((value) => {
-          if(!value) return          
+          if(!value[colName]) return          
           const { mechanismValue, mechanismKey } = value[colName]
           targetMechanisms.push(...mechanismValue)
           value[colName] = mechanismKey
