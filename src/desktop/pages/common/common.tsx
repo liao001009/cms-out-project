@@ -290,31 +290,37 @@ export const projectSelectInfocolumns = [
   {
     title: '项目名称',
     dataIndex: 'fdProject',
-    render: (value) => value && value.fdName
+    render: (value) => value?.fdName
   },
   /*中选供应商*/
   {
     title: '中选供应商',
     dataIndex: 'fdSelectedSupplier',
-    render: (value) => value && value.fdName
+    render: (value) => value?.map(item=>item.fdName).join(',')
   },
   /*落选供应商*/
   {
     title: '落选供应商',
     dataIndex: 'fdFailSupplier',
-    render: (value) => value && value.fdName
+    render: (value) => value?.map(item=>item.fdName).join(',')
   },
-  /*undefined*/
+  /*当前处理环节*/
   {
-    title: '',
-    dataIndex: 'lbpm_current_processor',
-    render: (value) => value
+    title: '当前处理环节',
+    dataIndex: 'currentNodeNames',
+    render (_, row) {
+      const value = row?.mechanisms?.lbpmProcess?.lbpm_current_node?.currentNodeNames || '--'
+      return <Tooltip title={value}>{value}</Tooltip>
+    },
   },
-  /*undefined*/
+  /*当前处理人*/
   {
-    title: '',
-    dataIndex: 'lbpm_current_node',
-    render: (value) => value
+    title: '当前处理人',
+    dataIndex: 'currentHandlerNames',
+    render (_, row) {
+      const value = row?.mechanisms?.lbpmProcess?.lbpm_current_processor?.currentHandlerNames || '--'
+      return <Tooltip title={value}>{value}</Tooltip>
+    },
   },
   /*文档状态*/
   {

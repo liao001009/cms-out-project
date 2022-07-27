@@ -20,6 +20,7 @@ import XformButton from '@/desktop/components/form/XformButton'
 import XformMoney from '@/desktop/components/form/XformMoney'
 import CMSXformModal from '@/desktop/components/cms/XformModal'
 
+import api from '@/api/cmsProjectDemand'
 import apiFrameInfo from '@/api/cmsFrameInfo'
 import apiPostInfo from '@/api/cmsPostInfo'
 import apiLevelInfo from '@/api/cmsLevelInfo'
@@ -1525,9 +1526,21 @@ const XForm = (props) => {
                                 }
                               }
                             },
+                            controlActions:{
+                              'onClick': [{
+                                function: async (v,r) => {
+                                  try {
+                                    await api.sendRemind({
+                                      fdId:value.cmsProjectDemandOrder[r].fdId
+                                    })
+                                  } catch (error) {
+                                    console.error('error',error)
+                                  }
+                                }
+                              }]
+                            },
                             typeCfg: {
-                              type: 'url',
-                              openWay: 'newPage'
+                              type: 'js',
                             },
                             desktop: {
                               type: XformButton

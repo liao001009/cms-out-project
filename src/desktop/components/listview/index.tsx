@@ -12,12 +12,14 @@ export interface IProps {
   columns : any
   /**点击行跳转路径 */
   onRowUrl? : string 
+  /** 跳转 */
+  history?:any
 }
 
 const baseCls = 'lui-template-list'
 
 const ContractListView: React.FC<IProps> = (props) => {
-  const { apiRequest, params, columns, onRowUrl } = props
+  const { apiRequest, params, columns, onRowUrl,history } = props
   const [listParam, setListParam] = useState<any>({
     ...params,
     // sorts: { fdCreateTime: 'desc' }
@@ -87,7 +89,8 @@ const ContractListView: React.FC<IProps> = (props) => {
       return {
         onClick: () => {
           if(onRowUrl){
-            window.open(mk.getSysConfig('modulesUrlPrefix')+`${onRowUrl}${record.fdId}`,'_blank')
+            history.goto(`${onRowUrl}${record.fdId}`)
+            // window.open(mk.getSysConfig('modulesUrlPrefix')+`${onRowUrl}${record.fdId}`,'_blank')
           }
           //暂时不知道跳转那里
           //history.goto(`/cmsContractInfo/view/${record.fdId}`)
