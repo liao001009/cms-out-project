@@ -1,19 +1,5 @@
-.lui-xform {
-  background-color: #fff;
-  .ele-grid-item {
-    margin-left: -1px;
-    margin-top: -1px;
-    overflow: hidden;
-    padding: 20px;
+@import '../../../common/common.scss';
 
-    .lui-form-item {
-      margin-bottom: 0;
-    }
+$baseCls: cmsProjectWritten-content;
 
-    .ele-xform-fieldset {
-      &-wrap {
-        flex: 1;
-      }
-    }
-  }
-}
+@include form-page($baseCls)
