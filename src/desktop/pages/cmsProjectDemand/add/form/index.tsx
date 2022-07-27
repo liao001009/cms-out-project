@@ -162,6 +162,15 @@ const XForm = (props) => {
                       modalTitle='项目名称选择'
                       criteriaKey='projectCriertia'
                       criteriaProps={['fdFrame.fdName']}
+                      onChangeProps={(v)=>{
+                        form.setFieldsValue({
+                          fdInnerLeader: v.fdInnerPrincipal,
+                          fdProjectNum: v.fdCode,
+                          fdBelongDept:v.fdBelongDept,
+                          fdProjectLeader:v.fdProjectPrincipal,
+                          fdBelongTeam:v.fdBelongTeam
+                        })
+                      }}
                     />
                   </Form.Item>
                 </XformFieldset>
@@ -226,7 +235,7 @@ const XForm = (props) => {
                     <XformInput
                       {...sysProps}
                       placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hskhiae2anq4bp2ac}', '请输入')}
-                      showStatus="edit"
+                      showStatus="readOnly"
                     ></XformInput>
                   </Form.Item>
                 </XformFieldset>
@@ -256,7 +265,7 @@ const XForm = (props) => {
                         orgTypeArr: ['2'],
                         defaultValueType: 'null'
                       }}
-                      showStatus="edit"
+                      showStatus="readOnly"
                     ></XformAddress>
                   </Form.Item>
                 </XformFieldset>
@@ -286,7 +295,7 @@ const XForm = (props) => {
                       }}
                       range={'all'}
                       preSelectType={'fixed'}
-                      showStatus="edit"
+                      showStatus="readOnly"
                     ></XformAddress>
                   </Form.Item>
                 </XformFieldset>
@@ -316,7 +325,7 @@ const XForm = (props) => {
                       }}
                       range={'all'}
                       preSelectType={'fixed'}
-                      showStatus="edit"
+                      showStatus="readOnly"
                     ></XformAddress>
                   </Form.Item>
                 </XformFieldset>
@@ -337,7 +346,7 @@ const XForm = (props) => {
                       }}
                       range={'all'}
                       preSelectType={'fixed'}
-                      showStatus="edit"
+                      showStatus="add"
                     ></XformAddress>
                   </Form.Item>
                 </XformFieldset>
