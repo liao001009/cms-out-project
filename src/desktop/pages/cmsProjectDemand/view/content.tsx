@@ -33,8 +33,8 @@ const { confirm } = Modal
 const baseCls = 'project-demand-content'
 
 const Content: React.FC<IContentViewProps> = props => {
-  const { data, match, history } = props
-  const params = match?.params
+  const { data,match,  history } = props
+  const params = match?.params as any
 
   // 模板id
   const templateId = useMemo(() => {
@@ -343,7 +343,20 @@ const Content: React.FC<IContentViewProps> = props => {
                     外包人员评审
                   </TabPane>
                   <TabPane tab="中选信息" key="4">
-                    <CMSListView apiRequest={apiSelectInfo.listSelectInfo} columns={projectSelectInfocolumns} />
+                    <CMSListView 
+                      history={history}
+                      params={{
+                        conditions: {
+                          'fdProjectDemand.fdId': {
+                            $eq : params?.id
+                          }
+                        },
+                        sorts: { fdCreateTime: 'desc' }
+                      }}
+                      apiRequest={apiSelectInfo.listSelectInfo}  
+                      columns={projectSelectInfocolumns} 
+                      onRowUrl={'/cmsProjectSelectInfo/view/'}
+                    />
                   </TabPane>
                 </Tabs>
               </div>

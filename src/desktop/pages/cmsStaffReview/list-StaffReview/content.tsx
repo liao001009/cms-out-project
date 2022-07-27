@@ -1,10 +1,9 @@
 import React, { useCallback, useMemo, useEffect, useState } from 'react'
 import { IContentViewProps } from '@ekp-runtime/render-module'
 import Icon from '@lui/icons'
-import { Input, Button, Space, Pagination, Tooltip } from '@lui/core'
+import { Button, Space, Pagination, Tooltip } from '@lui/core'
 // import Criteria from '@elem/criteria'
 // import { $reduceCriteria } from '@/desktop/shared/criteria'
-import Operation from '@elem/operation'
 import Table, { useTable } from '@elem/mk-table'
 import api from '@/api/cmsStaffReview'
 import { $deleteAll } from '@/desktop/shared/deleteAll'
@@ -13,7 +12,7 @@ import './index.scss'
 const baseCls = 'project-review-list'
 const Content: React.FC<IContentViewProps> = (props) => {
   const { status, data, queryChange, query, refresh, history } = props
-  const { content, totalSize, pageSize, offset } = data
+  const { content, totalSize, pageSize } = data
   const [templateData, setTemplateData] = useState<any>({})
 
   useEffect(() => {
@@ -178,17 +177,6 @@ const Content: React.FC<IContentViewProps> = (props) => {
     [history, selectedRows, refresh]
   )
 
-  /** 搜索 */
-  const handleSearch = useCallback((keyword: string) => {
-    queryChange({
-      ...query,
-      conditions: {
-        ...query.conditions,
-        fdSubject: { $contains: keyword.trim() }
-      }
-    })
-  }, [])
-
   // /** 筛选 */
   // const handleCriteriaChange = useCallback(
   //   (value, values) => {
@@ -201,35 +189,6 @@ const Content: React.FC<IContentViewProps> = (props) => {
   //   },
   //   [query]
   // )
-
-  /** 排序 */
-  const handleSorter = useCallback(
-    (curSorter, allSorter) => {
-      // 排序
-      if (curSorter.type === 'sort') {
-        queryChange &&
-          queryChange({
-            ...query,
-            // 排序
-            sorts: allSorter
-              .filter((sorter) => sorter.type === 'sort' && sorter.value)
-              .reduce((acc, cur) => {
-                acc[cur.name] = cur.value
-                return acc
-              }, {})
-          })
-      }
-      // 分页
-      if (curSorter.type === 'paging') {
-        queryChange &&
-          queryChange({
-            ...query,
-            pageNo: curSorter.value || 1
-          })
-      }
-    },
-    [query, queryChange]
-  )
 
   /** 分页操作 */
   const handlePage = useCallback(

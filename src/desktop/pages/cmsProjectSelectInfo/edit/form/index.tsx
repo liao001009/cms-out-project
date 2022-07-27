@@ -1,4 +1,4 @@
-import React, { useRef, createRef } from 'react'
+import React, { useRef, createRef, useEffect, useState } from 'react'
 import './index.scss'
 import { fmtMsg } from '@ekp-infra/respect'
 import { Form } from '@lui/core'
@@ -9,11 +9,17 @@ import GridItem from '@/desktop/components/form/GridItem'
 import XformDescription from '@/desktop/components/form/XformDescription'
 import XformFieldset from '@/desktop/components/form/XformFieldset'
 import XformInput from '@/desktop/components/form/XformInput'
-import XformRelation from '@/desktop/components/form/XformRelation'
 import XformAddress from '@/desktop/components/form/XformAddress'
 import XformRichText from '@/desktop/components/form/XformRichText'
 import XformDetailTable from '@/desktop/components/form/XformDetailTable'
 import XformTextarea from '@/desktop/components/form/XformTextarea'
+import CMSXformModal from '@/desktop/components/cms/XformModal'
+import { outStaffInfoColumns, projectColumns, supplierColumns } from '@/desktop/pages/common/common'
+import apiProject from '@/api/cmsProjectInfo'
+import apiSupplier from '@/api/cmsSupplierInfo'
+import apiLevelInfo from '@/api/cmsLevelInfo'
+import apiStaffInfo from '@/api/cmsOutStaffInfo'
+import XformSelect from '@/desktop/components/form/XformSelect'
 
 const MECHANISMNAMES = {}
 const baseCls = 'project-selectInfo-form'
@@ -21,8 +27,34 @@ const XForm = (props) => {
   const detailForms = useRef({
     cmsProjectStaffList: createRef() as any
   })
-  const { formRef: formRef, value: value } = props
+  const { formRef: formRef } = props
+  let { value:value } = props  
+  value = {
+    ...value,
+    fdSubject:value.fdProjectDemand.fdName
+  }
   const [form] = Form.useForm()
+  const [fdLevelData, setFdLevelData] = useState<any>([])
+  useEffect(()=>{
+    getLevelData()
+  },[])
+  const getLevelData = async () => {
+    try {
+      const res = await apiLevelInfo.list({})
+      const newArr = res.data.content.map(i => {
+        const item = {
+          value: i.fdId,
+          label: i.fdName,
+          ...i
+        }
+        return item
+      })
+
+      setFdLevelData(newArr)
+    } catch (error) {
+      console.log('error', error)
+    }
+  }
   // 对外暴露接口
   useApi({
     form,
@@ -79,13 +111,17 @@ const XForm = (props) => {
                     rules={[
                       {
                         validator: lengthValidator(100)
+                      },
+                      {
+                        required: true,
+                        message: fmtMsg(':required', '内容不能为空')
                       }
                     ]}
                   >
                     <XformInput
                       {...sysProps}
                       placeholder={fmtMsg(':cmsProjectSelectInfo.form.!{l5luvc6m0fjjfi00tpz6}', '请输入')}
-                      showStatus="edit"
+                      showStatus="readOnly"
                     ></XformInput>
                   </Form.Item>
                 </XformFieldset>
@@ -97,38 +133,17 @@ const XForm = (props) => {
                   layout={'horizontal'}
                 >
                   <Form.Item name={'fdProject'}>
-                    <XformRelation
-                      {...sysProps}
-                      renderMode={'select'}
-                      direction={'column'}
-                      rowCount={3}
-                      modelName={'com.landray.sys.xform.core.entity.design.SysXFormDesign'}
-                      isForwardView={'no'}
-                      options={[
-                        {
-                          fdName: '选项1',
-                          fdId: '1'
-                        },
-                        {
-                          fdName: '选项2',
-                          fdId: '2'
-                        },
-                        {
-                          fdName: '选项3',
-                          fdId: '3'
-                        }
-                      ]}
-                      relationCfg={{
-                        appCode: '1g77dbphcw10w198swtqlij1fbb1uj3tkuw0',
-                        xformName: '项目库',
-                        modelId: '1g77dc2o1w10w19a3w30f22612umq6uk3lw0',
-                        tableType: 'main',
-                        tableName: 'mk_model_202207052yvle',
-                        showFields: '$项目名称$',
-                        refFieldName: '$fd_name$'
-                      }}
-                      showStatus="edit"
-                    ></XformRelation>
+                    <CMSXformModal
+                      {...props}
+                      columnsProps={projectColumns}
+                      chooseFdName='fdName'
+                      apiKey={apiProject}
+                      apiName={'listProjectInfo'}
+                      showStatus='readOnly'
+                      modalTitle='项目名称选择'
+                      criteriaKey='projectCriertia'
+                      criteriaProps={['fdFrame.fdName']}
+                    />
                   </Form.Item>
                 </XformFieldset>
               </GridItem>
@@ -150,7 +165,7 @@ const XForm = (props) => {
                     <XformInput
                       {...sysProps}
                       placeholder={fmtMsg(':cmsProjectSelectInfo.form.!{l5luy97m7eih0soi5ai}', '请输入')}
-                      showStatus="edit"
+                      showStatus="readOnly"
                     ></XformInput>
                   </Form.Item>
                 </XformFieldset>
@@ -171,7 +186,7 @@ const XForm = (props) => {
                       }}
                       range={'all'}
                       preSelectType={'fixed'}
-                      showStatus="edit"
+                      showStatus="readOnly"
                     ></XformAddress>
                   </Form.Item>
                 </XformFieldset>
@@ -184,91 +199,19 @@ const XForm = (props) => {
                   layout={'horizontal'}
                 >
                   <Form.Item name={'fdSelectedSupplier'}>
-                    <XformRelation
-                      {...sysProps}
-                      renderMode={'mullist'}
-                      modelName={'com.landray.sys.xform.core.entity.design.SysXFormDesign'}
-                      isForwardView={'no'}
-                      options={[
-                        {
-                          fdName: '选项1',
-                          fdId: '1'
-                        },
-                        {
-                          fdName: '选项2',
-                          fdId: '2'
-                        },
-                        {
-                          fdName: '选项3',
-                          fdId: '3'
-                        }
-                      ]}
-                      multi={true}
-                      direction={'column'}
-                      rowCount={3}
-                      relationCfg={{
-                        appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
-                        xformName: '供应商信息',
-                        modelId: '1g777qg92w10wcf2w1jiihhv3oqp4s6nr9w0',
-                        tableType: 'main',
-                        tableName: 'mk_model_20220705vk0ha',
-                        showFields: '$供应商名称$',
-                        refFieldName: '$fd_supplier_name$'
-                      }}
-                      datasource={{
-                        queryCollection: {
-                          linkType: '$and',
-                          query: []
-                        },
-                        sorters: [],
-                        columns: [
-                          {
-                            name: 'fd_supplier_name',
-                            label: '供应商名称'
-                          },
-                          {
-                            name: 'fd_org_code',
-                            label: '组织机构代码'
-                          },
-                          {
-                            name: 'fd_cooperation_status',
-                            label: '供应商合作状态'
-                          },
-                          {
-                            name: 'fd_supplier_simple_name',
-                            label: '供应商简称'
-                          },
-                          {
-                            name: 'fd_frame',
-                            label: '所属框架'
-                          }
-                        ],
-                        filters: [
-                          {
-                            name: 'fd_supplier_name',
-                            label: '供应商名称'
-                          },
-                          {
-                            name: 'fd_org_code',
-                            label: '组织机构代码'
-                          },
-                          {
-                            name: 'fd_cooperation_status',
-                            label: '供应商合作状态'
-                          },
-                          {
-                            name: 'fd_supplier_simple_name',
-                            label: '供应商简称'
-                          },
-                          {
-                            name: 'fd_frame',
-                            label: '所属框架'
-                          }
-                        ],
-                        isListThrough: true
-                      }}
-                      showStatus="edit"
-                    ></XformRelation>
+                    <CMSXformModal
+                      {...props}
+                      columnsProps={supplierColumns}
+                      chooseFdName='fdSupplierName'
+                      apiKey={apiSupplier}
+                      apiName={'listSupplierInfo'}
+                      criteriaKey='supplierCriertia'
+                      showStatus='readOnly'
+                      modalTitle='供应商选择'
+                      showFooter={true}
+                      multiple={true}
+                      criteriaProps={['fdOrgCode', 'fdFrame.fdName']}
+                    />
                   </Form.Item>
                 </XformFieldset>
               </GridItem>
@@ -280,87 +223,19 @@ const XForm = (props) => {
                   layout={'horizontal'}
                 >
                   <Form.Item name={'fdFailSupplier'}>
-                    <XformRelation
-                      {...sysProps}
-                      renderMode={'mullist'}
-                      direction={'column'}
-                      rowCount={3}
-                      modelName={'com.landray.sys.xform.core.entity.design.SysXFormDesign'}
-                      isForwardView={'no'}
-                      options={[
-                        {
-                          fdName: '选项1',
-                          fdId: '1'
-                        },
-                        {
-                          fdName: '选项2',
-                          fdId: '2'
-                        },
-                        {
-                          fdName: '选项3',
-                          fdId: '3'
-                        }
-                      ]}
-                      multi={true}
-                      relationCfg={{
-                        appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
-                        xformName: '供应商信息',
-                        modelId: '1g777qg92w10wcf2w1jiihhv3oqp4s6nr9w0',
-                        tableType: 'main',
-                        tableName: 'mk_model_20220705vk0ha',
-                        showFields: '$供应商名称$',
-                        refFieldName: '$fd_supplier_name$'
-                      }}
-                      datasource={{
-                        queryCollection: {
-                          linkType: '$and',
-                          query: []
-                        },
-                        sorters: [],
-                        columns: [
-                          {
-                            name: 'fd_supplier_name',
-                            label: 'fd_supplier_name'
-                          },
-                          {
-                            name: 'fd_org_code',
-                            label: 'fd_org_code'
-                          },
-                          {
-                            name: 'fd_cooperation_status',
-                            label: 'fd_cooperation_status'
-                          },
-                          {
-                            name: 'fd_supplier_simple_name',
-                            label: 'fd_supplier_simple_name'
-                          },
-                          {
-                            name: 'fd_frame',
-                            label: 'fd_frame'
-                          }
-                        ],
-                        filters: [
-                          {
-                            name: 'fd_supplier_name',
-                            label: 'fd_supplier_name'
-                          },
-                          {
-                            name: 'fd_org_code',
-                            label: 'fd_org_code'
-                          },
-                          {
-                            name: 'fd_cooperation_status',
-                            label: 'fd_cooperation_status'
-                          },
-                          {
-                            name: 'fd_frame',
-                            label: 'fd_frame'
-                          }
-                        ],
-                        isListThrough: true
-                      }}
-                      showStatus="edit"
-                    ></XformRelation>
+                    <CMSXformModal
+                      {...props}
+                      columnsProps={supplierColumns}
+                      chooseFdName='fdSupplierName'
+                      apiKey={apiSupplier}
+                      apiName={'listSupplierInfo'}
+                      criteriaKey='supplierCriertia'
+                      showStatus='readOnly'
+                      modalTitle='供应商选择'
+                      showFooter={true}
+                      multiple={true}
+                      criteriaProps={['fdOrgCode', 'fdFrame.fdName']}
+                    />
                   </Form.Item>
                 </XformFieldset>
               </GridItem>
@@ -376,16 +251,7 @@ const XForm = (props) => {
                       {...sysProps}
                       height={400}
                       resize={true}
-                      defaultValueFormulaVO={{
-                        type: 'Eval',
-                        script:
-                          '"根据面试结果，恭喜贵公司成为本项目的承接供应商。\\r\\n请收到本流程信息后请尽快根据中选人员名单要求与项目负责人确定后续事宜，谢谢"',
-                        vo: {
-                          mode: 'formula',
-                          content:
-                            '"根据面试结果，恭喜贵公司成为本项目的承接供应商。\\r\\n请收到本流程信息后请尽快根据中选人员名单要求与项目负责人确定后续事宜，谢谢"'
-                        }
-                      }}
+                      defaultValue={'根据面试结果，恭喜贵公司成为本项目的承接供应商。<br />请收到本流程信息后请尽快根据中选人员名单要求与项目负责人确定后续事宜，谢谢'}
                       viewPageSet={{
                         isSystem: true,
                         displayMode: 'adaptive'
@@ -428,33 +294,40 @@ const XForm = (props) => {
                       layout={'vertical'}
                       columns={[
                         {
-                          type: XformRelation,
+                          type: CMSXformModal,
                           controlProps: {
-                            title: fmtMsg(':cmsProjectSelectInfo.form.!{l5lvypnlzsscq0s59bm}', '姓名'),
+                            title: fmtMsg(':cmsOrderResponse.form.!{l5q589q6ciz2z821u6r}', '姓名'),
+                            apiKey: apiStaffInfo,
+                            apiName: 'list',
+                            chooseFdName: 'fdName',
                             name: 'fdOutName',
+                            criteriaKey: 'presonCriertia',
+                            columnsProps: outStaffInfoColumns,
                             renderMode: 'singlelist',
                             direction: 'column',
                             rowCount: 3,
                             modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
                             isForwardView: 'no',
-                            options: [
-                              {
-                                fdName: '选项1',
-                                fdId: '1'
-                              },
-                              {
-                                fdName: '选项2',
-                                fdId: '2'
-                              },
-                              {
-                                fdName: '选项3',
-                                fdId: '3'
-                              }
-                            ],
                             desktop: {
-                              type: XformRelation
+                              type: CMSXformModal
                             },
-                            type: XformRelation,
+                            onChangeProps: (v, r) => {
+                              console.log('vlaues',v)
+                              sysProps.$$form.current.updateFormItemProps('cmsProjectStaffList', {
+                                rowValue: {
+                                  rowNum: r,
+                                  value: {
+                                    fdSupplier: v.fdSupplier.fdName,
+                                    fdSupplierObj: v.fdSupplier,
+                                    fdConfirmLevel: v.fdConfirmLevel,
+                                    fdOutName: { ...v },
+                                    fdEmail:v.fdEmail,
+                                    fdPhone:v.fdMobile
+                                  }
+                                }
+                              })
+                            },
+                            type: CMSXformModal,
                             relationCfg: {
                               appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
                               xformName: '外包人员信息',
@@ -464,127 +337,7 @@ const XForm = (props) => {
                               showFields: '$姓名$',
                               refFieldName: '$fd_name$'
                             },
-                            datasource: {
-                              queryCollection: {
-                                linkType: '$and',
-                                query: []
-                              },
-                              sorters: [],
-                              columns: [
-                                {
-                                  name: 'fd_name',
-                                  label: '姓名'
-                                },
-                                {
-                                  name: 'fdSupplier',
-                                  label: '组织信息/所属供应商'
-                                },
-                                {
-                                  name: 'fd_work_address',
-                                  label: '工作地'
-                                },
-                                {
-                                  name: 'fdConfirmLevel',
-                                  label: '定级级别'
-                                },
-                                {
-                                  name: 'fdProject',
-                                  label: '当前项目'
-                                },
-                                {
-                                  name: 'fd_inner_team',
-                                  label: '当前所属招证内部团队'
-                                },
-                                {
-                                  name: 'fd_current_project_nature',
-                                  label: '当前项目性质'
-                                },
-                                {
-                                  name: 'fd_status_info',
-                                  label: '状态信息'
-                                }
-                              ],
-                              filters: [
-                                {
-                                  name: 'fd_name',
-                                  label: '姓名'
-                                },
-                                {
-                                  name: 'fdSupplier',
-                                  label: '组织信息/所属供应商'
-                                },
-                                {
-                                  name: 'fd_inner_team',
-                                  label: '当前所属招证内部团队'
-                                },
-                                {
-                                  name: 'fdProject',
-                                  label: '当前项目'
-                                },
-                                {
-                                  name: 'fd_current_project_nature',
-                                  label: '当前项目性质'
-                                },
-                                {
-                                  name: 'fd_status_info',
-                                  label: '状态信息'
-                                }
-                              ],
-                              isListThrough: true
-                            },
-                            outParams: {
-                              params: [
-                                {
-                                  sourceField: {
-                                    fdType: 'relation',
-                                    fdName: 'fdSupplier',
-                                    tableName: 'cmsProjectStaffList'
-                                  },
-                                  targetField: {
-                                    fdType: 'relation',
-                                    fdName: 'fdSupplier',
-                                    tableName: 'main'
-                                  }
-                                },
-                                {
-                                  sourceField: {
-                                    fdType: 'relation',
-                                    fdName: 'fdConfirmLevel',
-                                    tableName: 'cmsProjectStaffList'
-                                  },
-                                  targetField: {
-                                    fdType: 'relation',
-                                    fdName: 'fdConfirmLevel',
-                                    tableName: 'main'
-                                  }
-                                },
-                                {
-                                  sourceField: {
-                                    fdType: 'text',
-                                    fdName: 'fdEmail',
-                                    tableName: 'cmsProjectStaffList'
-                                  },
-                                  targetField: {
-                                    fdType: 'text',
-                                    fdName: 'fdEmail',
-                                    tableName: 'main'
-                                  }
-                                },
-                                {
-                                  sourceField: {
-                                    fdType: 'text',
-                                    fdName: 'fdPhone',
-                                    tableName: 'cmsProjectStaffList'
-                                  },
-                                  targetField: {
-                                    fdType: 'text',
-                                    fdName: 'fd_mobile',
-                                    tableName: 'main'
-                                  }
-                                }
-                              ]
-                            },
-                            showStatus: 'edit'
+                            showStatus: 'readOnly'
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectSelectInfo.form.!{l5lvypnlzsscq0s59bm}', '姓名'),
@@ -595,43 +348,16 @@ const XForm = (props) => {
                           label: fmtMsg(':cmsProjectSelectInfo.form.!{l5lvypnlzsscq0s59bm}', '姓名')
                         },
                         {
-                          type: XformRelation,
+                          type: XformInput,
                           controlProps: {
                             title: fmtMsg(':cmsProjectSelectInfo.form.!{l5lvyw442h1gb4vaxv6}', '供应商名称'),
                             name: 'fdSupplier',
-                            renderMode: 'select',
-                            direction: 'column',
-                            rowCount: 3,
-                            modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
-                            isForwardView: 'no',
-                            options: [
-                              {
-                                fdName: '选项1',
-                                fdId: '1'
-                              },
-                              {
-                                fdName: '选项2',
-                                fdId: '2'
-                              },
-                              {
-                                fdName: '选项3',
-                                fdId: '3'
-                              }
-                            ],
+                            placeholder: fmtMsg(':cmsStaffReviewUpgrade.form.!{l3sb91q7vi4t09qtc6f}', '请输入'),
                             desktop: {
-                              type: XformRelation
+                              type: XformInput
                             },
-                            type: XformRelation,
-                            relationCfg: {
-                              appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
-                              xformName: '供应商信息',
-                              modelId: '1g777qg92w10wcf2w1jiihhv3oqp4s6nr9w0',
-                              tableType: 'main',
-                              tableName: 'mk_model_20220705vk0ha',
-                              showFields: '$供应商名称$',
-                              refFieldName: '$fd_supplier_name$'
-                            },
-                            showStatus: 'edit'
+                            type: XformInput,
+                            showStatus: 'readOnly'
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectSelectInfo.form.!{l5lvyw442h1gb4vaxv6}', '供应商名称'),
@@ -651,7 +377,7 @@ const XForm = (props) => {
                             desktop: {
                               type: XformInput
                             },
-                            showStatus: 'edit'
+                            showStatus: 'readOnly'
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectSelectInfo.form.!{l5lwtg32atyhhmqjuqb}', '邮箱'),
@@ -671,7 +397,7 @@ const XForm = (props) => {
                             desktop: {
                               type: XformInput
                             },
-                            showStatus: 'edit'
+                            showStatus: 'readOnly'
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectSelectInfo.form.!{l5lwtjaa6nyvxtjubli}', '电话'),
@@ -682,7 +408,7 @@ const XForm = (props) => {
                           label: fmtMsg(':cmsProjectSelectInfo.form.!{l5lwtjaa6nyvxtjubli}', '电话')
                         },
                         {
-                          type: XformRelation,
+                          type: XformSelect,
                           controlProps: {
                             title: fmtMsg(':cmsProjectSelectInfo.form.!{l5lvz3us0mcivqan3zxi}', '级别'),
                             name: 'fdConfirmLevel',
@@ -691,24 +417,11 @@ const XForm = (props) => {
                             rowCount: 3,
                             modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
                             isForwardView: 'no',
-                            options: [
-                              {
-                                fdName: '选项1',
-                                fdId: '1'
-                              },
-                              {
-                                fdName: '选项2',
-                                fdId: '2'
-                              },
-                              {
-                                fdName: '选项3',
-                                fdId: '3'
-                              }
-                            ],
+                            options: fdLevelData,
                             desktop: {
-                              type: XformRelation
+                              type: XformSelect
                             },
-                            type: XformRelation,
+                            type: XformSelect,
                             relationCfg: {
                               appCode: '1g776q10pw10w5j2w27q4fgr1u02jiv194w0',
                               xformName: '级别信息',
@@ -718,7 +431,7 @@ const XForm = (props) => {
                               showFields: '$级别名称$',
                               refFieldName: '$fd_level_name$'
                             },
-                            showStatus: 'edit'
+                            showStatus: 'readOnly'
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectSelectInfo.form.!{l5lvz3us0mcivqan3zxi}', '级别'),
@@ -761,55 +474,11 @@ const XForm = (props) => {
                   </Form.Item>
                 </XformFieldset>
               </GridItem>
-              <GridItem column={1} row={10} rowSpan={1} columnSpan={2}>
-                <XformFieldset
-                  labelTextAlign={'left'}
-                  mobileContentAlign={'right'}
-                  title={fmtMsg(':cmsProjectSelectInfo.form.!{l5m0hyqv7omae7rri8s}', '项目需求')}
-                  layout={'horizontal'}
-                >
-                  <Form.Item name={'fdProjectDemand'}>
-                    <XformRelation
-                      {...sysProps}
-                      renderMode={'select'}
-                      direction={'column'}
-                      rowCount={3}
-                      modelName={'com.landray.sys.xform.core.entity.design.SysXFormDesign'}
-                      isForwardView={'no'}
-                      options={[
-                        {
-                          fdName: '选项1',
-                          fdId: '1'
-                        },
-                        {
-                          fdName: '选项2',
-                          fdId: '2'
-                        },
-                        {
-                          fdName: '选项3',
-                          fdId: '3'
-                        }
-                      ]}
-                      relationCfg={{
-                        appCode: '1g77dbphcw10w198swtqlij1fbb1uj3tkuw0',
-                        xformName: '项目需求',
-                        modelId: '1g7oh4ag9w11wci9gw3c6rh9h3ebmc2619w0',
-                        tableType: 'main',
-                        tableName: 'mk_model_202207128b999',
-                        showFields: '$主题$',
-                        refFieldName: '$fd_subject$'
-                      }}
-                      showStatus="edit"
-                    ></XformRelation>
-                  </Form.Item>
-                </XformFieldset>
-              </GridItem>
             </LayoutGrid>
           </XformAppearance>
         </Form>
       </div>
     </div>
-
   )
 }
 
