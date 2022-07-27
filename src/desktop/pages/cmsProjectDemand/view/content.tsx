@@ -1,7 +1,7 @@
-import React, { useRef, useCallback, useMemo, useState, useEffect} from 'react'
+import React, { useRef, useCallback, useMemo, useState, useEffect } from 'react'
 import { Auth, Module } from '@ekp-infra/common'
 import { IContentViewProps } from '@ekp-runtime/render-module'
-import { Loading, Breadcrumb, Button, Message, Modal,Tabs } from '@lui/core'
+import { Loading, Breadcrumb, Button, Message, Modal, Tabs } from '@lui/core'
 import XForm from './form'
 import api from '@/api/cmsProjectDemand'
 import './index.scss'
@@ -15,9 +15,10 @@ import apiSelectInfo from '@/api/cmsProjectSelectInfo'
 import Axios from 'axios'
 import CMSListView from '@/desktop/components/listview/index'
 import { projectSelectInfocolumns } from '../../common/common'
+import apiTemplate from '@/api/cmsStaffReviewTemplate'
 
 
-const { TabPane } = Tabs 
+const { TabPane } = Tabs
 
 Message.config({ maxCount: 1 })
 // 流程页签
@@ -32,7 +33,7 @@ const { confirm } = Modal
 const baseCls = 'project-demand-content'
 
 const Content: React.FC<IContentViewProps> = props => {
-  const { data,match,  history } = props
+  const { data, match, history } = props
   const params = match?.params
 
   // 模板id
@@ -43,10 +44,12 @@ const Content: React.FC<IContentViewProps> = props => {
   const formComponentRef = useRef<any>()
   const lbpmComponentRef = useRef<any>()
   const rightComponentRef = useRef<any>()
-    
+
   const [flowData, setFlowData] = useState<any>({}) // 流程数据
   const [roleArr, setRoleArr] = useState<any>([])   // 流程角色
   const [materialVis, setMaterialVis] = useState<boolean>(true)
+  /**外包人员评审模板 */
+  const [templateData, setTemplateData] = useState<any>({})
 
   /** 获取资料上传节点 */
   const getCurrentNode = async () => {
@@ -75,12 +78,25 @@ const Content: React.FC<IContentViewProps> = props => {
     getCurrentNode()
   }, [])
 
+  const loadTemplateData = async () => {
+    try {
+      const res = await apiTemplate.list({
+        //@ts-ignore
+        sorts: { fdCreateTime: 'desc' },
+        columns: ['fdId', 'fdName', 'fdCode', 'fdCreator', 'fdCreateTime'],
+      })
+      setTemplateData(res?.data?.content[0])
+    } catch (error) {
+      console.error(error)
+    }
+  }
   useEffect(() => {
     mk.on('SYS_LBPM_AUDIT_FORM_INIT_DATA', (val) => {
       val?.roles && setRoleArr(val.roles)
     })
+    loadTemplateData()
   }, [])
-
+  console.log('templateData5559', templateData)
   // 校验
   const _validate = async (isDraft: boolean) => {
     // 表单校验
@@ -161,7 +177,7 @@ const Content: React.FC<IContentViewProps> = props => {
     // 提交
     api.update({
       ...values,
-      fdFrame:values.fdFrame,
+      fdFrame: values.fdFrame,
       cmsProjectDemandWork: values.cmsProjectDemandWork && values.cmsProjectDemandWork.values || undefined,
       cmsProjectDemandDetail: values.cmsProjectDemandDetail && values.cmsProjectDemandDetail.values || undefined,
       cmsProjectDemandSupp: values.cmsProjectDemandSupp && values.cmsProjectDemandSupp.values || undefined,
@@ -211,19 +227,22 @@ const Content: React.FC<IContentViewProps> = props => {
     history.goto(`/cmsOrderResponse/add/${data.fdId}`)
   }, [history])
 
-  
-  const handleEnterWritten = useCallback(()=>{
+
+  const handleEnterWritten = useCallback(() => {
     history.goto(`/cmsProjectWritten/add/${data.fdId}`)
   }, [history])
-  
-  const handleEnterInterview = useCallback(()=>{
+
+  const handleEnterInterview = useCallback(() => {
     history.goto(`/cmsProjectInterview/add/${data.fdId}`)
   }, [history])
 
-  const handleEnterSelectInfo = useCallback(()=>{
+  const handleEnterSelectInfo = useCallback(() => {
     history.goto(`/cmsProjectSelectInfo/add/${data.fdId}`)
-  },[history])
+  }, [history])
 
+  const handleEnterStaffReview = useCallback(() => {
+    history.goto(`/cmsStaffReview/add/${templateData.fdId}/${data.fdId}`)
+  }, [history, templateData])
   // 提交按钮
   const _btn_submit = useMemo(() => {
     const submitBtn = <Button type='primary' onClick={() => handleSave(false)}>提交</Button>
@@ -233,7 +252,7 @@ const Content: React.FC<IContentViewProps> = props => {
       return null
     }
   }, [data, flowData, params])
-  
+
 
 
   // 编辑按钮
@@ -300,14 +319,13 @@ const Content: React.FC<IContentViewProps> = props => {
               <Button type='default' onClick={handleEnterSelectInfo}>{fmtMsg(':menu.!{mctpwprd794p}', '发布中选信息')}</Button>
               <Button type='default' onClick={handleEnterWritten}>{fmtMsg(':cmsProjectWritten.form.!{l5hz6ugsxfxlg2nyfs7}', '录入笔试成绩')}</Button>
               <Button type='default' onClick={handleEnterInterview}>{fmtMsg(':cmsProjectInterview.form.!{l5hz6ugsxfxlg2nyfs7}', '录入面试成绩')}</Button>
-            
-
+              <Button type='default' onClick={handleEnterStaffReview}>{fmtMsg(':cmsProjectInterview.form.!{l5j0eriwqaq645oi9c}', '外包人员评审')}</Button>
               <Button type='default' onClick={handleOrder}>订单响应</Button>
               <Button type='default' onClick={handleClose}>关闭</Button>
-            </div>
-          </div>
+            </div >
+          </div >
           {/* 内容区 */}
-          <div className='lui-approve-template-content'>
+          <div className='lui-approve-template-content' >
             <div className='left'>
               {/* 表单信息 */}
               <div className='form'>
@@ -316,13 +334,13 @@ const Content: React.FC<IContentViewProps> = props => {
               <div className='lui-btns-tabs'>
                 <Tabs defaultActiveKey="1">
                   <TabPane tab="笔试 " key="1">
-                  笔试
+                    笔试
                   </TabPane>
                   <TabPane tab="面试" key="2">
-                  面试
+                    面试
                   </TabPane>
                   <TabPane tab="外包人员评审" key="3" >
-                  外包人员评审
+                    外包人员评审
                   </TabPane>
                   <TabPane tab="中选信息" key="4">
                     <CMSListView apiRequest={apiSelectInfo.listSelectInfo} columns={projectSelectInfocolumns} />
@@ -369,9 +387,9 @@ const Content: React.FC<IContentViewProps> = props => {
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </Auth.Auth>
+        </div >
+      </div >
+    </Auth.Auth >
   )
 }
 

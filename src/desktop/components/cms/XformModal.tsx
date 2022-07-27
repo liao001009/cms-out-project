@@ -186,7 +186,7 @@ const XformModal: React.FC<IProps> = (props) => {
     setSelectedRows([...selectedRows])
   }, [selectedRows])
   useEffect(() => {
-    multiple && setSelectedRows(value.map(i => i.fdId))
+    multiple && setSelectedRows(value && value.map(i => i.fdId) || [])
   }, [])
   // 分页操作 
   const handlePage = useCallback(
@@ -284,19 +284,19 @@ const XformModal: React.FC<IProps> = (props) => {
     'background': '#f5f5f5',
     'color': 'rgba(0,0,0,.25)',
     'cursor': 'not-allowed',
-    'pointerEvents':'none'
+    'pointerEvents': 'none'
   } as any
 
   return (
     <React.Fragment>
       <div>
         {
-          showStatus === 'edit' || showStatus === 'add' || showStatus==='readOnly'? Array.isArray(value) ? (
-            <div className='multiple-input' style={showStatus==='readOnly' ? readOnlyStyle:{}} onClick={() => setVisible(true)}>
+          showStatus === 'edit' || showStatus === 'add' || showStatus === 'readOnly' ? multiple ? (
+            <div className='multiple-input' onClick={() => setVisible(true)}>
               {renderTag()}
             </div>
           ) : (
-            <Input placeholder='请输入' disabled={showStatus==='readOnly'} onClick={() => setVisible(true)} value={fdName} />
+            <Input placeholder='请输入' disabled={showStatus === 'readOnly'} onClick={() => setVisible(true)} value={fdName} />
           ) : (
             <span>
               {
