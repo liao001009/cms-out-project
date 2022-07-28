@@ -17,15 +17,16 @@ import XformInput from '@/desktop/components/form/XformInput'
 import XformSelect from '@/desktop/components/form/XformSelect'
 import XformCheckbox from '@/desktop/components/form/XformCheckbox'
 import apiSupplier from '@/api/cmsSupplierInfo'
-import { Module } from '@ekp-infra/common'
 import { EShowStatus } from '@/types/showStatus'
+import apiOrderResponse from '@/api/cmsOrderResponse'
+import apiStaffInfo from '@/api/cmsOutStaffInfo'
+import { outStaffInfoColumns } from '@/desktop/pages/common/common'
+import CMSXformModal from '@/desktop/components/cms/XformModal'
 
 const MECHANISMNAMES = {}
 
-const CmsOutStaffInfoDialog = Module.getComponent('cms-out-supplier', 'CmsOutStaffInfoDialog')
 
 const XForm = (props) => {
-  const paramId = props?.match?.params?.id
   
   const detailForms = useRef({
     cmsProjectWrittenDe: createRef() as any
@@ -33,12 +34,16 @@ const XForm = (props) => {
   const { formRef: formRef, value: value } = props
   const [form] = Form.useForm()
   const [nSVisible, setNSVisible] = useState<string>('1')
-
-  const [defSupplierVal, setDefSupplierVal] = useState<any>([])
   const [supplierData, setSupplierData] = useState<any>([])
+  const [defaultTableCriteria, setDefaultTableCriteria] = useState<any>({})
   useEffect(() => {
     init()
+    const paramId = props?.match?.params?.id
+    if(paramId){
+      initData(paramId)
+    }
   }, [])
+  
   const init = async () => {
     try {
       const res = await apiSupplier.listSupplierInfo({})
@@ -55,6 +60,26 @@ const XForm = (props) => {
       console.log('error', error)
     }
   }
+
+  const initData = async (params) => {
+    try {
+      const initParam = { conditions: { 'fdProjectDemand.fdId': { '$eq': params } } }
+      const resOrder = await apiOrderResponse.listStaff(initParam)
+      const ids = resOrder?.data?.content?.map(i=>{
+        return i.fdId
+      })
+      const newParam = {
+        fdId: {
+          searchKey: '$in',
+          searchValue : ids
+        }
+      }
+      setDefaultTableCriteria(newParam)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   const checkDetailWS =  (val)=>{
     const cmsProjectWrittenDe = form.getFieldValue('cmsProjectWrittenDe')
     const arr: any  = []
@@ -73,7 +98,9 @@ const XForm = (props) => {
         arr.push(v.fdSupplier)
       }
     })
-    setDefSupplierVal(arr)
+    form.setFieldsValue({
+      fdSupplierTotal: arr
+    })
   }
   
   // 对外暴露接口
@@ -269,9 +296,15 @@ const XForm = (props) => {
                     hiddenLabel={true}
                     columns={[
                       {
-                        type: CmsOutStaffInfoDialog,
+                        type: CMSXformModal,
                         controlProps: {
-                          projectDemand: {paramId}, 
+                          apiKey:apiStaffInfo,
+                          apiName: 'listStaffInfo',
+                          defaultTableCriteria: defaultTableCriteria,
+                          chooseFdName:'fdName',
+                          columnsProps:outStaffInfoColumns,
+                          criteriaKey:'staffReviewUpgrade',
+                          criteriaProps:['fdStaffName.fdName', 'fdName'],
                           title: fmtMsg(':cmsProjectWritten.form.!{l5i2iuv598u3ufwarkj}', '姓名'),
                           name: 'fdInterviewName',
                           renderMode: 'singlelist',
@@ -293,7 +326,7 @@ const XForm = (props) => {
                             }
                           ],
                           desktop: {
-                            type: CmsOutStaffInfoDialog
+                            type: CMSXformModal
                           },
                           relationCfg: {
                             appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
@@ -304,17 +337,18 @@ const XForm = (props) => {
                             showFields: '$姓名$',
                             refFieldName: '$fd_name$'
                           },
-                          type: CmsOutStaffInfoDialog,
+                          type: CMSXformModal,
                           onChangeProps : async (v, r)=>{
                             sysProps.$$form.current.updateFormItemProps('cmsProjectWrittenDe', {
                               rowValue: {
                                 rowNum: r,
                                 value: {
-                                  fdSupplier:v.fdSupplier.fdId,
+                                  fdSupplier:v.fdSupplier,
                                   fdMajor: v.fdMajor,
                                   fdEmail: v.fdEmail,
                                   fdWrittenPass: '',
-                                  // fdWrittenScores: ''
+                                  fdWrittenScores: '',
+                                  fdInterviewName: v
                                 }
                               }
                             })
@@ -760,7 +794,6 @@ const XForm = (props) => {
                         multi={true}
                         placeholder={fmtMsg(':cmsOutStaffInfo.form.!{l3mpxl7izzanc6s2rh}', '请输入')}
                         options={supplierData}
-                        defaultValue={defSupplierVal}
                         optionSource={'custom'}
                         showStatus={EShowStatus.readOnly}
                       ></XformSelect>

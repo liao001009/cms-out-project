@@ -44,7 +44,6 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
       const newDetail = cmsProjectWrittenDe.map(item=>{
         const newItem = {
           ...item, 
-          fdSupplier: {fdId: item.fdSupplier},
         }
         return newItem
       })
