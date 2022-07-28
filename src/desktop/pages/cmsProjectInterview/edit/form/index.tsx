@@ -214,6 +214,12 @@ const XForm = (props) => {
                       validator: lengthValidator(60)
                     }
                   ]}
+                  initialValue={
+                    {
+                      fdId: mk.getSysConfig().currentUser.fdId,
+                      fdName: mk.getSysConfig().currentUser.fdName,
+                    }
+                  }
                 >
                   <XformAddress
                     {...sysProps}
@@ -241,7 +247,9 @@ const XForm = (props) => {
                 title={fmtMsg(':cmsProjectInterview.fdCreateTime', '创建时间')}
                 layout={'horizontal'}
               >
-                <Form.Item name={'fdCreateTime'}>
+                <Form.Item name={'fdCreateTime'}
+                  initialValue={new Date().getTime()}
+                >
                   <XformDatetime
                     {...sysProps}
                     placeholder={'请输入'}
@@ -560,9 +568,9 @@ const XForm = (props) => {
               columnSpan={1}
             ></GridItem>
             <GridItem column={1} row={5} columnSpan={2} rowSpan={1}
-              // style={{
-              //   display: 'none'
-              // }}
+              style={{
+                display: 'none'
+              }}
             >
               <XformFieldset
                 labelTextAlign={'left'}
@@ -574,7 +582,7 @@ const XForm = (props) => {
                   <XformInput
                     {...sysProps}
                     placeholder={fmtMsg(':cmsProjectInterview.form.!{l5hz9wxdne6ahfqosua}', '请输入')}
-                    showStatus="edit"
+                    showStatus={EShowStatus.edit}
                   ></XformInput>
                   
 

@@ -13,9 +13,11 @@ import { fmtMsg } from '@ekp-infra/respect'
 import apiLbpm from '@/api/cmsLbpm'
 import apiSelectInfo from '@/api/cmsProjectSelectInfo'
 import Axios from 'axios'
-import { projectSelectInfocolumns, staffReviewColumns } from '../../common/common'
+import { cmsProjectInterviewList, cmsProjectWrittenList, projectSelectInfocolumns, staffReviewColumns } from '../../common/common'
 import apiTemplate from '@/api/cmsStaffReviewTemplate'
 import apiStaffReviewList from '@/api/cmsStaffReview'
+import apiProjectInterview from '@/api/cmsProjectInterview'
+import apiProjectWritten from '@/api/cmsProjectWritten'
 
 const { TabPane } = Tabs
 
@@ -298,7 +300,8 @@ const Content: React.FC<IContentViewProps> = props => {
       'fdProjectDemand.fdId': {
         '$eq': data.fdId
       }
-    }
+    },
+    sorts: { fdCreateTime: 'desc' }
   }
   const staffReviewRoute = '/cmsStaffReview/view'
   return (
@@ -339,11 +342,21 @@ const Content: React.FC<IContentViewProps> = props => {
               </div>
               <div className='lui-btns-tabs'>
                 <Tabs defaultActiveKey="1">
-                  <TabPane tab="笔试 " key="1">
-                    笔试
+                  <TabPane tab="笔试" key="1">
+                    <CmsListView
+                      apiRequest={apiProjectWritten.listWritten}
+                      columns={cmsProjectWrittenList}
+                      params={staffReviewParams}
+                      onRowUrl={'/cmsProjectWritten/view/'}
+                    />
                   </TabPane>
                   <TabPane tab="面试" key="2">
-                    面试
+                    <CmsListView
+                      apiRequest={apiProjectInterview.listInterview}
+                      columns={cmsProjectInterviewList}
+                      params={staffReviewParams}
+                      onRowUrl={'/cmsProjectInterview/view/'}
+                    />
                   </TabPane>
                   <TabPane tab="外包人员评审" key="3" >
                     <CmsListView
@@ -356,14 +369,7 @@ const Content: React.FC<IContentViewProps> = props => {
                   <TabPane tab="中选信息" key="4">
                     <CmsListView 
                       history={history}
-                      params={{
-                        conditions: {
-                          'fdProjectDemand.fdId': {
-                            $eq : params?.id
-                          }
-                        },
-                        sorts: { fdCreateTime: 'desc' }
-                      }}
+                      params={staffReviewParams}
                       apiRequest={apiSelectInfo.listSelectInfo}  
                       columns={projectSelectInfocolumns} 
                       onRowUrl={'/cmsProjectSelectInfo/view/'}

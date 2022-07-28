@@ -12,7 +12,6 @@ import XformDatetime from '@/desktop/components/form/XformDatetime'
 import XformNumber from '@/desktop/components/form/XformNumber'
 import XformAddress from '@/desktop/components/form/XformAddress'
 import XformDetailTable from '@/desktop/components/form/XformDetailTable'
-import XformRelation from '@/desktop/components/form/XformRelation'
 import XformInput from '@/desktop/components/form/XformInput'
 import XformSelect from '@/desktop/components/form/XformSelect'
 import XformCheckbox from '@/desktop/components/form/XformCheckbox'
@@ -39,9 +38,19 @@ const XForm = (props) => {
   useEffect(() => {
     init()
     const paramId = props?.match?.params?.id
+    if(props.mode==='add'){
+      form.setFieldsValue({
+        fdProjectDemand: paramId,
+      })
+    }
     if(paramId){
       initData(paramId)
     }
+    form.setFieldsValue({
+      fdNoticeSupplier: ['1'], 
+      fdIsInterview: ['1'], 
+      fdNoticeInterviewer: ['1']
+    })
   }, [])
   
   const init = async () => {
@@ -122,30 +131,6 @@ const XForm = (props) => {
         <XformAppearance>
           <LayoutGrid columns={2} rows={9}>
             <GridItem
-              column={1}
-              row={1}
-              columnSpan={2}
-              rowSpan={1}
-              style={{
-                textAlign: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <XformFieldset compose={true}>
-                <Form.Item name={'fdCol5hz0vs'}>
-                  <XformDescription
-                    {...sysProps}
-                    defaultTextValue={fmtMsg(':cmsProjectWritten.form.!{l5hz6ugsxfxlg2nyfs7}', '录入笔试成绩')}
-                    controlValueStyle={{
-                      fontSize: 20,
-                      fontWeight: 'bold'
-                    }}
-                    showStatus="edit"
-                  ></XformDescription>
-                </Form.Item>
-              </XformFieldset>
-            </GridItem>
-            <GridItem
               column={2}
               row={1}
               style={{
@@ -223,6 +208,10 @@ const XForm = (props) => {
                       validator: lengthValidator(60)
                     }
                   ]}
+                  initialValue={{
+                    fdId: mk.getSysConfig().currentUser.fdId,
+                    fdName: mk.getSysConfig().currentUser.fdName,
+                  }}
                 >
                   <XformAddress
                     {...sysProps}
@@ -250,7 +239,9 @@ const XForm = (props) => {
                 title={fmtMsg(':cmsProjectWritten.fdCreateTime', '创建时间')}
                 layout={'horizontal'}
               >
-                <Form.Item name={'fdCreateTime'}>
+                <Form.Item name={'fdCreateTime'}
+                  initialValue={new Date().getTime()}
+                >
                   <XformDatetime
                     {...sysProps}
                     placeholder={'请输入'}
@@ -639,7 +630,13 @@ const XForm = (props) => {
                 layout={'horizontal'}
               >
                 <Form.Item name={'fdProjectDemand'}>
-                  <XformRelation
+                  <XformInput
+                    {...sysProps}
+                    placeholder={fmtMsg(':cmsProjectInterview.form.!{l5hz9wxdne6ahfqosua}', '请输入')}
+                    showStatus={EShowStatus.edit}
+                  ></XformInput>
+
+                  {/* <XformRelation
                     {...sysProps}
                     renderMode={'select'}
                     direction={'column'}
@@ -670,7 +667,7 @@ const XForm = (props) => {
                     }}
                     isForwardView={'no'}
                     showStatus="edit"
-                  ></XformRelation>
+                  ></XformRelation> */}
                 </Form.Item>
               </XformFieldset>
             </GridItem>
@@ -704,7 +701,7 @@ const XForm = (props) => {
                     serialType={'empty'}
                     optionSource={'custom'}
                     showStatus="edit"
-                    defaultValue='1'
+                    // defaultValue='1'
                   ></XformCheckbox>
                 </Form.Item>
               </XformFieldset>
@@ -745,6 +742,10 @@ const XForm = (props) => {
                       validator: lengthValidator(200)
                     }
                   ]}
+                  // initialValue={{
+                  //   label: fmtMsg(':cmsProjectWritten.form.!{l5hzkchwh5z2hpqmbm6}', '是'),
+                  //   value: '1'
+                  // }}
                 >
                   <XformCheckbox
                     {...sysProps}
@@ -760,7 +761,7 @@ const XForm = (props) => {
                     serialType={'empty'}
                     optionSource={'custom'}
                     showStatus="edit"
-                    defaultValue='1'
+                    // defaultValue='1'
                     onChange={(v) => setNSVisible(v?.[0])}
                   ></XformCheckbox>
                 </Form.Item>
@@ -842,7 +843,7 @@ const XForm = (props) => {
                     serialType={'empty'}
                     optionSource={'custom'}
                     showStatus="edit"
-                    defaultValue='1'
+                    // defaultValue='1'
                   ></XformCheckbox>
                 </Form.Item>
               </XformFieldset>
