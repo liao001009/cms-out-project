@@ -54,7 +54,10 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
         fdIsInterview: formValues?.fdIsInterview?.[0],
         fdNoticeInterviewer: formValues?.fdNoticeInterviewer?.[0],
         fdNoticeSupplier: formValues?.fdNoticeSupplier?.[0],
-        cmsProjectWrittenDe: newDetail
+        cmsProjectWrittenDe: newDetail,
+        fdProjectDemand: {
+          fdId: formValues.fdProjectDemand
+        }
       }
       if (formValues.mechanisms) {
         delete values.mechanisms
@@ -145,7 +148,7 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
           </Breadcrumb>
           <div className='buttons'>
             <Button type='primary' onClick={() => handleSave(true, ESysLbpmProcessStatus.DRAFT)}>暂存</Button>
-            <Button type='primary' onClick={() => handleSave(true, ESysLbpmProcessStatus.COMPLETED)}>提交</Button>
+            <Button type='primary' onClick={() => handleSave(false, ESysLbpmProcessStatus.COMPLETED)}>提交</Button>
             <Button type='default' onClick={handleDelete}>删除</Button>
             <Button type='default' onClick={handleClose}>关闭</Button>
           </div>
