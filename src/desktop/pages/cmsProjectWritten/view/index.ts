@@ -19,7 +19,7 @@ export default {
       bottom: 0,
       overflow: 'auto',
       'zIndex': 99,
-      backgroundColor: '#fff'
+      backgroundColor: '#f0f2f5'
     }
   }, props.children),
   // 页面是否全屏，默认false

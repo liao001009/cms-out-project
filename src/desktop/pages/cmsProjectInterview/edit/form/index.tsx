@@ -15,12 +15,14 @@ import XformSelect from '@/desktop/components/form/XformSelect'
 import XformDetailTable from '@/desktop/components/form/XformDetailTable'
 import XformInput from '@/desktop/components/form/XformInput'
 import apiSupplier from '@/api/cmsSupplierInfo'
-import { Module } from '@ekp-infra/common'
 import { EShowStatus } from '@/types/showStatus'
+import apiOrderResponse from '@/api/cmsOrderResponse'
+import apiStaffInfo from '@/api/cmsOutStaffInfo'
+import { outStaffInfoColumns } from '@/desktop/pages/common/common'
+import CMSXformModal from '@/desktop/components/cms/XformModal'
 
 const MECHANISMNAMES = {}
 
-const CmsOutStaffInfoDialog = Module.getComponent('cms-out-supplier', 'CmsOutStaffInfoDialog')
 
 const XForm = (props) => {
   const detailForms = useRef({
@@ -28,13 +30,20 @@ const XForm = (props) => {
   })
   const { formRef: formRef, value: value } = props
   const [form] = Form.useForm()
-
   const [supplierData, setSupplierData] = useState<any>([])
+  const [defaultTableCriteria, setDefaultTableCriteria] = useState<any>({})
   useEffect(() => {
-    if(props.mode==='add'){
-      value.fdProjectDemand=props?.match?.params?.id
-    }
     init()
+    const paramId = props?.match?.params?.id
+    if(props.mode==='add'){
+      // value.fdProjectDemand=paramId
+      form.setFieldsValue({
+        fdProjectDemand: paramId
+      })
+    }
+    if(paramId){
+      initData(paramId)
+    }
   }, [])
   const init = async () => {
     try {
@@ -52,6 +61,26 @@ const XForm = (props) => {
       console.log('error', error)
     }
   }
+
+  const initData = async (params) => {
+    try {
+      const initParam = { conditions: { 'fdProjectDemand.fdId': { '$eq': params } } }
+      const resOrder = await apiOrderResponse.listStaff(initParam)
+      const ids = resOrder?.data?.content?.map(i=>{
+        return i.fdId
+      })
+      const newParam = {
+        fdId: {
+          searchKey: '$in',
+          searchValue : ids
+        }
+      }
+      setDefaultTableCriteria(newParam)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   const checkDetailWS =  (val)=>{
     const cmsProjectInterDetail = form.getFieldValue('cmsProjectInterDetail')
     const arr: any  = []
@@ -302,8 +331,15 @@ const XForm = (props) => {
                     hiddenLabel={true}
                     columns={[
                       {
-                        type: CmsOutStaffInfoDialog,
+                        type: CMSXformModal,
                         controlProps: {
+                          apiKey:apiStaffInfo,
+                          apiName: 'listStaffInfo',
+                          defaultTableCriteria: defaultTableCriteria,
+                          chooseFdName:'fdName',
+                          columnsProps:outStaffInfoColumns,
+                          criteriaKey:'staffReviewUpgrade',
+                          criteriaProps:['fdStaffName.fdName', 'fdName'],
                           title: fmtMsg(':cmsProjectInterview.form.!{l5i2iuv598u3ufwarkj}', '姓名'),
                           name: 'fdInterviewName',
                           renderMode: 'singlelist',
@@ -326,7 +362,7 @@ const XForm = (props) => {
                             }
                           ],
                           desktop: {
-                            type: CmsOutStaffInfoDialog
+                            type: CMSXformModal
                           },
                           relationCfg: {
                             appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
@@ -337,14 +373,17 @@ const XForm = (props) => {
                             showFields: '$姓名$',
                             refFieldName: '$fd_name$'
                           },
-                          type: CmsOutStaffInfoDialog,
+                          type: CMSXformModal,
                           onChangeProps : async (v, r)=>{
                             sysProps.$$form.current.updateFormItemProps('cmsProjectInterDetail', {
                               rowValue: {
                                 rowNum: r,
                                 value: {
-                                  fdSupplier:v.fdSupplier.fdId,
+                                  fdSupplier:v.fdSupplier,
                                   fdEmail: v.fdEmail,
+                                  fdInterviewScores: '',
+                                  fdInterviewPass: '',
+                                  fdInterviewName: v
                                 }
                               }
                             })
@@ -521,9 +560,9 @@ const XForm = (props) => {
               columnSpan={1}
             ></GridItem>
             <GridItem column={1} row={5} columnSpan={2} rowSpan={1}
-              style={{
-                display: 'none'
-              }}
+              // style={{
+              //   display: 'none'
+              // }}
             >
               <XformFieldset
                 labelTextAlign={'left'}
