@@ -129,7 +129,15 @@ const Content: React.FC<IContentViewProps> = (props) => {
               isDraft: false
             })
         })
-
+        const newLbpmTemplate = newTemplateData?.mechanisms.lbpmTemplate.map(i => {
+          i.fdTemplateForms[0].fdSystemName = 'MK-Pass内部系统'
+          i.fdModuleCode = i.fdTemplateForms[0].fdModuleCode
+          i.fdSystemCode = i.fdTemplateForms[0].fdSystemCode
+          i.fdSystemName = 'MK-Pass内部系统'
+          return i
+        })
+        //@ts-ignore
+        newTemplateData?.mechanisms.lbpmTemplate = newLbpmTemplate
         const requestApi = publishData ? api.publish : api.update
         const requestLoadingText = publishData ? '发布中' : '保存中'
         const hide = Message.loading(requestLoadingText, 0)
