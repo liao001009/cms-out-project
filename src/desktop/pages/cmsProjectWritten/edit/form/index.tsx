@@ -12,20 +12,20 @@ import XformDatetime from '@/desktop/components/form/XformDatetime'
 import XformNumber from '@/desktop/components/form/XformNumber'
 import XformAddress from '@/desktop/components/form/XformAddress'
 import XformDetailTable from '@/desktop/components/form/XformDetailTable'
-import XformRelation from '@/desktop/components/form/XformRelation'
 import XformInput from '@/desktop/components/form/XformInput'
 import XformSelect from '@/desktop/components/form/XformSelect'
 import XformCheckbox from '@/desktop/components/form/XformCheckbox'
 import apiSupplier from '@/api/cmsSupplierInfo'
-import { Module } from '@ekp-infra/common'
 import { EShowStatus } from '@/types/showStatus'
+import apiOrderResponse from '@/api/cmsOrderResponse'
+import apiStaffInfo from '@/api/cmsOutStaffInfo'
+import { outStaffInfoColumns } from '@/desktop/pages/common/common'
+import CMSXformModal from '@/desktop/components/cms/XformModal'
 
 const MECHANISMNAMES = {}
 
-const CmsOutStaffInfoDialog = Module.getComponent('cms-out-supplier', 'CmsOutStaffInfoDialog')
 
 const XForm = (props) => {
-  const paramId = props?.match?.params?.id
   
   const detailForms = useRef({
     cmsProjectWrittenDe: createRef() as any
@@ -33,12 +33,26 @@ const XForm = (props) => {
   const { formRef: formRef, value: value } = props
   const [form] = Form.useForm()
   const [nSVisible, setNSVisible] = useState<string>('1')
-
-  const [defSupplierVal, setDefSupplierVal] = useState<any>([])
   const [supplierData, setSupplierData] = useState<any>([])
+  const [defaultTableCriteria, setDefaultTableCriteria] = useState<any>({})
   useEffect(() => {
     init()
+    const paramId = props?.match?.params?.id
+    if(props.mode==='add'){
+      form.setFieldsValue({
+        fdProjectDemand: paramId,
+      })
+    }
+    if(paramId){
+      initData(paramId)
+    }
+    form.setFieldsValue({
+      fdNoticeSupplier: ['1'], 
+      fdIsInterview: ['1'], 
+      fdNoticeInterviewer: ['1']
+    })
   }, [])
+  
   const init = async () => {
     try {
       const res = await apiSupplier.listSupplierInfo({})
@@ -55,6 +69,26 @@ const XForm = (props) => {
       console.log('error', error)
     }
   }
+
+  const initData = async (params) => {
+    try {
+      const initParam = { conditions: { 'fdProjectDemand.fdId': { '$eq': params } } }
+      const resOrder = await apiOrderResponse.listStaff(initParam)
+      const ids = resOrder?.data?.content?.map(i=>{
+        return i.fdId
+      })
+      const newParam = {
+        fdId: {
+          searchKey: '$in',
+          searchValue : ids
+        }
+      }
+      setDefaultTableCriteria(newParam)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   const checkDetailWS =  (val)=>{
     const cmsProjectWrittenDe = form.getFieldValue('cmsProjectWrittenDe')
     const arr: any  = []
@@ -73,7 +107,9 @@ const XForm = (props) => {
         arr.push(v.fdSupplier)
       }
     })
-    setDefSupplierVal(arr)
+    form.setFieldsValue({
+      fdSupplierTotal: arr
+    })
   }
   
   // 对外暴露接口
@@ -94,30 +130,6 @@ const XForm = (props) => {
       <Form form={form} colPadding={false} onValuesChange={onValuesChange}>
         <XformAppearance>
           <LayoutGrid columns={2} rows={9}>
-            <GridItem
-              column={1}
-              row={1}
-              columnSpan={2}
-              rowSpan={1}
-              style={{
-                textAlign: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <XformFieldset compose={true}>
-                <Form.Item name={'fdCol5hz0vs'}>
-                  <XformDescription
-                    {...sysProps}
-                    defaultTextValue={fmtMsg(':cmsProjectWritten.form.!{l5hz6ugsxfxlg2nyfs7}', '录入笔试成绩')}
-                    controlValueStyle={{
-                      fontSize: 20,
-                      fontWeight: 'bold'
-                    }}
-                    showStatus="edit"
-                  ></XformDescription>
-                </Form.Item>
-              </XformFieldset>
-            </GridItem>
             <GridItem
               column={2}
               row={1}
@@ -196,6 +208,10 @@ const XForm = (props) => {
                       validator: lengthValidator(60)
                     }
                   ]}
+                  initialValue={{
+                    fdId: mk.getSysConfig().currentUser.fdId,
+                    fdName: mk.getSysConfig().currentUser.fdName,
+                  }}
                 >
                   <XformAddress
                     {...sysProps}
@@ -223,7 +239,9 @@ const XForm = (props) => {
                 title={fmtMsg(':cmsProjectWritten.fdCreateTime', '创建时间')}
                 layout={'horizontal'}
               >
-                <Form.Item name={'fdCreateTime'}>
+                <Form.Item name={'fdCreateTime'}
+                  initialValue={new Date().getTime()}
+                >
                   <XformDatetime
                     {...sysProps}
                     placeholder={'请输入'}
@@ -269,9 +287,15 @@ const XForm = (props) => {
                     hiddenLabel={true}
                     columns={[
                       {
-                        type: CmsOutStaffInfoDialog,
+                        type: CMSXformModal,
                         controlProps: {
-                          projectDemand: {paramId}, 
+                          apiKey:apiStaffInfo,
+                          apiName: 'listStaffInfo',
+                          defaultTableCriteria: defaultTableCriteria,
+                          chooseFdName:'fdName',
+                          columnsProps:outStaffInfoColumns,
+                          criteriaKey:'staffReviewUpgrade',
+                          criteriaProps:['fdStaffName.fdName', 'fdName'],
                           title: fmtMsg(':cmsProjectWritten.form.!{l5i2iuv598u3ufwarkj}', '姓名'),
                           name: 'fdInterviewName',
                           renderMode: 'singlelist',
@@ -293,7 +317,7 @@ const XForm = (props) => {
                             }
                           ],
                           desktop: {
-                            type: CmsOutStaffInfoDialog
+                            type: CMSXformModal
                           },
                           relationCfg: {
                             appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
@@ -304,17 +328,18 @@ const XForm = (props) => {
                             showFields: '$姓名$',
                             refFieldName: '$fd_name$'
                           },
-                          type: CmsOutStaffInfoDialog,
+                          type: CMSXformModal,
                           onChangeProps : async (v, r)=>{
                             sysProps.$$form.current.updateFormItemProps('cmsProjectWrittenDe', {
                               rowValue: {
                                 rowNum: r,
                                 value: {
-                                  fdSupplier:v.fdSupplier.fdId,
+                                  fdSupplier:v.fdSupplier,
                                   fdMajor: v.fdMajor,
                                   fdEmail: v.fdEmail,
                                   fdWrittenPass: '',
-                                  // fdWrittenScores: ''
+                                  fdWrittenScores: '',
+                                  fdInterviewName: v
                                 }
                               }
                             })
@@ -605,7 +630,13 @@ const XForm = (props) => {
                 layout={'horizontal'}
               >
                 <Form.Item name={'fdProjectDemand'}>
-                  <XformRelation
+                  <XformInput
+                    {...sysProps}
+                    placeholder={fmtMsg(':cmsProjectInterview.form.!{l5hz9wxdne6ahfqosua}', '请输入')}
+                    showStatus={EShowStatus.edit}
+                  ></XformInput>
+
+                  {/* <XformRelation
                     {...sysProps}
                     renderMode={'select'}
                     direction={'column'}
@@ -636,7 +667,7 @@ const XForm = (props) => {
                     }}
                     isForwardView={'no'}
                     showStatus="edit"
-                  ></XformRelation>
+                  ></XformRelation> */}
                 </Form.Item>
               </XformFieldset>
             </GridItem>
@@ -670,7 +701,7 @@ const XForm = (props) => {
                     serialType={'empty'}
                     optionSource={'custom'}
                     showStatus="edit"
-                    defaultValue='1'
+                    // defaultValue='1'
                   ></XformCheckbox>
                 </Form.Item>
               </XformFieldset>
@@ -711,6 +742,10 @@ const XForm = (props) => {
                       validator: lengthValidator(200)
                     }
                   ]}
+                  // initialValue={{
+                  //   label: fmtMsg(':cmsProjectWritten.form.!{l5hzkchwh5z2hpqmbm6}', '是'),
+                  //   value: '1'
+                  // }}
                 >
                   <XformCheckbox
                     {...sysProps}
@@ -726,7 +761,7 @@ const XForm = (props) => {
                     serialType={'empty'}
                     optionSource={'custom'}
                     showStatus="edit"
-                    defaultValue='1'
+                    // defaultValue='1'
                     onChange={(v) => setNSVisible(v?.[0])}
                   ></XformCheckbox>
                 </Form.Item>
@@ -760,7 +795,6 @@ const XForm = (props) => {
                         multi={true}
                         placeholder={fmtMsg(':cmsOutStaffInfo.form.!{l3mpxl7izzanc6s2rh}', '请输入')}
                         options={supplierData}
-                        defaultValue={defSupplierVal}
                         optionSource={'custom'}
                         showStatus={EShowStatus.readOnly}
                       ></XformSelect>
@@ -809,7 +843,7 @@ const XForm = (props) => {
                     serialType={'empty'}
                     optionSource={'custom'}
                     showStatus="edit"
-                    defaultValue='1'
+                    // defaultValue='1'
                   ></XformCheckbox>
                 </Form.Item>
               </XformFieldset>

@@ -43,7 +43,6 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
       const newDetail = cmsProjectInterDetail.map(item=>{
         const newItem = {
           ...item, 
-          fdSupplier: {fdId: item.fdSupplier},
         }
         return newItem
       })
@@ -143,7 +142,7 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
           </Breadcrumb>
           <div className='buttons'>
             <Button type='primary' onClick={() => handleSave(true, ESysLbpmProcessStatus.DRAFT)}>暂存</Button>
-            <Button type='primary' onClick={() => handleSave(true, ESysLbpmProcessStatus.COMPLETED)}>提交</Button>
+            <Button type='primary' onClick={() => handleSave(false, ESysLbpmProcessStatus.COMPLETED)}>提交</Button>
             <Button type='default' onClick={handleDelete}>删除</Button>
             <Button type='default' onClick={handleClose}>关闭</Button>
           </div>

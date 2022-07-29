@@ -152,6 +152,10 @@ const Content: React.FC<IContentViewProps> = props => {
     api.update(values as any).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
+          if(window.opener) {
+            window.close()
+            return
+          }
           history.goBack()
         })
       } else {
@@ -164,6 +168,10 @@ const Content: React.FC<IContentViewProps> = props => {
 
   // 关闭
   const handleClose = useCallback(() => {
+    if(window.opener) {
+      window.close()
+      return
+    }
     history.goBack()
   }, [])
 

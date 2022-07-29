@@ -13,10 +13,11 @@ import { fmtMsg } from '@ekp-infra/respect'
 import apiLbpm from '@/api/cmsLbpm'
 import apiSelectInfo from '@/api/cmsProjectSelectInfo'
 import Axios from 'axios'
-import CMSListView from '@/desktop/components/listview/index'
-import { projectSelectInfocolumns, staffReviewColumns } from '../../common/common'
+import { cmsProjectInterviewList, cmsProjectWrittenList, projectSelectInfocolumns, staffReviewColumns } from '../../common/common'
 import apiTemplate from '@/api/cmsStaffReviewTemplate'
 import apiStaffReviewList from '@/api/cmsStaffReview'
+import apiProjectInterview from '@/api/cmsProjectInterview'
+import apiProjectWritten from '@/api/cmsProjectWritten'
 
 const { TabPane } = Tabs
 
@@ -28,15 +29,15 @@ const LBPMFormFragment = Module.getComponent('sys-lbpm', 'LBPMFormFragment', { l
 // 权限机制
 const RightFragment = Module.getComponent('sys-right', 'RightFragment', { loading: <Loading /> })
 
-const List = Module.getComponent('cms-out-manage', 'CmsListView', { loading: <Loading /> })
+const CmsListView = Module.getComponent('cms-out-manage', 'CmsListView', { loading: <Loading /> })
 
 const { confirm } = Modal
 
 const baseCls = 'project-demand-content'
 
 const Content: React.FC<IContentViewProps> = props => {
-  const { data, match, history } = props
-  const params = match?.params
+  const { data,match,  history } = props
+  const params = match?.params as any
 
   // 模板id
   const templateId = useMemo(() => {
@@ -184,6 +185,10 @@ const Content: React.FC<IContentViewProps> = props => {
     }).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
+          if(window.opener) {
+            window.close()
+            return
+          }
           history.goBack()
         })
       } else {
@@ -196,6 +201,10 @@ const Content: React.FC<IContentViewProps> = props => {
 
   // 关闭
   const handleClose = useCallback(() => {
+    if(window.opener) {
+      window.close()
+      return
+    }
     history.goBack()
   }, [])
 
@@ -299,7 +308,8 @@ const Content: React.FC<IContentViewProps> = props => {
       'fdProjectDemand.fdId': {
         '$eq': data.fdId
       }
-    }
+    },
+    sorts: { fdCreateTime: 'desc' }
   }
   const staffReviewRoute = '/cmsStaffReview/view'
   return (
@@ -340,14 +350,24 @@ const Content: React.FC<IContentViewProps> = props => {
               </div>
               <div className='lui-btns-tabs'>
                 <Tabs defaultActiveKey="1">
-                  <TabPane tab="笔试 " key="1">
-                    笔试
+                  <TabPane tab="笔试" key="1">
+                    <CmsListView
+                      apiRequest={apiProjectWritten.listWritten}
+                      columns={cmsProjectWrittenList}
+                      params={staffReviewParams}
+                      onRowUrl={'/cmsProjectWritten/view/'}
+                    />
                   </TabPane>
                   <TabPane tab="面试" key="2">
-                    面试
+                    <CmsListView
+                      apiRequest={apiProjectInterview.listInterview}
+                      columns={cmsProjectInterviewList}
+                      params={staffReviewParams}
+                      onRowUrl={'/cmsProjectInterview/view/'}
+                    />
                   </TabPane>
                   <TabPane tab="外包人员评审" key="3" >
-                    <List
+                    <CmsListView
                       apiRequest={apiStaffReviewList.listStaffReview}
                       columns={staffReviewColumns}
                       params={staffReviewParams}
@@ -355,7 +375,13 @@ const Content: React.FC<IContentViewProps> = props => {
                     />
                   </TabPane>
                   <TabPane tab="中选信息" key="4">
-                    <CMSListView apiRequest={apiSelectInfo.listSelectInfo} columns={projectSelectInfocolumns} />
+                    <CmsListView 
+                      history={history}
+                      params={staffReviewParams}
+                      apiRequest={apiSelectInfo.listSelectInfo}  
+                      columns={projectSelectInfocolumns} 
+                      onRowUrl={'/cmsProjectSelectInfo/view/'}
+                    />
                   </TabPane>
                 </Tabs>
               </div>

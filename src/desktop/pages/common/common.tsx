@@ -290,7 +290,7 @@ export const projectSelectInfocolumns = [
   {
     title: '项目名称',
     dataIndex: 'fdProject',
-    render: (value) => value && value.fdName
+    render: (value) => value?.fdName
   },
   /*中选供应商*/
   {
@@ -304,17 +304,23 @@ export const projectSelectInfocolumns = [
     dataIndex: 'fdFailSupplier',
     render: (value) => value?.map(item => item.fdName).join(',')
   },
-  /*undefined*/
+  /*当前处理环节*/
   {
-    title: '',
-    dataIndex: 'lbpm_current_processor',
-    render: (value) => value
+    title: '当前处理环节',
+    dataIndex: 'currentNodeNames',
+    render (_, row) {
+      const value = row?.mechanisms?.lbpmProcess?.lbpm_current_node?.currentNodeNames || '--'
+      return <Tooltip title={value}>{value}</Tooltip>
+    },
   },
-  /*undefined*/
+  /*当前处理人*/
   {
-    title: '',
-    dataIndex: 'lbpm_current_node',
-    render: (value) => value
+    title: '当前处理人',
+    dataIndex: 'currentHandlerNames',
+    render (_, row) {
+      const value = row?.mechanisms?.lbpmProcess?.lbpm_current_processor?.currentHandlerNames || '--'
+      return <Tooltip title={value}>{value}</Tooltip>
+    },
   },
   /*文档状态*/
   {
@@ -448,6 +454,109 @@ export const staffReviewColumns = [
     },
   }
 ]
+
+export const cmsProjectInterviewList = [
+  /*实际面试时间*/
+  {
+    title: '实际面试时间',
+    dataIndex: 'fdInterviewTime',
+    render: (value) => value && mk.getFormatTime(value, 'YYYY-MM-DD HH:mm')
+  },
+  /*合格分数线*/
+  {
+    title: '合格分数线',
+    dataIndex: 'fdQualifiedMark',
+    render: (value) => value
+  },
+  /*创建人*/
+  {
+    title: '创建人',
+    dataIndex: 'fdCreator',
+    render: (value) => value && value.fdName
+  },
+  /*创建时间*/
+  {
+    title: '创建时间',
+    dataIndex: 'fdCreateTime',
+    render: (value) => value && mk.getFormatTime(value, 'YYYY-MM-DD HH:mm')
+  }
+]
+
+export const cmsProjectWrittenList = [
+  /*笔试时间*/
+  {
+    title: '笔试时间',
+    dataIndex: 'fdWrittenTime',
+    render: (value) => value && mk.getFormatTime(value, 'YYYY-MM-DD HH:mm')
+  },
+  /*合格分数线*/
+  {
+    title: '合格分数线',
+    dataIndex: 'fdQualifiedMark',
+    render: (value) => value
+  },
+  /*是否面试*/
+  {
+    title: '是否面试',
+    dataIndex: 'fdIsInterview',
+    render: (value) => {
+      const options = [
+        {
+          value: '1',
+          label: '是'
+        }
+      ]
+      const option = options.find((option) => option.value === value)
+
+      if (!option) {
+        return value
+      }
+
+      return option.label
+    }
+  },
+  /*邮件通知供应商*/
+  {
+    title: '邮件通知供应商',
+    dataIndex: 'fdNoticeSupplier',
+    render: (value) => {
+      const options = [
+        {
+          value: '1',
+          label: '是'
+        }
+      ]
+      const option = options.find((option) => option.value === value)
+
+      if (!option) {
+        return value
+      }
+
+      return option.label
+    }
+  },
+  /*邮件通知面试官*/
+  {
+    title: '邮件通知面试官',
+    dataIndex: 'fdNoticeInterviewer',
+    render: (value) => {
+      const options = [
+        {
+          value: '1',
+          label: '是'
+        }
+      ]
+      const option = options.find((option) => option.value === value)
+
+      if (!option) {
+        return value
+      }
+
+      return option.label
+    }
+  }
+]
+
 // 供应商筛选
 export const supplierCriertia = () => {
   return (
