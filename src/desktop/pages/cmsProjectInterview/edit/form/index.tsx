@@ -416,6 +416,7 @@ const XForm = (props) => {
                         type: XformSelect,
                         controlProps: {
                           title: fmtMsg(':cmsProjectInterview.form.!{l5i2e44y9gjv4vhmjr5}', '供应商名称'),
+                          placeholder: fmtMsg(':cmsProjectInterview.form.!{l5i2r5c9cv95w3a6gai}', '请输入'),
                           name: 'fdSupplier',
                           renderMode: 'select',
                           direction: 'column',
