@@ -94,7 +94,7 @@ const XformModal: React.FC<IProps> = (props) => {
   // 多选时，选中的数据
   const [selectedRowsData, setSelectedRows] = useState<any>([])
   // 表单传过来的初始值，为了点击取消时，还原数据
-  const [initSelectedArr, setInitSelectArr] = useState<any>(value)
+  const [initSelectedArr, setInitSelectArr] = useState<any>(value && value.length || [])
   // 用来判断是按了确认按钮还是取消按钮
   const [flag, setFlag] = useState<boolean>(false)
 
@@ -275,7 +275,7 @@ const XformModal: React.FC<IProps> = (props) => {
   const handleCancel = () => {
     setFlag(false)
     setVisible(false)
-    setSelectedRows(value.map(i => i.fdId))
+    multiple && setSelectedRows(initSelectedArr.length && initSelectedArr.map(i => i.fdId))
     const newData = listData?.content.length && listData?.content.filter(item => initSelectedArr.includes(item.fdId))
     onChange && onChange(newData)
   }

@@ -296,13 +296,13 @@ export const projectSelectInfocolumns = [
   {
     title: '中选供应商',
     dataIndex: 'fdSelectedSupplier',
-    render: (value) => value && value.fdName
+    render: (value) => value?.map(item => item.fdName).join(',')
   },
   /*落选供应商*/
   {
     title: '落选供应商',
     dataIndex: 'fdFailSupplier',
-    render: (value) => value && value.fdName
+    render: (value) => value?.map(item => item.fdName).join(',')
   },
   /*undefined*/
   {
@@ -361,14 +361,6 @@ export const projectSelectInfocolumns = [
     }
   }
 ]
-const renderFdSupplies = (data) => {
-  const newData = data.map((i) => {
-    const str = i.fdName + ','
-    return str
-  })
-  newData[data.length - 1] = newData[data.length - 1].split(',')[0]
-  return newData
-}
 
 export const staffReviewColumns = [
   /*主题*/
@@ -387,7 +379,7 @@ export const staffReviewColumns = [
   {
     title: '中选供应商',
     dataIndex: 'fdSupplies',
-    render: (value) => value && renderFdSupplies(value)
+    render: (value) => value && value.map(i => i.fdName).join(',')
   },
   /**文档状态 */
   {
