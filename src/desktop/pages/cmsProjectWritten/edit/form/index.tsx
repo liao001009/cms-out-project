@@ -1,26 +1,25 @@
-import React, { useRef, createRef, useState, useEffect } from 'react'
-import './index.scss'
-import { fmtMsg } from '@ekp-infra/respect'
-import { Form, Message } from '@lui/core'
-import { useApi, useSystem } from '@/desktop/shared/formHooks'
-import XformAppearance from '@/desktop/components/form/XformAppearance'
-import LayoutGrid from '@/desktop/components/form/LayoutGrid'
-import GridItem from '@/desktop/components/form/GridItem'
-import XformDescription from '@/desktop/components/form/XformDescription'
-import XformFieldset from '@/desktop/components/form/XformFieldset'
-import XformDatetime from '@/desktop/components/form/XformDatetime'
-import XformNumber from '@/desktop/components/form/XformNumber'
-import XformAddress from '@/desktop/components/form/XformAddress'
-import XformDetailTable from '@/desktop/components/form/XformDetailTable'
-import XformInput from '@/desktop/components/form/XformInput'
-import XformSelect from '@/desktop/components/form/XformSelect'
-import XformCheckbox from '@/desktop/components/form/XformCheckbox'
-import apiSupplier from '@/api/cmsSupplierInfo'
-import { EShowStatus } from '@/types/showStatus'
 import apiOrderResponse from '@/api/cmsOrderResponse'
 import apiStaffInfo from '@/api/cmsOutStaffInfo'
-import { outStaffInfoColumns } from '@/desktop/pages/common/common'
+import apiSupplier from '@/api/cmsSupplierInfo'
 import CMSXformModal from '@/desktop/components/cms/XformModal'
+import GridItem from '@/desktop/components/form/GridItem'
+import LayoutGrid from '@/desktop/components/form/LayoutGrid'
+import XformAddress from '@/desktop/components/form/XformAddress'
+import XformAppearance from '@/desktop/components/form/XformAppearance'
+import XformCheckbox from '@/desktop/components/form/XformCheckbox'
+import XformDatetime from '@/desktop/components/form/XformDatetime'
+import XformDetailTable from '@/desktop/components/form/XformDetailTable'
+import XformFieldset from '@/desktop/components/form/XformFieldset'
+import XformInput from '@/desktop/components/form/XformInput'
+import XformNumber from '@/desktop/components/form/XformNumber'
+import XformSelect from '@/desktop/components/form/XformSelect'
+import { outStaffInfoColumns } from '@/desktop/pages/common/common'
+import { useApi, useSystem } from '@/desktop/shared/formHooks'
+import { EShowStatus } from '@/types/showStatus'
+import { fmtMsg } from '@ekp-infra/respect'
+import { Form, Message } from '@lui/core'
+import React, { createRef, useEffect, useRef, useState } from 'react'
+import './index.scss'
 
 const MECHANISMNAMES = {}
 
@@ -33,6 +32,7 @@ const XForm = (props) => {
   const { formRef: formRef, value: value } = props
   const [form] = Form.useForm()
   const [nSVisible, setNSVisible] = useState<string>('1')
+  const [ivVisible, setIvVisible] = useState<string>('1')
   const [supplierData, setSupplierData] = useState<any>([])
   const [defaultTableCriteria, setDefaultTableCriteria] = useState<any>({})
   useEffect(() => {
@@ -111,6 +111,7 @@ const XForm = (props) => {
       fdSupplierTotal: arr
     })
   }
+
   
   // 对外暴露接口
   useApi({
@@ -273,339 +274,646 @@ const XForm = (props) => {
                     }
                   ]}
                 >
-                  <XformDetailTable
-                    {...sysProps}
-                    $$ref={detailForms.current.cmsProjectWrittenDe}
-                    $$tableType="detail"
-                    $$tableName="cmsProjectWrittenDe"
-                    title={fmtMsg(':cmsProjectWritten.form.!{l5hzifw3j5ed7kldmk9}', '明细表1')}
-                    defaultRowNumber={1}
-                    mobileRender={['simple']}
-                    pcSetting={['pagination']}
-                    showNumber={true}
-                    layout={'vertical'}
-                    hiddenLabel={true}
-                    columns={[
-                      {
-                        type: CMSXformModal,
-                        controlProps: {
-                          apiKey:apiStaffInfo,
-                          apiName: 'listStaffInfo',
-                          defaultTableCriteria: defaultTableCriteria,
-                          chooseFdName:'fdName',
-                          columnsProps:outStaffInfoColumns,
-                          criteriaKey:'staffReviewUpgrade',
-                          criteriaProps:['fdStaffName.fdName', 'fdName'],
-                          title: fmtMsg(':cmsProjectWritten.form.!{l5i2iuv598u3ufwarkj}', '姓名'),
-                          name: 'fdInterviewName',
-                          renderMode: 'singlelist',
-                          direction: 'column',
-                          rowCount: 3,
-                          modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
-                          options: [
-                            {
-                              fdName: '选项1',
-                              fdId: '1'
-                            },
-                            {
-                              fdName: '选项2',
-                              fdId: '2'
-                            },
-                            {
-                              fdName: '选项3',
-                              fdId: '3'
-                            }
-                          ],
-                          desktop: {
-                            type: CMSXformModal
-                          },
-                          relationCfg: {
-                            appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
-                            xformName: '外包人员信息',
-                            modelId: '1g7tuuns0w13w13engw3a36caf238o0d15w0',
-                            tableType: 'main',
-                            tableName: 'mk_model_20220714k2uvx',
-                            showFields: '$姓名$',
-                            refFieldName: '$fd_name$'
-                          },
-                          type: CMSXformModal,
-                          onChangeProps : async (v, r)=>{
-                            sysProps.$$form.current.updateFormItemProps('cmsProjectWrittenDe', {
-                              rowValue: {
-                                rowNum: r,
-                                value: {
-                                  fdSupplier:v.fdSupplier,
-                                  fdMajor: v.fdMajor,
-                                  fdEmail: v.fdEmail,
-                                  fdWrittenPass: '',
-                                  fdWrittenScores: '',
-                                  fdInterviewName: v
+
+                  {
+                    ivVisible === '1' ? (
+                      <XformDetailTable
+                        {...sysProps}
+                        $$ref={detailForms.current.cmsProjectWrittenDe}
+                        $$tableType="detail"
+                        $$tableName="cmsProjectWrittenDe"
+                        title={fmtMsg(':cmsProjectWritten.form.!{l5hzifw3j5ed7kldmk9}', '明细表1')}
+                        defaultRowNumber={1}
+                        mobileRender={['simple']}
+                        pcSetting={['pagination']}
+                        showNumber={true}
+                        layout={'vertical'}
+                        hiddenLabel={true}
+                        columns={[
+                          {
+                            type: CMSXformModal,
+                            controlProps: {
+                              apiKey: apiStaffInfo,
+                              apiName: 'listStaffInfo',
+                              defaultTableCriteria: defaultTableCriteria,
+                              chooseFdName: 'fdName',
+                              columnsProps: outStaffInfoColumns,
+                              criteriaKey: 'staffReviewUpgrade',
+                              criteriaProps: ['fdStaffName.fdName', 'fdName'],
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5i2iuv598u3ufwarkj}', '姓名'),
+                              name: 'fdInterviewName',
+                              renderMode: 'singlelist',
+                              direction: 'column',
+                              rowCount: 3,
+                              modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
+                              options: [
+                                {
+                                  fdName: '选项1',
+                                  fdId: '1'
+                                },
+                                {
+                                  fdName: '选项2',
+                                  fdId: '2'
+                                },
+                                {
+                                  fdName: '选项3',
+                                  fdId: '3'
                                 }
-                              }
-                            })
-                          },
-                          isForwardView: 'no',
-                          showStatus: 'edit'
-                        },
-                        labelProps: {
-                          title: fmtMsg(':cmsProjectWritten.form.!{l5i2iuv598u3ufwarkj}', '姓名'),
-                          desktop: {
-                            layout: 'vertical'
-                          }
-                        },
-                        label: fmtMsg(':cmsProjectWritten.form.!{l5i2iuv598u3ufwarkj}', '姓名'),
-                        options: {
-                          validateRules: {
-                            required: true,
-                            message: fmtMsg(':required', '内容不能为空')
-                          }
-                        }
-                      },
-                      {
-                        type: XformSelect,
-                        controlProps: {
-                          title: fmtMsg(':cmsProjectWritten.form.!{l5i2e44y9gjv4vhmjr5}', '供应商名称'),
-                          name: 'fdSupplier',
-                          placeholder: fmtMsg(':cmsProjectWritten.form.!{l5i2sy277m7ezhzujdi}', '请输入'),
-                          renderMode: 'select',
-                          direction: 'column',
-                          rowCount: 3,
-                          modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
-                          isForwardView: 'no',
-                          options: supplierData,
-                          desktop: {
-                            type: XformSelect
-                          },
-                          relationCfg: {
-                            appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
-                            xformName: '供应商信息',
-                            modelId: '1g777qg92w10wcf2w1jiihhv3oqp4s6nr9w0',
-                            tableType: 'main',
-                            tableName: 'mk_model_20220705vk0ha',
-                            showFields: '$供应商名称$',
-                            refFieldName: '$fd_supplier_name$'
-                          },
-                          type: XformSelect,
-                          showStatus: EShowStatus.readOnly
-                        },
-                        labelProps: {
-                          title: fmtMsg(':cmsProjectWritten.form.!{l5i2e44y9gjv4vhmjr5}', '供应商名称'),
-                          desktop: {
-                            layout: 'vertical'
-                          }
-                        },
-                        label: fmtMsg(':cmsProjectWritten.form.!{l5i2e44y9gjv4vhmjr5}', '供应商名称')
-                      },
-                      {
-                        type: XformSelect,
-                        controlProps: {
-                          title: fmtMsg(':cmsProjectWritten.form.!{l5izeh8ya568lfqhw1}', '学历'),
-                          maxLength: 50,
-                          name: 'fdMajor',
-                          placeholder: fmtMsg(':cmsProjectWritten.form.!{l5i2sy277m7ezhzujdi}', '请输入'),
-                          options: [
-                            {
-                              label: fmtMsg(':cmsProjectWritten.form.!{l3lb8gpoaz0xj1znu5e}', '高中'),
-                              value: '1'
-                            },
-                            {
-                              label: fmtMsg(':cmsProjectWritten.form.!{l3lb8gpqsa1dkyunv4g}', '专科'),
-                              value: '2'
-                            },
-                            {
-                              label: fmtMsg(':cmsProjectWritten.form.!{l3lb8gptifemq19c12}', '本科'),
-                              value: '3'
-                            },
-                            {
-                              label: fmtMsg(':cmsProjectWritten.form.!{l3lb8gpvwi2j25x1zbt}', '研究生'),
-                              value: '4'
-                            }
-                          ],
-                          optionSource: 'custom',
-                          desktop: {
-                            type: XformSelect
-                          },
-                          type: XformSelect,
-                          showStatus: EShowStatus.readOnly
-                        },
-                        labelProps: {
-                          title: fmtMsg(':cmsProjectWritten.form.!{l5izeh8ya568lfqhw1}', '学历'),
-                          desktop: {
-                            layout: 'vertical'
-                          }
-                        },
-                        label: fmtMsg(':cmsProjectWritten.form.!{l5izeh8ya568lfqhw1}', '学历')
-                      },
-                      {
-                        type: XformInput,
-                        controlProps: {
-                          title: fmtMsg(':cmsProjectWritten.form.!{l5i2r5c8ax8fakvlo08}', '邮箱'),
-                          maxLength: 100,
-                          name: 'fdEmail',
-                          placeholder: fmtMsg(':cmsProjectWritten.form.!{l5i2r5c9cv95w3a6gai}', '请输入'),
-                          desktop: {
-                            type: XformInput
-                          },
-                          type: XformInput,
-                          showStatus: EShowStatus.readOnly
-                        },
-                        labelProps: {
-                          title: fmtMsg(':cmsProjectWritten.form.!{l5i2r5c8ax8fakvlo08}', '邮箱'),
-                          desktop: {
-                            layout: 'vertical'
-                          }
-                        },
-                        label: fmtMsg(':cmsProjectWritten.form.!{l5i2r5c8ax8fakvlo08}', '邮箱')
-                      },
-                      {
-                        type: XformNumber,
-                        controlProps: {
-                          title: fmtMsg(':cmsProjectWritten.form.!{l5i2r9d4aemiawkvbr}', '笔试得分'),
-                          name: 'fdWrittenScores',
-                          placeholder: fmtMsg(':cmsProjectWritten.form.!{l5i2r9d5i4h8wdz6su}', '请输入'),
-                          numberFormat: {
-                            formatType: 'base'
-                          },
-                          desktop: {
-                            type: XformNumber
-                          },
-                          type: XformNumber,
-                          showStatus: 'edit',
-                          controlActions: {
-                            'onChange': [{
-                              function: (v, r) => {
-                                const fdQualifiedMark = form.getFieldValue('fdQualifiedMark')
-                                if(!fdQualifiedMark){
-                                  Message.error('请输入合格分数线', 1)
-                                  return 
-                                }
-                                const fdWrittenPass = v>=fdQualifiedMark ? '1' : '0'
+                              ],
+                              desktop: {
+                                type: CMSXformModal
+                              },
+                              relationCfg: {
+                                appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
+                                xformName: '外包人员信息',
+                                modelId: '1g7tuuns0w13w13engw3a36caf238o0d15w0',
+                                tableType: 'main',
+                                tableName: 'mk_model_20220714k2uvx',
+                                showFields: '$姓名$',
+                                refFieldName: '$fd_name$'
+                              },
+                              type: CMSXformModal,
+                              onChangeProps: async (v, r) => {
                                 sysProps.$$form.current.updateFormItemProps('cmsProjectWrittenDe', {
                                   rowValue: {
                                     rowNum: r,
                                     value: {
-                                      fdWrittenPass: fdWrittenPass,
+                                      fdSupplier: v.fdSupplier,
+                                      fdMajor: v.fdMajor,
+                                      fdEmail: v.fdEmail,
+                                      fdWrittenPass: '',
+                                      fdWrittenScores: '',
+                                      fdInterviewName: v
                                     }
                                   }
                                 })
-                                checkDetailWS(fdQualifiedMark)
-                              }
-                            }]
-                          }
-                        },
-                        labelProps: {
-                          title: fmtMsg(':cmsProjectWritten.form.!{l5i2r9d4aemiawkvbr}', '笔试得分'),
-                          desktop: {
-                            layout: 'vertical'
-                          }
-                        },
-                        label: fmtMsg(':cmsProjectWritten.form.!{l5i2r9d4aemiawkvbr}', '笔试得分'),
-                        options: {
-                          validateRules: {
-                            required: true,
-                            message: fmtMsg(':required', '内容不能为空')
-                          }
-                        }
-                      },
-                      {
-                        type: XformSelect,
-                        controlProps: {
-                          title: fmtMsg(':cmsProjectWritten.form.!{l5i2sy26tahw90jp8ej}', '是否通过笔试'),
-                          maxLength: 50,
-                          name: 'fdWrittenPass',
-                          placeholder: fmtMsg(':cmsProjectWritten.form.!{l5i2sy277m7ezhzujdi}', '请输入'),
-                          options: [
-                            {
-                              label: fmtMsg(':cmsProjectWritten.form.!{l5i2sy28xusq600dt4r}', '通过'),
-                              value: '1'
+                              },
+                              isForwardView: 'no',
+                              showStatus: 'edit'
                             },
-                            {
-                              label: fmtMsg(':cmsProjectWritten.form.!{l5i2sy2bt4d2xu68k4d}', '不通过'),
-                              value: '0'
+                            labelProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5i2iuv598u3ufwarkj}', '姓名'),
+                              desktop: {
+                                layout: 'vertical'
+                              }
+                            },
+                            label: fmtMsg(':cmsProjectWritten.form.!{l5i2iuv598u3ufwarkj}', '姓名'),
+                            options: {
+                              validateRules: {
+                                required: true,
+                                message: fmtMsg(':required', '内容不能为空')
+                              }
                             }
-                          ],
-                          optionSource: 'custom',
-                          desktop: {
-                            type: XformSelect
                           },
-                          type: XformSelect,
-                          passValue: true,
-                          showStatus: 'edit'
-                        },
-                        labelProps: {
-                          title: fmtMsg(':cmsProjectWritten.form.!{l5i2sy26tahw90jp8ej}', '是否通过笔试'),
-                          desktop: {
-                            layout: 'vertical'
-                          }
-                        },
-                        label: fmtMsg(':cmsProjectWritten.form.!{l5i2sy26tahw90jp8ej}', '是否通过笔试')
-                      },
-                      {
-                        type: XformDatetime,
-                        controlProps: {
-                          title: fmtMsg(':cmsProjectWritten.form.!{l5iziae2bzq0rckmq6}', '计划面试开始时间'),
-                          name: 'fdBeginTime',
-                          placeholder: fmtMsg(':cmsProjectWritten.form.!{l5iziae44d2by5dyv7w}', '请输入'),
-                          dataPattern: 'yyyy-MM-dd HH:mm',
-                          desktop: {
-                            type: XformDatetime
+                          {
+                            type: XformSelect,
+                            controlProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5i2e44y9gjv4vhmjr5}', '供应商名称'),
+                              name: 'fdSupplier',
+                              placeholder: fmtMsg(':cmsProjectWritten.form.!{l5i2sy277m7ezhzujdi}', '请输入'),
+                              renderMode: 'select',
+                              direction: 'column',
+                              rowCount: 3,
+                              modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
+                              isForwardView: 'no',
+                              options: supplierData,
+                              desktop: {
+                                type: XformSelect
+                              },
+                              relationCfg: {
+                                appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
+                                xformName: '供应商信息',
+                                modelId: '1g777qg92w10wcf2w1jiihhv3oqp4s6nr9w0',
+                                tableType: 'main',
+                                tableName: 'mk_model_20220705vk0ha',
+                                showFields: '$供应商名称$',
+                                refFieldName: '$fd_supplier_name$'
+                              },
+                              type: XformSelect,
+                              showStatus: EShowStatus.readOnly
+                            },
+                            labelProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5i2e44y9gjv4vhmjr5}', '供应商名称'),
+                              desktop: {
+                                layout: 'vertical'
+                              }
+                            },
+                            label: fmtMsg(':cmsProjectWritten.form.!{l5i2e44y9gjv4vhmjr5}', '供应商名称')
                           },
-                          showStatus: 'edit'
-                        },
-                        labelProps: {
-                          title: fmtMsg(':cmsProjectWritten.form.!{l5iziae2bzq0rckmq6}', '计划面试开始时间'),
-                          desktop: {
-                            layout: 'vertical'
-                          }
-                        },
-                        label: fmtMsg(':cmsProjectWritten.form.!{l5iziae2bzq0rckmq6}', '计划面试开始时间')
-                      },
-                      {
-                        type: XformDatetime,
-                        controlProps: {
-                          title: fmtMsg(':cmsProjectWritten.form.!{l5izhz77fjktqau4o6p}', '计划面试结束时间'),
-                          name: 'fdEndTime',
-                          placeholder: fmtMsg(':cmsProjectWritten.form.!{l5izhz78u9a8rffwcyn}', '请输入'),
-                          dataPattern: 'yyyy-MM-dd HH:mm',
-                          desktop: {
-                            type: XformDatetime
+                          {
+                            type: XformSelect,
+                            controlProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5izeh8ya568lfqhw1}', '学历'),
+                              maxLength: 50,
+                              name: 'fdMajor',
+                              placeholder: fmtMsg(':cmsProjectWritten.form.!{l5i2sy277m7ezhzujdi}', '请输入'),
+                              options: [
+                                {
+                                  label: fmtMsg(':cmsProjectWritten.form.!{l3lb8gpoaz0xj1znu5e}', '高中'),
+                                  value: '1'
+                                },
+                                {
+                                  label: fmtMsg(':cmsProjectWritten.form.!{l3lb8gpqsa1dkyunv4g}', '专科'),
+                                  value: '2'
+                                },
+                                {
+                                  label: fmtMsg(':cmsProjectWritten.form.!{l3lb8gptifemq19c12}', '本科'),
+                                  value: '3'
+                                },
+                                {
+                                  label: fmtMsg(':cmsProjectWritten.form.!{l3lb8gpvwi2j25x1zbt}', '研究生'),
+                                  value: '4'
+                                }
+                              ],
+                              optionSource: 'custom',
+                              desktop: {
+                                type: XformSelect
+                              },
+                              type: XformSelect,
+                              showStatus: EShowStatus.readOnly
+                            },
+                            labelProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5izeh8ya568lfqhw1}', '学历'),
+                              desktop: {
+                                layout: 'vertical'
+                              }
+                            },
+                            label: fmtMsg(':cmsProjectWritten.form.!{l5izeh8ya568lfqhw1}', '学历')
                           },
-                          showStatus: 'edit'
-                        },
-                        labelProps: {
-                          title: fmtMsg(':cmsProjectWritten.form.!{l5izhz77fjktqau4o6p}', '计划面试结束时间'),
-                          desktop: {
-                            layout: 'vertical'
-                          }
-                        },
-                        label: fmtMsg(':cmsProjectWritten.form.!{l5izhz77fjktqau4o6p}', '计划面试结束时间')
-                      },
-                      {
-                        type: XformInput,
-                        controlProps: {
-                          title: fmtMsg(':cmsProjectWritten.form.!{l5izigssxh9x6w7qrq}', '远程面试会议号'),
-                          maxLength: 100,
-                          name: 'fdMeetingNum',
-                          placeholder: fmtMsg(':cmsProjectWritten.form.!{l5izigstkbcmoluwehn}', '请输入'),
-                          desktop: {
-                            type: XformInput
+                          {
+                            type: XformInput,
+                            controlProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5i2r5c8ax8fakvlo08}', '邮箱'),
+                              maxLength: 100,
+                              name: 'fdEmail',
+                              placeholder: fmtMsg(':cmsProjectWritten.form.!{l5i2r5c9cv95w3a6gai}', '请输入'),
+                              desktop: {
+                                type: XformInput
+                              },
+                              type: XformInput,
+                              showStatus: EShowStatus.readOnly
+                            },
+                            labelProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5i2r5c8ax8fakvlo08}', '邮箱'),
+                              desktop: {
+                                layout: 'vertical'
+                              }
+                            },
+                            label: fmtMsg(':cmsProjectWritten.form.!{l5i2r5c8ax8fakvlo08}', '邮箱')
                           },
-                          showStatus: 'edit'
-                        },
-                        labelProps: {
-                          title: fmtMsg(':cmsProjectWritten.form.!{l5izigssxh9x6w7qrq}', '远程面试会议号'),
-                          desktop: {
-                            layout: 'vertical'
+                          {
+                            type: XformNumber,
+                            controlProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5i2r9d4aemiawkvbr}', '笔试得分'),
+                              name: 'fdWrittenScores',
+                              placeholder: fmtMsg(':cmsProjectWritten.form.!{l5i2r9d5i4h8wdz6su}', '请输入'),
+                              numberFormat: {
+                                formatType: 'base'
+                              },
+                              desktop: {
+                                type: XformNumber
+                              },
+                              type: XformNumber,
+                              showStatus: 'edit',
+                              controlActions: {
+                                'onChange': [{
+                                  function: (v, r) => {
+                                    const fdQualifiedMark = form.getFieldValue('fdQualifiedMark')
+                                    if (!fdQualifiedMark) {
+                                      Message.error('请输入合格分数线', 1)
+                                      return
+                                    }
+                                    const fdWrittenPass = v >= fdQualifiedMark ? '1' : '0'
+                                    sysProps.$$form.current.updateFormItemProps('cmsProjectWrittenDe', {
+                                      rowValue: {
+                                        rowNum: r,
+                                        value: {
+                                          fdWrittenPass: fdWrittenPass,
+                                        }
+                                      }
+                                    })
+                                    checkDetailWS(fdQualifiedMark)
+                                  }
+                                }]
+                              }
+                            },
+                            labelProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5i2r9d4aemiawkvbr}', '笔试得分'),
+                              desktop: {
+                                layout: 'vertical'
+                              }
+                            },
+                            label: fmtMsg(':cmsProjectWritten.form.!{l5i2r9d4aemiawkvbr}', '笔试得分'),
+                            options: {
+                              validateRules: {
+                                required: true,
+                                message: fmtMsg(':required', '内容不能为空')
+                              }
+                            }
+                          },
+                          {
+                            type: XformSelect,
+                            controlProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5i2sy26tahw90jp8ej}', '是否通过笔试'),
+                              maxLength: 50,
+                              name: 'fdWrittenPass',
+                              placeholder: fmtMsg(':cmsProjectWritten.form.!{l5i2sy277m7ezhzujdi}', '请输入'),
+                              options: [
+                                {
+                                  label: fmtMsg(':cmsProjectWritten.form.!{l5i2sy28xusq600dt4r}', '通过'),
+                                  value: '1'
+                                },
+                                {
+                                  label: fmtMsg(':cmsProjectWritten.form.!{l5i2sy2bt4d2xu68k4d}', '不通过'),
+                                  value: '0'
+                                }
+                              ],
+                              optionSource: 'custom',
+                              desktop: {
+                                type: XformSelect
+                              },
+                              type: XformSelect,
+                              passValue: true,
+                              showStatus: 'edit'
+                            },
+                            labelProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5i2sy26tahw90jp8ej}', '是否通过笔试'),
+                              desktop: {
+                                layout: 'vertical'
+                              }
+                            },
+                            label: fmtMsg(':cmsProjectWritten.form.!{l5i2sy26tahw90jp8ej}', '是否通过笔试')
+                          },
+
+                          {
+                            type: XformDatetime,
+                            controlProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5iziae2bzq0rckmq6}', '计划面试开始时间'),
+                              name: 'fdBeginTime',
+                              placeholder: fmtMsg(':cmsProjectWritten.form.!{l5iziae44d2by5dyv7w}', '请输入'),
+                              dataPattern: 'yyyy-MM-dd HH:mm',
+                              desktop: {
+                                type: XformDatetime
+                              },
+                              showStatus: 'edit'
+                            },
+                            labelProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5iziae2bzq0rckmq6}', '计划面试开始时间'),
+                              desktop: {
+                                layout: 'vertical'
+                              }
+                            },
+                            label: fmtMsg(':cmsProjectWritten.form.!{l5iziae2bzq0rckmq6}', '计划面试开始时间')
+                          },
+                          {
+                            type: XformDatetime,
+                            controlProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5izhz77fjktqau4o6p}', '计划面试结束时间'),
+                              name: 'fdEndTime',
+                              placeholder: fmtMsg(':cmsProjectWritten.form.!{l5izhz78u9a8rffwcyn}', '请输入'),
+                              dataPattern: 'yyyy-MM-dd HH:mm',
+                              desktop: {
+                                type: XformDatetime
+                              },
+                              showStatus: 'edit'
+                            },
+                            labelProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5izhz77fjktqau4o6p}', '计划面试结束时间'),
+                              desktop: {
+                                layout: 'vertical'
+                              }
+                            },
+                            label: fmtMsg(':cmsProjectWritten.form.!{l5izhz77fjktqau4o6p}', '计划面试结束时间')
+                          },
+
+
+
+                          {
+                            type: XformInput,
+                            controlProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5izigssxh9x6w7qrq}', '远程面试会议号'),
+                              maxLength: 100,
+                              name: 'fdMeetingNum',
+                              placeholder: fmtMsg(':cmsProjectWritten.form.!{l5izigstkbcmoluwehn}', '请输入'),
+                              desktop: {
+                                type: XformInput
+                              },
+                              showStatus: 'edit'
+                            },
+                            labelProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5izigssxh9x6w7qrq}', '远程面试会议号'),
+                              desktop: {
+                                layout: 'vertical'
+                              }
+                            },
+                            label: fmtMsg(':cmsProjectWritten.form.!{l5izigssxh9x6w7qrq}', '远程面试会议号')
                           }
-                        },
-                        label: fmtMsg(':cmsProjectWritten.form.!{l5izigssxh9x6w7qrq}', '远程面试会议号')
-                      }
-                    ]}
-                    canAddRow={true}
-                    canDeleteRow={true}
-                    canImport={true}
-                    showStatus="edit"
-                  ></XformDetailTable>
+                        ]}
+                        canAddRow={true}
+                        canDeleteRow={true}
+                        canImport={true}
+                        showStatus="edit"
+                      ></XformDetailTable>
+                    ): (
+                      <XformDetailTable
+                        {...sysProps}
+                        $$ref={detailForms.current.cmsProjectWrittenDe}
+                        $$tableType="detail"
+                        $$tableName="cmsProjectWrittenDe"
+                        title={fmtMsg(':cmsProjectWritten.form.!{l5hzifw3j5ed7kldmk9}', '明细表1')}
+                        defaultRowNumber={1}
+                        mobileRender={['simple']}
+                        pcSetting={['pagination']}
+                        showNumber={true}
+                        layout={'vertical'}
+                        hiddenLabel={true}
+                        columns={[
+                          {
+                            type: CMSXformModal,
+                            controlProps: {
+                              apiKey: apiStaffInfo,
+                              apiName: 'listStaffInfo',
+                              defaultTableCriteria: defaultTableCriteria,
+                              chooseFdName: 'fdName',
+                              columnsProps: outStaffInfoColumns,
+                              criteriaKey: 'staffReviewUpgrade',
+                              criteriaProps: ['fdStaffName.fdName', 'fdName'],
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5i2iuv598u3ufwarkj}', '姓名'),
+                              name: 'fdInterviewName',
+                              renderMode: 'singlelist',
+                              direction: 'column',
+                              rowCount: 3,
+                              modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
+                              options: [
+                                {
+                                  fdName: '选项1',
+                                  fdId: '1'
+                                },
+                                {
+                                  fdName: '选项2',
+                                  fdId: '2'
+                                },
+                                {
+                                  fdName: '选项3',
+                                  fdId: '3'
+                                }
+                              ],
+                              desktop: {
+                                type: CMSXformModal
+                              },
+                              relationCfg: {
+                                appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
+                                xformName: '外包人员信息',
+                                modelId: '1g7tuuns0w13w13engw3a36caf238o0d15w0',
+                                tableType: 'main',
+                                tableName: 'mk_model_20220714k2uvx',
+                                showFields: '$姓名$',
+                                refFieldName: '$fd_name$'
+                              },
+                              type: CMSXformModal,
+                              onChangeProps: async (v, r) => {
+                                sysProps.$$form.current.updateFormItemProps('cmsProjectWrittenDe', {
+                                  rowValue: {
+                                    rowNum: r,
+                                    value: {
+                                      fdSupplier: v.fdSupplier,
+                                      fdMajor: v.fdMajor,
+                                      fdEmail: v.fdEmail,
+                                      fdWrittenPass: '',
+                                      fdWrittenScores: '',
+                                      fdInterviewName: v
+                                    }
+                                  }
+                                })
+                              },
+                              isForwardView: 'no',
+                              showStatus: 'edit'
+                            },
+                            labelProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5i2iuv598u3ufwarkj}', '姓名'),
+                              desktop: {
+                                layout: 'vertical'
+                              }
+                            },
+                            label: fmtMsg(':cmsProjectWritten.form.!{l5i2iuv598u3ufwarkj}', '姓名'),
+                            options: {
+                              validateRules: {
+                                required: true,
+                                message: fmtMsg(':required', '内容不能为空')
+                              }
+                            }
+                          },
+                          {
+                            type: XformSelect,
+                            controlProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5i2e44y9gjv4vhmjr5}', '供应商名称'),
+                              name: 'fdSupplier',
+                              placeholder: fmtMsg(':cmsProjectWritten.form.!{l5i2sy277m7ezhzujdi}', '请输入'),
+                              renderMode: 'select',
+                              direction: 'column',
+                              rowCount: 3,
+                              modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
+                              isForwardView: 'no',
+                              options: supplierData,
+                              desktop: {
+                                type: XformSelect
+                              },
+                              relationCfg: {
+                                appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
+                                xformName: '供应商信息',
+                                modelId: '1g777qg92w10wcf2w1jiihhv3oqp4s6nr9w0',
+                                tableType: 'main',
+                                tableName: 'mk_model_20220705vk0ha',
+                                showFields: '$供应商名称$',
+                                refFieldName: '$fd_supplier_name$'
+                              },
+                              type: XformSelect,
+                              showStatus: EShowStatus.readOnly
+                            },
+                            labelProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5i2e44y9gjv4vhmjr5}', '供应商名称'),
+                              desktop: {
+                                layout: 'vertical'
+                              }
+                            },
+                            label: fmtMsg(':cmsProjectWritten.form.!{l5i2e44y9gjv4vhmjr5}', '供应商名称')
+                          },
+                          {
+                            type: XformSelect,
+                            controlProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5izeh8ya568lfqhw1}', '学历'),
+                              maxLength: 50,
+                              name: 'fdMajor',
+                              placeholder: fmtMsg(':cmsProjectWritten.form.!{l5i2sy277m7ezhzujdi}', '请输入'),
+                              options: [
+                                {
+                                  label: fmtMsg(':cmsProjectWritten.form.!{l3lb8gpoaz0xj1znu5e}', '高中'),
+                                  value: '1'
+                                },
+                                {
+                                  label: fmtMsg(':cmsProjectWritten.form.!{l3lb8gpqsa1dkyunv4g}', '专科'),
+                                  value: '2'
+                                },
+                                {
+                                  label: fmtMsg(':cmsProjectWritten.form.!{l3lb8gptifemq19c12}', '本科'),
+                                  value: '3'
+                                },
+                                {
+                                  label: fmtMsg(':cmsProjectWritten.form.!{l3lb8gpvwi2j25x1zbt}', '研究生'),
+                                  value: '4'
+                                }
+                              ],
+                              optionSource: 'custom',
+                              desktop: {
+                                type: XformSelect
+                              },
+                              type: XformSelect,
+                              showStatus: EShowStatus.readOnly
+                            },
+                            labelProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5izeh8ya568lfqhw1}', '学历'),
+                              desktop: {
+                                layout: 'vertical'
+                              }
+                            },
+                            label: fmtMsg(':cmsProjectWritten.form.!{l5izeh8ya568lfqhw1}', '学历')
+                          },
+                          {
+                            type: XformInput,
+                            controlProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5i2r5c8ax8fakvlo08}', '邮箱'),
+                              maxLength: 100,
+                              name: 'fdEmail',
+                              placeholder: fmtMsg(':cmsProjectWritten.form.!{l5i2r5c9cv95w3a6gai}', '请输入'),
+                              desktop: {
+                                type: XformInput
+                              },
+                              type: XformInput,
+                              showStatus: EShowStatus.readOnly
+                            },
+                            labelProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5i2r5c8ax8fakvlo08}', '邮箱'),
+                              desktop: {
+                                layout: 'vertical'
+                              }
+                            },
+                            label: fmtMsg(':cmsProjectWritten.form.!{l5i2r5c8ax8fakvlo08}', '邮箱')
+                          },
+                          {
+                            type: XformNumber,
+                            controlProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5i2r9d4aemiawkvbr}', '笔试得分'),
+                              name: 'fdWrittenScores',
+                              placeholder: fmtMsg(':cmsProjectWritten.form.!{l5i2r9d5i4h8wdz6su}', '请输入'),
+                              numberFormat: {
+                                formatType: 'base'
+                              },
+                              desktop: {
+                                type: XformNumber
+                              },
+                              type: XformNumber,
+                              showStatus: 'edit',
+                              controlActions: {
+                                'onChange': [{
+                                  function: (v, r) => {
+                                    const fdQualifiedMark = form.getFieldValue('fdQualifiedMark')
+                                    if (!fdQualifiedMark) {
+                                      Message.error('请输入合格分数线', 1)
+                                      return
+                                    }
+                                    const fdWrittenPass = v >= fdQualifiedMark ? '1' : '0'
+                                    sysProps.$$form.current.updateFormItemProps('cmsProjectWrittenDe', {
+                                      rowValue: {
+                                        rowNum: r,
+                                        value: {
+                                          fdWrittenPass: fdWrittenPass,
+                                        }
+                                      }
+                                    })
+                                    checkDetailWS(fdQualifiedMark)
+                                  }
+                                }]
+                              }
+                            },
+                            labelProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5i2r9d4aemiawkvbr}', '笔试得分'),
+                              desktop: {
+                                layout: 'vertical'
+                              }
+                            },
+                            label: fmtMsg(':cmsProjectWritten.form.!{l5i2r9d4aemiawkvbr}', '笔试得分'),
+                            options: {
+                              validateRules: {
+                                required: true,
+                                message: fmtMsg(':required', '内容不能为空')
+                              }
+                            }
+                          },
+                          {
+                            type: XformSelect,
+                            controlProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5i2sy26tahw90jp8ej}', '是否通过笔试'),
+                              maxLength: 50,
+                              name: 'fdWrittenPass',
+                              placeholder: fmtMsg(':cmsProjectWritten.form.!{l5i2sy277m7ezhzujdi}', '请输入'),
+                              options: [
+                                {
+                                  label: fmtMsg(':cmsProjectWritten.form.!{l5i2sy28xusq600dt4r}', '通过'),
+                                  value: '1'
+                                },
+                                {
+                                  label: fmtMsg(':cmsProjectWritten.form.!{l5i2sy2bt4d2xu68k4d}', '不通过'),
+                                  value: '0'
+                                }
+                              ],
+                              optionSource: 'custom',
+                              desktop: {
+                                type: XformSelect
+                              },
+                              type: XformSelect,
+                              passValue: true,
+                              showStatus: 'edit'
+                            },
+                            labelProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5i2sy26tahw90jp8ej}', '是否通过笔试'),
+                              desktop: {
+                                layout: 'vertical'
+                              }
+                            },
+                            label: fmtMsg(':cmsProjectWritten.form.!{l5i2sy26tahw90jp8ej}', '是否通过笔试')
+                          },
+                          {
+                            type: XformInput,
+                            controlProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5izigssxh9x6w7qrq}', '远程面试会议号'),
+                              maxLength: 100,
+                              name: 'fdMeetingNum',
+                              placeholder: fmtMsg(':cmsProjectWritten.form.!{l5izigstkbcmoluwehn}', '请输入'),
+                              desktop: {
+                                type: XformInput
+                              },
+                              showStatus: 'edit'
+                            },
+                            labelProps: {
+                              title: fmtMsg(':cmsProjectWritten.form.!{l5izigssxh9x6w7qrq}', '远程面试会议号'),
+                              desktop: {
+                                layout: 'vertical'
+                              }
+                            },
+                            label: fmtMsg(':cmsProjectWritten.form.!{l5izigssxh9x6w7qrq}', '远程面试会议号')
+                          }
+                        ]}
+                        canAddRow={true}
+                        canDeleteRow={true}
+                        canImport={true}
+                        showStatus="edit"
+                      ></XformDetailTable>
+                    )
+                  } 
+                  
+
+
+
                 </Form.Item>
               </XformFieldset>
             </GridItem>
@@ -635,39 +943,6 @@ const XForm = (props) => {
                     placeholder={fmtMsg(':cmsProjectInterview.form.!{l5hz9wxdne6ahfqosua}', '请输入')}
                     showStatus={EShowStatus.edit}
                   ></XformInput>
-
-                  {/* <XformRelation
-                    {...sysProps}
-                    renderMode={'select'}
-                    direction={'column'}
-                    rowCount={3}
-                    modelName={'com.landray.sys.xform.core.entity.design.SysXFormDesign'}
-                    options={[
-                      {
-                        fdName: '选项1',
-                        fdId: '1'
-                      },
-                      {
-                        fdName: '选项2',
-                        fdId: '2'
-                      },
-                      {
-                        fdName: '选项3',
-                        fdId: '3'
-                      }
-                    ]}
-                    relationCfg={{
-                      appCode: '1g77dbphcw10w198swtqlij1fbb1uj3tkuw0',
-                      xformName: '项目需求',
-                      modelId: '1g7oh4ag9w11wci9gw3c6rh9h3ebmc2619w0',
-                      tableType: 'main',
-                      tableName: 'mk_model_202207128b999',
-                      showFields: '$项目名称$',
-                      refFieldName: '$fd_project$'
-                    }}
-                    isForwardView={'no'}
-                    showStatus="edit"
-                  ></XformRelation> */}
                 </Form.Item>
               </XformFieldset>
             </GridItem>
@@ -701,109 +976,138 @@ const XForm = (props) => {
                     serialType={'empty'}
                     optionSource={'custom'}
                     showStatus="edit"
-                    // defaultValue='1'
-                  ></XformCheckbox>
-                </Form.Item>
-              </XformFieldset>
-            </GridItem>
-            <GridItem column={2} row={5} rowSpan={1} columnSpan={1}>
-              <XformFieldset
-                labelTextAlign={'left'}
-                mobileContentAlign={'right'}
-                title={fmtMsg(':cmsProjectWritten.form.!{l5hzlb769gv64l5j7ke}', '面试官')}
-                layout={'horizontal'}
-              >
-                <Form.Item name={'fdInterviewer'}>
-                  <XformAddress
-                    {...sysProps}
-                    multi={true}
-                    org={{
-                      orgTypeArr: ['8'],
-                      defaultValueType: 'null'
-                    }}
-                    range={'all'}
-                    preSelectType={'fixed'}
-                    showStatus="edit"
-                  ></XformAddress>
-                </Form.Item>
-              </XformFieldset>
-            </GridItem>
-            <GridItem column={1} row={6} columnSpan={1} rowSpan={1}>
-              <XformFieldset
-                labelTextAlign={'left'}
-                mobileContentAlign={'right'}
-                title={fmtMsg(':cmsProjectWritten.form.!{l5hzkchugrzq1fyh4b}', '邮件通知供应商')}
-                layout={'horizontal'}
-              >
-                <Form.Item
-                  name={'fdNoticeSupplier'}
-                  rules={[
-                    {
-                      validator: lengthValidator(200)
-                    }
-                  ]}
-                  // initialValue={{
-                  //   label: fmtMsg(':cmsProjectWritten.form.!{l5hzkchwh5z2hpqmbm6}', '是'),
-                  //   value: '1'
-                  // }}
-                >
-                  <XformCheckbox
-                    {...sysProps}
-                    multi={true}
-                    options={[
-                      {
-                        label: fmtMsg(':cmsProjectWritten.form.!{l5hzkchwh5z2hpqmbm6}', '是'),
-                        value: '1'
-                      }
-                    ]}
-                    rowCount={3}
-                    direction={'column'}
-                    serialType={'empty'}
-                    optionSource={'custom'}
-                    showStatus="edit"
-                    // defaultValue='1'
-                    onChange={(v) => setNSVisible(v?.[0])}
+                    onChange={(v) => setIvVisible(v?.[0])}
                   ></XformCheckbox>
                 </Form.Item>
               </XformFieldset>
             </GridItem>
             {
-              nSVisible === '1' ?
+              ivVisible === '1' ?
                 (<React.Fragment>
-                  <GridItem column={2} row={6} columnSpan={1} rowSpan={1}
-                    // style={{
-                    //   display: 'none'
-                    // }}
-                  >
-                    <Form.Item name={'fdSupplierTotal'}>
-                      {/* <XformModal
-                        {...props}
-                        multiple={true}
-                        showFooter={true}
-                        columnsProps={supplierColumns}
-                        chooseFdName='fdSupplierName'
-                        apiKey={apiSupplier}
-                        apiName={'listSupplierInfo'}
-                        criteriaKey='supplierCriertia'
-                        showStatus={EShowStatus.edit}
-                        modalTitle='供应商选择'
-                        criteriaProps={['fdOrgCode', 'fdFrame.fdName']}
-                      /> */}
-                      
-                      <XformSelect
-                        {...sysProps}
-                        multi={true}
-                        placeholder={fmtMsg(':cmsOutStaffInfo.form.!{l3mpxl7izzanc6s2rh}', '请输入')}
-                        options={supplierData}
-                        optionSource={'custom'}
-                        showStatus={EShowStatus.readOnly}
-                      ></XformSelect>
-                      
-                    </Form.Item>
+                  <GridItem column={2} row={5} rowSpan={1} columnSpan={1}>
+                    <XformFieldset
+                      labelTextAlign={'left'}
+                      mobileContentAlign={'right'}
+                      title={fmtMsg(':cmsProjectWritten.form.!{l5hzlb769gv64l5j7ke}', '面试官')}
+                      layout={'horizontal'}
+                    >
+                      <Form.Item name={'fdInterviewer'}>
+                        <XformAddress
+                          {...sysProps}
+                          multi={true}
+                          org={{
+                            orgTypeArr: ['8'],
+                            defaultValueType: 'null'
+                          }}
+                          range={'all'}
+                          preSelectType={'fixed'}
+                          showStatus="edit"
+                        ></XformAddress>
+                      </Form.Item>
+                    </XformFieldset>
+                  </GridItem>
+
+                  <GridItem column={1} row={6} columnSpan={1} rowSpan={1}>
+                    <XformFieldset
+                      labelTextAlign={'left'}
+                      mobileContentAlign={'right'}
+                      title={fmtMsg(':cmsProjectWritten.form.!{l5hzkchugrzq1fyh4b}', '邮件通知供应商')}
+                      layout={'horizontal'}
+                    >
+                      <Form.Item
+                        name={'fdNoticeSupplier'}
+                        rules={[
+                          {
+                            validator: lengthValidator(200)
+                          }
+                        ]}
+                      // initialValue={{
+                      //   label: fmtMsg(':cmsProjectWritten.form.!{l5hzkchwh5z2hpqmbm6}', '是'),
+                      //   value: '1'
+                      // }}
+                      >
+                        <XformCheckbox
+                          {...sysProps}
+                          multi={true}
+                          options={[
+                            {
+                              label: fmtMsg(':cmsProjectWritten.form.!{l5hzkchwh5z2hpqmbm6}', '是'),
+                              value: '1'
+                            }
+                          ]}
+                          rowCount={3}
+                          direction={'column'}
+                          serialType={'empty'}
+                          optionSource={'custom'}
+                          showStatus="edit"
+                          onChange={(v) => setNSVisible(v?.[0])}
+                        ></XformCheckbox>
+                      </Form.Item>
+                    </XformFieldset>
+                  </GridItem>
+                  {
+                    nSVisible === '1' ?
+                      (<React.Fragment>
+                        <GridItem column={2} row={6} columnSpan={1} rowSpan={1}
+                        >
+                          <Form.Item name={'fdSupplierTotal'}>
+                            <XformSelect
+                              {...sysProps}
+                              multi={true}
+                              placeholder={fmtMsg(':cmsOutStaffInfo.form.!{l3mpxl7izzanc6s2rh}', '请输入')}
+                              options={supplierData}
+                              optionSource={'custom'}
+                              showStatus={EShowStatus.readOnly}
+                            ></XformSelect>
+                          </Form.Item>
+                        </GridItem>
+                        <GridItem
+                          column={2}
+                          row={6}
+                          style={{
+                            display: 'none'
+                          }}
+                          rowSpan={1}
+                          columnSpan={1}
+                        ></GridItem>
+                      </React.Fragment>) : null
+                  }
+                  <GridItem column={1} row={7} columnSpan={2} rowSpan={1}>
+                    <XformFieldset
+                      labelTextAlign={'left'}
+                      mobileContentAlign={'right'}
+                      title={fmtMsg(':cmsProjectWritten.form.!{l5hzkx122azhemlsism}', '邮件通知面试官')}
+                      layout={'horizontal'}
+                    >
+                      <Form.Item
+                        name={'fdNoticeInterviewer'}
+                        rules={[
+                          {
+                            validator: lengthValidator(200)
+                          }
+                        ]}
+                      >
+                        <XformCheckbox
+                          {...sysProps}
+                          multi={true}
+                          options={[
+                            {
+                              label: fmtMsg(':cmsProjectWritten.form.!{l5hzkx14yy8eit54dhn}', '是'),
+                              value: '1'
+                            }
+                          ]}
+                          rowCount={3}
+                          direction={'column'}
+                          serialType={'empty'}
+                          optionSource={'custom'}
+                          showStatus="edit"
+                        ></XformCheckbox>
+                      </Form.Item>
+                    </XformFieldset>
                   </GridItem>
                   <GridItem
                     column={2}
-                    row={6}
+                    row={7}
                     style={{
                       display: 'none'
                     }}
@@ -812,51 +1116,7 @@ const XForm = (props) => {
                   ></GridItem>
                 </React.Fragment>) : null
             }
-
             
-            <GridItem column={1} row={7} columnSpan={2} rowSpan={1}>
-              <XformFieldset
-                labelTextAlign={'left'}
-                mobileContentAlign={'right'}
-                title={fmtMsg(':cmsProjectWritten.form.!{l5hzkx122azhemlsism}', '邮件通知面试官')}
-                layout={'horizontal'}
-              >
-                <Form.Item
-                  name={'fdNoticeInterviewer'}
-                  rules={[
-                    {
-                      validator: lengthValidator(200)
-                    }
-                  ]}
-                >
-                  <XformCheckbox
-                    {...sysProps}
-                    multi={true}
-                    options={[
-                      {
-                        label: fmtMsg(':cmsProjectWritten.form.!{l5hzkx14yy8eit54dhn}', '是'),
-                        value: '1'
-                      }
-                    ]}
-                    rowCount={3}
-                    direction={'column'}
-                    serialType={'empty'}
-                    optionSource={'custom'}
-                    showStatus="edit"
-                    // defaultValue='1'
-                  ></XformCheckbox>
-                </Form.Item>
-              </XformFieldset>
-            </GridItem>
-            <GridItem
-              column={2}
-              row={7}
-              style={{
-                display: 'none'
-              }}
-              rowSpan={1}
-              columnSpan={1}
-            ></GridItem>
           </LayoutGrid>
         </XformAppearance>
       </Form>
