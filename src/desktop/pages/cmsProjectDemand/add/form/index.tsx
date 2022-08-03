@@ -51,7 +51,8 @@ const XForm = (props) => {
   const [isSupplierRange, setIsSupplierRange] = useState<boolean>(false)
   // 指定供应商值
   const [assignSupplier, setAssignSupplier] = useState<string | undefined>('')
-
+  // 选定的框架类型
+  const [selectedFrame, setSelectedFrame] = useState<string>('')
   useEffect(() => {
     init()
   }, [])
@@ -162,14 +163,20 @@ const XForm = (props) => {
                       modalTitle='项目名称选择'
                       criteriaKey='projectCriertia'
                       criteriaProps={['fdFrame.fdName']}
-                      onChangeProps={(v)=>{
+                      onChangeProps={(v) => {
+                        console.log('v5559', v)
+                        setIsFrameChild(v.fdFrame.fdName === '设计类')
+                        setSelectedFrame(v.fdFrame.fdId)
                         form.setFieldsValue({
                           fdInnerLeader: v.fdInnerPrincipal,
                           fdProjectNum: v.fdCode,
-                          fdBelongDept:v.fdBelongDept,
-                          fdProjectLeader:v.fdProjectPrincipal,
-                          fdBelongTeam:v.fdBelongTeam
+                          fdBelongDept: v.fdBelongDept,
+                          fdProjectLeader: v.fdProjectPrincipal,
+                          fdBelongTeam: v.fdBelongTeam,
+                          fdFrame: v.fdFrame,
+                          fdSupplier: undefined
                         })
+                        setAssignSupplier(undefined)
                       }}
                     />
                   </Form.Item>
@@ -373,11 +380,14 @@ const XForm = (props) => {
                       placeholder={fmtMsg(':cmsOutStaffInfo.form.!{l3mpxl7izzanc6s2rh}', '请输入')}
                       options={frameData}
                       optionSource={'custom'}
-                      showStatus="edit"
-                      onChange={(v) => {
-                        const frameObj = frameData.find(item => item.fdId === v)
-                        setIsFrameChild(frameObj.fdName === '设计类')
-                      }}
+                      showStatus="readOnly"
+                    // onChange={(v) => {
+                    //   const frameObj = frameData.find(item => item.fdId === v)
+                    //   setIsFrameChild(frameObj.fdName === '设计类')
+                    //   form.setFieldsValue({
+                    //     fdSupplies: []
+                    //   })
+                    // }}
                     ></XformSelect>
                   </Form.Item>
                 </XformFieldset>
@@ -532,6 +542,12 @@ const XForm = (props) => {
                                 {...props}
                                 columnsProps={supplierColumns}
                                 chooseFdName='fdSupplierName'
+                                defaultTableCriteria={{
+                                  'fdFrame.fdId': {
+                                    searchKey: '$eq',
+                                    searchValue: selectedFrame || ''
+                                  }
+                                }}
                                 apiKey={apiSupplier}
                                 apiName={'listSupplierInfo'}
                                 criteriaKey='supplierCriertia'
@@ -1119,22 +1135,29 @@ const XForm = (props) => {
                       chooseFdName='fdSupplierName'
                       apiKey={apiSupplier}
                       apiName={'listSupplierInfo'}
-                      criteriaKey='supplierCriertia'
+                      criteriaKey='demandSupplier'
                       showStatus='add'
-                      criteriaProps={['fdOrgCode', 'fdFrame.fdName']}
+                      criteriaProps={['fdOrgCode', 'fdFrame.fdName', 'fdSupplierName']}
                       modalTitle='供应商选择'
                       showFooter={true}
                       multiple={true}
                       defaultTableCriteria={{
                         'fdSupplierName': {
-                          searchKey: '$contains',
+                          searchKey: '$eq',
                           searchValue: assignSupplier || undefined
+                        },
+                        'fdFrame.fdId': {
+                          searchKey: '$eq',
+                          searchValue: selectedFrame || ''
                         }
                       }}
                       onChange={(v) => {
                         // 给明细表默认加行数并赋值默认数据
                         const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectDemandSupp').values
-                        const newValuesData = v.length && v.filter(item => !valuesData.map(itemChild => itemChild.fdSupplier.fdId).includes(item.fdId))
+                        const newValuesData = v.length && v.filter(item => !valuesData.map(itemChild => itemChild.fdSupplier.fdId).includes(item.fdId)) || []
+                        form.setFieldsValue({
+                          fdSupplies: v
+                        })
                         sysProps.$$form.current.updateFormItemProps('cmsProjectDemandSupp', {
                           rowValue: newValuesData.map(item => ({
                             fdFrame: item.fdFrame,

@@ -58,7 +58,7 @@ export const lastHandlerList = (listData) => {
   const arr = listData.map(item => (
     {
       text: (item.lbpm_last_handler && item.lbpm_last_handler.lastHandlerName) || '无',
-      value: (item.lbpm_last_handler &&item.lbpm_last_handler.lastHandlerId) || ''
+      value: (item.lbpm_last_handler && item.lbpm_last_handler.lastHandlerId) || ''
     }
   ))
   const res = new Map()
@@ -169,9 +169,9 @@ export const getUrlParameter = (url, param) => {
   // @ts-ignore
   const re = new RegExp()
   // @ts-ignore
-  re.compile('[\\?&]'+param+'=([^(&|#)]*)', 'i')
+  re.compile('[\\?&]' + param + '=([^(&|#)]*)', 'i')
   const arr = re.exec(url)
-  if(arr==null) {
+  if (arr == null) {
     return null
   }
   return decodeURIComponent(arr[1])
@@ -210,3 +210,19 @@ export const showHTTPErrorMessage = (err, cb?: any) => {
     流程管理_删除文档 : ROLE_KMREVIEW_MAIN_DELETE
     流程管理_查看所有流程模板 : ROLE_KMREVIEW_TEMPLATE_VIEW
  */
+
+/**将conditions的参数改为contains */
+export const renderConditions = (oldConditions, values, arr) => {
+  const newData = arr.map(i => {
+    const value = values.find(item => item.name === i)
+    return value
+  })
+  newData.forEach(i => {
+    if (i.value.length) {
+      oldConditions[i.name] = {
+        '$contains': i.value[0].value
+      }
+    }
+  })
+  return oldConditions
+}

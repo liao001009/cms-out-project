@@ -171,10 +171,13 @@
           flex-direction: column;
           overflow-x: hidden;
           padding: 0;
-          .lui-btns-tabs,.tabs{
-            padding:0 20px;
+          flex: 1;
+
+          .lui-btns-tabs, .tabs {
+            padding: 0 20px;
             background-color: #fff;
           }
+
           .form {
             width: 100%;
 

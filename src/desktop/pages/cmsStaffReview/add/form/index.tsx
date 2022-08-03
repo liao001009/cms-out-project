@@ -561,7 +561,7 @@ const XForm = (props) => {
                       defaultTableCriteria={{
                         'fdId': {
                           'searchKey': '$in',
-                          'searchValue': supplierInfoArr || []
+                          'searchValue': supplierInfoArr.length && supplierInfoArr || ['']
                         }
                       }}
                       modalTitle='中选供应商选择'

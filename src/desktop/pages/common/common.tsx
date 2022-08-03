@@ -1,6 +1,20 @@
 import React from 'react'
 import Criteria from '@elem/criteria'
 import { Tooltip } from '@lui/core'
+
+const renderFdrame = (value) => {
+  return (
+    <React.Fragment>
+      {
+        value.map((i, index) => {
+          return (
+            <span key={i.fdId}>{i.fdName}{index === value.length - 1 ? '' : ','}</span>
+          )
+        })
+      }
+    </React.Fragment>
+  )
+}
 // 供应商
 export const supplierColumns = [
   /*供应商名称*/
@@ -19,7 +33,7 @@ export const supplierColumns = [
   {
     title: '所属框架',
     dataIndex: 'fdFrame',
-    render: (value) => value && value.fdName
+    render: (value) => value.length && renderFdrame(value)
   },
   /*供应商合作状态*/
   {
@@ -589,6 +603,41 @@ export const supplierCriertia = () => {
     </React.Fragment>
   )
 }
+
+// 供应商筛选
+const demandSupplier = () => {
+  return (
+    <React.Fragment>
+      <Criteria.Input name="fdOrgCode" title="组织机构代码"></Criteria.Input>
+      <Criteria.Input name="fdSupplierName" title="供应商名称"></Criteria.Input>
+      <Criteria.Criterion
+        canMulti={false}
+        options={[
+          {
+            text: '不限',
+            value: ''
+          },
+          {
+            text: '未签合同',
+            value: '1'
+          },
+          {
+            text: '已签合同',
+            value: '2'
+          },
+          {
+            text: '合同过期',
+            value: '3'
+          }
+        ]}
+        name="fdCooperationStatus"
+        title="供应商合作状态"
+      ></Criteria.Criterion>
+      <Criteria.Input name="fdFrame.fdName" title="所属框架"></Criteria.Input>
+    </React.Fragment>
+  )
+}
+
 // 项目表格筛选
 export const projectCriertia = () => {
   // [{
@@ -764,5 +813,5 @@ export const criertiaObj = {
   projectCriertia: projectCriertia(),
   presonCriertia: presonCriertia(),
   projectSelectInfoCriertia: projectSelectInfoCriertia(),
-
+  demandSupplier: demandSupplier()
 }

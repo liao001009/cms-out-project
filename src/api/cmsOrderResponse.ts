@@ -10,7 +10,9 @@ const api = {
   // 订单响应(列表请求)
   listOrder: Api.build('cmsOrderResponse/listOrder', http),
   // 订单响应人员列表
-  listStaff: Api.build('cmsOrderResponse/listStaff', http)
+  listStaff: Api.build('cmsOrderResponse/listStaff', http),
+  // 订单响应带人员信息列表
+  listOrderDetail: Api.build('cmsOrderResponse/listOrderDetail', http)
 }
 
 export default api

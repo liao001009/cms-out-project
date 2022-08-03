@@ -220,7 +220,7 @@ const XformModal: React.FC<IProps> = (props) => {
           $contains: conditions[item]['$eq']
         } : undefined
       })
-      if (defaultTableCriteria) {
+      if (Object.keys(defaultTableCriteria).length) {
 
         const defaultConditions = {}
         Object.keys(defaultTableCriteria).forEach(key => {
@@ -230,7 +230,7 @@ const XformModal: React.FC<IProps> = (props) => {
         })
         getListData({
           ...query,
-          conditions: { ...conditions, ...newConditions, ...defaultConditions }
+          conditions: { ...conditions, ...defaultConditions, ...newConditions }
         })
       } else {
         getListData({
@@ -263,7 +263,7 @@ const XformModal: React.FC<IProps> = (props) => {
         return <span style={{ color: '#c3c3c3' }}>请选择</span>
       }
     } else {
-      if (initSelectedArr && initSelectedArr.length) {
+      if (initSelectedArr.length) {
         return initSelectedArr.map(i => {
           return <Tag key={i.fdId}>{i.fdName}</Tag>
         })
@@ -275,9 +275,11 @@ const XformModal: React.FC<IProps> = (props) => {
   const handleCancel = () => {
     setFlag(false)
     setVisible(false)
-    multiple && setSelectedRows(initSelectedArr.length && initSelectedArr.map(i => i.fdId))
-    const newData = listData?.content.length && listData?.content.filter(item => initSelectedArr.includes(item.fdId))
-    onChange && onChange(newData)
+    if (multiple) {
+      setSelectedRows(initSelectedArr.length && initSelectedArr.map(i => i.fdId))
+      const newData = listData?.content.length && listData?.content.filter(item => initSelectedArr.includes(item.fdId))
+      onChange && onChange(newData)
+    }
   }
 
   const readOnlyStyle = {
@@ -291,16 +293,16 @@ const XformModal: React.FC<IProps> = (props) => {
     <React.Fragment>
       <div>
         {
-          showStatus === 'edit' || showStatus === 'add' || showStatus === 'readOnly' ? multiple ? (
+          showStatus === 'edit' || showStatus === 'add' || showStatus === 'readOnly' ? (multiple ? (
             <div className='multiple-input' style={showStatus === 'readOnly' ? readOnlyStyle : {}} onClick={() => setVisible(true)}>
               {renderTag()}
             </div>
           ) : (
             <Input placeholder='请输入' disabled={showStatus === 'readOnly'} onClick={() => setVisible(true)} value={fdName} />
-          ) : (
+          )) : (
             <span>
               {
-                Array.isArray(value) ? value.map(item => item.fdName).join(',') : value && value[chooseFdName]
+                Array.isArray(value) ? value.map(item => item.fdName).join(',') : value && value[chooseFdName] || ''
               }
             </span>
           )

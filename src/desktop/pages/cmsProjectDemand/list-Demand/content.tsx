@@ -7,6 +7,7 @@ import { $reduceCriteria } from '@/desktop/shared/criteria'
 import Operation from '@elem/operation'
 import Table, { useTable } from '@elem/mk-table'
 import api from '@/api/cmsProjectDemand'
+import { renderConditions } from '@/desktop/shared/util'
 import apiTemplate from '@/api/cmsProjectDemandTemplate'
 import { $deleteAll } from '@/desktop/shared/deleteAll'
 import './index.scss'
@@ -41,6 +42,12 @@ const Content: React.FC<IContentViewProps> = (props) => {
         title: '项目名称',
         dataIndex: 'fdProject',
         render: (value) => value && value.fdName
+      },
+      /**主题 */
+      {
+        title: '主题',
+        dataIndex: 'fdSubject',
+        render: (value) => value
       },
       /*所属框架*/
       {
@@ -150,7 +157,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
       event.stopPropagation()
       history.goto(`/cmsProjectDemand/add/${templateData.fdId}`)
     },
-    [history, selectedRows, refresh,templateData]
+    [history, selectedRows, refresh, templateData]
   )
   //批量删除
   const handleDeleteAll = useCallback(
@@ -179,24 +186,16 @@ const Content: React.FC<IContentViewProps> = (props) => {
   /** 筛选 */
   const handleCriteriaChange = useCallback(
     (value, values) => {
-      const conditions = $reduceCriteria(query, values)
-      console.log('conditions',conditions)
-      let conditionsCompare = {} as any
-      if (conditions['fdProject.fdName'] || conditions['fdFrame.fdName']) {
-        conditionsCompare = {
-          ...conditions,
-          'fdProject.fdName': conditions['fdProject.fdName'] && { $contains: conditions['fdProject.fdName'].$eq },
-          'fdFrame.fdName': conditions['fdFrame.fdName'] && { $contains: conditions['fdFrame.fdName'].$eq },
-        }
-      } else {
-        conditionsCompare = {
-          ...conditions
-        }
+      let conditions = $reduceCriteria(query, values)
+      const newConditions = renderConditions(conditions, values, ['fdProject.fdName', 'fdFrame.fdName', 'fdSubject'])
+      conditions = {
+        ...conditions,
+        ...newConditions
       }
       queryChange &&
         queryChange({
           ...query,
-          conditions:conditionsCompare
+          conditions
         })
     },
     [query]
@@ -254,6 +253,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
             {/* 筛选器 */}
             <Criteria key="criteria" onChange={handleCriteriaChange}>
               <Criteria.Input name="fdProject.fdName" title="项目名称"></Criteria.Input>
+              <Criteria.Input name="fdSubject" title="主题"></Criteria.Input>
               <Criteria.Input name="fdFrame.fdName" title="所属框架"></Criteria.Input>
               <Criteria.Calendar
                 options={Criteria.Calendar.buildOptions()}
