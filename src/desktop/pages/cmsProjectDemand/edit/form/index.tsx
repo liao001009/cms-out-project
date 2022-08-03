@@ -44,14 +44,13 @@ const XForm = (props) => {
   // 框架数据
   const [levelData, setLevelData] = useState<any>([])
   // 是否指定供应商单选
-  const [isSuppler,setIsSuppler] = useState<boolean>(value.fdSupplierRange==='1')
+  const [isSuppler, setIsSuppler] = useState<boolean>(value.fdSupplierRange === '1')
   // 设计类需求子类显隐
-  const [isFrameChild,setIsFrameChild] = useState<boolean>(value.fdFrame.fdName === '设计类')
+  const [isFrameChild, setIsFrameChild] = useState<boolean>(value.fdFrame.fdName === '设计类')
   // 供应商范围
-  const [isSupplierRange,setIsSupplierRange] = useState<boolean>(value.fdIsAppoint === '1')
+  const [isSupplierRange, setIsSupplierRange] = useState<boolean>(value.fdIsAppoint === '1')
   // 指定供应商值
-  const [assignSupplier,setAssignSupplier] = useState<string | undefined>(value.fdSupplier.fdName)
-
+  const [assignSupplier, setAssignSupplier] = useState<string | undefined>(value?.fdSupplier?.fdName || '')
 
   useEffect(() => {
     init()
@@ -105,7 +104,7 @@ const XForm = (props) => {
     form,
     detailForms
   })
-  
+
   return (
     <div className={baseCls}>
       <div className="lui-xform">
@@ -163,13 +162,13 @@ const XForm = (props) => {
                       modalTitle='项目名称选择'
                       criteriaKey='projectCriertia'
                       criteriaProps={['fdFrame.fdName']}
-                      onChangeProps={(v)=>{
+                      onChangeProps={(v) => {
                         form.setFieldsValue({
                           fdInnerLeader: v.fdInnerPrincipal,
                           fdProjectNum: v.fdCode,
-                          fdBelongDept:v.fdBelongDept,
-                          fdProjectLeader:v.fdProjectPrincipal,
-                          fdBelongTeam:v.fdBelongTeam
+                          fdBelongDept: v.fdBelongDept,
+                          fdProjectLeader: v.fdProjectPrincipal,
+                          fdBelongTeam: v.fdBelongTeam
                         })
                       }}
                     />
@@ -375,9 +374,9 @@ const XForm = (props) => {
                       options={frameData}
                       optionSource={'custom'}
                       showStatus="edit"
-                      onChange={(v)=>{
-                        const frameObj = frameData.find(item=>item.fdId===v)
-                        setIsFrameChild(frameObj.fdName==='设计类')
+                      onChange={(v) => {
+                        const frameObj = frameData.find(item => item.fdId === v)
+                        setIsFrameChild(frameObj.fdName === '设计类')
                       }}
                     ></XformSelect>
                   </Form.Item>
@@ -461,11 +460,11 @@ const XForm = (props) => {
                       serialType={'empty'}
                       optionSource={'custom'}
                       showStatus="edit"
-                      onChange={(v)=>{
-                        setIsSupplierRange(v==='1')
+                      onChange={(v) => {
+                        setIsSupplierRange(v === '1')
                         form.setFieldsValue({
-                          fdIsAppoint:undefined,
-                          fdSupplier:undefined
+                          fdIsAppoint: undefined,
+                          fdSupplier: undefined
                         })
                         setAssignSupplier(undefined)
                       }}
@@ -508,18 +507,18 @@ const XForm = (props) => {
                             serialType={'empty'}
                             optionSource={'custom'}
                             showStatus="edit"
-                            onChange={(v) =>{
+                            onChange={(v) => {
                               setIsSuppler(v === '1')
                               form.setFieldsValue({
-                                fdSupplier:undefined
+                                fdSupplier: undefined
                               })
                               setAssignSupplier(undefined)
-                            } }
+                            }}
                           ></XformRadio>
                         </Form.Item>
                       </XformFieldset>
                     </GridItem>
-                    {  
+                    {
                       isSuppler && (
                         <GridItem column={21} row={10} rowSpan={1} columnSpan={20}>
                           <XformFieldset
@@ -539,7 +538,7 @@ const XForm = (props) => {
                                 showStatus='add'
                                 modalTitle='供应商选择'
                                 criteriaProps={['fdOrgCode', 'fdFrame.fdName']}
-                                onChange={(v)=>setAssignSupplier(v.fdName)}
+                                onChange={(v) => setAssignSupplier(v.fdName)}
                               />
                             </Form.Item>
                           </XformFieldset>
@@ -690,7 +689,7 @@ const XForm = (props) => {
                   required={true}
 
                 >
-                  <Form.Item 
+                  <Form.Item
                     name={'fdAdmissionTime'}
                     rules={[
                       {
@@ -717,7 +716,7 @@ const XForm = (props) => {
                   required={true}
 
                 >
-                  <Form.Item 
+                  <Form.Item
                     name={'fdResponseTime'}
                     rules={[
                       {
@@ -1005,7 +1004,7 @@ const XForm = (props) => {
                             controlActions: {
                               'onChange': [{
                                 function: (v, r) => {
-                                  const levelItem = levelData.find(item=>item.fdId===v)
+                                  const levelItem = levelData.find(item => item.fdId === v)
                                   sysProps.$$form.current.updateFormItemProps('cmsProjectDemandDetail', {
                                     rowValue: {
                                       rowNum: r,
@@ -1032,7 +1031,7 @@ const XForm = (props) => {
                               message: fmtMsg(':required', '内容不能为空')
                             }
                           },
-                          
+
                         },
                         {
                           type: XformNumber,
@@ -1127,20 +1126,20 @@ const XForm = (props) => {
                       showFooter={true}
                       multiple={true}
                       defaultTableCriteria={{
-                        'fdSupplierName':{
-                          searchKey:'$contains',
-                          searchValue:assignSupplier || undefined
+                        'fdSupplierName': {
+                          searchKey: '$contains',
+                          searchValue: assignSupplier || undefined
                         }
                       }}
-                      onChange={(v)=>{
+                      onChange={(v) => {
                         // 给明细表默认加行数并赋值默认数据
                         const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectDemandSupp').values
-                        const newValuesData = v.length && v.filter(item=>!valuesData.map(itemChild=>itemChild.fdSupplier.fdId).includes(item.fdId))
+                        const newValuesData = v.length && v.filter(item => !valuesData.map(itemChild => itemChild.fdSupplier.fdId).includes(item.fdId))
                         sysProps.$$form.current.updateFormItemProps('cmsProjectDemandSupp', {
-                          rowValue: newValuesData.map(item=>({
+                          rowValue: newValuesData.map(item => ({
                             fdFrame: item.fdFrame,
                             fdSupplier: { ...item }
-                          })) 
+                          }))
                         })
                       }}
                     />
@@ -1209,7 +1208,7 @@ const XForm = (props) => {
                               showFields: '$供应商名称$',
                               refFieldName: '$fd_supplier_name$'
                             },
-                            
+
                             showStatus: 'edit'
                           },
                           labelProps: {
