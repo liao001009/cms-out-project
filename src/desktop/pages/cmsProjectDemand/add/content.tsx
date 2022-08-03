@@ -107,24 +107,22 @@ const Content: React.FC<IContentViewProps> = props => {
     // 提交
     api.add({
       ...values,
-      fdFrame:{
-        fdId:values.fdFrame
-      },
+      // fdFrame: values.fdFrame,
       cmsProjectDemandWork: values.cmsProjectDemandWork && values.cmsProjectDemandWork.values || undefined,
-      cmsProjectDemandDetail: values.cmsProjectDemandDetail && values.cmsProjectDemandDetail.values.map(item=>({
+      cmsProjectDemandDetail: values.cmsProjectDemandDetail && values.cmsProjectDemandDetail.values.map(item => ({
         ...item,
-        fdPost:{
-          fdId:item.fdPost
+        fdPost: {
+          fdId: item.fdPost
         },
-        fdSkillLevel:{
-          fdId:item.fdSkillLevel
+        fdSkillLevel: {
+          fdId: item.fdSkillLevel
         }
       })) || undefined,
       cmsProjectDemandSupp: values.cmsProjectDemandSupp && values.cmsProjectDemandSupp.values || undefined,
     }).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
-          if(window.opener) {
+          if (window.opener) {
             window.close()
             return
           }
@@ -140,7 +138,7 @@ const Content: React.FC<IContentViewProps> = props => {
 
   // 关闭
   const handleClose = useCallback(() => {
-    if(window.opener) {
+    if (window.opener) {
       window.close()
       return
     }
@@ -209,7 +207,7 @@ const Content: React.FC<IContentViewProps> = props => {
           </div>
         </div>
       </div>
-    </div>            
+    </div>
   )
 }
 

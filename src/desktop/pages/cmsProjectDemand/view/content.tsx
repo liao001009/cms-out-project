@@ -364,7 +364,7 @@ const Content: React.FC<IContentViewProps> = props => {
       const res = await apiOrder.updateDetail(params)
       console.log('resv5559v', res)
     } catch (error) {
-
+      console.log('error', error)
     }
   }
   return (
