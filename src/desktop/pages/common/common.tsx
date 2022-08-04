@@ -791,6 +791,24 @@ export const presonCriertia = () => {
   )
 }
 
+export const staffReviewUpgrade = () => (
+  <React.Fragment>
+    <Criteria.Input name="fdName" title="姓名"></Criteria.Input>
+    <Criteria.Input name="fdSupplier.fdName" title="供应商名称"></Criteria.Input>
+    <Criteria.Calendar
+      options={Criteria.Calendar.buildOptions()}
+      name="fdFirstEntranceDate"
+      title="首次入场时间"
+    ></Criteria.Calendar>
+    <Criteria.Calendar
+      options={Criteria.Calendar.buildOptions()}
+      name="fdLastUpgradeDate"
+      title="上次调级时间"
+    ></Criteria.Calendar>
+  </React.Fragment>
+)
+
+
 export const projectSelectInfoCriertia = () => {
   return (
     <React.Fragment>
@@ -813,5 +831,6 @@ export const criertiaObj = {
   projectCriertia: projectCriertia(),
   presonCriertia: presonCriertia(),
   projectSelectInfoCriertia: projectSelectInfoCriertia(),
-  demandSupplier: demandSupplier()
+  demandSupplier: demandSupplier(),
+  staffReviewUpgrade: staffReviewUpgrade(),
 }
