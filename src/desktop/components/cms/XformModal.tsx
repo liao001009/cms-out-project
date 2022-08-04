@@ -87,14 +87,14 @@ const XformModal: React.FC<IProps> = (props) => {
     params = {},
   } = props
 
-
+  console.log('props5559v', props)
   const [listData, setListData] = useState<any>([])
   const [visible, setVisible] = useState<boolean>(false)
   const [fdName, setFdName] = useState<string>(value && value.fdName || '')
   // 多选时，选中的数据
   const [selectedRowsData, setSelectedRows] = useState<any>([])
   // 表单传过来的初始值，为了点击取消时，还原数据
-  const [initSelectedArr, setInitSelectArr] = useState<any>(value && value.length || [])
+  const [initSelectedArr, setInitSelectArr] = useState<any>(value)
   // 用来判断是按了确认按钮还是取消按钮
   const [flag, setFlag] = useState<boolean>(false)
 
@@ -230,7 +230,7 @@ const XformModal: React.FC<IProps> = (props) => {
         })
         getListData({
           ...query,
-          conditions: { ...conditions, ...defaultConditions, ...newConditions }
+          conditions: { ...conditions, ...newConditions, ...defaultConditions }
         })
       } else {
         getListData({
@@ -242,20 +242,19 @@ const XformModal: React.FC<IProps> = (props) => {
     },
     [query]
   )
-
   // 确定按钮
   const handleOk = useCallback(() => {
     setVisible(false)
     setFlag(true)
-    const newData = listData?.content.length && listData?.content.filter(item => selectedRows.includes(item.fdId))
+    const newData = listData?.content.length && listData?.content.filter(item => selectedRowsData.includes(item.fdId))
     setInitSelectArr(newData)
     onChange && onChange(newData)
-  }, [listData, selectedRows])
+  }, [listData, selectedRowsData])
 
   const renderTag = () => {
     if (flag) {
-      if (selectedRows && selectedRows.length) {
-        const newData = listData?.content.length && listData?.content.filter(item => selectedRows.includes(item.fdId))
+      if (selectedRowsData && selectedRowsData.length) {
+        const newData = listData?.content.length && listData?.content.filter(item => selectedRowsData.includes(item.fdId))
         return newData.map(i => {
           return <Tag key={i.fdId}>{i.fdName}</Tag>
         })
@@ -263,7 +262,7 @@ const XformModal: React.FC<IProps> = (props) => {
         return <span style={{ color: '#c3c3c3' }}>请选择</span>
       }
     } else {
-      if (initSelectedArr.length) {
+      if (initSelectedArr && initSelectedArr.length) {
         return initSelectedArr.map(i => {
           return <Tag key={i.fdId}>{i.fdName}</Tag>
         })
@@ -276,9 +275,8 @@ const XformModal: React.FC<IProps> = (props) => {
     setFlag(false)
     setVisible(false)
     if (multiple) {
-      setSelectedRows(initSelectedArr.length && initSelectedArr.map(i => i.fdId))
-      const newData = listData?.content.length && listData?.content.filter(item => initSelectedArr.includes(item.fdId))
-      onChange && onChange(newData)
+      setSelectedRows(initSelectedArr.map(i => i.fdId))
+      onChange && onChange(initSelectedArr)
     }
   }
 
@@ -288,21 +286,20 @@ const XformModal: React.FC<IProps> = (props) => {
     'cursor': 'not-allowed',
     'pointerEvents': 'none'
   } as any
-
   return (
     <React.Fragment>
       <div>
         {
-          showStatus === 'edit' || showStatus === 'add' || showStatus === 'readOnly' ? (multiple ? (
+          showStatus === 'edit' || showStatus === 'add' || showStatus === 'readOnly' ? multiple ? (
             <div className='multiple-input' style={showStatus === 'readOnly' ? readOnlyStyle : {}} onClick={() => setVisible(true)}>
               {renderTag()}
             </div>
           ) : (
             <Input placeholder='请输入' disabled={showStatus === 'readOnly'} onClick={() => setVisible(true)} value={fdName} />
-          )) : (
+          ) : (
             <span>
               {
-                Array.isArray(value) ? value.map(item => item.fdName).join(',') : value && value[chooseFdName] || ''
+                Array.isArray(value) ? value.map(item => item.fdName).join(',') : value && value[chooseFdName]
               }
             </span>
           )

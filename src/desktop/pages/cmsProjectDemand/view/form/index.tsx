@@ -1163,7 +1163,7 @@ const XForm = (props) => {
                   </Form.Item>
                 </XformFieldset>
               </GridItem>
-              <GridItem column={1} row={20} rowSpan={1} columnSpan={40}>
+              {/* <GridItem column={1} row={20} rowSpan={1} columnSpan={40}>
                 <XformFieldset>
                   <Form.Item
                     name={'cmsProjectDemandOrder'}
@@ -1564,7 +1564,7 @@ const XForm = (props) => {
                     ></XformDetailTable>
                   </Form.Item>
                 </XformFieldset>
-              </GridItem>
+              </GridItem> */}
             </LayoutGrid>
           </XformAppearance>
         </Form>
