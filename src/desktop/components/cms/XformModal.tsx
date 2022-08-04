@@ -87,7 +87,7 @@ const XformModal: React.FC<IProps> = (props) => {
     params = {},
   } = props
 
-
+  console.log('props5559v', props)
   const [listData, setListData] = useState<any>([])
   const [visible, setVisible] = useState<boolean>(false)
   const [fdName, setFdName] = useState<string>(value && value.fdName || '')
@@ -220,7 +220,7 @@ const XformModal: React.FC<IProps> = (props) => {
           $contains: conditions[item]['$eq']
         } : undefined
       })
-      if (defaultTableCriteria) {
+      if (Object.keys(defaultTableCriteria).length) {
 
         const defaultConditions = {}
         Object.keys(defaultTableCriteria).forEach(key => {
@@ -242,20 +242,19 @@ const XformModal: React.FC<IProps> = (props) => {
     },
     [query]
   )
-
   // 确定按钮
   const handleOk = useCallback(() => {
     setVisible(false)
     setFlag(true)
-    const newData = listData?.content.length && listData?.content.filter(item => selectedRows.includes(item.fdId))
+    const newData = listData?.content.length && listData?.content.filter(item => selectedRowsData.includes(item.fdId))
     setInitSelectArr(newData)
     onChange && onChange(newData)
-  }, [listData, selectedRows])
+  }, [listData, selectedRowsData])
 
   const renderTag = () => {
     if (flag) {
-      if (selectedRows && selectedRows.length) {
-        const newData = listData?.content.length && listData?.content.filter(item => selectedRows.includes(item.fdId))
+      if (selectedRowsData && selectedRowsData.length) {
+        const newData = listData?.content.length && listData?.content.filter(item => selectedRowsData.includes(item.fdId))
         return newData.map(i => {
           return <Tag key={i.fdId}>{i.fdName}</Tag>
         })
@@ -275,9 +274,10 @@ const XformModal: React.FC<IProps> = (props) => {
   const handleCancel = () => {
     setFlag(false)
     setVisible(false)
-    setSelectedRows(value.map(i => i.fdId))
-    const newData = listData?.content.length && listData?.content.filter(item => initSelectedArr.includes(item.fdId))
-    onChange && onChange(newData)
+    if (multiple) {
+      setSelectedRows(initSelectedArr.map(i => i.fdId))
+      onChange && onChange(initSelectedArr)
+    }
   }
 
   const readOnlyStyle = {
@@ -286,7 +286,6 @@ const XformModal: React.FC<IProps> = (props) => {
     'cursor': 'not-allowed',
     'pointerEvents': 'none'
   } as any
-
   return (
     <React.Fragment>
       <div>

@@ -48,7 +48,6 @@ const XForm = (props) => {
   const getSupplier = async () => {
     try {
       const res = await apiSupplierInfo.listSupplierInfo({})
-      getSupplierArr(res.data.content)
       const newData = res.data.content.map(i => {
         const item = {
           value: i.fdId,
@@ -61,7 +60,7 @@ const XForm = (props) => {
       console.log('error', error)
     }
   }
-  const getSupplierArr = (data) => {
+  const getSupplierArr = () => {
     const newData = value.cmsStaffReviewDetail.filter(i => {
       if (i.fdInterviewPass === '1') {
         if (i.fdWrittenPass === '1' || i.fdWrittenPass === '2') {
@@ -69,16 +68,15 @@ const XForm = (props) => {
         }
       }
     })
-    const newArr = newData.map(i => {
-      const item = data.find(value => value.fdId === i.fdSupplier.fdId)
-      return item.fdId
-    })
+    const newArr = newData.map(i => i.fdSupplier.fdId)
     setSupplierInfoArr(newArr)
   }
   useEffect(() => {
     getList(apiOutStaffInfo.listStaffInfo({}), setOutStaffInfoArr)
     getSupplier()
+    getSupplierArr()
   }, [])
+
   // 对外暴露接口
   useApi({
     form,
@@ -563,7 +561,7 @@ const XForm = (props) => {
                       defaultTableCriteria={{
                         'fdId': {
                           'searchKey': '$in',
-                          'searchValue': supplierInfoArr || []
+                          'searchValue': supplierInfoArr.length && supplierInfoArr || ['']
                         }
                       }}
                       modalTitle='中选供应商选择'

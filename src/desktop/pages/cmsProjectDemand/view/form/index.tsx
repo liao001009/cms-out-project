@@ -43,7 +43,7 @@ const XForm = (props) => {
     cmsProjectDemandSupp: createRef() as any,
     cmsProjectDemandOrder: createRef() as any
   })
-  const { formRef: formRef, value: value,materialVis } = props
+  const { formRef: formRef, value: value, materialVis } = props
   const [form] = Form.useForm()
   // 框架数据
   const [frameData, setFrameData] = useState<any>([])
@@ -52,15 +52,16 @@ const XForm = (props) => {
   // 级别数据
   const [levelData, setLevelData] = useState<any>([])
   let minPerson = 0
-  value.cmsProjectDemandDetail.map(item=>{
+  value.cmsProjectDemandDetail.map(item => {
     minPerson += item.fdPersonNum
   })
   form.setFieldsValue({
-    fdLowPerson:minPerson
+    fdLowPerson: minPerson
   })
   useEffect(() => {
     init()
   }, [])
+
   const init = async () => {
     try {
       const res = await apiFrameInfo.list({})
@@ -453,7 +454,7 @@ const XForm = (props) => {
                   </GridItem>
                 )
               }
-              
+
               <GridItem column={1} row={12} rowSpan={1} columnSpan={40}>
                 <XformFieldset
                   labelTextAlign={'left'}
@@ -521,7 +522,7 @@ const XForm = (props) => {
                   title={fmtMsg(':cmsProjectDemand.form.!{l5jh2jka2sj0dsajqjh}', '预计入场时间')}
                   layout={'horizontal'}
                 >
-                  <Form.Item 
+                  <Form.Item
                     name={'fdAdmissionTime'}
                   >
                     <XformDatetime
@@ -540,7 +541,7 @@ const XForm = (props) => {
                   title={fmtMsg(':cmsProjectDemand.form.!{l5jh2mex4elh46zftko}', '要求响应时间')}
                   layout={'horizontal'}
                 >
-                  <Form.Item 
+                  <Form.Item
                     name={'fdResponseTime'}
                   >
                     <XformDatetime
@@ -563,7 +564,7 @@ const XForm = (props) => {
                         layout={'horizontal'}
                         required={true}
                       >
-                        <Form.Item 
+                        <Form.Item
                           name={'fdApprovalTime'}
                           rules={[
                             {
@@ -577,13 +578,13 @@ const XForm = (props) => {
                             placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hx79yk16674uklzee}', '请输入')}
                             dataPattern={'yyyy/MM/dd'}
                             passValue={true}
-                            showStatus={materialVis? 'edit':'view'}
+                            showStatus={materialVis ? 'edit' : 'view'}
                           ></XformDatetime>
                         </Form.Item>
                       </XformFieldset>
                     </GridItem>
-                    <GridItem column={21} row={15} rowSpan={1} columnSpan={6} style={{display:'flex',alignItems:'center'}}>
-                      <XformFieldset 
+                    <GridItem column={21} row={15} rowSpan={1} columnSpan={6} style={{ display: 'flex', alignItems: 'center' }}>
+                      <XformFieldset
                         compose={true}
                         required={true}
                         layout={'horizontal'}
@@ -592,7 +593,7 @@ const XForm = (props) => {
                       </XformFieldset>
                     </GridItem>
                     <GridItem column={27} row={15} rowSpan={1} columnSpan={6}>
-                      <Form.Item 
+                      <Form.Item
                         name={'fdLowPerson'}
                         rules={[
                           {
@@ -607,7 +608,7 @@ const XForm = (props) => {
                           numberFormat={{
                             formatType: 'base'
                           }}
-                          showStatus={materialVis? 'edit':'view'}
+                          showStatus={materialVis ? 'edit' : 'view'}
                         ></XformNumber>
                       </Form.Item>
                     </GridItem>
@@ -623,7 +624,7 @@ const XForm = (props) => {
                       </XformFieldset>
                     </GridItem>
                     <GridItem column={33} row={15} rowSpan={1} columnSpan={7}>
-                      <Form.Item 
+                      <Form.Item
                         name={'fdUpPerson'}
                         rules={[
                           {
@@ -640,7 +641,7 @@ const XForm = (props) => {
                           }}
                           fdSysNumber={{}}
                           label={fmtMsg(':cmsProjectDemand.form.!{l5hxlsauo7w98rlogbn}', '人数区间上限')}
-                          showStatus={materialVis? 'edit':'view'}
+                          showStatus={materialVis ? 'edit' : 'view'}
                         ></XformNumber>
                       </Form.Item>
                     </GridItem>
@@ -1162,7 +1163,7 @@ const XForm = (props) => {
                   </Form.Item>
                 </XformFieldset>
               </GridItem>
-              <GridItem column={1} row={20} rowSpan={1} columnSpan={40}>
+              {/* <GridItem column={1} row={20} rowSpan={1} columnSpan={40}>
                 <XformFieldset>
                   <Form.Item
                     name={'cmsProjectDemandOrder'}
@@ -1432,7 +1433,7 @@ const XForm = (props) => {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5j25yszc316bqtsrhl}', '简历'),
                             maxLength: 200,
                             name: 'fdResumeAtt',
-                            uploadMode:'card',
+                            uploadMode: 'card',
                             singleMaxSize: 5120000,
                             desktop: {
                               type: Upload
@@ -1474,7 +1475,7 @@ const XForm = (props) => {
                               type: XformRadio
                             },
                             type: XformRadio,
-                            showStatus: materialVis? 'edit':'view'
+                            showStatus: materialVis ? 'edit' : 'view'
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5j26cqoz3wzsifnnwa}', '是否合格'),
@@ -1497,7 +1498,7 @@ const XForm = (props) => {
                               type: XformTextarea
                             },
                             type: XformTextarea,
-                            showStatus: materialVis? 'edit':'view'
+                            showStatus: materialVis ? 'edit' : 'view'
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5j26p7w7agm9t6dzoh}', '备注'),
@@ -1526,15 +1527,15 @@ const XForm = (props) => {
                                 }
                               }
                             },
-                            controlActions:{
+                            controlActions: {
                               'onClick': [{
-                                function: async (v,r) => {
+                                function: async (v, r) => {
                                   try {
                                     await api.sendRemind({
-                                      fdId:value.cmsProjectDemandOrder[r].fdId
+                                      fdId: value.cmsProjectDemandOrder[r].fdId
                                     })
                                   } catch (error) {
-                                    console.error('error',error)
+                                    console.error('error', error)
                                   }
                                 }
                               }]
@@ -1563,7 +1564,7 @@ const XForm = (props) => {
                     ></XformDetailTable>
                   </Form.Item>
                 </XformFieldset>
-              </GridItem>
+              </GridItem> */}
             </LayoutGrid>
           </XformAppearance>
         </Form>

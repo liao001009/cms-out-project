@@ -18,7 +18,8 @@ import apiTemplate from '@/api/cmsStaffReviewTemplate'
 import apiStaffReviewList from '@/api/cmsStaffReview'
 import apiProjectInterview from '@/api/cmsProjectInterview'
 import apiProjectWritten from '@/api/cmsProjectWritten'
-
+import apiOrder from '@/api/cmsOrderResponse'
+import EditTable from '@/desktop/components/cms/EditTable'
 const { TabPane } = Tabs
 
 Message.config({ maxCount: 1 })
@@ -36,7 +37,7 @@ const { confirm } = Modal
 const baseCls = 'project-demand-content'
 
 const Content: React.FC<IContentViewProps> = props => {
-  const { data,match,  history } = props
+  const { data, match, history } = props
   const params = match?.params as any
 
   // 模板id
@@ -51,9 +52,26 @@ const Content: React.FC<IContentViewProps> = props => {
   const [flowData, setFlowData] = useState<any>({}) // 流程数据
   const [roleArr, setRoleArr] = useState<any>([])   // 流程角色
   const [materialVis, setMaterialVis] = useState<boolean>(true)
+  // const [orderTabsVisible, setOrderVisible] = useState<boolean>(false)
   /**外包人员评审模板 */
   const [templateData, setTemplateData] = useState<any>({})
+  /**订单响应详情列表 */
+  const [orderDetailList, setOrderDetailList] = useState<any>({})
+  const getOrderDetail = async () => {
+    try {
+      const res = await apiOrder.listOrderDetail({
+        conditions: {
+          'fdMain.fdProjectDemand.fdId': {
+            '$eq': params.id
+          }
+        }
+      })
+      setOrderDetailList(res.data)
+      console.log('res5559res', res.data)
+    } catch (error) {
 
+    }
+  }
   /** 获取资料上传节点 */
   const getCurrentNode = async () => {
     try {
@@ -83,6 +101,7 @@ const Content: React.FC<IContentViewProps> = props => {
       val?.roles && setRoleArr(val.roles)
     })
     loadTemplateData()
+    getOrderDetail()
   }, [])
 
   const loadTemplateData = async () => {
@@ -185,7 +204,7 @@ const Content: React.FC<IContentViewProps> = props => {
     }).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
-          if(window.opener) {
+          if (window.opener) {
             window.close()
             return
           }
@@ -201,7 +220,7 @@ const Content: React.FC<IContentViewProps> = props => {
 
   // 关闭
   const handleClose = useCallback(() => {
-    if(window.opener) {
+    if (window.opener) {
       window.close()
       return
     }
@@ -312,6 +331,42 @@ const Content: React.FC<IContentViewProps> = props => {
     sorts: { fdCreateTime: 'desc' }
   }
   const staffReviewRoute = '/cmsStaffReview/view'
+
+  const handleChangePage = async (v) => {
+    try {
+      const res = await apiOrder.listOrderDetail({
+        conditions: {
+          'fdMain.fdProjectDemand.fdId': {
+            '$eq': params.id
+          }
+        },
+        ...v
+      })
+      setOrderDetailList(res.data)
+    } catch (error) {
+
+    }
+  }
+  const handleSaveOrder = async (v) => {
+    console.log('v5559v', v)
+    const params = {
+      fdId: v.fdMain.fdId,
+      cmsOrderDetail: [
+        {
+          fdId: v.fdId,
+          fdRemarks: v?.fdRemarks || '',
+          fdIsQualified: v?.fdIsQualified
+        }
+      ]
+    }
+    try {
+      //@ts-ignore
+      const res = await apiOrder.updateDetail(params)
+      console.log('resv5559v', res)
+    } catch (error) {
+      console.log('error', error)
+    }
+  }
   return (
     <Auth.Auth
       authURL='/cmsProjectDemand/get'
@@ -375,12 +430,19 @@ const Content: React.FC<IContentViewProps> = props => {
                     />
                   </TabPane>
                   <TabPane tab="中选信息" key="4">
-                    <CmsListView 
+                    <CmsListView
                       history={history}
                       params={staffReviewParams}
-                      apiRequest={apiSelectInfo.listSelectInfo}  
-                      columns={projectSelectInfocolumns} 
+                      apiRequest={apiSelectInfo.listSelectInfo}
+                      columns={projectSelectInfocolumns}
                       onRowUrl={'/cmsProjectSelectInfo/view/'}
+                    />
+                  </TabPane>
+                  <TabPane tab="订单响应" key="5">
+                    <EditTable
+                      data={orderDetailList}
+                      onChange={(v) => handleSaveOrder(v)}
+                      changePage={(v) => { handleChangePage(v) }}
                     />
                   </TabPane>
                 </Tabs>
