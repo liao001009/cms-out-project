@@ -1136,7 +1136,7 @@ const XForm = (props) => {
                         const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectDemandSupp').values
                         const newValuesData = v.length && v.filter(item => !valuesData.map(itemChild => itemChild.fdSupplier.fdId).includes(item.fdId))
                         sysProps.$$form.current.updateFormItemProps('cmsProjectDemandSupp', {
-                          rowValue: newValuesData.map(item => ({
+                          rowValue: newValuesData.length && newValuesData.map(item=>({
                             fdFrame: item.fdFrame,
                             fdSupplier: { ...item }
                           }))

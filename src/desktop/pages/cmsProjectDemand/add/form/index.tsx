@@ -24,6 +24,7 @@ import apiProject from '@/api/cmsProjectInfo'
 import apiSupplier from '@/api/cmsSupplierInfo'
 import apiPostInfo from '@/api/cmsPostInfo'
 import apiLevelInfo from '@/api/cmsLevelInfo'
+import apiProjectDemand from '@/api/cmsProjectDemand'
 
 const MECHANISMNAMES = {}
 
@@ -91,6 +92,22 @@ const XForm = (props) => {
     } catch (error) {
       console.log('error', error)
     }
+  }
+
+  const getProjectDemand = async (fdId) => { 
+    
+    const res = await apiProjectDemand.listDemand({
+      'conditions':{
+        'cmsProjectDemandSupp.fdSupplier.fdId':{
+          '$eq':fdId
+        }
+      },
+      'columns':['fdId','fdPublishTime','fdSubject'],
+      'sorts': {
+        'fdPublishTime': 'desc'
+      }
+    })
+    return res.data.content[0]
   }
   // 对外暴露接口
   useApi({
@@ -1151,19 +1168,29 @@ const XForm = (props) => {
                           searchValue: selectedFrame || ''
                         }
                       }}
-                      onChange={(v) => {
+                      onChange={ (v) => {
                         // 给明细表默认加行数并赋值默认数据
                         const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectDemandSupp').values
-                        const newValuesData = v.length && v.filter(item => !valuesData.map(itemChild => itemChild.fdSupplier.fdId).includes(item.fdId)) || []
-                        form.setFieldsValue({
-                          fdSupplies: v
+                        const newValuesData = v.length && v.filter(item => !valuesData.map(itemChild => itemChild.fdSupplier.fdId).includes(item.fdId))
+                        const arr = [] as any
+                        newValuesData.map(async (item)=>{
+                          const projectDemandData = await getProjectDemand(item.fdId)
+                          arr.push({
+                            ...item,
+                            fdPublishTime:projectDemandData?.fdPublishTime
+                          })
+                          
                         })
-                        sysProps.$$form.current.updateFormItemProps('cmsProjectDemandSupp', {
-                          rowValue: newValuesData.map(item => ({
-                            fdFrame: item.fdFrame,
-                            fdSupplier: { ...item }
-                          }))
-                        })
+                        setTimeout(() => {
+                          sysProps.$$form.current.updateFormItemProps('cmsProjectDemandSupp', {
+                            rowValue: arr.map(item => ({
+                              fdFrame: item.fdFrame,
+                              fdLastTime:item.fdPublishTime,
+                              fdSupplier: { ...item },
+                            }))
+                          })
+                        }, 600)
+                        
                       }}
                     />
                   </Form.Item>
@@ -1288,7 +1315,7 @@ const XForm = (props) => {
                             desktop: {
                               type: XformDatetime
                             },
-                            showStatus: 'edit'
+                            showStatus: 'readOnly'
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5jfsj2yyw86i6eb5z}', '上次发布需求时间'),
