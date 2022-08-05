@@ -330,7 +330,7 @@ const Content: React.FC<IContentViewProps> = props => {
     },
     sorts: { fdCreateTime: 'desc' }
   }
-  const staffReviewRoute = '/cmsStaffReview/view'
+  const staffReviewRoute = '/cmsStaffReview/view/'
 
   const handleChangePage = async (v) => {
     try {

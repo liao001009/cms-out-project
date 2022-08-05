@@ -92,6 +92,13 @@ const XForm = (props) => {
       console.log('error', error)
     }
   }
+  useEffect(() => {
+    const newSelectPost = postData.filter(i => i.fdFrame.fdId === selectedFrame)
+    const newSelectLevel = levelData.filter(i => i.fdFrame.fdId === selectedFrame)
+    setLevelData(newSelectLevel)
+    setPostData(newSelectPost)
+  }, [selectedFrame])
+
   // 对外暴露接口
   useApi({
     form,
