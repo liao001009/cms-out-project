@@ -194,7 +194,7 @@ const Content: React.FC<IContentViewProps> = props => {
               <LBPMFormFragment
                 auditType='audit'
                 mode='add'
-                approveLayout='right'
+                approveLayout='rightButton'
                 wrappedComponentRef={lbpmComponentRef}
                 moduleCode='cms-out-manage-demand'
                 mechanism={{

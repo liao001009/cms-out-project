@@ -310,7 +310,7 @@ const Content: React.FC<IContentViewProps> = props => {
                 <LBPMFormFragment
                   auditType={data.fdProcessStatus === '30' ? 'baseInfo' : 'audit'}
                   mode='view'
-                  approveLayout='right'
+                  approveLayout='rightButton'
                   wrappedComponentRef={lbpmComponentRef}
                   moduleCode='cms-out-manage-review'
                   onChange={(v) => setFlowData(v)}

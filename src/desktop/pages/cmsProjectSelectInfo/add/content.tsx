@@ -193,7 +193,7 @@ const Content: React.FC<IContentViewProps> = props => {
             <div className='lui-approve-template-main'>
               <LBPMFormFragment
                 auditType='audit'
-                approveLayout='right'
+                approveLayout='rightButton'
                 mode='add'
                 wrappedComponentRef={lbpmComponentRef}
                 moduleCode='cms-out-manage-selectInfo'
