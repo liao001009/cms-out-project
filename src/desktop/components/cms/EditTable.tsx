@@ -131,7 +131,6 @@ const EditTable = (props: IProps) => {
       newData.push(row)
     }
     setListData(newData)
-    console.log('v5559row', row)
     $onChange?.(row)
   }
   const handleBtnClick = async (e) => {
@@ -144,17 +143,12 @@ const EditTable = (props: IProps) => {
     }
   }
   const onChange = (v) => {
-    console.log('data5559v', data)
-    console.log('v5559s', v)
     const { current, pageSize } = v.pagination
     setPage(v.pagination)
     const offset = Math.floor((current - 1) * pageSize)
     changePage?.({ offset, pageSize })
     // $onChange?.({ current, pageSize })
   }
-  console.log('data5559', listData)
-  console.log('data5559d', data)
-  console.log('data5559d', page)
   const operations = useMemo(() => {
     return [
       {

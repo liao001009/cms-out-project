@@ -184,77 +184,7 @@ const XForm = (props) => {
                   layout={'horizontal'}
                 >
                   <Form.Item name={'fdSelectedSupplier'}>
-                    <XformRelation
-                      {...sysProps}
-                      renderMode={'mullist'}
-                      modelName={'com.landray.sys.xform.core.entity.design.SysXFormDesign'}
-                      isForwardView={'no'}
-                      multi={true}
-                      direction={'column'}
-                      rowCount={3}
-                      relationCfg={{
-                        appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
-                        xformName: '供应商信息',
-                        modelId: '1g777qg92w10wcf2w1jiihhv3oqp4s6nr9w0',
-                        tableType: 'main',
-                        tableName: 'mk_model_20220705vk0ha',
-                        showFields: '$供应商名称$',
-                        refFieldName: '$fd_supplier_name$'
-                      }}
-                      datasource={{
-                        queryCollection: {
-                          linkType: '$and',
-                          query: []
-                        },
-                        sorters: [],
-                        columns: [
-                          {
-                            name: 'fd_supplier_name',
-                            label: '供应商名称'
-                          },
-                          {
-                            name: 'fd_org_code',
-                            label: '组织机构代码'
-                          },
-                          {
-                            name: 'fd_cooperation_status',
-                            label: '供应商合作状态'
-                          },
-                          {
-                            name: 'fd_supplier_simple_name',
-                            label: '供应商简称'
-                          },
-                          {
-                            name: 'fd_frame',
-                            label: '所属框架'
-                          }
-                        ],
-                        filters: [
-                          {
-                            name: 'fd_supplier_name',
-                            label: '供应商名称'
-                          },
-                          {
-                            name: 'fd_org_code',
-                            label: '组织机构代码'
-                          },
-                          {
-                            name: 'fd_cooperation_status',
-                            label: '供应商合作状态'
-                          },
-                          {
-                            name: 'fd_supplier_simple_name',
-                            label: '供应商简称'
-                          },
-                          {
-                            name: 'fd_frame',
-                            label: '所属框架'
-                          }
-                        ],
-                        isListThrough: true
-                      }}
-                      showStatus="view"
-                    ></XformRelation>
+                    { value.fdSelectedSupplier.join(',') }
                   </Form.Item>
                 </XformFieldset>
               </GridItem>

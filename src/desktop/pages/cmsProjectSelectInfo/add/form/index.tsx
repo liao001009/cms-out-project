@@ -246,12 +246,14 @@ const XForm = (props) => {
                   title={fmtMsg(':cmsProjectSelectInfo.form.!{l5m0dspgq56rtvxth9}', '描述说明')}
                   layout={'horizontal'}
                 >
-                  <Form.Item name={'fdDesc'}>
+                  <Form.Item 
+                    name={'fdDesc'}
+                    initialValue={'根据面试结果，恭喜贵公司成为本项目的承接供应商。<br />请收到本流程信息后请尽快根据中选人员名单要求与项目负责人确定后续事宜，谢谢'}
+                  >
                     <XformRichText
                       {...sysProps}
                       height={400}
                       resize={true}
-                      defaultValue={'根据面试结果，恭喜贵公司成为本项目的承接供应商。<br />请收到本流程信息后请尽快根据中选人员名单要求与项目负责人确定后续事宜，谢谢'}
                       viewPageSet={{
                         isSystem: true,
                         displayMode: 'adaptive'

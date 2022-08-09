@@ -186,6 +186,7 @@ const XformModal: React.FC<IProps> = (props) => {
     setSelectedRows([...selectedRows])
   }, [selectedRows])
   useEffect(() => {
+    console.log('values',value)
     multiple && setSelectedRows(value && value.map(i => i.fdId) || [])
   }, [])
   // 分页操作 
