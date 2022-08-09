@@ -188,7 +188,6 @@ const XForm = (props) => {
                       criteriaKey='projectCriertia'
                       criteriaProps={['fdFrame.fdName']}
                       onChangeProps={(v) => {
-                        console.log('v5559', v)
                         setIsFrameChild(v.fdFrame.fdName === '设计类')
                         setSelectedFrame(v.fdFrame.fdId)
                         form.setFieldsValue({
@@ -1179,8 +1178,6 @@ const XForm = (props) => {
                         // 给明细表默认加行数并赋值默认数据
                         const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectDemandSupp').values
                         valuesData.length && detailForms.current.cmsProjectDemandSupp.current.deleteAll()
-                        console.log('returnvalues',v)
-                        // const newValuesData = v.length && v.filter(item => !valuesData.map(itemChild => itemChild.fdSupplier.fdId).includes(item.fdId))
                         const arr = [] as any
                         v.map(async (item)=>{
                           const projectDemandData = await getProjectDemand(item.fdId)
@@ -1190,14 +1187,12 @@ const XForm = (props) => {
                           })
                         })
                         setTimeout(() => {
-                          console.log('arrvalue',arr)
                           v.length && detailForms.current.cmsProjectDemandSupp.current.updateValues(arr.map(item => ({
                             fdFrame: item.fdFrame,
                             fdLastTime:item.fdPublishTime,
                             fdSupplier: { ...item },
                           })))
-                        }, 400)
-                        
+                        }, 600)
                       }}
                     />
                   </Form.Item>
