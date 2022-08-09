@@ -93,7 +93,7 @@ const XForm = (props) => {
       console.log('error', error)
     }
   }
-
+  
   const getProjectDemand = async (fdId) => { 
     
     const res = await apiProjectDemand.listDemand({
@@ -109,6 +109,13 @@ const XForm = (props) => {
     })
     return res.data.content[0]
   }
+  useEffect(() => {
+    const newSelectPost = postData.filter(i => i.fdFrame.fdId === selectedFrame)
+    const newSelectLevel = levelData.filter(i => i.fdFrame.fdId === selectedFrame)
+    setLevelData(newSelectLevel)
+    setPostData(newSelectPost)
+  }, [selectedFrame])
+
   // 对外暴露接口
   useApi({
     form,
@@ -567,7 +574,7 @@ const XForm = (props) => {
                                 }}
                                 apiKey={apiSupplier}
                                 apiName={'listSupplierInfo'}
-                                criteriaKey='supplierCriertia'
+                                criteriaKey='demandSupplier'
                                 showStatus='add'
                                 modalTitle='供应商选择'
                                 criteriaProps={['fdOrgCode', 'fdFrame.fdName']}
@@ -1171,25 +1178,25 @@ const XForm = (props) => {
                       onChange={ (v) => {
                         // 给明细表默认加行数并赋值默认数据
                         const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectDemandSupp').values
-                        const newValuesData = v.length && v.filter(item => !valuesData.map(itemChild => itemChild.fdSupplier.fdId).includes(item.fdId))
+                        valuesData.length && detailForms.current.cmsProjectDemandSupp.current.deleteAll()
+                        console.log('returnvalues',v)
+                        // const newValuesData = v.length && v.filter(item => !valuesData.map(itemChild => itemChild.fdSupplier.fdId).includes(item.fdId))
                         const arr = [] as any
-                        newValuesData.map(async (item)=>{
+                        v.map(async (item)=>{
                           const projectDemandData = await getProjectDemand(item.fdId)
                           arr.push({
                             ...item,
                             fdPublishTime:projectDemandData?.fdPublishTime
                           })
-                          
                         })
                         setTimeout(() => {
-                          sysProps.$$form.current.updateFormItemProps('cmsProjectDemandSupp', {
-                            rowValue: arr.map(item => ({
-                              fdFrame: item.fdFrame,
-                              fdLastTime:item.fdPublishTime,
-                              fdSupplier: { ...item },
-                            }))
-                          })
-                        }, 600)
+                          console.log('arrvalue',arr)
+                          v.length && detailForms.current.cmsProjectDemandSupp.current.updateValues(arr.map(item => ({
+                            fdFrame: item.fdFrame,
+                            fdLastTime:item.fdPublishTime,
+                            fdSupplier: { ...item },
+                          })))
+                        }, 400)
                         
                       }}
                     />

@@ -348,7 +348,7 @@ const Content: React.FC<IContentViewProps> = props => {
     },
     sorts: { fdCreateTime: 'desc' }
   }
-  const staffReviewRoute = '/cmsStaffReview/view'
+  const staffReviewRoute = '/cmsStaffReview/view/'
 
   const handleChangePage = async (v) => {
     try {
@@ -492,7 +492,7 @@ const Content: React.FC<IContentViewProps> = props => {
                 <LBPMFormFragment
                   auditType={data.fdProcessStatus === '30' ? 'baseInfo' : 'audit'}
                   mode='view'
-                  approveLayout='right'
+                  approveLayout='rightButton'
                   wrappedComponentRef={lbpmComponentRef}
                   moduleCode='cms-out-manage-demand'
                   onChange={(v) => setFlowData(v)}

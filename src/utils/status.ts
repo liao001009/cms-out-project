@@ -1,9 +1,9 @@
 import { fmtMsg } from '@ekp-infra/respect'
 /** 模板状态 */
 export const templateStatus = [
-  { text: fmtMsg(':desc.draft','草稿'), value: 0 },
-  { text: fmtMsg(':button.publish','发布'), value: 1 },
-  { text: fmtMsg(':button.disable','禁用'), value: 2 }
+  { text: fmtMsg(':desc.draft', '草稿'), value: 0 },
+  { text: fmtMsg(':button.publish', '发布'), value: 1 },
+  { text: fmtMsg(':button.disable', '禁用'), value: 2 }
 ]
 
 /**模板名称 */
@@ -22,11 +22,11 @@ export const creatorList = (listData) => {
   const data: any = []
   listData.map(v => {
     if (v.fdStatus === 0) {
-      data.push({ text: fmtMsg(':desc.draft','草稿'), value: '0' })
+      data.push({ text: fmtMsg(':desc.draft', '草稿'), value: '0' })
     } else if (v.fdStatus === 1) {
-      data.push({ text: fmtMsg(':button.publish','发布'), value: 1 })
+      data.push({ text: fmtMsg(':button.publish', '发布'), value: 1 })
     } else if (v.fdStatus === 2) {
-      data.push({ text: fmtMsg(':button.disable','禁用'), value: 2 })
+      data.push({ text: fmtMsg(':button.disable', '禁用'), value: 2 })
     }
     return v
   })
@@ -66,19 +66,19 @@ export enum ESysLbpmProcessStatus {
 export const getDocLbpmStatus = (processStatus?: ESysLbpmProcessStatus) => {
   switch (processStatus) {
     case ESysLbpmProcessStatus.SUSPENDED:
-      return fmtMsg(':kmReviewMain.fdProcessStatusOptions.suspended','已挂起')
+      return fmtMsg(':kmReviewMain.fdProcessStatusOptions.suspended', '已挂起')
     case ESysLbpmProcessStatus.DRAFT:
     case ESysLbpmProcessStatus.WITHDRAW:
-      return fmtMsg(':kmReviewMain.fdProcessStatusOptions.10','拟制中')
+      return fmtMsg(':kmReviewMain.fdProcessStatusOptions.10', '拟制中')
     case ESysLbpmProcessStatus.REJECT:
-      return fmtMsg(':kmReviewMain.fdProcessStatusOptions.11','被驳回')
+      return fmtMsg(':kmReviewMain.fdProcessStatusOptions.11', '被驳回')
     case ESysLbpmProcessStatus.ACTIVATED:
     case ESysLbpmProcessStatus.EXCEPTION:
-      return fmtMsg(':kmReviewMain.fdProcessStatusOptions.reviewing','审核中')
+      return fmtMsg(':kmReviewMain.fdProcessStatusOptions.reviewing', '审核中')
     case ESysLbpmProcessStatus.COMPLETED:
-      return fmtMsg(':kmReviewMain.fdProcessStatusOptions.completed','已通过')
+      return fmtMsg(':kmReviewMain.fdProcessStatusOptions.completed', '已通过')
     case ESysLbpmProcessStatus.ABANDONED:
-      return fmtMsg(':kmReviewMain.fdProcessStatusOptions.abandoned','作废')
+      return fmtMsg(':kmReviewMain.fdProcessStatusOptions.abandoned', '作废')
     default:
       return null
   }
@@ -214,4 +214,17 @@ export const checkIsCirculate = (type: EOperationType) => {
     EOperationType.historyHandler_circulation,
     EOperationType.drafter_circulation,
   ].includes(type)
+}
+
+export enum EShowStatus {
+  /** 查看 */
+  'view' = 'view',
+  /** 编辑 */
+  'edit' = 'edit',
+  /** 添加 */
+  'add' = 'add',
+  /** 只读 */
+  'readOnly' = 'readOnly',
+  /** 禁用 */
+  'disabled' = 'disabled'
 }

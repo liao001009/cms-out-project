@@ -260,7 +260,7 @@ const Content: React.FC<IContentViewProps> = props => {
                 auditType={data.fdProcessStatus === '20' ? 'baseInfo' : 'audit'}
                 onChange={(v) => setFlowData(v)}
                 mode='edit'
-                approveLayout='right'
+                approveLayout='rightButton'
                 wrappedComponentRef={lbpmComponentRef}
                 moduleCode='cms-out-manage-review'
                 mechanism={{
