@@ -18,13 +18,13 @@ const RightFragment = Module.getComponent('sys-right', 'RightFragment', { loadin
 const baseCls = 'project-selectInfo-content'
 const Content: React.FC<IContentViewProps> = props => {
   const { data, match, history } = props
-  console.log('datavalue',data)
+  console.log('datavalue', data)
   const fdId = match.params['fdId']
   // 机制组件引用
   const formComponentRef = useRef<any>()
   const lbpmComponentRef = useRef<any>()
   const rightComponentRef = useRef<any>()
-  
+
   // 校验
   const _validate = async (isDraft: boolean) => {
     // 表单校验
@@ -99,30 +99,32 @@ const Content: React.FC<IContentViewProps> = props => {
       return
     }
     // 拼装提交数据
-    const values = await _formatValue(isDraft)
+    let values = await _formatValue(isDraft)
     // 文档提交前事件
     if (await _beforeSave(isDraft) === false) {
       return
     }
-    if(values.fdSelectedSupplier.length===0 && values.fdFailSupplier.length===0){
-      return  Message.error('落选供应商和中选供应商必须要有数据哦', 1)
+    if (values.fdSelectedSupplier.length === 0 && values.fdFailSupplier.length === 0) {
+      return Message.error('落选供应商和中选供应商必须要有数据哦', 1)
     }
-    // 提交
-    api.add({
+    const { cmsProjectStaffList } = values
+    values = {
       ...values,
-      fdProjectDemand:{
+      fdProjectDemand: {
         fdId
       },
-      cmsProjectStaffList: values.cmsProjectStaffList && values.cmsProjectStaffList.values.map(item=>{
+      cmsProjectStaffList: cmsProjectStaffList?.values?.length ? cmsProjectStaffList.values.map(item => {
         return {
           ...item,
           fdSupplier: item.fdSupplierObj,
         }
-      }) || undefined,
-    }).then(res => {
+      }) : cmsProjectStaffList || undefined,
+    }
+    // 提交
+    api.add(values).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
-          if(window.opener) {
+          if (window.opener) {
             window.close()
             return
           }
@@ -138,7 +140,7 @@ const Content: React.FC<IContentViewProps> = props => {
 
   // 关闭
   const handleClose = useCallback(() => {
-    if(window.opener) {
+    if (window.opener) {
       window.close()
       return
     }

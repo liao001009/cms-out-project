@@ -17,6 +17,7 @@ import XformTextarea from '@/desktop/components/form/XformTextarea'
 import XformSelect from '@/desktop/components/form/XformSelect'
 import apiLevelInfo from '@/api/cmsLevelInfo'
 import XformModal from '@/desktop/components/cms/XformModal'
+import apiSupplier from '@/api/cmsSupplierInfo'
 
 const MECHANISMNAMES = {}
 const baseCls = 'project-selectInfo-form'
@@ -27,19 +28,23 @@ const XForm = (props) => {
     cmsProjectStaffList: createRef() as any
   })
   const { formRef: formRef } = props
-  let { value:value }= props
+  let { value: value } = props
   value = {
     ...value,
-    cmsProjectStaffList:value.fdSelectedSupplier.length ? value.cmsProjectStaffList : []
+    cmsProjectStaffList: value.fdSelectedSupplier.length ? value.cmsProjectStaffList : []
   }
   const [form] = Form.useForm()
   const [fdLevelData, setFdLevelData] = useState<any>([])
-  useEffect(()=>{
-    getLevelData()
-  },[])
-  const getLevelData = async () => {
+  const [fdSupplierData, setfdSupplier] = useState<any>([])
+
+  useEffect(() => {
+    getInfo(apiLevelInfo.list, setFdLevelData)
+    getInfo(apiSupplier.listSupplierInfo, setfdSupplier)
+  }, [])
+
+  const getInfo = async (api, set) => {
     try {
-      const res = await apiLevelInfo.list({})
+      const res = await api({})
       const newArr = res.data.content.map(i => {
         const item = {
           value: i.fdId,
@@ -49,7 +54,7 @@ const XForm = (props) => {
         return item
       })
 
-      setFdLevelData(newArr)
+      set(newArr)
     } catch (error) {
       console.log('error', error)
     }
@@ -184,7 +189,7 @@ const XForm = (props) => {
                   layout={'horizontal'}
                 >
                   <Form.Item name={'fdSelectedSupplier'}>
-                    { value.fdSelectedSupplier.join(',') }
+                    {value.fdSelectedSupplier.map(i => i.fdName).join(',')}
                   </Form.Item>
                 </XformFieldset>
               </GridItem>
@@ -355,28 +360,16 @@ const XForm = (props) => {
                           label: fmtMsg(':cmsProjectSelectInfo.form.!{l5lvypnlzsscq0s59bm}', '姓名')
                         },
                         {
-                          type: XformModal,
+                          type: XformSelect,
                           controlProps: {
-                            modalTitle: fmtMsg(':cmsProjectSelectInfo.form.!{l5lvyw442h1gb4vaxv6}', '供应商名称'),
-                            chooseFdName: 'fdName',
                             title: fmtMsg(':cmsProjectSelectInfo.form.!{l5lvyw442h1gb4vaxv6}', '供应商名称'),
                             name: 'fdSupplier',
-                            rowCount: 3,
-                            modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
-                            isForwardView: 'no',
+                            options: fdSupplierData,
+                            placeholder: fmtMsg(':cmsStaffReviewUpgrade.form.!{l3sb91q7vi4t09qtc6f}', '请输入'),
                             desktop: {
-                              type: XformModal
+                              type: XformSelect
                             },
-                            type: XformModal,
-                            relationCfg: {
-                              appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
-                              xformName: '供应商信息',
-                              modelId: '1g777qg92w10wcf2w1jiihhv3oqp4s6nr9w0',
-                              tableType: 'main',
-                              tableName: 'mk_model_20220705vk0ha',
-                              showFields: '$供应商名称$',
-                              refFieldName: '$fd_supplier_name$'
-                            },
+                            type: XformSelect,
                             showStatus: 'view'
                           },
                           labelProps: {

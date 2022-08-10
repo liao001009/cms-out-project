@@ -107,13 +107,14 @@ const Content: React.FC<IContentViewProps> = props => {
     }
     values = {
       ...values,
-      cmsStaffReviewDetail: values.cmsStaffReviewDetail.values || undefined
+      cmsStaffReviewDetail: values.cmsStaffReviewDetail.values || undefined,
+      fdSupplies: values.fdSupplies || []
     }
     // 提交
     api.add(values as any).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
-          if(window.opener) {
+          if (window.opener) {
             window.close()
             return
           }
@@ -129,7 +130,7 @@ const Content: React.FC<IContentViewProps> = props => {
 
   // 关闭
   const handleClose = useCallback(() => {
-    if(window.opener) {
+    if (window.opener) {
       window.close()
       return
     }
