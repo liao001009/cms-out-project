@@ -122,7 +122,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
   /** 操作函数集 */
 
   //新建
-  const { $add: $add} = useAdd('/cmsProjectWritten/add/!{selectedRow}')
+  const { $add: $add } = useAdd('/cmsProjectWritten/add/!{selectedRow}')
   const handleAdd = useCallback(
     (event) => {
       event.stopPropagation()
@@ -204,7 +204,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
   /** 分页操作 */
   const handlePage = useCallback(
     (pageNo: number, pageSize: number) => {
-      queryChange({ ...query, pageNo, pageSize })
+      queryChange({ ...query, offset: pageNo * pageSize - 1, pageSize })
     },
     [query]
   )

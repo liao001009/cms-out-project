@@ -186,13 +186,13 @@ const XformModal: React.FC<IProps> = (props) => {
     setSelectedRows([...selectedRows])
   }, [selectedRows])
   useEffect(() => {
-    console.log('values',value)
+    console.log('values', value)
     multiple && setSelectedRows(value && value.map(i => i.fdId) || [])
   }, [])
   // 分页操作 
   const handlePage = useCallback(
     (pageNo: number, pageSize: number) => {
-      queryChange({ ...query, pageNo, pageSize })
+      queryChange({ ...query, offset: pageNo * pageSize - 1, pageSize })
     },
     [query]
   )
