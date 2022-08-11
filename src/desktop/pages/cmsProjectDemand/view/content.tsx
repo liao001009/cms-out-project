@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useMemo, useState, useEffect } from 'react'
+import React, { useRef, useCallback, useMemo, useState, useEffect, memo } from 'react'
 import { Auth, Module } from '@ekp-infra/common'
 import { IContentViewProps } from '@ekp-runtime/render-module'
 import { Loading, Breadcrumb, Button, Message, Modal, Tabs } from '@lui/core'
@@ -18,9 +18,9 @@ import apiTemplate from '@/api/cmsStaffReviewTemplate'
 import apiStaffReviewList from '@/api/cmsStaffReview'
 import apiProjectInterview from '@/api/cmsProjectInterview'
 import apiProjectWritten from '@/api/cmsProjectWritten'
-import apiOrder from '@/api/cmsOrderResponse'
-import EditTable from '@/desktop/components/cms/EditTable'
+import EditTable from './editTable/EditTable'
 import apiAuth from '@/api/sysAuth'
+import apiOrder from '@/api/cmsOrderResponse'
 const { TabPane } = Tabs
 
 Message.config({ maxCount: 1 })
@@ -37,7 +37,7 @@ const { confirm } = Modal
 
 const baseCls = 'project-demand-content'
 
-const Content: React.FC<IContentViewProps> = props => {
+const Content: React.FC<IContentViewProps> = memo((props) => {
   const { data, match, history } = props
   const params = match?.params as any
 
@@ -54,27 +54,12 @@ const Content: React.FC<IContentViewProps> = props => {
   const [roleArr, setRoleArr] = useState<any>([])   // 流程角色
   const [materialVis, setMaterialVis] = useState<boolean>(true)
   const [editFlag, setEditFlag] = useState<boolean>(false)
-
-  // const [orderTabsVisible, setOrderVisible] = useState<boolean>(false)
   /**外包人员评审模板 */
   const [templateData, setTemplateData] = useState<any>({})
-  /**订单响应详情列表 */
-  const [orderDetailList, setOrderDetailList] = useState<any>({})
-  const getOrderDetail = async () => {
-    try {
-      const res = await apiOrder.listOrderDetail({
-        conditions: {
-          'fdMain.fdProjectDemand.fdId': {
-            '$eq': params.id
-          }
-        }
-      })
-      setOrderDetailList(res.data)
-      console.log('res5559res', res.data)
-    } catch (error) {
-
-    }
-  }
+  // 订单响应列表数据
+  const orderDetailList = useRef<any>()
+  // 订单响应提交按钮的显隐
+  const [saveBtnVisible, setSaveBtnVisible] = useState<boolean>(false)
   /** 获取资料上传节点 */
   const getCurrentNode = async () => {
     try {
@@ -101,11 +86,10 @@ const Content: React.FC<IContentViewProps> = props => {
   useEffect(() => {
     getCurrentNode()
     mk.on('SYS_LBPM_AUDIT_FORM_INIT_DATA', (val) => {
-      console.log('val',val)
+      console.log('val', val)
       val?.roles && setRoleArr(val.roles)
     })
     loadTemplateData()
-    getOrderDetail()
     roleAuthCheck()
   }, [])
   const roleAuthCheck = async () => {
@@ -218,7 +202,6 @@ const Content: React.FC<IContentViewProps> = props => {
       cmsProjectDemandWork: values.cmsProjectDemandWork && values.cmsProjectDemandWork.values || undefined,
       cmsProjectDemandDetail: values.cmsProjectDemandDetail && values.cmsProjectDemandDetail.values || undefined,
       cmsProjectDemandSupp: values.cmsProjectDemandSupp && values.cmsProjectDemandSupp.values || undefined,
-      cmsProjectDemandOrder: values.cmsProjectDemandOrder && values.cmsProjectDemandOrder.values || undefined,
     }).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
@@ -350,41 +333,32 @@ const Content: React.FC<IContentViewProps> = props => {
   }
   const staffReviewRoute = '/cmsStaffReview/view/'
 
-  const handleChangePage = async (v) => {
-    try {
-      const res = await apiOrder.listOrderDetail({
-        conditions: {
-          'fdMain.fdProjectDemand.fdId': {
-            '$eq': params.id
+  const handleChange = (e) => {
+    orderDetailList.current = e
+  }
+  const handleOrderDetailSave = () => {
+    orderDetailList.current.forEach(async (i) => {
+      const params = {
+        fdId: i.fdMain.fdId,
+        cmsOrderDetail: [
+          {
+            fdId: i.fdId,
+            fdRemarks: i?.fdRemarks || '',
+            fdIsQualified: i?.fdIsQualified
           }
-        },
-        ...v
-      })
-      setOrderDetailList(res.data)
-    } catch (error) {
+        ]
+      }
+      try {
+        await apiOrder.updateDetail(params)
+      } catch (error) {
+        console.log('error', error)
+      }
+    })
+  }
 
-    }
-  }
-  const handleSaveOrder = async (v) => {
-    console.log('v5559v', v)
-    const params = {
-      fdId: v.fdMain.fdId,
-      cmsOrderDetail: [
-        {
-          fdId: v.fdId,
-          fdRemarks: v?.fdRemarks || '',
-          fdIsQualified: v?.fdIsQualified
-        }
-      ]
-    }
-    try {
-      //@ts-ignore
-      const res = await apiOrder.updateDetail(params)
-      console.log('resv5559v', res)
-    } catch (error) {
-      console.log('error', error)
-    }
-  }
+  const operations = useMemo(() => (
+    saveBtnVisible ? <Button type='primary' onClick={handleOrderDetailSave}>保存</Button> : null
+  ), [saveBtnVisible])
   return (
     <Auth.Auth
       authURL='/cmsProjectDemand/get'
@@ -419,10 +393,10 @@ const Content: React.FC<IContentViewProps> = props => {
             <div className='left'>
               {/* 表单信息 */}
               <div className='form'>
-                <XForm formRef={formComponentRef} value={data || {}} materialVis={materialVis} editFlag={editFlag}/>
+                <XForm formRef={formComponentRef} value={data || {}} materialVis={materialVis} editFlag={editFlag} />
               </div>
               <div className='lui-btns-tabs'>
-                <Tabs defaultActiveKey="1">
+                <Tabs defaultActiveKey="1" tabBarExtraContent={operations} onChange={(v) => setSaveBtnVisible(v === '5')}>
                   <TabPane tab="笔试" key="1">
                     <CmsListView
                       apiRequest={apiProjectWritten.listWritten}
@@ -458,9 +432,8 @@ const Content: React.FC<IContentViewProps> = props => {
                   </TabPane>
                   <TabPane tab="订单响应" key="5">
                     <EditTable
-                      data={orderDetailList}
-                      onChange={(v) => handleSaveOrder(v)}
-                      changePage={(v) => { handleChangePage(v) }}
+                      param={params}
+                      onchange={(e) => { handleChange(e) }}
                     />
                   </TabPane>
                 </Tabs>
@@ -509,6 +482,6 @@ const Content: React.FC<IContentViewProps> = props => {
       </div >
     </Auth.Auth >
   )
-}
+})
 
 export default Content

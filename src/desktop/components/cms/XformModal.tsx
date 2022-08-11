@@ -87,7 +87,6 @@ const XformModal: React.FC<IProps> = (props) => {
     params = {},
   } = props
 
-  console.log('props5559v', props)
   const [listData, setListData] = useState<any>([])
   const [visible, setVisible] = useState<boolean>(false)
   const [fdName, setFdName] = useState<string>(value && value.fdName || '')
