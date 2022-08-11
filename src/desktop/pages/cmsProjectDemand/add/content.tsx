@@ -109,7 +109,7 @@ const Content: React.FC<IContentViewProps> = props => {
       ...values,
       // fdFrame: values.fdFrame,
       cmsProjectDemandWork: values.cmsProjectDemandWork && values.cmsProjectDemandWork.values || undefined,
-      cmsProjectDemandDetail: values.cmsProjectDemandDetail && values.cmsProjectDemandDetail.values.map(item => ({
+      cmsProjectDemandDetail: values?.cmsProjectDemandDetail?.values?.length && values.cmsProjectDemandDetail.values.map(item => ({
         ...item,
         fdPost: {
           fdId: item.fdPost
