@@ -4,43 +4,38 @@ import { Table } from '@lui/pro'
 import { Select, Input } from '@lui/core'
 import api from '@/api/cmsProjectDemand'
 import apiAuth from '@/api/sysAuth'
+import apiOrder from '@/api/cmsOrderResponse'
+
 const { useForm } = Table
 import './index.scss'
+
 interface IProps {
-  onChange?: (v) => void
-  data?: any
-  changePage?: (v) => void
+  param?: any
+  onchange?: any
 }
 
-
 const EditTable = (props: IProps) => {
-  const { data, onChange: $onChange, changePage } = props
-
-  const [listData, setListData] = useState<any>(data.content || [])
+  const { param, onchange: $onChange } = props
+  const [orderDetailList, setOrderDetailList] = useState<any>([])
   const [editFlag, setEditFlag] = useState<boolean>(false)
   const [page, setPage] = useState<any>({
-    current: Math.floor(data.offset / data.pageSize + 1),
-    pageSize: data.pageSize,
-    total: data.totalSize
+    current: 1,
+    pageSize: 10,
+    total: 0
   })
   useEffect(() => {
-    setListData(data.content)
-  }, [data])
-  const init = async () => {
-    try {
-      const res = await apiAuth.roleCheck([{
-        status: 'checking',
-        key: 'auth0',
-        role: 'ROLE_CMSOUTMANAGE_FRAME_ADMIN'
-      }])
-      setEditFlag(res.data.auth0)
-    } catch (error) {
-      console.log('error', error)
-    }
-  }
+    hasChangedData()
+  }, [orderDetailList])
+
   useEffect(() => {
     init()
+    getOrderDetail({ pageSize: 1000 })
   }, [])
+
+  const hasChangedData = () => {
+    const newData = orderDetailList.filter(i => i.changed)
+    $onChange?.(newData)
+  }
 
   const columns = useMemo(() => {
     return (
@@ -118,21 +113,53 @@ const EditTable = (props: IProps) => {
       ]
     )
   }, [editFlag])
+
+  const getOrderDetail = async (pageParms = {}) => {
+    try {
+      const res = await apiOrder.listOrderDetail({
+        conditions: {
+          'fdMain.fdProjectDemand.fdId': {
+            '$eq': param.id
+          }
+        },
+        ...pageParms
+      })
+      setOrderDetailList(res.data.content)
+    } catch (error) {
+      console.log('error', error)
+    }
+  }
+
+  const init = async () => {
+    try {
+      const res = await apiAuth.roleCheck([{
+        status: 'checking',
+        key: 'auth0',
+        role: 'ROLE_CMSOUTMANAGE_FRAME_ADMIN'
+      }])
+      setEditFlag(res.data.auth0)
+    } catch (error) {
+      console.log('error', error)
+    }
+  }
+
   const onSave = async (row) => {
-    const newData = [...listData]
+    const newData = [...orderDetailList]
     const index = newData.findIndex((item) => row.fdId === item.fdId)
     if (index > -1) {
       const item = newData[index]
+      row.changed = true
       newData.splice(index, 1, {
         ...item,
         ...row,
       })
     } else {
+      row.changed = true
       newData.push(row)
     }
-    setListData(newData)
-    $onChange?.(row)
+    setOrderDetailList(newData)
   }
+
   const handleBtnClick = async (e) => {
     try {
       await api.sendRemind({
@@ -143,12 +170,9 @@ const EditTable = (props: IProps) => {
     }
   }
   const onChange = (v) => {
-    const { current, pageSize } = v.pagination
     setPage(v.pagination)
-    const offset = Math.floor((current - 1) * pageSize)
-    changePage?.({ offset, pageSize })
-    // $onChange?.({ current, pageSize })
   }
+
   const operations = useMemo(() => {
     return [
       {
@@ -159,23 +183,13 @@ const EditTable = (props: IProps) => {
       }
     ]
   }, [])
-  const onRowClick = (v) => {
-    console.log('v5559v', v)
-  }
-  // const queryChange = (pageNo, pageSize) => {
-  //   setPage({
-  //     ...page,
-  //     current: pageNo,
-  //     pageSize
-  //   })
-  // }
+
   const { tableProps } = useForm({
-    data: listData,
+    data: orderDetailList || [],
     serial: 'static',
     rowSelection: false,
     columns,
     onChange,
-    //@ts-ignore
     operations,
     onSave,
     pagination: {
@@ -187,8 +201,7 @@ const EditTable = (props: IProps) => {
   })
 
   return (
-    //@ts-ignore
-    <Table {...tableProps} className={'project-demand-edit-table'} onRow={onRowClick} />
+    <Table {...tableProps} className={'project-demand-edit-table'} />
   )
 }
 

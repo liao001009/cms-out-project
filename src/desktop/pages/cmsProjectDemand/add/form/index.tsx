@@ -42,8 +42,12 @@ const XForm = (props) => {
   const [frameData, setFrameData] = useState<any>([])
   // 框架数据
   const [postData, setPostData] = useState<any>([])
+  // 选中岗位数据
+  const [selectedPostData, setSelectedPostData] = useState<any>([])
   // 框架数据
   const [levelData, setLevelData] = useState<any>([])
+  // 选中级别数据
+  const [selectedLevelData, setSelectedLevelData] = useState<any>([])
   // 是否指定供应商单选
   const [isSuppler, setIsSuppler] = useState<boolean>(false)
   // 设计类需求子类显隐
@@ -93,16 +97,16 @@ const XForm = (props) => {
       console.log('error', error)
     }
   }
-  
-  const getProjectDemand = async (fdId) => { 
-    
+
+  const getProjectDemand = async (fdId) => {
+
     const res = await apiProjectDemand.listDemand({
-      'conditions':{
-        'cmsProjectDemandSupp.fdSupplier.fdId':{
-          '$eq':fdId
+      'conditions': {
+        'cmsProjectDemandSupp.fdSupplier.fdId': {
+          '$eq': fdId
         }
       },
-      'columns':['fdId','fdPublishTime','fdSubject'],
+      'columns': ['fdId', 'fdPublishTime', 'fdSubject'],
       'sorts': {
         'fdPublishTime': 'desc'
       }
@@ -112,9 +116,9 @@ const XForm = (props) => {
   useEffect(() => {
     const newSelectPost = postData.filter(i => i.fdFrame.fdId === selectedFrame)
     const newSelectLevel = levelData.filter(i => i.fdFrame.fdId === selectedFrame)
-    setLevelData(newSelectLevel)
-    setPostData(newSelectPost)
-  }, [selectedFrame])
+    setSelectedLevelData(newSelectLevel)
+    setSelectedPostData(newSelectPost)
+  }, [selectedFrame, postData, levelData])
 
   // 对外暴露接口
   useApi({
@@ -178,6 +182,7 @@ const XForm = (props) => {
                     ]}
                   >
                     <CMSXformModal
+                      key={postData.concat(levelData)}
                       {...props}
                       columnsProps={projectColumns}
                       chooseFdName='fdName'
@@ -978,7 +983,7 @@ const XForm = (props) => {
                             placeholder: fmtMsg(':cmsProjectDemand.form.!{l5hur3x33mxezfwee47}', '请输入'),
                             modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
                             isForwardView: 'no',
-                            options: postData,
+                            options: selectedPostData,
                             desktop: {
                               type: XformSelect
                             },
@@ -1020,7 +1025,7 @@ const XForm = (props) => {
                             placeholder: fmtMsg(':cmsProjectDemand.form.!{l5hur3x33mxezfwee47}', '请输入'),
                             modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
                             isForwardView: 'no',
-                            options: levelData,
+                            options: selectedLevelData,
                             desktop: {
                               type: XformSelect
                             },
@@ -1169,22 +1174,22 @@ const XForm = (props) => {
                           searchValue: selectedFrame || ''
                         }
                       }}
-                      onChange={ (v) => {
+                      onChange={(v) => {
                         // 给明细表默认加行数并赋值默认数据
                         const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectDemandSupp').values
                         valuesData.length && detailForms.current.cmsProjectDemandSupp.current.deleteAll()
                         const arr = [] as any
-                        v.map(async (item)=>{
+                        v.map(async (item) => {
                           const projectDemandData = await getProjectDemand(item.fdId)
                           arr.push({
                             ...item,
-                            fdPublishTime:projectDemandData?.fdPublishTime
+                            fdPublishTime: projectDemandData?.fdPublishTime
                           })
                         })
                         setTimeout(() => {
                           v.length && detailForms.current.cmsProjectDemandSupp.current.updateValues(arr.map(item => ({
                             fdFrame: item.fdFrame,
-                            fdLastTime:item.fdPublishTime,
+                            fdLastTime: item.fdPublishTime,
                             fdSupplier: { ...item },
                           })))
                         }, 600)

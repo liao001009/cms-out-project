@@ -150,7 +150,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
       event.stopPropagation()
       history.goto(`/cmsProjectSelectInfo/add/${templateData.fdId}`)
     },
-    [history, selectedRows, refresh,templateData]
+    [history, selectedRows, refresh, templateData]
   )
 
   //批量删除
@@ -222,7 +222,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
   /** 分页操作 */
   const handlePage = useCallback(
     (pageNo: number, pageSize: number) => {
-      queryChange({ ...query, pageNo, pageSize })
+      queryChange({ ...query, offset: pageNo * pageSize - 1, pageSize })
     },
     [query]
   )

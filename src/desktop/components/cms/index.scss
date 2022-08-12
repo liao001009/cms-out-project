@@ -43,17 +43,3 @@
 .multiple-input:hover {
   border: 1px solid #4285f4;
 }
-
-.project-demand-edit-table {
-  .lui-form-item-control {
-    padding-left: 0;
-
-    .text-area {
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 3;
-      overflow: hidden;
-      white-space: initial;
-    }
-  }
-}

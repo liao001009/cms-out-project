@@ -1,4 +1,4 @@
-import React, { useRef, createRef, useState, useEffect, Fragment } from 'react'
+import React, { useRef, createRef, useState, useEffect, Fragment, useCallback } from 'react'
 import './index.scss'
 import { fmtMsg } from '@ekp-infra/respect'
 import { Form } from '@lui/core'
@@ -41,10 +41,14 @@ const XForm = (props) => {
   const [form] = Form.useForm()
   // 框架数据
   const [frameData, setFrameData] = useState<any>([])
-  // 框架数据
+  // 岗位数据
   const [postData, setPostData] = useState<any>([])
-  // 框架数据
+  // 选中岗位数据
+  const [selectedPostData, setSelectedPostData] = useState<any>([])
+  // 级别数据
   const [levelData, setLevelData] = useState<any>([])
+  // 选中级别数据
+  const [selectedLevelData, setSelectedLevelData] = useState<any>([])
   // 是否指定供应商单选
   const [isSuppler, setIsSuppler] = useState<boolean>(value.fdSupplierRange === '1')
   // 设计类需求子类显隐
@@ -54,10 +58,19 @@ const XForm = (props) => {
   // 指定供应商值
   const [assignSupplier, setAssignSupplier] = useState<string | undefined>(value?.fdSupplier?.fdName || '')
   // 选定的框架类型
-  const [selectedFrame, setSelectedFrame] = useState<string>(value?.fdFrame?.fdId || '')
+  const [selectedFrame, setSelectedFrame] = useState<string>('')
   useEffect(() => {
     init()
+    setSelectedFrame(value?.fdFrame?.fdId || '')
   }, [])
+
+  useEffect(() => {
+    const newSelectPost = postData.filter(i => i.fdFrame.fdId === selectedFrame)
+    const newSelectLevel = levelData.filter(i => i.fdFrame.fdId === selectedFrame)
+    setSelectedLevelData(newSelectLevel)
+    setSelectedPostData(newSelectPost)
+  }, [selectedFrame, postData, levelData])
+
   const init = async () => {
     try {
       const res = await apiFrameInfo.list({})
@@ -94,27 +107,21 @@ const XForm = (props) => {
       console.log('error', error)
     }
   }
-  const getProjectDemand = async (fdId) => { 
-    
+  const getProjectDemand = async (fdId) => {
+
     const res = await apiProjectDemand.listDemand({
-      'conditions':{
-        'cmsProjectDemandSupp.fdSupplier.fdId':{
-          '$eq':fdId
+      'conditions': {
+        'cmsProjectDemandSupp.fdSupplier.fdId': {
+          '$eq': fdId
         }
       },
-      'columns':['fdId','fdPublishTime','fdSubject'],
+      'columns': ['fdId', 'fdPublishTime', 'fdSubject'],
       'sorts': {
         'fdPublishTime': 'desc'
       }
     })
     return res.data.content[0]
   }
-  useEffect(() => {
-    const newSelectPost = postData.filter(i => i.fdFrame.fdId === selectedFrame)
-    const newSelectLevel = levelData.filter(i => i.fdFrame.fdId === selectedFrame)
-    setLevelData(newSelectLevel)
-    setPostData(newSelectPost)
-  }, [selectedFrame])
   // 对外暴露接口
   useApi({
     form,
@@ -177,6 +184,7 @@ const XForm = (props) => {
                     ]}
                   >
                     <CMSXformModal
+                      key={postData.concat(levelData)}
                       {...props}
                       columnsProps={projectColumns}
                       chooseFdName='fdName'
@@ -405,10 +413,10 @@ const XForm = (props) => {
                       options={frameData}
                       optionSource={'custom'}
                       showStatus="readOnly"
-                      // onChange={(v) => {
-                      //   const frameObj = frameData.find(item => item.fdId === v)
-                      //   setIsFrameChild(frameObj.fdName === '设计类')
-                      // }}
+                    // onChange={(v) => {
+                    //   const frameObj = frameData.find(item => item.fdId === v)
+                    //   setIsFrameChild(frameObj.fdName === '设计类')
+                    // }}
                     ></XformSelect>
                   </Form.Item>
                 </XformFieldset>
@@ -981,7 +989,7 @@ const XForm = (props) => {
                             placeholder: fmtMsg(':cmsProjectDemand.form.!{l5hur3x33mxezfwee47}', '请输入'),
                             modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
                             isForwardView: 'no',
-                            options: postData,
+                            options: selectedPostData,
                             desktop: {
                               type: XformSelect
                             },
@@ -1023,7 +1031,7 @@ const XForm = (props) => {
                             placeholder: fmtMsg(':cmsProjectDemand.form.!{l5hur3x33mxezfwee47}', '请输入'),
                             modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
                             isForwardView: 'no',
-                            options: levelData,
+                            options: selectedLevelData,
                             desktop: {
                               type: XformSelect
                             },
@@ -1177,17 +1185,17 @@ const XForm = (props) => {
                         const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectDemandSupp').values
                         valuesData.length && detailForms.current.cmsProjectDemandSupp.current.deleteAll()
                         const arr = [] as any
-                        v.map(async (item)=>{
+                        v.map(async (item) => {
                           const projectDemandData = await getProjectDemand(item.fdId)
                           arr.push({
                             ...item,
-                            fdPublishTime:projectDemandData?.fdPublishTime
+                            fdPublishTime: projectDemandData?.fdPublishTime
                           })
                         })
                         setTimeout(() => {
                           v.length && detailForms.current.cmsProjectDemandSupp.current.updateValues(arr.map(item => ({
                             fdFrame: item.fdFrame,
-                            fdLastTime:item.fdPublishTime,
+                            fdLastTime: item.fdPublishTime,
                             fdSupplier: { ...item },
                           })))
                         }, 600)

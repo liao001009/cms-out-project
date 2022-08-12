@@ -90,7 +90,6 @@ const XformModal: React.FC<IProps> = (props) => {
     defaultDataNull = false
   } = props
 
-  console.log('props5559v', props)
   const [listData, setListData] = useState<any>([])
   const [visible, setVisible] = useState<boolean>(false)
   const [fdName, setFdName] = useState<string>(value && value.fdName || '')
@@ -194,7 +193,7 @@ const XformModal: React.FC<IProps> = (props) => {
   // 分页操作 
   const handlePage = useCallback(
     (pageNo: number, pageSize: number) => {
-      queryChange({ ...query, pageNo, pageSize })
+      queryChange({ ...query, offset: pageNo * pageSize - 1, pageSize })
     },
     [query]
   )

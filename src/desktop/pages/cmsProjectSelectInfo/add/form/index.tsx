@@ -28,19 +28,22 @@ const XForm = (props) => {
     cmsProjectStaffList: createRef() as any
   })
   const { formRef: formRef } = props
-  let { value:value } = props  
+  let { value: value } = props
   value = {
     ...value,
-    fdSubject:value.fdProjectDemand.fdName
+    fdSubject: value.fdProjectDemand.fdName
   }
   const [form] = Form.useForm()
   const [fdLevelData, setFdLevelData] = useState<any>([])
-  useEffect(()=>{
-    getLevelData()
-  },[])
-  const getLevelData = async () => {
+  const [fdSupplierData, setfdSupplierData] = useState<any>([])
+  useEffect(() => {
+    getInfo(apiLevelInfo.list, setFdLevelData)
+    getInfo(apiSupplier.listSupplierInfo, setfdSupplierData)
+  }, [])
+
+  const getInfo = async (api, set) => {
     try {
-      const res = await apiLevelInfo.list({})
+      const res = await api({})
       const newArr = res.data.content.map(i => {
         const item = {
           value: i.fdId,
@@ -50,7 +53,7 @@ const XForm = (props) => {
         return item
       })
 
-      setFdLevelData(newArr)
+      set(newArr)
     } catch (error) {
       console.log('error', error)
     }
@@ -202,7 +205,7 @@ const XForm = (props) => {
                     <CMSXformModal
                       {...props}
                       columnsProps={supplierColumns}
-                      chooseFdName='fdSupplierName'
+                      chooseFdName='fdName'
                       apiKey={apiSupplier}
                       apiName={'listSupplierInfo'}
                       criteriaKey='supplierCriertia'
@@ -226,7 +229,7 @@ const XForm = (props) => {
                     <CMSXformModal
                       {...props}
                       columnsProps={supplierColumns}
-                      chooseFdName='fdSupplierName'
+                      chooseFdName='fdName'
                       apiKey={apiSupplier}
                       apiName={'listSupplierInfo'}
                       criteriaKey='supplierCriertia'
@@ -246,7 +249,7 @@ const XForm = (props) => {
                   title={fmtMsg(':cmsProjectSelectInfo.form.!{l5m0dspgq56rtvxth9}', '描述说明')}
                   layout={'horizontal'}
                 >
-                  <Form.Item 
+                  <Form.Item
                     name={'fdDesc'}
                     initialValue={'根据面试结果，恭喜贵公司成为本项目的承接供应商。<br />请收到本流程信息后请尽快根据中选人员名单要求与项目负责人确定后续事宜，谢谢'}
                   >
@@ -314,7 +317,7 @@ const XForm = (props) => {
                               type: CMSXformModal
                             },
                             onChangeProps: (v, r) => {
-                              console.log('vlaues',v)
+                              console.log('vlaues', v)
                               sysProps.$$form.current.updateFormItemProps('cmsProjectStaffList', {
                                 rowValue: {
                                   rowNum: r,
@@ -323,8 +326,8 @@ const XForm = (props) => {
                                     fdSupplierObj: v.fdSupplier,
                                     fdConfirmLevel: v.fdConfirmLevel,
                                     fdOutName: { ...v },
-                                    fdEmail:v.fdEmail,
-                                    fdPhone:v.fdMobile
+                                    fdEmail: v.fdEmail,
+                                    fdPhone: v.fdMobile
                                   }
                                 }
                               })
@@ -350,15 +353,16 @@ const XForm = (props) => {
                           label: fmtMsg(':cmsProjectSelectInfo.form.!{l5lvypnlzsscq0s59bm}', '姓名')
                         },
                         {
-                          type: XformInput,
+                          type: XformSelect,
                           controlProps: {
                             title: fmtMsg(':cmsProjectSelectInfo.form.!{l5lvyw442h1gb4vaxv6}', '供应商名称'),
                             name: 'fdSupplier',
+                            options: fdSupplierData,
                             placeholder: fmtMsg(':cmsStaffReviewUpgrade.form.!{l3sb91q7vi4t09qtc6f}', '请输入'),
                             desktop: {
-                              type: XformInput
+                              type: XformSelect
                             },
-                            type: XformInput,
+                            type: XformSelect,
                             showStatus: 'readOnly'
                           },
                           labelProps: {
