@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { fmtMsg } from '@ekp-infra/respect'
 import { Table } from '@lui/pro'
-import { Select, Input, Button } from '@lui/core'
+import { Select, Input } from '@lui/core'
 import api from '@/api/cmsProjectDemand'
 import apiAuth from '@/api/sysAuth'
 const { useForm } = Table
@@ -49,37 +49,37 @@ const EditTable = (props: IProps) => {
           /**供应商名称 */
           title: '供应商名称',
           dataIndex: 'fdSupplier',
-          render: (text, record) => <span>{text && text.fdName}</span>
+          render: (text) => <span>{text && text.fdName}</span>
         },
         {
           title: '姓名',
           dataIndex: 'fdOutName',
-          render: (text, record) => <span>{text && text.fdName}</span>
+          render: (text) => <span>{text && text.fdName}</span>
         },
         {
           title: '岗位',
           dataIndex: 'fdPost',
-          render: (text, record) => <span>{text && text.fdName}</span>
+          render: (text) => <span>{text && text.fdName}</span>
         },
         {
           title: '所属框架',
           dataIndex: 'fdFrame',
-          render: (text, record) => <span>{text && text.fdName}</span>
+          render: (text) => <span>{text && text.fdName}</span>
         },
         {
           title: '自评级别',
           dataIndex: 'fdSkillLevel',
-          render: (text, record) => <span>{text}</span>
+          render: (text) => <span>{text}</span>
         },
         {
           title: '评定级别',
           dataIndex: 'fdConfirmLevel',
-          render: (text, record) => <span>{text && text.fdName}</span>
+          render: (text) => <span>{text && text.fdName}</span>
         },
         {
           title: '邮箱',
           dataIndex: 'fdEmail',
-          render: (text, record) => <span>{text}</span>
+          render: (text) => <span>{text}</span>
         },
         // {
         //   title: '简历',
@@ -93,7 +93,7 @@ const EditTable = (props: IProps) => {
           dataIndex: 'fdIsQualified',
           editable: false,
           saveEvent: 'change',
-          render: (text, record) => {
+          render: (text) => {
             return (
               editFlag ? (
                 <Select defaultValue={text}>
@@ -109,7 +109,7 @@ const EditTable = (props: IProps) => {
           dataIndex: 'fdRemarks',
           editable: false,
           saveEvent: 'change',
-          render: (text, record) => {
+          render: (text) => {
             return (
               editFlag ? (<Input.TextArea defaultValue={text} />) : (<span className='text-area' title='车车车车车车车车车二车车车车车车车车车车车车车车车车车车车车车少时诵诗书所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所'>{text !== undefined ? '' : '车车车车车车车车车二车车车车车车车车车车车车车车车车车车车车车少时诵诗书所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所'}</span>)
             )
