@@ -56,6 +56,8 @@ export interface IProps extends IContentViewProps {
   showCriteria?: boolean
   /**接口参数(不在conditions里面的) */
   params?: any
+  /** 默认为空数据 */
+  defaultDataNull?: boolean
   /** 扩展 */
   [key: string]: any
 }
@@ -85,6 +87,7 @@ const XformModal: React.FC<IProps> = (props) => {
     otherData = {},
     showOther = false,
     params = {},
+    defaultDataNull = false
   } = props
 
   const [listData, setListData] = useState<any>([])
@@ -156,10 +159,10 @@ const XformModal: React.FC<IProps> = (props) => {
       }
     }
   }, [JSON.stringify(defaultTableCriteria), JSON.stringify(otherData), showOther, visible])
-  const getListData = async (data) => {
+  const getListData = async (data,...args) => {
     try {
       const res = await apiKey[apiName](data)
-      setListData(res.data)
+      setListData(defaultDataNull ? args.length ? res.data : {} : res.data)
     } catch (error) {
       Message.error(error)
     }
@@ -185,7 +188,6 @@ const XformModal: React.FC<IProps> = (props) => {
     setSelectedRows([...selectedRows])
   }, [selectedRows])
   useEffect(() => {
-    console.log('values', value)
     multiple && setSelectedRows(value && value.map(i => i.fdId) || [])
   }, [])
   // 分页操作 
@@ -231,12 +233,12 @@ const XformModal: React.FC<IProps> = (props) => {
         getListData({
           ...query,
           conditions: { ...conditions, ...newConditions, ...defaultConditions }
-        })
+        },true)
       } else {
         getListData({
           ...query,
           conditions: { ...conditions, ...newConditions }
-        })
+        },true)
       }
 
     },

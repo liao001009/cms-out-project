@@ -640,42 +640,11 @@ const demandSupplier = () => {
 
 // 项目表格筛选
 export const projectCriertia = () => {
-  // [{
-  //   name:'fdCode',
-  //   title:'项目编号',
-  //   type:'input',
-  // },{
-  //   name:'fdFrame.fdName',
-  //   title:'项目所属框架',
-  //   type:'input',
-  // },{
-  //   name:'fdProjectNature',
-  //   title:'项目性质',
-  //   type:'Criterion',
-  //   options:[
-  //     {
-  //       text: '不限',
-  //       value: ''
-  //     },
-  //     {
-  //       text: '项目外包',
-  //       value: '1'
-  //     },
-  //     {
-  //       text: '厂商驻场实施 ',
-  //       value: '2'
-  //     }
-  //   ]
-  // },{
-  //   name:'fdBelongDept.fdId',
-  //   title:'所属部门',
-  //   type:'input',
-  //   orgType:2
-  // }]
   return (
     <React.Fragment>
       <Criteria.Input name="fdCode" title="项目编号"></Criteria.Input>
       <Criteria.Input name="fdFrame.fdName" title="项目所属框架"></Criteria.Input>
+      <Criteria.Input name="fdBelongTeam.fdName" title="所属组/团队"></Criteria.Input>
       <Criteria.Criterion
         canMulti={false}
         options={[
@@ -696,7 +665,6 @@ export const projectCriertia = () => {
         title="项目性质"
       ></Criteria.Criterion>
       <Criteria.Org orgType={2} title="所属部门" name="fdBelongDept.fdId"></Criteria.Org>
-      <Criteria.Org orgType={2} title="所属组/团队" name="fdBelongTeam.fdId"></Criteria.Org>
       <Criteria.Org orgType={8} title="项目负责人" name="fdProjectPrincipal.fdId"></Criteria.Org>
       <Criteria.Org orgType={8} title="内部责任人" name="fdInnerPrincipal.fdId"></Criteria.Org>
       <Criteria.Calendar

@@ -194,6 +194,7 @@ const XForm = (props) => {
                       modalTitle='项目名称选择'
                       criteriaKey='projectCriertia'
                       criteriaProps={['fdFrame.fdName']}
+                      defaultDataNull={true}
                       onChangeProps={(v) => {
                         setIsFrameChild(v.fdFrame.fdName === '设计类')
                         setSelectedFrame(v.fdFrame.fdId)
@@ -204,7 +205,8 @@ const XForm = (props) => {
                           fdProjectLeader: v.fdProjectPrincipal,
                           fdBelongTeam: v.fdBelongTeam,
                           fdFrame: v.fdFrame,
-                          fdSupplier: undefined
+                          fdSupplier: undefined,
+                          fdProjectNature:v.fdProjectNature
                         })
                         setAssignSupplier(undefined)
                       }}
@@ -455,7 +457,7 @@ const XForm = (props) => {
                       direction={'column'}
                       serialType={'empty'}
                       optionSource={'custom'}
-                      showStatus="edit"
+                      showStatus="readOnly"
                     ></XformRadio>
                   </Form.Item>
                 </XformFieldset>
