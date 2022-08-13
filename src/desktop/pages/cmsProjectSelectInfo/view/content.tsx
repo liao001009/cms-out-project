@@ -126,11 +126,7 @@ const Content: React.FC<IContentViewProps> = props => {
     api.update(values as any).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
-          if(window.opener) {
-            window.close()
-            return
-          }
-          history.goBack()
+          handleBack() 
         })
       } else {
         Message.error(isDraft ? '暂存失败' : '提交失败', 1)
@@ -222,7 +218,7 @@ const Content: React.FC<IContentViewProps> = props => {
           console.log('删除结果', res)
           if (res.success) {
             Message.success('删除成功')
-            history.goBack()
+            handleBack() 
           }
         })
       },
