@@ -29,7 +29,7 @@ const Content: React.FC<IContentViewProps> = props => {
   const formComponentRef = useRef<any>()
   const lbpmComponentRef = useRef<any>()
   const rightComponentRef = useRef<any>()
-  
+
   const [submitting, setSubmitting] = useState<boolean>(true)
 
   // 校验
@@ -129,7 +129,7 @@ const Content: React.FC<IContentViewProps> = props => {
     }).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
-          handleBack() 
+          handleBack()
         })
       } else {
         Message.error(isDraft ? '暂存失败' : '提交失败', 1)
@@ -139,7 +139,7 @@ const Content: React.FC<IContentViewProps> = props => {
     })
   }
 
-  
+
 
 
   //暂存
@@ -216,7 +216,7 @@ const Content: React.FC<IContentViewProps> = props => {
                 <Icon name='left' />
                 {fmtMsg(':button.back', '返回')}
               </Button>
-              调休/请假申请 &gt; 新建
+              项目需求&gt; 新建
             </div>
           </div>
         )}

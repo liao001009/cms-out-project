@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { IContentViewProps } from '@ekp-runtime/render-module'
 import Icon from '@lui/icons'
-import { Input, Button, Space, Pagination, Tooltip } from '@lui/core'
+import { Input, Button, Space, Pagination, Tooltip, Message } from '@lui/core'
 import Criteria from '@elem/criteria'
 import { $reduceCriteria } from '@/desktop/shared/criteria'
 import Operation from '@elem/operation'
@@ -155,6 +155,9 @@ const Content: React.FC<IContentViewProps> = (props) => {
   const handleAdd = useCallback(
     (event) => {
       event.stopPropagation()
+      if (!templateData?.fdId) {
+        Message.error('请先配置下流程模板')
+      }
       history.goto(`/cmsProjectDemand/add/${templateData.fdId}`)
     },
     [history, selectedRows, refresh, templateData]
