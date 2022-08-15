@@ -80,6 +80,10 @@ const Content: React.FC<IContentViewProps> = (props) => {
               label: '驳回'
             },
             {
+              value: '12',
+              label: '撤回'
+            },
+            {
               value: '20',
               label: '待审'
             },
