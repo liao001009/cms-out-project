@@ -103,10 +103,10 @@ const EditTable = (props: IProps) => {
           title: '备注',
           dataIndex: 'fdRemarks',
           editable: false,
-          saveEvent: 'change',
+          saveEvent: 'blur',
           render: (text) => {
             return (
-              editFlag ? (<Input.TextArea defaultValue={text} />) : (<span className='text-area' title='车车车车车车车车车二车车车车车车车车车车车车车车车车车车车车车少时诵诗书所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所'>{text !== undefined ? '' : '车车车车车车车车车二车车车车车车车车车车车车车车车车车车车车车少时诵诗书所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所所'}</span>)
+              editFlag ? (<Input.TextArea defaultValue={text} placeholder='请输入' />) : (<span className='text-area' title=''>{text !== undefined ? '' : text}</span>)
             )
           }
         }
@@ -144,6 +144,7 @@ const EditTable = (props: IProps) => {
   }
 
   const onSave = async (row) => {
+    console.log('row5559', row)
     const newData = [...orderDetailList]
     const index = newData.findIndex((item) => row.fdId === item.fdId)
     if (index > -1) {
