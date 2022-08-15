@@ -1,6 +1,7 @@
 import api from '@/api/cmsStaffReview'
 import { ESysLbpmProcessStatus, getFlowStatus } from '@/desktop/shared/util'
 import { useMkSendData } from '@/utils/mkHooks'
+import { getSearchParam } from '@/utils/query'
 import { EOperationType } from '@/utils/status'
 import { Module } from '@ekp-infra/common'
 import { fmtMsg } from '@ekp-infra/respect'
@@ -259,8 +260,9 @@ const Content: React.FC<IContentViewProps> = props => {
   }
   // 返回
   const handleBack = useCallback(() => {
-    // 存在来源直接关闭当前页
-    if (window.opener) {
+    const mechAuthToken = getSearchParam(location.href, 'mechAuthToken')
+    // 判断是否待办打开
+    if (mechAuthToken) {
       window.close()
       return
     }
