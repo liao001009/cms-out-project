@@ -11,6 +11,7 @@ import { ESysLbpmProcessStatus, getFlowStatus } from '@/desktop/shared/util'
 import { useMkSendData } from '@/utils/mkHooks'
 import { EOperationType } from '@/utils/status'
 import { fmtMsg } from '@ekp-infra/respect'
+import { getSearchParam } from '@/utils/query'
 
 Message.config({ maxCount: 1 })
 const LbpmFormWithLayout = Module.getComponent('sys-lbpm', 'LbpmFormWithLayout', { loading: <React.Fragment></React.Fragment> })
@@ -262,8 +263,9 @@ const Content: React.FC<IContentViewProps> = props => {
   }
   // 返回
   const handleBack = useCallback(() => {
-    // 存在来源直接关闭当前页
-    if (window.opener) {
+    const mechAuthToken = getSearchParam(location.href, 'mechAuthToken')
+    // 判断是否待办打开
+    if (mechAuthToken) {
       window.close()
       return
     }

@@ -24,6 +24,7 @@ import Axios from 'axios'
 import { cmsProjectInterviewList, cmsProjectWrittenList, projectSelectInfocolumns, staffReviewColumns } from '../../common/common'
 import EditTable from './editTable/EditTable'
 import { useMkSendData } from '@/utils/mkHooks'
+import { getSearchParam } from '@/utils/query'
 const { TabPane } = Tabs
 
 Message.config({ maxCount: 1 })
@@ -378,8 +379,9 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   }
   // 返回
   const handleBack = useCallback(() => {
-    // 存在来源直接关闭当前页
-    if (window.opener) {
+    const mechAuthToken = getSearchParam(location.href, 'mechAuthToken')
+    // 判断是否待办打开
+    if (mechAuthToken) {
       window.close()
       return
     }
