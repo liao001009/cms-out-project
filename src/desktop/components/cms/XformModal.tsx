@@ -159,7 +159,7 @@ const XformModal: React.FC<IProps> = (props) => {
       }
     }
   }, [JSON.stringify(defaultTableCriteria), JSON.stringify(otherData), showOther, visible])
-  const getListData = async (data,...args) => {
+  const getListData = async (data, ...args) => {
     try {
       const res = await apiKey[apiName](data)
       setListData(defaultDataNull ? args.length ? res.data : {} : res.data)
@@ -193,7 +193,7 @@ const XformModal: React.FC<IProps> = (props) => {
   // 分页操作 
   const handlePage = useCallback(
     (pageNo: number, pageSize: number) => {
-      queryChange({ ...query, offset: pageNo * pageSize - 1, pageSize })
+      queryChange({ ...query, offset: (pageNo - 1) * pageSize, pageSize })
     },
     [query]
   )
@@ -233,12 +233,12 @@ const XformModal: React.FC<IProps> = (props) => {
         getListData({
           ...query,
           conditions: { ...conditions, ...newConditions, ...defaultConditions }
-        },true)
+        }, true)
       } else {
         getListData({
           ...query,
           conditions: { ...conditions, ...newConditions }
-        },true)
+        }, true)
       }
 
     },

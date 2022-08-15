@@ -158,7 +158,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
   /** 分页操作 */
   const handlePage = useCallback(
     (pageNo: number, pageSize: number) => {
-      queryChange({ ...query, offset: pageNo * pageSize - 1, pageSize })
+      queryChange({ ...query, offset: (pageNo - 1) * pageSize, pageSize })
     },
     [query]
   )
