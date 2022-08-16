@@ -1,13 +1,13 @@
 import api from '@/api/cmsProjectDemand'
-import { useMkSendData } from '@/utils/mkHooks'
-import { Module } from '@ekp-infra/common'
-import { fmtMsg } from '@ekp-infra/respect'
-import { IContentViewProps } from '@ekp-runtime/render-module'
-import { Button, Message } from '@lui/core'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import {useMkSendData} from '@/utils/mkHooks'
+import {Module} from '@ekp-infra/common'
+import {fmtMsg} from '@ekp-infra/respect'
+import {IContentViewProps} from '@ekp-runtime/render-module'
+import {Button, Message} from '@lui/core'
+import React, {useCallback, useEffect, useRef, useState} from 'react'
 import XForm from './form'
 import Icon from '@lui/icons'
-import { getSearchParam } from '@/utils/query'
+import {cmsHandleBack} from '@/utils/routerUtil'
 // import './index.scss'
 
 Message.config({ maxCount: 1 })
@@ -158,13 +158,7 @@ const Content: React.FC<IContentViewProps> = props => {
   }
   // 返回
   const handleBack = useCallback(() => {
-    const mechAuthToken = getSearchParam(location.href, 'mechAuthToken')
-    // 判断是否待办打开
-    if (mechAuthToken) {
-      window.close()
-      return
-    }
-    history.length > 1 ? history.goBack() : history.goto('/cmsProjectDemand/listDemand')
+    cmsHandleBack(history, '/cmsProjectDemand/listDemand')
   }, [])
 
   const getCustomizeOperations = () => {
