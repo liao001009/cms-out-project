@@ -1,17 +1,17 @@
 import api from '@/api/cmsProjectSelectInfo'
-import { Module } from '@ekp-infra/common'
-import { IContentViewProps } from '@ekp-runtime/render-module'
-import { Button, Message, Modal } from '@lui/core'
-import { EBtnType } from '@lui/core/es/components/Button'
+import {Module} from '@ekp-infra/common'
+import {IContentViewProps} from '@ekp-runtime/render-module'
+import {Button, Message, Modal} from '@lui/core'
+import {EBtnType} from '@lui/core/es/components/Button'
 import Icon from '@lui/icons'
-import React, { createElement as h, useCallback, useEffect, useRef, useState } from 'react'
+import React, {createElement as h, useCallback, useEffect, useRef, useState} from 'react'
 import XForm from './form'
 // import './index.scss'
-import { ESysLbpmProcessStatus, getFlowStatus } from '@/desktop/shared/util'
-import { useMkSendData } from '@/utils/mkHooks'
-import { EOperationType } from '@/utils/status'
-import { fmtMsg } from '@ekp-infra/respect'
-import { getSearchParam } from '@/utils/query'
+import {ESysLbpmProcessStatus, getFlowStatus} from '@/desktop/shared/util'
+import {useMkSendData} from '@/utils/mkHooks'
+import {EOperationType} from '@/utils/status'
+import {fmtMsg} from '@ekp-infra/respect'
+import {cmsHandleBack} from '@/utils/routerUtil'
 
 
 Message.config({ maxCount: 1 })
@@ -30,7 +30,7 @@ const baseCls = 'project-selectInfo-content'
 const Content: React.FC<IContentViewProps> = props => {
   const { data,match, history, routerPrefix } = props
   const params = match?.params
- 
+
   // 机制组件引用
   const formComponentRef = useRef<any>()
   const lbpmComponentRef = useRef<any>()
@@ -131,7 +131,7 @@ const Content: React.FC<IContentViewProps> = props => {
     api.save(values as any).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
-          handleBack() 
+          cmsHandleBack(history, '/cmsProjectSelectInfo/listSelectInfo')
         })
       } else {
         Message.error(isDraft ? '暂存失败' : '提交失败', 1)
@@ -182,7 +182,7 @@ const Content: React.FC<IContentViewProps> = props => {
 
 
 
-  
+
   // 删除
   const handleDelete = () => {
     Modal.confirm({
@@ -212,7 +212,7 @@ const Content: React.FC<IContentViewProps> = props => {
 
   const handleDel = ()=>{
     const status = getFlowStatus(flowData)
-    if(status !== ESysLbpmProcessStatus.DRAFT && lbpmComponentRef.current?.checkOperationTypeExist(flowData?.identity, EOperationType.handler_replyDraftCooperate)) return 
+    if(status !== ESysLbpmProcessStatus.DRAFT && lbpmComponentRef.current?.checkOperationTypeExist(flowData?.identity, EOperationType.handler_replyDraftCooperate)) return
     const authParams = {
       vo: { fdId: params['id'] }
     }
@@ -236,8 +236,8 @@ const Content: React.FC<IContentViewProps> = props => {
 
     const status = data?.fdProcessStatus || getFlowStatus(flowData)
     /* 新建文档和草稿有暂存按钮 */
-    if(status !== ESysLbpmProcessStatus.DRAFT || status !== ESysLbpmProcessStatus.REJECT || status !== ESysLbpmProcessStatus.WITHDRAW) return 
-  
+    if(status !== ESysLbpmProcessStatus.DRAFT || status !== ESysLbpmProcessStatus.REJECT || status !== ESysLbpmProcessStatus.WITHDRAW) return
+
     return {
       name: '暂存',
       action: () => { handleSave(true) }
@@ -253,13 +253,7 @@ const Content: React.FC<IContentViewProps> = props => {
   }
   // 返回
   const handleBack = useCallback(() => {
-    const mechAuthToken = getSearchParam(location.href, 'mechAuthToken')
-    // 判断是否待办打开
-    if (mechAuthToken) {
-      window.close()
-      return
-    }
-    history.length > 1 ? history.goBack() : history.goto('/cmsProjectSelectInfo/listSelectInfo')
+    cmsHandleBack(history, '/cmsProjectSelectInfo/listSelectInfo')
   }, [])
 
   const getCustomizeOperations = () => {
@@ -270,7 +264,7 @@ const Content: React.FC<IContentViewProps> = props => {
     ].filter(t => !!t)
     return customizeOperations
   }
-  
+
   const renderInnerContent = () => {
     const entityName = 'com.landray.cms.out.manage.core.entity.project.CmsProjectSelectInfo'
     const processTemplateId = data?.mechanisms && data.mechanisms['lbpmProcess']?.fdTemplateId
@@ -306,7 +300,7 @@ const Content: React.FC<IContentViewProps> = props => {
       emitValue({ moduleCode: 'cms-out-manage-selectInfo', value: false })
       setSubmitting(false)
     }, [])
-    
+
     return (
       <LbpmFormWithLayout
         headerLeft={(

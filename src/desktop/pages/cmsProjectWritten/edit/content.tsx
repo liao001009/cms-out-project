@@ -1,13 +1,14 @@
-import React, { createElement as h, useCallback, useRef } from 'react'
-import { IContentViewProps } from '@ekp-runtime/render-module'
+import React, {createElement as h, useCallback, useRef} from 'react'
+import {IContentViewProps} from '@ekp-runtime/render-module'
 import Icon from '@lui/icons'
-import { Breadcrumb, Button, Message, Modal } from '@lui/core'
-import { EBtnType } from '@lui/core/es/components/Button'
+import {Breadcrumb, Button, Message, Modal} from '@lui/core'
+import {EBtnType} from '@lui/core/es/components/Button'
 import XForm from './form'
 import api from '@/api/cmsProjectWritten'
 import './index.scss'
-import { IProps } from '@/types/common'
-import { ESysLbpmProcessStatus } from '@/utils/status'
+import {IProps} from '@/types/common'
+import {ESysLbpmProcessStatus} from '@/utils/status'
+import {cmsHandleBack} from '@/utils/routerUtil'
 
 Message.config({ maxCount: 1 })
 
@@ -15,8 +16,8 @@ const bacls = 'cmsProjectWritten-content'
 
 const Content: React.FC<IProps & IContentViewProps> = props => {
   const { data, history, routerPrefix, mode } = props
-  
-  
+
+
   // 机制组件引用
   const formComponentRef = useRef<any>()
 
@@ -43,7 +44,7 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
       const cmsProjectWrittenDe = formValues?.cmsProjectWrittenDe?.values ||[]
       const newDetail = cmsProjectWrittenDe.map(item=>{
         const newItem = {
-          ...item, 
+          ...item,
         }
         return newItem
       })
@@ -75,7 +76,7 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
         return false
       }
     }
-   
+
     return true
   }
 
@@ -84,7 +85,7 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
     // 校验文档
     if (await _validate(isDraft) === false) {
       return
-    } 
+    }
     // 拼装提交数据
     const values = await _formatValue(isDraft, fdStatus)
     // 文档提交前事件
@@ -96,7 +97,7 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
     getDataApi(values as any).then(res => {
       if (res.success) {
         Message.success(fdStatus=== ESysLbpmProcessStatus.DRAFT ? '暂存成功': '提交成功', 1, () => {
-          history.goBack()
+          cmsHandleBack(history, '/cmsProjectWritten/listWritten')
         })
       } else {
         Message.error(fdStatus=== ESysLbpmProcessStatus.DRAFT ? '暂存失败': '提交失败', 1)
@@ -134,9 +135,9 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
 
   // 关闭
   const handleClose = useCallback(() => {
-    history.goBack()
+    cmsHandleBack(history, '/cmsProjectWritten/listWritten')
   }, [])
-  
+
   return (
     <div className={bacls}>
       <div className='lui-approve-template'>

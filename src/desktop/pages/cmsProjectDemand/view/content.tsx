@@ -1,10 +1,10 @@
 import api from '@/api/cmsProjectDemand'
-import { getFlowStatus } from '@/desktop/shared/util'
-import { EOperationType, ESysLbpmProcessStatus } from '@/utils/status'
-import { Auth, Module } from '@ekp-infra/common'
-import { IContentViewProps } from '@ekp-runtime/render-module'
-import { Button, Loading, Message, Modal, Tabs } from '@lui/core'
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import {getFlowStatus} from '@/desktop/shared/util'
+import {EOperationType, ESysLbpmProcessStatus} from '@/utils/status'
+import {Auth, Module} from '@ekp-infra/common'
+import {IContentViewProps} from '@ekp-runtime/render-module'
+import {Button, Loading, Message, Modal, Tabs} from '@lui/core'
+import React, {memo, useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import XForm from './form'
 // import './index.scss'
 //@ts-ignore
@@ -16,15 +16,21 @@ import apiProjectWritten from '@/api/cmsProjectWritten'
 import apiStaffReviewList from '@/api/cmsStaffReview'
 import apiTemplate from '@/api/cmsStaffReviewTemplate'
 import apiAuth from '@/api/sysAuth'
-import { fmtMsg } from '@ekp-infra/respect'
+import {fmtMsg} from '@ekp-infra/respect'
 //@ts-ignore
-import Status, { EStatusType } from '@elements/status'
+import Status, {EStatusType} from '@elements/status'
 import Icon from '@lui/icons'
 import Axios from 'axios'
-import { cmsProjectInterviewList, cmsProjectWrittenList, projectSelectInfocolumns, staffReviewColumns } from '../../common/common'
+import {
+  cmsProjectInterviewList,
+  cmsProjectWrittenList,
+  projectSelectInfocolumns,
+  staffReviewColumns
+} from '../../common/common'
 import EditTable from './editTable/EditTable'
-import { useMkSendData } from '@/utils/mkHooks'
-import { getSearchParam } from '@/utils/query'
+import {useMkSendData} from '@/utils/mkHooks'
+import {cmsHandleBack} from '@/utils/routerUtil'
+
 const { TabPane } = Tabs
 
 Message.config({ maxCount: 1 })
@@ -210,7 +216,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     }).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
-          handleBack() 
+          cmsHandleBack(history, '/cmsProjectDemand/listDemand')
         })
       } else {
         Message.error(isDraft ? '暂存失败' : '提交失败', 1)
@@ -221,7 +227,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   }
 
 
-  
+
 
   const handleOrder = useCallback(() => {
     return {
@@ -308,7 +314,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   // }, [flowData, params])
 
 
-  
+
 
   const handleEdit = ()=>{
     if (Object.keys(flowData).length===0) {
@@ -330,7 +336,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
       }
     }
   }
-  
+
   const handleDelete = useCallback(() => {
     confirm({
       content: '确认删除此记录？',
@@ -339,7 +345,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
           console.log('删除结果', res)
           if (res.success) {
             Message.success('删除成功')
-            handleBack() 
+            cmsHandleBack(history, '/cmsProjectDemand/listDemand')
           }
         })
       },
@@ -379,13 +385,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   }
   // 返回
   const handleBack = useCallback(() => {
-    const mechAuthToken = getSearchParam(location.href, 'mechAuthToken')
-    // 判断是否待办打开
-    if (mechAuthToken) {
-      window.close()
-      return
-    }
-    history.length > 1 ? history.goBack() : history.goto('/cmsProjectDemand/listDemand')
+    cmsHandleBack(history, '/cmsProjectDemand/listDemand')
   }, [])
 
 
