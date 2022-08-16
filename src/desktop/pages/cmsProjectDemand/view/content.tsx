@@ -71,6 +71,8 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   const orderDetailList = useRef<any>()
   // 订单响应提交按钮的显隐
   const [saveBtnVisible, setSaveBtnVisible] = useState<boolean>(false)
+  // 订单响应路由跳转
+  const [orderRouterStatus, setOrderRouterStatus] = useState<string>('')
   /** 获取资料上传节点 */
   const getCurrentNode = async () => {
     try {
@@ -94,15 +96,24 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
       setMaterialVis(false)
     }
   }
+
   useEffect(() => {
     getCurrentNode()
-    // mk.on('SYS_LBPM_AUDIT_FORM_INIT_DATA', (val) => {
-    //   console.log('val', val)
-    //   val?.roles && setRoleArr(val.roles)
-    // })
     loadTemplateData()
     roleAuthCheck()
+    getOrderRouterStatus()
   }, [])
+
+  const getOrderRouterStatus = async () => {
+    try {
+      const userId = mk.getSysConfig().currentUser.fdId
+      const res = await apiOrder.listOrder({ conditions: { 'fdSupplier.fdAdminElement.fdId': { '$eq': userId } } })
+      res.data.content.length && setOrderRouterStatus(res.data.content[0].fdId)
+    } catch (error) {
+      console.log('error', error)
+    }
+  }
+
   const roleAuthCheck = async () => {
     try {
       const res = await apiAuth.roleCheck([{
@@ -225,13 +236,15 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
       Message.error(isDraft ? '暂存失败' : '提交失败', 1)
     })
   }
+
   const handleOrder = useCallback(() => {
     if (!btnStatus) return null
     return {
       name: '订单响应',
-      action: () => { history.goto(`/cmsOrderResponse/add/${data.fdId}`) }
+      action: () => { orderRouterStatus ? history.goto(`/cmsOrderResponse/edit/${orderRouterStatus}`) : history.goto(`/cmsOrderResponse/add/${data.fdId}`) }
     }
-  }, [history])
+  }, [history, orderRouterStatus])
+
   const handleEnterWritten = useCallback(() => {
     if (!btnStatus) return null
     return {
@@ -239,6 +252,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
       action: () => { history.goto(`/cmsProjectWritten/add/${data.fdId}`) }
     }
   }, [history])
+
   const handleEnterInterview = useCallback(() => {
     if (!btnStatus) return null
     return {
