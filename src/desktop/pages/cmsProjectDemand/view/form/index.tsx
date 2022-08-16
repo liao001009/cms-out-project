@@ -24,6 +24,7 @@ import CMSXformModal from '@/desktop/components/cms/XformModal'
 import apiFrameInfo from '@/api/cmsFrameInfo'
 import apiPostInfo from '@/api/cmsPostInfo'
 import apiLevelInfo from '@/api/cmsLevelInfo'
+import apiSupplier from '@/api/cmsSupplierInfo'
 // import { Module } from '@ekp-infra/common'
 import { EShowStatus } from '@/types/showStatus'
 
@@ -43,7 +44,7 @@ const XForm = (props) => {
     cmsProjectDemandSupp: createRef() as any,
     cmsProjectDemandOrder: createRef() as any
   })
-  const { formRef: formRef, value: value, materialVis,editFlag } = props
+  const { formRef: formRef, value: value, materialVis, editFlag } = props
   const [form] = Form.useForm()
   // 框架数据
   const [frameData, setFrameData] = useState<any>([])
@@ -51,6 +52,8 @@ const XForm = (props) => {
   const [postData, setPostData] = useState<any>([])
   // 级别数据
   const [levelData, setLevelData] = useState<any>([])
+  // 发布供应商是否显示
+  const [fdSuppliesVisible, setFdSuppliesVisible] = useState<boolean>(false)
   let minPerson = 0
   value.cmsProjectDemandDetail.map(item => {
     minPerson += item.fdPersonNum
@@ -94,6 +97,9 @@ const XForm = (props) => {
         return item
       })
       setLevelData(levelArr)
+      const userId = mk.getSysConfig().currentUser.fdId
+      const resVisible = await apiSupplier.list({ conditions: { 'fdAdminElement.fdId': { '$eq': userId } } })
+      setFdSuppliesVisible(!!resVisible.data.content.length)
     } catch (error) {
       console.log('error', error)
     }
@@ -993,23 +999,27 @@ const XForm = (props) => {
                   </Form.Item>
                 </XformFieldset>
               </GridItem>
-              <GridItem column={1} row={18} rowSpan={1} columnSpan={40}>
-                <XformFieldset
-                  labelTextAlign={'left'}
-                  mobileContentAlign={'right'}
-                  title={fmtMsg(':cmsProjectDemand.form.!{l5jfuzfeh4xamxk7vb4}', '发布供应商')}
-                  layout={'horizontal'}
-                >
-                  <Form.Item name={'fdSupplies'}>
-                    <CMSXformModal
-                      {...props}
-                      showStatus={EShowStatus.view}
-                      chooseFdName='fdName'
-                      multiple={true}
-                    />
-                  </Form.Item>
-                </XformFieldset>
-              </GridItem>
+              {
+                fdSuppliesVisible ? (
+                  <GridItem column={1} row={18} rowSpan={1} columnSpan={40}>
+                    <XformFieldset
+                      labelTextAlign={'left'}
+                      mobileContentAlign={'right'}
+                      title={fmtMsg(':cmsProjectDemand.form.!{l5jfuzfeh4xamxk7vb4}', '发布供应商')}
+                      layout={'horizontal'}
+                    >
+                      <Form.Item name={'fdSupplies'}>
+                        <CMSXformModal
+                          {...props}
+                          showStatus={EShowStatus.view}
+                          chooseFdName='fdName'
+                          multiple={true}
+                        />
+                      </Form.Item>
+                    </XformFieldset>
+                  </GridItem>
+                ) : null
+              }
               {
                 !editFlag ? (
                   <GridItem column={1} row={19} rowSpan={1} columnSpan={40}>

@@ -50,6 +50,12 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   const templateId = useMemo(() => {
     return data?.fdTemplate?.fdId
   }, [data])
+  // 附加按钮显示
+  const btnStatus = useMemo(() => {
+    console.log('data5559', data)
+    return data.fdProcessStatus === '30'
+  }, [data])
+
   // 机制组件引用
   const formComponentRef = useRef<any>()
   const lbpmComponentRef = useRef<any>()
@@ -210,7 +216,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     }).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
-          handleBack() 
+          handleBack()
         })
       } else {
         Message.error(isDraft ? '暂存失败' : '提交失败', 1)
@@ -219,38 +225,39 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
       Message.error(isDraft ? '暂存失败' : '提交失败', 1)
     })
   }
-
-
-  
-
   const handleOrder = useCallback(() => {
+    if (!btnStatus) return null
     return {
       name: '订单响应',
-      action: ()=>{ history.goto(`/cmsOrderResponse/add/${data.fdId}`) }
+      action: () => { history.goto(`/cmsOrderResponse/add/${data.fdId}`) }
     }
   }, [history])
   const handleEnterWritten = useCallback(() => {
+    if (!btnStatus) return null
     return {
       name: fmtMsg(':cmsProjectWritten.form.!{l5hz6ugsxfxlg2nyfs7}', '录入笔试成绩'),
-      action: ()=>{ history.goto(`/cmsProjectWritten/add/${data.fdId}`) }
+      action: () => { history.goto(`/cmsProjectWritten/add/${data.fdId}`) }
     }
   }, [history])
   const handleEnterInterview = useCallback(() => {
+    if (!btnStatus) return null
     return {
       name: fmtMsg(':cmsProjectInterview.form.!{l5hz6ugsxfxlg2nyfs7}', '录入面试成绩'),
-      action: ()=>{ history.goto(`/cmsProjectInterview/add/${data.fdId}`) }
+      action: () => { history.goto(`/cmsProjectInterview/add/${data.fdId}`) }
     }
   }, [history])
   const handleEnterSelectInfo = useCallback(() => {
+    if (!btnStatus) return null
     return {
       name: fmtMsg(':menu.!{mctpwprd794p}', '发布中选信息'),
-      action: ()=>{ history.goto(`/cmsProjectSelectInfo/add/${data.fdId}`) }
+      action: () => { history.goto(`/cmsProjectSelectInfo/add/${data.fdId}`) }
     }
   }, [history])
   const handleEnterStaffReview = useCallback(() => {
+    if (!btnStatus) return null
     return {
       name: fmtMsg(':cmsProjectInterview.form.!{l5j0eriwqaq645oi9c}', '外包人员评审'),
-      action: ()=>{ history.goto(`/cmsStaffReview/add/${templateData.fdId}/${data.fdId}`) }
+      action: () => { history.goto(`/cmsStaffReview/add/${templateData.fdId}/${data.fdId}`) }
     }
   }, [history, templateData])
 
@@ -308,21 +315,21 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   // }, [flowData, params])
 
 
-  
 
-  const handleEdit = ()=>{
-    if (Object.keys(flowData).length===0) {
+
+  const handleEdit = () => {
+    if (Object.keys(flowData).length === 0) {
       return null
     }
     const status = data.fdProcessStatus || getFlowStatus(flowData)
     if (status === ESysLbpmProcessStatus.ABANDONED || status === ESysLbpmProcessStatus.COMPLETED) return null
-    if(status === ESysLbpmProcessStatus.DRAFT || status === ESysLbpmProcessStatus.REJECT || status === ESysLbpmProcessStatus.WITHDRAW || status === ESysLbpmProcessStatus.ACTIVATED) return null
+    if (status === ESysLbpmProcessStatus.DRAFT || status === ESysLbpmProcessStatus.REJECT || status === ESysLbpmProcessStatus.WITHDRAW || status === ESysLbpmProcessStatus.ACTIVATED) return null
     const authParams = {
       vo: { fdId: params['id'] }
     }
     return {
       name: '编辑',
-      action: ()=>{ history.goto(`/cmsProjectDemand/edit/${data.fdId}`) },
+      action: () => { history.goto(`/cmsProjectDemand/edit/${data.fdId}`) },
       auth: {
         authModuleName: 'cms-out-manage',
         authURL: '/cmsProjectDemand/edit',
@@ -330,7 +337,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
       }
     }
   }
-  
+
   const handleDelete = useCallback(() => {
     confirm({
       content: '确认删除此记录？',
@@ -339,7 +346,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
           console.log('删除结果', res)
           if (res.success) {
             Message.success('删除成功')
-            handleBack() 
+            handleBack()
           }
         })
       },
@@ -349,11 +356,11 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     })
   }, [])
   const handleDel = () => {
-    if (Object.keys(flowData).length===0) {
+    if (Object.keys(flowData).length === 0) {
       return null
     }
     const status = getFlowStatus(flowData)
-    if(status !== ESysLbpmProcessStatus.DRAFT && lbpmComponentRef.current?.checkOperationTypeExist(flowData.identity, EOperationType.handler_replyDraftCooperate)){
+    if (status !== ESysLbpmProcessStatus.DRAFT && lbpmComponentRef.current?.checkOperationTypeExist(flowData.identity, EOperationType.handler_replyDraftCooperate)) {
       return null
     }
     const authParams = {
@@ -504,7 +511,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   ), [saveBtnVisible])
 
 
-  const renderTab = ()=>{
+  const renderTab = () => {
     return (
       <div className='lui-btns-tabs'>
         <Tabs defaultActiveKey="1" tabBarExtraContent={operations} onChange={(v) => setSaveBtnVisible(v === '5')}>
