@@ -152,7 +152,10 @@ const Content: React.FC<IContentViewProps> = (props) => {
   const handleAdd = useCallback(
     (event) => {
       event.stopPropagation()
-      if (templateData?.fdId) Message.error('请先配置模板')
+      if (!templateData?.fdId) {
+        Message.error('请先配置模板')
+        return
+      }
       history.goto(`/cmsProjectSelectInfo/add/${templateData.fdId}`)
     },
     [history, selectedRows, refresh, templateData]
