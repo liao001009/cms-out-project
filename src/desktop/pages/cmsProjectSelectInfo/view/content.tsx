@@ -1,18 +1,18 @@
 import api from '@/api/cmsProjectSelectInfo'
-import { Auth, Module } from '@ekp-infra/common'
-import { IContentViewProps } from '@ekp-runtime/render-module'
-import { Button, Message, Modal } from '@lui/core'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import {Auth, Module} from '@ekp-infra/common'
+import {IContentViewProps} from '@ekp-runtime/render-module'
+import {Button, Message, Modal} from '@lui/core'
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import XForm from './form'
 // import './index.scss'
-import { getFlowStatus } from '@/desktop/shared/util'
-import { EOperationType, ESysLbpmProcessStatus } from '@/utils/status'
+import {getFlowStatus} from '@/desktop/shared/util'
+import {EOperationType, ESysLbpmProcessStatus} from '@/utils/status'
 //@ts-ignore
-import Status, { EStatusType } from '@elements/status'
+import Status, {EStatusType} from '@elements/status'
 import Icon from '@lui/icons'
-import { useMkSendData } from '@/utils/mkHooks'
-import { fmtMsg } from '@ekp-infra/respect'
-import { getSearchParam } from '@/utils/query'
+import {useMkSendData} from '@/utils/mkHooks'
+import {fmtMsg} from '@ekp-infra/respect'
+import {cmsHandleBack} from '@/utils/routerUtil'
 
 Message.config({ maxCount: 1 })
 const LbpmFormWithLayout = Module.getComponent('sys-lbpm', 'LbpmFormWithLayout', { loading: <React.Fragment></React.Fragment> })
@@ -38,7 +38,7 @@ const Content: React.FC<IContentViewProps> = props => {
   const formComponentRef = useRef<any>()
   const lbpmComponentRef = useRef<any>()
   const rightComponentRef = useRef<any>()
-    
+
   const [flowData, setFlowData] = useState<any>({}) // 流程数据
   // const [roleArr, setRoleArr] = useState<any>([])   // 流程角色
   // useEffect(() => {
@@ -127,7 +127,7 @@ const Content: React.FC<IContentViewProps> = props => {
     api.update(values as any).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
-          handleBack() 
+          cmsHandleBack(history, '/cmsProjectSelectInfo/listSelectInfo')
         })
       } else {
         Message.error(isDraft ? '暂存失败' : '提交失败', 1)
@@ -136,7 +136,7 @@ const Content: React.FC<IContentViewProps> = props => {
       Message.error(isDraft ? '暂存失败' : '提交失败', 1)
     })
   }
-  
+
   // 提交按钮
   // const _btn_submit = useMemo(() => {
   //   const submitBtn = <Button type='primary' onClick={() => handleSave(false)}>提交</Button>
@@ -146,7 +146,7 @@ const Content: React.FC<IContentViewProps> = props => {
   //     return null
   //   }
   // }, [data, flowData, params])
-  
+
 
 
   // 编辑按钮
@@ -219,7 +219,7 @@ const Content: React.FC<IContentViewProps> = props => {
           console.log('删除结果', res)
           if (res.success) {
             Message.success('删除成功')
-            handleBack() 
+            cmsHandleBack(history, '/cmsProjectSelectInfo/listSelectInfo')
           }
         })
       },
@@ -259,13 +259,7 @@ const Content: React.FC<IContentViewProps> = props => {
   }
   // 返回
   const handleBack = useCallback(() => {
-    const mechAuthToken = getSearchParam(location.href, 'mechAuthToken')
-    // 判断是否待办打开
-    if (mechAuthToken) {
-      window.close()
-      return
-    }
-    history.length > 1 ? history.goBack() : history.goto('/cmsProjectSelectInfo/listSelectInfo')
+    cmsHandleBack(history, '/cmsProjectSelectInfo/listSelectInfo')
   }, [])
 
 

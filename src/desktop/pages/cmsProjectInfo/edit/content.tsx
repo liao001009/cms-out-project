@@ -1,12 +1,13 @@
-import React, { createElement as h, Fragment, useCallback, useRef } from 'react'
-import { IContentViewProps } from '@ekp-runtime/render-module'
+import React, {createElement as h, Fragment, useCallback, useRef} from 'react'
+import {IContentViewProps} from '@ekp-runtime/render-module'
 import Icon from '@lui/icons'
-import { Breadcrumb, Button, Message, Modal } from '@lui/core'
-import { EBtnType } from '@lui/core/es/components/Button'
+import {Breadcrumb, Button, Message, Modal} from '@lui/core'
+import {EBtnType} from '@lui/core/es/components/Button'
 import XForm from './form'
 import api from '@/api/cmsProjectInfo'
 import './index.scss'
-import { IProps } from '@/types/common'
+import {IProps} from '@/types/common'
+import {cmsHandleBack} from '@/utils/routerUtil'
 
 
 const bacls = 'projectInfo-content'
@@ -50,7 +51,7 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
           ...formValues
         }
       }
-      
+
       if (formValues.mechanisms) {
         delete values.mechanisms
       }
@@ -87,7 +88,7 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
     getDataApi(values as any).then(res => {
       if (res.success) {
         Message.success(isDraft ? '保存成功' : '提交成功', 1, () => {
-          history.goBack()
+          cmsHandleBack(history, '/cmsProjectInfo/listProjectInfo')
         })
       } else {
         Message.error(isDraft ? '保存失败' : '提交失败', 1)
@@ -125,7 +126,7 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
 
   // 关闭
   const handleClose = useCallback(() => {
-    history.goBack()
+    cmsHandleBack(history, '/cmsProjectInfo/listProjectInfo')
   }, [])
 
   return (

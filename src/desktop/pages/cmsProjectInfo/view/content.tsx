@@ -7,6 +7,7 @@ import './index.scss'
 import { Auth } from '@ekp-infra/common'
 //@ts-ignore
 import Status, { EStatusType } from '@elements/status'
+import {cmsHandleBack} from '@/utils/routerUtil'
 const { confirm } = Modal
 
 const Content: React.FC<IContentViewProps> = props => {
@@ -18,7 +19,7 @@ const Content: React.FC<IContentViewProps> = props => {
 
   // 关闭
   const handleClose = useCallback(() => {
-    history.goBack()
+    cmsHandleBack(history, '/cmsProjectInfo/listProjectInfo')
   }, [])
 
 
@@ -34,7 +35,7 @@ const Content: React.FC<IContentViewProps> = props => {
           console.log('删除结果', res)
           if (res.success) {
             Message.success('删除成功')
-            history.goBack()
+            cmsHandleBack(history, '/cmsProjectInfo/listProjectInfo')
           }
         })
       },

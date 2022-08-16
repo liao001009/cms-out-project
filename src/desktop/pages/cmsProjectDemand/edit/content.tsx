@@ -1,17 +1,17 @@
 import api from '@/api/cmsProjectDemand'
-import { Module } from '@ekp-infra/common'
-import { IContentViewProps } from '@ekp-runtime/render-module'
-import { Button, Message, Modal } from '@lui/core'
-import { EBtnType } from '@lui/core/es/components/Button'
+import {Module} from '@ekp-infra/common'
+import {IContentViewProps} from '@ekp-runtime/render-module'
+import {Button, Message, Modal} from '@lui/core'
+import {EBtnType} from '@lui/core/es/components/Button'
 import Icon from '@lui/icons'
-import React, { createElement as h, useCallback, useEffect, useRef, useState } from 'react'
+import React, {createElement as h, useCallback, useEffect, useRef, useState} from 'react'
 import XForm from './form'
 // import './index.scss'
-import { ESysLbpmProcessStatus, getFlowStatus } from '@/desktop/shared/util'
-import { useMkSendData } from '@/utils/mkHooks'
-import { EOperationType } from '@/utils/status'
-import { fmtMsg } from '@ekp-infra/respect'
-import { getSearchParam } from '@/utils/query'
+import {ESysLbpmProcessStatus, getFlowStatus} from '@/desktop/shared/util'
+import {useMkSendData} from '@/utils/mkHooks'
+import {EOperationType} from '@/utils/status'
+import {fmtMsg} from '@ekp-infra/respect'
+import {cmsHandleBack} from '@/utils/routerUtil'
 
 Message.config({ maxCount: 1 })
 const LbpmFormWithLayout = Module.getComponent('sys-lbpm', 'LbpmFormWithLayout', { loading: <React.Fragment></React.Fragment> })
@@ -141,7 +141,7 @@ const Content: React.FC<IContentViewProps> = props => {
     }).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
-          handleBack() 
+          cmsHandleBack(history, '/cmsProjectDemand/listDemand')
         })
       } else {
         Message.error(isDraft ? '暂存失败' : '提交失败', 1)
@@ -151,7 +151,7 @@ const Content: React.FC<IContentViewProps> = props => {
     })
   }
 
-  
+
 
   // 提交按钮
   // const _btn_submit = useMemo(() => {
@@ -263,13 +263,7 @@ const Content: React.FC<IContentViewProps> = props => {
   }
   // 返回
   const handleBack = useCallback(() => {
-    const mechAuthToken = getSearchParam(location.href, 'mechAuthToken')
-    // 判断是否待办打开
-    if (mechAuthToken) {
-      window.close()
-      return
-    }
-    history.length > 1 ? history.goBack() : history.goto('/cmsProjectDemand/listDemand')
+    cmsHandleBack(history, '/cmsProjectDemand/listDemand')
   }, [])
 
   const getCustomizeOperations = () => {

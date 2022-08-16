@@ -4,6 +4,7 @@ import { Breadcrumb, Button, Message, Modal } from '@lui/core'
 import XForm from './form'
 import api from '@/api/cmsProjectWritten'
 import './index.scss'
+import {cmsHandleBack} from '@/utils/routerUtil'
 
 Message.config({ maxCount: 1 })
 
@@ -19,7 +20,7 @@ const Content: React.FC<IContentViewProps> = props => {
 
   // 关闭
   const handleClose = useCallback(() => {
-    history.goBack()
+    cmsHandleBack(history, '/cmsProjectWritten/listWritten')
   }, [])
 
 
@@ -35,7 +36,7 @@ const Content: React.FC<IContentViewProps> = props => {
           console.log('删除结果', res)
           if (res.success) {
             Message.success('删除成功')
-            history.goBack()
+            cmsHandleBack(history, '/cmsProjectWritten/listWritten')
           }
         })
       },
