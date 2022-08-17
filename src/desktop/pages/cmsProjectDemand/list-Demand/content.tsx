@@ -16,7 +16,7 @@ import './index.scss'
 const baseCls = 'project-demand-list'
 const Content: React.FC<IContentViewProps> = (props) => {
   const { status, data, queryChange, query, refresh, history } = props
-  const { content, totalSize, pageSize } = data
+  const { content = [], totalSize, pageSize } = data
   const [templateData, setTemplateData] = useState<any>({})
   useEffect(() => {
     loadTemplateData()

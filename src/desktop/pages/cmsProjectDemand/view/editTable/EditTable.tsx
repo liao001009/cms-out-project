@@ -5,6 +5,10 @@ import { Select, Input } from '@lui/core'
 import api from '@/api/cmsProjectDemand'
 import apiAuth from '@/api/sysAuth'
 import apiOrder from '@/api/cmsOrderResponse'
+import { Module } from '@ekp-infra/common'
+import apiStaffInfo from '@/api/cmsOutStaffInfo'
+
+const Upload = Module.getComponent('sys-attach', 'Attachment')
 
 const { useForm } = Table
 import './index.scss'
@@ -76,13 +80,17 @@ const EditTable = (props: IProps) => {
           dataIndex: 'fdEmail',
           render: (text) => <span>{text}</span>
         },
-        // {
-        //   title: '简历',
-        //   dataIndex: '',
-        //   editable: false,
-        //   saveEvent: 'enter',
-        //   render: text, record => <Input allowClear />
-        // },
+        {
+          title: '简历',
+          dataIndex: 'fdAtt',
+          render: (text: any, record) => {
+            console.log('text5559', text)
+            console.log('record5559', record)
+            return (
+              <Upload value={[text]} multiple={false} itemType={'card'} mode='file' viewStatus={true} showStatus={'view'} />
+            )
+          }
+        },
         {
           title: '是否合格',
           dataIndex: 'fdIsQualified',
@@ -112,7 +120,24 @@ const EditTable = (props: IProps) => {
         }
       ]
     )
-  }, [editFlag])
+  }, [editFlag, orderDetailList])
+
+  const conactStaffInfo = async (list) => {
+    const newData: any = await Promise.all(list.map((i) => {
+      return (async () => {
+        const res = await apiStaffInfo.get({ fdId: i.fdOutName.fdId, mechanisms: { load: '*' } })
+        return res
+      })()
+    }))
+    if (newData.length) {
+      const newList = JSON.parse(JSON.stringify(list))
+      const res = newList.map((k, v) => {
+        k.fdAtt = newData[v].data.mechanisms.attachment.find(i => i.fdEntityKey === 'fdResumeAtt')
+        return k
+      })
+      setOrderDetailList(res)
+    }
+  }
 
   const getOrderDetail = async (pageParms = {}) => {
     try {
@@ -124,12 +149,13 @@ const EditTable = (props: IProps) => {
         },
         ...pageParms
       })
-      setOrderDetailList(res.data.content)
+      conactStaffInfo(res.data.content)
     } catch (error) {
       console.log('error', error)
     }
   }
 
+  console.log('orderDetailList5559', orderDetailList)
   const init = async () => {
     try {
       const res = await apiAuth.roleCheck([{
@@ -144,7 +170,6 @@ const EditTable = (props: IProps) => {
   }
 
   const onSave = async (row) => {
-    console.log('row5559', row)
     const newData = [...orderDetailList]
     const index = newData.findIndex((item) => row.fdId === item.fdId)
     if (index > -1) {
@@ -185,9 +210,10 @@ const EditTable = (props: IProps) => {
     ]
   }, [])
 
+  // const formPorps = useMemo(() => (), [orderDetailList, page])
   const { tableProps } = useForm({
     data: orderDetailList || [],
-    serial: 'static',
+    serial: 'static' as 'static',
     rowSelection: false,
     columns,
     onChange,
