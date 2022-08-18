@@ -7,7 +7,7 @@ import Criteria from '@elem/criteria'
 import { $reduceCriteria } from '@/desktop/shared/criteria'
 import './index.scss'
 import { criertiaObj } from '@/desktop/pages/common/common'
-
+import { renderConditions } from '@/desktop/shared/util'
 export enum EShowStatus {
   /** 查看 */
   'view' = 'view',
@@ -58,6 +58,8 @@ export interface IProps extends IContentViewProps {
   params?: any
   /** 默认为空数据 */
   defaultDataNull?: boolean
+  /**是否是项目类型 */
+  mark?: boolean
   /** 扩展 */
   [key: string]: any
 }
@@ -87,12 +89,15 @@ const XformModal: React.FC<IProps> = (props) => {
     otherData = {},
     showOther = false,
     params = {},
-    defaultDataNull = false
+    defaultDataNull = false,
+    mark = false
   } = props
 
   const [listData, setListData] = useState<any>([])
   const [visible, setVisible] = useState<boolean>(false)
   const [fdName, setFdName] = useState<string>(value && value.fdName || '')
+  // 选中的筛选项
+  const [selectedConditions, setSelectedConditions] = useState<any>({})
   // 多选时，选中的数据
   const [selectedRowsData, setSelectedRows] = useState<any>([])
   // 表单传过来的初始值，为了点击取消时，还原数据
@@ -216,34 +221,41 @@ const XformModal: React.FC<IProps> = (props) => {
   const handleCriteriaChange = useCallback(
     (value, values) => {
       const conditions = $reduceCriteria(query, values)
-      const newConditions = {}
-      criteriaProps.length && criteriaProps.map(item => {
-        newConditions[item] = conditions[item] ? {
-          $contains: conditions[item]['$eq']
-        } : undefined
-      })
+      const newConditions = renderConditions(conditions, values, criteriaProps)
       if (Object.keys(defaultTableCriteria).length) {
-
         const defaultConditions = {}
         Object.keys(defaultTableCriteria).forEach(key => {
           const defaultConditionsKey = {}
           defaultConditionsKey[defaultTableCriteria[key]['searchKey']] = defaultTableCriteria[key]['searchValue']
           defaultConditions[key] = defaultTableCriteria[key]['searchValue'] && defaultConditionsKey
         })
+        setSelectedConditions({ ...conditions, ...newConditions, ...defaultConditions, ...selectedConditions, })
         getListData({
           ...query,
-          conditions: { ...conditions, ...newConditions, ...defaultConditions }
+          conditions: { ...conditions, ...newConditions, ...defaultConditions, ...selectedConditions }
         }, true)
       } else {
+        setSelectedConditions({ ...conditions, ...newConditions, ...selectedConditions })
         getListData({
           ...query,
-          conditions: { ...conditions, ...newConditions }
+          conditions: { ...conditions, ...newConditions, ...selectedConditions }
         }, true)
       }
-
     },
-    [query]
+    [query, selectedConditions]
   )
+  const handleSearch = (value) => {
+    if (!value) return
+    let conditions: any = {}
+    if (Object.keys(selectedConditions).length) {
+      conditions = { ...selectedConditions, 'fdName': { '$contains': value } }
+    } else {
+      conditions = { 'fdName': { '$contains': value.trim() } }
+    }
+    setSelectedConditions({ ...conditions })
+    getListData({ ...query, conditions }, true)
+
+  }
   // 确定按钮
   const handleOk = useCallback(() => {
     setVisible(false)
@@ -319,6 +331,9 @@ const XformModal: React.FC<IProps> = (props) => {
         footer={showFooter ? undefined : null}
       >
         <div className="lui-template-list-table">
+          {
+            mark ? (<div className='lui-template-list-table-search'><span className='lui-template-list-table-search-title'>项目名称:</span><Input.Search onSearch={handleSearch} allowClear /></div>) : null
+          }
           {
             showCriteria ? (
               <Criteria key="criteria" expandable={true} onChange={handleCriteriaChange}>

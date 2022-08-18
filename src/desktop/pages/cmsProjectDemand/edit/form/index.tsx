@@ -191,6 +191,7 @@ const XForm = (props) => {
                       apiKey={apiProject}
                       apiName={'listProjectInfo'}
                       showStatus='add'
+                      mark={true}
                       modalTitle='项目名称选择'
                       criteriaKey='projectCriertia'
                       criteriaProps={['fdFrame.fdName']}
@@ -206,7 +207,7 @@ const XForm = (props) => {
                           fdBelongTeam: v.fdBelongTeam,
                           fdFrame: v.fdFrame,
                           fdSupplier: undefined,
-                          fdProjectNature:v.fdProjectNature
+                          fdProjectNature: v.fdProjectNature
                         })
                         setAssignSupplier(undefined)
                       }}

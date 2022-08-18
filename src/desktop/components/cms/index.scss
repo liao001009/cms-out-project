@@ -43,3 +43,13 @@
 .multiple-input:hover {
   border: 1px solid #4285f4;
 }
+
+.lui-template-list-table-search {
+  width: 400px;
+  display: flex;
+  align-items: center;
+
+  &-title {
+    width: 100px;
+  }
+}

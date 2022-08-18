@@ -28,16 +28,16 @@ const XForm = (props) => {
     cmsProjectStaffList: createRef() as any
   })
   const { formRef: formRef } = props
-  let { value:value } = props  
+  let { value: value } = props
   value = {
     ...value,
-    fdSubject:value.fdProjectDemand.fdName
+    fdSubject: value.fdProjectDemand.fdName
   }
   const [form] = Form.useForm()
   const [fdLevelData, setFdLevelData] = useState<any>([])
-  useEffect(()=>{
+  useEffect(() => {
     getLevelData()
-  },[])
+  }, [])
   const getLevelData = async () => {
     try {
       const res = await apiLevelInfo.list({})
@@ -140,6 +140,7 @@ const XForm = (props) => {
                       apiKey={apiProject}
                       apiName={'listProjectInfo'}
                       showStatus='readOnly'
+                      mark={true}
                       modalTitle='项目名称选择'
                       criteriaKey='projectCriertia'
                       criteriaProps={['fdFrame.fdName']}
@@ -311,7 +312,7 @@ const XForm = (props) => {
                               type: CMSXformModal
                             },
                             onChangeProps: (v, r) => {
-                              console.log('vlaues',v)
+                              console.log('vlaues', v)
                               sysProps.$$form.current.updateFormItemProps('cmsProjectStaffList', {
                                 rowValue: {
                                   rowNum: r,
@@ -320,8 +321,8 @@ const XForm = (props) => {
                                     fdSupplierObj: v.fdSupplier,
                                     fdConfirmLevel: v.fdConfirmLevel,
                                     fdOutName: { ...v },
-                                    fdEmail:v.fdEmail,
-                                    fdPhone:v.fdMobile
+                                    fdEmail: v.fdEmail,
+                                    fdPhone: v.fdMobile
                                   }
                                 }
                               })

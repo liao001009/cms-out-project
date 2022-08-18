@@ -644,7 +644,6 @@ export const projectCriertia = () => {
     <React.Fragment>
       <Criteria.Input name="fdCode" title="项目编号"></Criteria.Input>
       <Criteria.Input name="fdFrame.fdName" title="项目所属框架"></Criteria.Input>
-      <Criteria.Input name="fdBelongTeam.fdName" title="所属组/团队"></Criteria.Input>
       <Criteria.Criterion
         canMulti={false}
         options={[

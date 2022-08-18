@@ -187,11 +187,12 @@ const XForm = (props) => {
                       columnsProps={projectColumns}
                       chooseFdName='fdName'
                       apiKey={apiProject}
+                      mark={true}
                       apiName={'listProjectInfo'}
                       showStatus='add'
                       modalTitle='项目名称选择'
                       criteriaKey='projectCriertia'
-                      criteriaProps={['fdFrame.fdName','fdBelongTeam.fdName']}
+                      criteriaProps={['fdFrame.fdName', 'fdBelongTeam.fdName']}
                       defaultDataNull={true}
                       onChangeProps={(v) => {
                         setIsFrameChild(v.fdFrame.fdName === '设计类')
@@ -204,7 +205,7 @@ const XForm = (props) => {
                           fdBelongTeam: v.fdBelongTeam,
                           fdFrame: v.fdFrame,
                           fdSupplier: undefined,
-                          fdProjectNature:v.fdProjectNature
+                          fdProjectNature: v.fdProjectNature
                         })
                         setAssignSupplier(undefined)
                       }}

@@ -216,7 +216,7 @@ export const renderConditions = (oldConditions, values, arr) => {
   const newData = arr.map(i => {
     const value = values.find(item => item.name === i)
     return value
-  })
+  }).filter(i => i)
   newData.forEach(i => {
     if (i.value.length) {
       oldConditions[i.name] = {

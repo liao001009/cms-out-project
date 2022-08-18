@@ -143,6 +143,7 @@ const XForm = (props) => {
                       apiKey={apiProject}
                       apiName={'listProjectInfo'}
                       showStatus='readOnly'
+                      mark={true}
                       modalTitle='项目名称选择'
                       criteriaKey='projectCriertia'
                       criteriaProps={['fdFrame.fdName']}
