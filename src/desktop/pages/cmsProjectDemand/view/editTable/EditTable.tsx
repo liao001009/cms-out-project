@@ -81,13 +81,32 @@ const EditTable = (props: IProps) => {
           render: (text) => <span>{text}</span>
         },
         {
+          title: '电话',
+          dataIndex: 'fdPhoto',
+          render: (text) => <span>{text}</span>
+        },
+        {
           title: '简历',
           dataIndex: 'fdAtt',
-          render: (text: any, record) => {
-            console.log('text5559', text)
-            console.log('record5559', record)
+          render: (text: any) => {
             return (
-              <Upload value={[text]} multiple={false} itemType={'card'} mode='file' viewStatus={true} showStatus={'view'} />
+              <Upload
+                value={[text]}
+                multiple={false}
+                itemType={'card'}
+                mode='file'
+                viewStatus={true}
+                showStatus={'view'}
+                operationDisplayConfig={{
+                  showDownload: true,
+                  showRemove: false,
+                  showChange: false
+                }}
+                ItemDisplayConfig={{
+                  showOrder: false,
+                  showHeader: true
+                }}
+              />
             )
           }
         },
