@@ -1,6 +1,20 @@
 import React from 'react'
 import Criteria from '@elem/criteria'
+import { Tooltip } from '@lui/core'
 
+const renderFdrame = (value) => {
+  return (
+    <React.Fragment>
+      {
+        value.map((i, index) => {
+          return (
+            <span key={i.fdId}>{i.fdName}{index === value.length - 1 ? '' : ','}</span>
+          )
+        })
+      }
+    </React.Fragment>
+  )
+}
 // 供应商
 export const supplierColumns = [
   /*供应商名称*/
@@ -19,7 +33,7 @@ export const supplierColumns = [
   {
     title: '所属框架',
     dataIndex: 'fdFrame',
-    render: (value) => value && value.fdName
+    render: (value) => value.length && renderFdrame(value)
   },
   /*供应商合作状态*/
   {
@@ -278,6 +292,285 @@ export const outStaffInfoColumns = [
     }
   }
 ]
+// 表格列定义
+export const projectSelectInfocolumns = [
+  /*主题*/
+  {
+    title: '主题',
+    dataIndex: 'fdSubject',
+    render: (value) => value
+  },
+  /*项目名称*/
+  {
+    title: '项目名称',
+    dataIndex: 'fdProject',
+    render: (value) => value?.fdName
+  },
+  /*中选供应商*/
+  {
+    title: '中选供应商',
+    dataIndex: 'fdSelectedSupplier',
+    render: (value) => value?.map(item => item.fdName).join(',')
+  },
+  /*落选供应商*/
+  {
+    title: '落选供应商',
+    dataIndex: 'fdFailSupplier',
+    render: (value) => value?.map(item => item.fdName).join(',')
+  },
+  /*当前处理环节*/
+  {
+    title: '当前处理环节',
+    dataIndex: 'currentNodeNames',
+    render (_, row) {
+      const value = row?.mechanisms?.lbpmProcess?.lbpm_current_node?.currentNodeNames || '--'
+      return <Tooltip title={value}>{value}</Tooltip>
+    },
+  },
+  /*当前处理人*/
+  {
+    title: '当前处理人',
+    dataIndex: 'currentHandlerNames',
+    render (_, row) {
+      const value = row?.mechanisms?.lbpmProcess?.lbpm_current_processor?.currentHandlerNames || '--'
+      return <Tooltip title={value}>{value}</Tooltip>
+    },
+  },
+  /*文档状态*/
+  {
+    title: '文档状态',
+    dataIndex: 'fdProcessStatus',
+    render: (value) => {
+      const options = [
+        {
+          value: '00',
+          label: '废弃'
+        },
+        {
+          value: '10',
+          label: '草稿'
+        },
+        {
+          value: '11',
+          label: '驳回'
+        },
+        {
+          value: '20',
+          label: '待审'
+        },
+        {
+          value: '21',
+          label: '挂起'
+        },
+        {
+          value: '29',
+          label: '异常'
+        },
+        {
+          value: '30',
+          label: '结束'
+        }
+      ]
+      const option = options.find((option) => option.value === value)
+
+      if (!option) {
+        return value
+      }
+
+      return option.label
+    }
+  }
+]
+
+export const staffReviewColumns = [
+  /*主题*/
+  {
+    title: '主题',
+    dataIndex: 'fdSubject',
+    render: (value) => value
+  },
+  /*项目负责人*/
+  {
+    title: '项目负责人',
+    dataIndex: 'fdProjectLeader',
+    render: (value) => value && value.fdName
+  },
+  /*中选供应商*/
+  {
+    title: '中选供应商',
+    dataIndex: 'fdSupplies',
+    render: (value) => value && value.map(i => i.fdName).join(',')
+  },
+  /**文档状态 */
+  {
+    title: '文档状态',
+    dataIndex: 'fdProcessStatus',
+    render: (value) => {
+      const options = [
+        {
+          value: '00',
+          label: '废弃'
+        },
+        {
+          value: '10',
+          label: '草稿'
+        },
+        {
+          value: '11',
+          label: '驳回'
+        },
+        {
+          value: '12',
+          label: '撤回'
+        },
+        {
+          value: '20',
+          label: '待审'
+        },
+        {
+          value: '21',
+          label: '挂起'
+        },
+        {
+          value: '29',
+          label: '异常'
+        },
+        {
+          value: '30',
+          label: '结束'
+        }
+      ]
+      const option = options.find((option) => option.value === value)
+
+      if (!option) {
+        return value
+      }
+
+      return option.label
+    }
+  },
+  /*当前处理环节*/
+  {
+    title: '当前处理环节',
+    dataIndex: 'currentNodeNames',
+    render (_, row) {
+      const value = row?.mechanisms?.lbpmProcess?.lbpm_current_node?.currentNodeNames || '--'
+      return <Tooltip title={value}>{value}</Tooltip>
+    },
+  },
+  /*当前处理人*/
+  {
+    title: '当前处理人',
+    dataIndex: 'currentHandlerNames',
+    render (_, row) {
+      const value = row?.mechanisms?.lbpmProcess?.lbpm_current_processor?.currentHandlerNames || '--'
+      return <Tooltip title={value}>{value}</Tooltip>
+    },
+  }
+]
+
+export const cmsProjectInterviewList = [
+  /*实际面试时间*/
+  {
+    title: '实际面试时间',
+    dataIndex: 'fdInterviewTime',
+    render: (value) => value && mk.getFormatTime(value, 'YYYY-MM-DD HH:mm')
+  },
+  /*合格分数线*/
+  {
+    title: '合格分数线',
+    dataIndex: 'fdQualifiedMark',
+    render: (value) => value
+  },
+  /*创建人*/
+  {
+    title: '创建人',
+    dataIndex: 'fdCreator',
+    render: (value) => value && value.fdName
+  },
+  /*创建时间*/
+  {
+    title: '创建时间',
+    dataIndex: 'fdCreateTime',
+    render: (value) => value && mk.getFormatTime(value, 'YYYY-MM-DD HH:mm')
+  }
+]
+
+export const cmsProjectWrittenList = [
+  /*笔试时间*/
+  {
+    title: '笔试时间',
+    dataIndex: 'fdWrittenTime',
+    render: (value) => value && mk.getFormatTime(value, 'YYYY-MM-DD HH:mm')
+  },
+  /*合格分数线*/
+  {
+    title: '合格分数线',
+    dataIndex: 'fdQualifiedMark',
+    render: (value) => value
+  },
+  /*是否面试*/
+  {
+    title: '是否面试',
+    dataIndex: 'fdIsInterview',
+    render: (value) => {
+      const options = [
+        {
+          value: '1',
+          label: '是'
+        }
+      ]
+      const option = options.find((option) => option.value === value)
+
+      if (!option) {
+        return value
+      }
+
+      return option.label
+    }
+  },
+  /*邮件通知供应商*/
+  {
+    title: '邮件通知供应商',
+    dataIndex: 'fdNoticeSupplier',
+    render: (value) => {
+      const options = [
+        {
+          value: '1',
+          label: '是'
+        }
+      ]
+      const option = options.find((option) => option.value === value)
+
+      if (!option) {
+        return value
+      }
+
+      return option.label
+    }
+  },
+  /*邮件通知面试官*/
+  {
+    title: '邮件通知面试官',
+    dataIndex: 'fdNoticeInterviewer',
+    render: (value) => {
+      const options = [
+        {
+          value: '1',
+          label: '是'
+        }
+      ]
+      const option = options.find((option) => option.value === value)
+
+      if (!option) {
+        return value
+      }
+
+      return option.label
+    }
+  }
+]
+
 // 供应商筛选
 export const supplierCriertia = () => {
   return (
@@ -310,40 +603,43 @@ export const supplierCriertia = () => {
     </React.Fragment>
   )
 }
+
+// 供应商筛选
+const demandSupplier = () => {
+  return (
+    <React.Fragment>
+      <Criteria.Input name="fdOrgCode" title="组织机构代码"></Criteria.Input>
+      <Criteria.Input name="fdSupplierName" title="供应商名称"></Criteria.Input>
+      <Criteria.Criterion
+        canMulti={false}
+        options={[
+          {
+            text: '不限',
+            value: ''
+          },
+          {
+            text: '未签合同',
+            value: '1'
+          },
+          {
+            text: '已签合同',
+            value: '2'
+          },
+          {
+            text: '合同过期',
+            value: '3'
+          }
+        ]}
+        name="fdCooperationStatus"
+        title="供应商合作状态"
+      ></Criteria.Criterion>
+      <Criteria.Input name="fdFrame.fdName" title="所属框架"></Criteria.Input>
+    </React.Fragment>
+  )
+}
+
 // 项目表格筛选
 export const projectCriertia = () => {
-  // [{
-  //   name:'fdCode',
-  //   title:'项目编号',
-  //   type:'input',
-  // },{
-  //   name:'fdFrame.fdName',
-  //   title:'项目所属框架',
-  //   type:'input',
-  // },{
-  //   name:'fdProjectNature',
-  //   title:'项目性质',
-  //   type:'Criterion',
-  //   options:[
-  //     {
-  //       text: '不限',
-  //       value: ''
-  //     },
-  //     {
-  //       text: '项目外包',
-  //       value: '1'
-  //     },
-  //     {
-  //       text: '厂商驻场实施 ',
-  //       value: '2'
-  //     }
-  //   ]
-  // },{
-  //   name:'fdBelongDept.fdId',
-  //   title:'所属部门',
-  //   type:'input',
-  //   orgType:2
-  // }]
   return (
     <React.Fragment>
       <Criteria.Input name="fdCode" title="项目编号"></Criteria.Input>
@@ -368,7 +664,6 @@ export const projectCriertia = () => {
         title="项目性质"
       ></Criteria.Criterion>
       <Criteria.Org orgType={2} title="所属部门" name="fdBelongDept.fdId"></Criteria.Org>
-      <Criteria.Org orgType={2} title="所属组/团队" name="fdBelongTeam.fdId"></Criteria.Org>
       <Criteria.Org orgType={8} title="项目负责人" name="fdProjectPrincipal.fdId"></Criteria.Org>
       <Criteria.Org orgType={8} title="内部责任人" name="fdInnerPrincipal.fdId"></Criteria.Org>
       <Criteria.Calendar
@@ -463,8 +758,46 @@ export const presonCriertia = () => {
   )
 }
 
+export const staffReviewUpgrade = () => (
+  <React.Fragment>
+    <Criteria.Input name="fdName" title="姓名"></Criteria.Input>
+    <Criteria.Input name="fdSupplier.fdName" title="供应商名称"></Criteria.Input>
+    <Criteria.Calendar
+      options={Criteria.Calendar.buildOptions()}
+      name="fdFirstEntranceDate"
+      title="首次入场时间"
+    ></Criteria.Calendar>
+    <Criteria.Calendar
+      options={Criteria.Calendar.buildOptions()}
+      name="fdLastUpgradeDate"
+      title="上次调级时间"
+    ></Criteria.Calendar>
+  </React.Fragment>
+)
+
+
+export const projectSelectInfoCriertia = () => {
+  return (
+    <React.Fragment>
+      <Criteria.Org orgType={8} title="创建人" name="fdCreator.fdId"></Criteria.Org>
+      <Criteria.Calendar
+        options={Criteria.Calendar.buildOptions()}
+        name="fdCreateTime"
+        title="创建时间"
+      ></Criteria.Calendar>
+      <Criteria.Input name="fdSubject" title="主题"></Criteria.Input>
+      <Criteria.Input name="fdProject" title="项目名称"></Criteria.Input>
+      <Criteria.Input name="fdSelectedSupplier" title="中选供应商"></Criteria.Input>
+      <Criteria.Input name="fdFailSupplier" title="落选供应商"></Criteria.Input>
+    </React.Fragment>
+  )
+}
+
 export const criertiaObj = {
   supplierCriertia: supplierCriertia(),
   projectCriertia: projectCriertia(),
   presonCriertia: presonCriertia(),
+  projectSelectInfoCriertia: projectSelectInfoCriertia(),
+  demandSupplier: demandSupplier(),
+  staffReviewUpgrade: staffReviewUpgrade(),
 }

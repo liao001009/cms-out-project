@@ -1,0 +1,4 @@
+@import "../../common/common.scss";
+$baseCls: cmsProjectWritten-content;
+
+@include content-page($baseCls);

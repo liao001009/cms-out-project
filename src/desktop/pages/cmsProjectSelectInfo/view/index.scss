@@ -1,0 +1,5 @@
+@import '../../common/common.scss';
+
+$baseCls : 'project-selectInfo-content';
+
+@include content-right-page($baseCls);

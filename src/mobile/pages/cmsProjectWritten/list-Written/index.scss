@@ -1,0 +1,27 @@
+.mui-template-list {
+  &-header {
+    padding: 12px;
+  }
+  &-toolbar {
+    display: flex;
+    padding: 0 12px;
+    .left {
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+    .right {
+      float: right;
+      width: 30px;
+      text-align: center;
+    }
+  }
+  .mui-list {
+    background: #f8f8f8;
+    padding: 0 0 15px;
+  }
+  .mui-list-item {
+    background: #fff;
+    margin: 15px;
+  }
+}

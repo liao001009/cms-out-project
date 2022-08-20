@@ -1,0 +1,13 @@
+.project-demand-edit-table {
+  .lui-form-item-control {
+    padding-left: 0;
+
+    .text-area {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      overflow: hidden;
+      white-space: initial;
+    }
+  }
+}

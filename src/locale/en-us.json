@@ -3,13 +3,63 @@
     "cmsProjectInfoTemplate": {
         "name": "CmsProjectInfoTemplate"
     },
+    "cmsStaffReviewTemplate": {
+        "name": "CmsStaffReviewTemplate"
+    },
+    "cmsProjectWrittenTemplate": {
+        "name": "CmsProjectWrittenTemplate"
+    },
+    "cmsProjectInterviewTemplate": {
+        "name": "CmsProjectInterviewTemplate"
+    },
+    "cmsProjectDemandTemplate": {
+        "name": "CmsProjectDemandTemplate"
+    },
+    "cmsProjectSelectInfoTemplate": {
+        "name": "CmsProjectSelectInfoTemplate"
+    },
     "cmsProjectInfo": {
         "form": {},
         "list": {
             "ProjectInfo": "ProjectInfo"
         }
     },
+    "cmsProjectWritten": {
+        "form": {},
+        "list": {
+            "Written": "Written"
+        }
+    },
+    "cmsProjectInterview": {
+        "form": {},
+        "list": {
+            "Interview": "Interview"
+        }
+    },
+    "cmsStaffReview": {
+        "form": {},
+        "list": {
+            "StaffReview": "StaffReview"
+        }
+    },
+    "cmsProjectDemand": {
+        "form": {},
+        "list": {
+            "Demand": "Demand"
+        }
+    },
+    "cmsProjectSelectInfo": {
+        "form": {},
+        "list": {
+            "SelectInfo": "SelectInfo"
+        }
+    },
     "menu": {
-        "cmsProjectInfoTemplate": "CmsProjectInfoTemplate"
+        "cmsProjectInfoTemplate": "CmsProjectInfoTemplate",
+        "cmsStaffReviewTemplate": "CmsStaffReviewTemplate",
+        "cmsProjectWrittenTemplate": "CmsProjectWrittenTemplate",
+        "cmsProjectInterviewTemplate": "CmsProjectInterviewTemplate",
+        "cmsProjectDemandTemplate": "CmsProjectDemandTemplate",
+        "cmsProjectSelectInfoTemplate": "CmsProjectSelectInfoTemplate"
     }
 }

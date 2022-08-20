@@ -1,0 +1,5 @@
+@import "../../../common/common.scss";
+$baseCls: cmsProjectWritten-content;
+$labelWidth:9;
+
+@include form-page($baseCls,$labelWidth);

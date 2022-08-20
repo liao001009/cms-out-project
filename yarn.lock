@@ -961,6 +961,13 @@
   dependencies:
     regenerator-runtime "^0.12.0"
 
+"@babel/runtime@^7.4.5", "@babel/runtime@^7.9.2":
+  version "7.18.9"
+  resolved "https://registry.npmmirror.com/@babel/runtime/-/runtime-7.18.9.tgz#b4fcfce55db3d2e5e080d2490f608a3b9f407f4a"
+  integrity sha512-lkqXDcvlFT5rvEjiu6+QYO+1GXrEHRo2LOtS7E4GtX5ESIZOgepqsZBVIj6Pv+a6zqsya9VCgiK1KAK4BvJDAw==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/template@^7.15.4":
   version "7.15.4"
   resolved "https://registry.nlark.com/@babel/template/download/@babel/template-7.15.4.tgz#51898d35dcf3faa670c4ee6afcfd517ee139f194"
@@ -1154,6 +1161,23 @@
   resolved "http://npm.landray.com.cn/@ekp-infra%2fdd-login/-/dd-login-0.0.11.tgz#d7421fa730b0aea152d1294cdfb486493e0f1b1f"
   integrity sha512-faz5fQGrVJbPhjEqgrLKQLjndOENWGr7QHBoZZX2kZ7DVGYSAx52+HXQM4lj5J5s2XzgLvCze8RkkvBJno9+eA==
 
+"@ekp-infra/form-builder@^0.0.244":
+  version "0.0.244"
+  resolved "http://npm.landray.com.cn/@ekp-infra%2fform-builder/-/form-builder-0.0.244.tgz#dc0ce4bbdede06936bd7fab8602020fc2db196c7"
+  integrity sha512-wHHiEizzYJUbzmlNZAu+Iga9u/3FOzRdIf21NKe28Jcaoymu1aR1o5YVIERk758a1pim7V3VYXEkrnxTUw2OKA==
+  dependencies:
+    "@ekp-infra/render" "^1.2.415"
+    async-validator "^3.2.3"
+
+"@ekp-infra/render@^1.2.415":
+  version "1.2.419"
+  resolved "http://npm.landray.com.cn/@ekp-infra%2frender/-/render-1.2.419.tgz#4ea010a0aa4cd20b426d55097fade313548337e6"
+  integrity sha512-/2uHlIA1jHgA2fygl2otlOocKj2+tIOWE/igPgaz6MDp2goLXlQ0lFgZatiHuzqbMizGil/als84jZTqwmCTXg==
+  dependencies:
+    "@ekp-infra/async-component" "^1.2.50"
+    "@ekp-infra/requirejs" "^1.2.33"
+    "@ekp-infra/types" "^1.2.127"
+
 "@ekp-infra/render@^1.2.418":
   version "1.2.418"
   resolved "http://npm.landray.com.cn/@ekp-infra%2frender/-/render-1.2.418.tgz#0197c76e2ef5940ce082b3e1a7d0f9730f0c233d"
@@ -1224,10 +1248,10 @@
     colord "^2.9.2"
     path-to-regexp "^6.1.0"
 
-"@elements-toolkit/common@^0.0.88":
-  version "0.0.88"
-  resolved "http://npm.landray.com.cn/@elements-toolkit%2fcommon/-/common-0.0.88.tgz#2a3439db9d44ac32fd6997debd56417141e727f4"
-  integrity sha512-zw4ug7bYhVmJHLQQeuZIxShwLRCYukypA5dPsuKM2COCDuhMgroHZBh0252NMv9aEaZzkl5CDxbjIdO+o8DIDg==
+"@elements-toolkit/common@^0.0.100":
+  version "0.0.100"
+  resolved "http://npm.landray.com.cn/@elements-toolkit%2fcommon/-/common-0.0.100.tgz#23f78a3fe85f05c84e5714e91d4b7d79d757a100"
+  integrity sha512-lBDqWaj/loj7KyQbJQ5X4io378SsavJInFt5PhNUVMCLWSyvJ3oyNJwEaDly2K0p9UCYR29pmsjdsVO6oGpRuQ==
   dependencies:
     "@elements-toolkit/parser" "^0.0.10"
     autoprefixer "^9.6.1"
@@ -1259,10 +1283,10 @@
   resolved "http://npm.landray.com.cn/@elements-toolkit%2fscss/-/scss-0.0.55.tgz#e24bb9c6d4ea3ec9e115127e1c4d7d98dace759b"
   integrity sha512-4BijAxLQ+KJd0ZX2TmR8tqp+2JsHYHsPMGmAEcKQ+e4fJwCzyCTyTNJra61rHYPgKbr3zams1q5VI1yfByOOWQ==
 
-"@elements-toolkit/utils@^0.0.16":
-  version "0.0.16"
-  resolved "http://npm.landray.com.cn/@elements-toolkit%2futils/-/utils-0.0.16.tgz#794d7ef99f9cdc4ddee1dcf24a691694d0a54fe9"
-  integrity sha512-gbu9Ufflw+fimVYtpn0IWDfZcmRetRp3MalixCaAK9TJjsBCJibrB0xFp2YUdsDxSLirmHBnizGEXOjhA6mqEA==
+"@elements-toolkit/utils@^0.0.18":
+  version "0.0.18"
+  resolved "http://npm.landray.com.cn/@elements-toolkit%2futils/-/utils-0.0.18.tgz#e17ecfafaa609885f7fb2e874e66fab1d9a49a45"
+  integrity sha512-ZDYK+qv38bOdGqybhrqJ6Z9ZhdezdjckjVkeN5kkBI+AQkliCBz+/Zix8IR8FDSmduOZ9KihpzWleifdBw2KTw==
 
 "@eslint/eslintrc@^0.4.3":
   version "0.4.3"
@@ -2100,10 +2124,17 @@
     npmlog "^4.1.2"
     write-file-atomic "^2.3.0"
 
-"@lpack/boilerplate-generator-mk@^1.0.67":
-  version "1.0.87"
-  resolved "http://npm.landray.com.cn/@lpack%2fboilerplate-generator-mk/-/boilerplate-generator-mk-1.0.87.tgz#30e1dfe5ceba6b70662ca5c80263232b6d933c38"
-  integrity sha512-4mf6OYUzqIypPe+MYEvglAY1h0MBTAzXCBhBZfP7LsyyODK0Bl7HuFrUeUh3mRceei38TOIjFA/rw6b548yFgw==
+"@lottiefiles/react-lottie-player@^3.4.1":
+  version "3.4.7"
+  resolved "https://registry.npmmirror.com/@lottiefiles/react-lottie-player/-/react-lottie-player-3.4.7.tgz#c8c377e2bc8a636c2bf62ce95dd0e39f720b09c1"
+  integrity sha512-KqkwRiCQPDNzimsXnNSgeJjJlZQ6Fr9JE3OtZdOaGrXovZJ+zDeZNxIwxID8Up0eAdm4zJjudOSc5EJSiGw9RA==
+  dependencies:
+    lottie-web "^5.7.8"
+
+"@lpack/boilerplate-generator-mk@^1.0.93":
+  version "1.0.97"
+  resolved "http://npm.landray.com.cn/@lpack%2fboilerplate-generator-mk/-/boilerplate-generator-mk-1.0.97.tgz#64e19b62c5f7370c45b8ec5ff09c641099a4ce83"
+  integrity sha512-d3MYSUp79h3FMRHgJ7arZKruTC7DVGfGm49YLN0wfmInoBxN2W0gdKvwUxcdnfbB25e/5SlT9bqa9fKgKMxQbw==
   dependencies:
     "@babel/generator" "^7.9.4"
     "@babel/parser" "^7.9.4"
@@ -2132,10 +2163,10 @@
     inquirer "^6.2.1"
     lodash "^4.17.11"
 
-"@lpack/common@^1.0.17":
-  version "1.0.31"
-  resolved "http://npm.landray.com.cn/@lpack%2fcommon/-/common-1.0.31.tgz#f8138083b739124b228d5d6986f900339f581112"
-  integrity sha512-Mrbx2FeDIj+6eSwcyvEJkSQS51K8AWxWO1lNsm0RMslojNsSpKsNhHWP59aEJB/Fnh8XYZyjla6ON0sm8mP7Ow==
+"@lpack/common@^1.0.35":
+  version "1.0.35"
+  resolved "http://npm.landray.com.cn/@lpack%2fcommon/-/common-1.0.35.tgz#4f40a0e92155f9fee879abe3f225286bb0abc1ce"
+  integrity sha512-sRk1uJ6F2Lt8zfWDDNrrAhRjSKb7MIO91PcR0lykWky/s1bRDUr2jW9g0YmbnbkM66tU2+YW5WfWEedJL2UbSg==
   dependencies:
     "@babel/core" "^7.14.6"
     "@babel/plugin-proposal-class-properties" "^7.14.5"
@@ -2156,6 +2187,7 @@
     "@types/webpack-env" "^1.13.6"
     "@typescript-eslint/eslint-plugin" "^4.14.2"
     "@typescript-eslint/parser" "^4.14.2"
+    array-flat-polyfill "^1.0.1"
     autoprefixer "^9.7.5"
     axios "^0.18.0"
     babel-loader "^8.2.2"
@@ -2165,6 +2197,7 @@
     copy-webpack-plugin "^9.0.1"
     core-js "3"
     cross-spawn "^6.0.5"
+    css "^3.0.0"
     css-loader "^5.2.6"
     css-vars-ponyfill "^2.2.1"
     eslint "^7.19.0"
@@ -2235,6 +2268,41 @@
     reactcss "^1.2.0"
     solarlunar "~2.0.7"
 
+"@lui/core@5.1.0-beta.253":
+  version "5.1.0-beta.253"
+  resolved "http://npm.landray.com.cn/@lui%2fcore/-/core-5.1.0-beta.253.tgz#6f388c375d963f496b6903defc53df95dfa88cba"
+  integrity sha512-lSb3ti8zhxn5AFJmLqMPCDHJVOMehO5sKhTe7gdNGsyvSv+ZHPcSbHOkRs971M/zSTMFu0r6rkkH1mhc9RZzfw==
+  dependencies:
+    "@fullcalendar/daygrid" "~5.10.1"
+    "@fullcalendar/interaction" "~5.10.1"
+    "@fullcalendar/react" "~5.10.1"
+    "@lui/i18n" "5.1.0-beta.253"
+    "@lui/icons" "5.1.0-beta.253"
+    "@lui/theme" "5.1.0-beta.253"
+    "@react-spring/web" "^9.3.1"
+    antd "~4.19.1"
+    dom-scroll-into-view "^2.0.1"
+    mini-store "^3.0.6"
+    prismjs "^1.28.0"
+    rc-animate "^3.1.1"
+    rc-dropdown "^3.2.0"
+    rc-field-form "~1.24.0"
+    rc-menu "9.3.2"
+    rc-resize-observer "^1.0.1"
+    rc-table "~7.22.2"
+    rc-tree "^5.4.3"
+    rc-util "^5.19.3"
+    react-color "~2.19.3"
+    react-dnd "~16.0.1"
+    react-dnd-html5-backend "~16.0.1"
+    react-froala-wysiwyg "4.0.11"
+    react-highlight-words "^0.17.0"
+    react-router-dom "^5.2.0"
+    react-sortable-hoc "~2.0.0"
+    reactcss "^1.2.0"
+    solarlunar "~2.0.7"
+    video-react "^0.15.0"
+
 "@lui/core@^5.1.0-beta.181":
   version "5.1.0-rc.4"
   resolved "http://npm.landray.com.cn/@lui%2fcore/-/core-5.1.0-rc.4.tgz#8c3dcfbbf451e8dfe126fd8f882d9f218f54c0eb"
@@ -2264,20 +2332,54 @@
   resolved "http://npm.landray.com.cn/@lui%2fi18n/-/i18n-5.1.0-beta.185.tgz#5d9aeb89b40b86639f7b4bf0075b9dc0a2f2f3b6"
   integrity sha512-GzFZh0Z3FimneU19yhAE72DuJUHLW4b/Y5DL2lNAHkZCEaYp7UOJujodGzYp6nLpHGPVIyj32Knmhv0VS5TIXg==
 
+"@lui/i18n@5.1.0-beta.253":
+  version "5.1.0-beta.253"
+  resolved "http://npm.landray.com.cn/@lui%2fi18n/-/i18n-5.1.0-beta.253.tgz#df27ffbeb01338f58d6f97fb5008719cfeb35e59"
+  integrity sha512-H0t8ND14SP1Jw/3Sb8Q1RqlmYH2GwRoiDY/fwN5pJJmhezaL8Ctq+PpZP41Uujmh3jrEHeBQmNAUHZdWcmSLyg==
+
 "@lui/icons@5.1.0-beta.185":
   version "5.1.0-beta.185"
   resolved "http://npm.landray.com.cn/@lui%2ficons/-/icons-5.1.0-beta.185.tgz#17dd5ff88e43e121301569498f312e1dbf5f3422"
   integrity sha512-+8aL/c6cDZ35tqxA5XFzcfGfZfIM4P1+jmeTfl2xl5SF0VAM/u3ls2XDcPVy4EI4fePxCVf/omEZToMcYblgwg==
+
+"@lui/icons@5.1.0-beta.253":
+  version "5.1.0-beta.253"
+  resolved "http://npm.landray.com.cn/@lui%2ficons/-/icons-5.1.0-beta.253.tgz#2360f473b1dd039343f0dd17a17607d2e979cfde"
+  integrity sha512-7oTM6w4pkviBsQJCbs1U9XdysiPw3R2pqOxqf7NbheTOGwJkaTgXGgz4XrQ1gRyNU9ltAtrPF9Sa+xUdJpxnAg==
 
 "@lui/icons@5.1.0-rc.4", "@lui/icons@~5.1.0-beta.190":
   version "5.1.0-rc.4"
   resolved "http://npm.landray.com.cn/@lui%2ficons/-/icons-5.1.0-rc.4.tgz#87f4cd91a13191682cd2f2582a39e2ab5618b7eb"
   integrity sha512-HLhqN3A4kkPjkDzE/2Nu9K+wSYR9Up6w+Qm6L4C8uHdmft/oYmYSwsNjNrvYQ/4mmSHSGag6t0VNwsHBtrBHiA==
 
+"@lui/pro@5.1.0-beta.253":
+  version "5.1.0-beta.253"
+  resolved "http://npm.landray.com.cn/@lui%2fpro/-/pro-5.1.0-beta.253.tgz#5c7b14e4b1f02d1475a86bdb09e03a80a5924c1e"
+  integrity sha512-xca6TA0/95aoiwFSJvJ/VcZ00q1AOFYh1W97SlNsgTwgwHC0qHrpDVMlGQlwY2HZVZLCgzzhA9g/1wMlPHiBcg==
+  dependencies:
+    "@lottiefiles/react-lottie-player" "^3.4.1"
+    "@lui/core" "5.1.0-beta.253"
+    "@lui/i18n" "5.1.0-beta.253"
+    "@lui/icons" "5.1.0-beta.253"
+    "@lui/theme" "5.1.0-beta.253"
+    antd "~4.19.1"
+    immutability-helper "~3.1.1"
+    react-dnd "~16.0.1"
+    react-dnd-html5-backend "~16.0.1"
+    react-highlight-words "^0.17.0"
+    react-resizable "~3.0.4"
+  optionalDependencies:
+    "@ekp-infra/form-builder" "^0.0.244"
+
 "@lui/theme@5.1.0-beta.185":
   version "5.1.0-beta.185"
   resolved "http://npm.landray.com.cn/@lui%2ftheme/-/theme-5.1.0-beta.185.tgz#5c529d922164d1982ba89e291787e2da756c36bd"
   integrity sha512-a7nmsZ2cI8zsszKk+j4JdoKh07M96YwvaFFqWYkE/C7um8cLZv43ph7gqogbs+NFEbIsqVbfjqNlb/9WgtNddA==
+
+"@lui/theme@5.1.0-beta.253":
+  version "5.1.0-beta.253"
+  resolved "http://npm.landray.com.cn/@lui%2ftheme/-/theme-5.1.0-beta.253.tgz#360401527020877cc73773a88949c1eaa802801b"
+  integrity sha512-YAP2BbYSc+7ukdZnTQVX7eNN2B1gsvhVL3b9Mb2KemEDHkP9ykex6NY7r006c5ZIYimqwmolT9RzYLs1O7T4wg==
 
 "@lui/theme@5.1.0-rc.4":
   version "5.1.0-rc.4"
@@ -2481,6 +2583,21 @@
   version "1.0.0-next.21"
   resolved "https://registry.npmmirror.com/@polka/url/download/@polka/url-1.0.0-next.21.tgz?cache=0&sync_timestamp=1633093207048&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40polka%2Furl%2Fdownload%2F%40polka%2Furl-1.0.0-next.21.tgz#5de5a2385a35309427f6011992b544514d559aa1"
   integrity sha1-XeWiOFo1MJQn9gEZkrVEUU1VmqE=
+
+"@react-dnd/asap@^5.0.1":
+  version "5.0.2"
+  resolved "https://registry.npmmirror.com/@react-dnd/asap/-/asap-5.0.2.tgz#1f81f124c1cd6f39511c11a881cfb0f715343488"
+  integrity sha512-WLyfoHvxhs0V9U+GTsGilGgf2QsPl6ZZ44fnv0/b8T3nQyvzxidxsg/ZltbWssbsRDlYW8UKSQMTGotuTotZ6A==
+
+"@react-dnd/invariant@^4.0.1":
+  version "4.0.2"
+  resolved "https://registry.npmmirror.com/@react-dnd/invariant/-/invariant-4.0.2.tgz#b92edffca10a26466643349fac7cdfb8799769df"
+  integrity sha512-xKCTqAK/FFauOM9Ta2pswIyT3D8AQlfrYdOi/toTPEhqCuAs1v5tcJ3Y08Izh1cJ5Jchwy9SeAXmMg6zrKs2iw==
+
+"@react-dnd/shallowequal@^4.0.1":
+  version "4.0.2"
+  resolved "https://registry.npmmirror.com/@react-dnd/shallowequal/-/shallowequal-4.0.2.tgz#d1b4befa423f692fa4abf1c79209702e7d8ae4b4"
+  integrity sha512-/RVXdLvJxLg4QKvMoM5WlwNR9ViO9z8B/qPcc+C0Sa/teJY7QG7kJ441DwzOjMYEY7GmU4dj5EcGHIkKZiQZCA==
 
 "@react-spring/animated@~9.4.5":
   version "9.4.5"
@@ -3380,6 +3497,11 @@ array-find-index@^1.0.1:
   resolved "https://registry.nlark.com/array-find-index/download/array-find-index-1.0.2.tgz#df010aa1287e164bbda6f9723b0a96a1ec4187a1"
   integrity sha1-3wEKoSh+Fku9pvlyOwqWoexBh6E=
 
+array-flat-polyfill@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npmmirror.com/array-flat-polyfill/-/array-flat-polyfill-1.0.1.tgz#1e3a4255be619dfbffbfd1d635c1cf357cd034e7"
+  integrity sha512-hfJmKupmQN0lwi0xG6FQ5U8Rd97RnIERplymOv/qpq8AoNKPPAnxJadjFA23FNWm88wykh9HmpLJUUwUtNU/iw==
+
 array-flatten@1.1.1:
   version "1.1.1"
   resolved "http://registry.npm.taobao.org/array-flatten/download/array-flatten-1.1.1.tgz#9a5f699051b1e7073328f2a008968b64ea2955d2"
@@ -3489,6 +3611,11 @@ astral-regex@^2.0.0:
   resolved "https://registry.npm.taobao.org/astral-regex/download/astral-regex-2.0.0.tgz#483143c567aeed4785759c0865786dc77d7d2e31"
   integrity sha1-SDFDxWeu7UeFdZwIZXhtx319LjE=
 
+async-validator@^3.2.3:
+  version "3.5.2"
+  resolved "https://registry.npmmirror.com/async-validator/-/async-validator-3.5.2.tgz#68e866a96824e8b2694ff7a831c1a25c44d5e500"
+  integrity sha512-8eLCg00W9pIRZSB781UUX/H6Oskmm8xloZfr09lz5bikRpBVDlJ3hRVuxxP1SxcwsEYfJ4IU8Q19Y8/893r3rQ==
+
 async-validator@^4.0.2, async-validator@^4.1.0:
   version "4.1.1"
   resolved "https://registry.npmmirror.com/async-validator/-/async-validator-4.1.1.tgz#3cd1437faa2de64743f7d56649dd904c946a18fe"
@@ -3516,7 +3643,7 @@ atob-lite@^2.0.0:
   resolved "https://registry.npm.taobao.org/atob-lite/download/atob-lite-2.0.0.tgz#0fef5ad46f1bd7a8502c65727f0367d5ee43d696"
   integrity sha1-D+9a1G8b16hQLGVyfwNn1e5D1pY=
 
-atob@^2.1.1:
+atob@^2.1.1, atob@^2.1.2:
   version "2.1.2"
   resolved "http://registry.npm.taobao.org/atob/download/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha1-bZUX654DDSQ2ZmZR6GvZ9vE1M8k=
@@ -4217,6 +4344,11 @@ clone@^2.1.2:
   resolved "http://registry.npm.taobao.org/clone/download/clone-2.1.2.tgz#1b7f4b9f591f1e8f83670401600345a02887435f"
   integrity sha1-G39Ln1kfHo+DZwQBYANFoCiHQ18=
 
+clsx@^1.1.1:
+  version "1.2.1"
+  resolved "https://registry.npmmirror.com/clsx/-/clsx-1.2.1.tgz#0ddc4a20a549b59c93a4116bb26f5294ca17dc12"
+  integrity sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==
+
 cmd-shim@^3.0.0, cmd-shim@^3.0.3:
   version "3.0.3"
   resolved "https://registry.npm.taobao.org/cmd-shim/download/cmd-shim-3.0.3.tgz#2c35238d3df37d98ecdd7d5f6b8dc6b21cadc7cb"
@@ -4793,6 +4925,15 @@ css-what@^5.0.0:
   resolved "https://registry.npmmirror.com/css-what/download/css-what-5.1.0.tgz#3f7b707aadf633baf62c2ceb8579b545bb40f7fe"
   integrity sha1-P3tweq32M7r2LCzrhXm1RbtA9/4=
 
+css@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmmirror.com/css/-/css-3.0.0.tgz#4447a4d58fdd03367c516ca9f64ae365cee4aa5d"
+  integrity sha512-DG9pFfwOrzc+hawpmqX/dHYHJG+Bsdb0klhyi1sDneOgGOXy9wQIC8hzyVp1e4NRYDBdxcylvywPkkXCHAzTyQ==
+  dependencies:
+    inherits "^2.0.4"
+    source-map "^0.6.1"
+    source-map-resolve "^0.6.0"
+
 cssesc@^3.0.0:
   version "3.0.0"
   resolved "http://registry.npm.taobao.org/cssesc/download/cssesc-3.0.0.tgz#37741919903b868565e1c09ea747445cd18983ee"
@@ -5175,6 +5316,15 @@ dir-glob@^3.0.1:
   integrity sha1-Vtv3PZkqSpO6FYT0U0Bj/S5BcX8=
   dependencies:
     path-type "^4.0.0"
+
+dnd-core@^16.0.1:
+  version "16.0.1"
+  resolved "https://registry.npmmirror.com/dnd-core/-/dnd-core-16.0.1.tgz#a1c213ed08961f6bd1959a28bb76f1a868360d19"
+  integrity sha512-HK294sl7tbw6F6IeuK16YSBUoorvHpY8RHO+9yFfaJyCDVb6n7PRcezrOEOa2SBCqiYpemh5Jx20ZcjKdFAVng==
+  dependencies:
+    "@react-dnd/asap" "^5.0.1"
+    "@react-dnd/invariant" "^4.0.1"
+    redux "^4.2.0"
 
 dns-equal@^1.0.0:
   version "1.0.0"
@@ -6202,6 +6352,11 @@ friendly-errors-webpack-plugin@^1.7.0:
     error-stack-parser "^2.0.0"
     string-width "^2.0.0"
 
+froala-editor@4.0.11:
+  version "4.0.11"
+  resolved "https://registry.npmmirror.com/froala-editor/-/froala-editor-4.0.11.tgz#0a1c93dd4231d3fde907531a64af01417fdb2eca"
+  integrity sha512-u3XV4ykOqOTbdoaAI9HiYNkvECKM3OduF7xZh2pp2V+1U9KcCVQjpTN4GhBEs3qHcQt+zlPb9HmZLtST721RHQ==
+
 froala-editor@4.0.12:
   version "4.0.12"
   resolved "https://registry.npmmirror.com/froala-editor/-/froala-editor-4.0.12.tgz#b1f51e88fb27cec985770e2989ec5eaa9f1b88f4"
@@ -7110,6 +7265,11 @@ immer@1.10.0:
   resolved "http://registry.npm.taobao.org/immer/download/immer-1.10.0.tgz#bad67605ba9c810275d91e1c2a47d4582e98286d"
   integrity sha1-utZ2BbqcgQJ12R4cKkfUWC6YKG0=
 
+immutability-helper@~3.1.1:
+  version "3.1.1"
+  resolved "https://registry.npmmirror.com/immutability-helper/-/immutability-helper-3.1.1.tgz#2b86b2286ed3b1241c9e23b7b21e0444f52f77b7"
+  integrity sha512-Q0QaXjPjwIju/28TsugCHNEASwoCcJSyJV3uO1sOIQGI0jKgm9f41Lvz0DZj3n46cNCyAZTsEYoY4C2bVRUzyQ==
+
 import-fresh@^2.0.0:
   version "2.0.0"
   resolved "http://registry.npm.taobao.org/import-fresh/download/import-fresh-2.0.0.tgz#d81355c15612d386c61f9ddd3922d4304822a546"
@@ -7301,6 +7461,13 @@ intersection-observer@^0.12.0:
   version "0.12.0"
   resolved "https://registry.npmmirror.com/intersection-observer/-/intersection-observer-0.12.0.tgz#6c84628f67ce8698e5f9ccf857d97718745837aa"
   integrity sha512-2Vkz8z46Dv401zTWudDGwO7KiGHNDkMv417T5ItcNYfmvHR/1qCTVBO9vwH8zZmQ0WkA/1ARwpysR9bsnop4NQ==
+
+invariant@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.npmmirror.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
+  integrity sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==
+  dependencies:
+    loose-envify "^1.0.0"
 
 invert-kv@^1.0.0:
   version "1.0.0"
@@ -8441,6 +8608,11 @@ lodash.templatesettings@^4.0.0:
   dependencies:
     lodash._reinterpolate "^3.0.0"
 
+lodash.throttle@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.npmmirror.com/lodash.throttle/-/lodash.throttle-4.1.1.tgz#c23e91b710242ac70c37f1e1cda9274cc39bf2f4"
+  integrity sha512-wIkUCfVKpVsWo3JSZlc+8MB5it+2AN5W8J7YVMST30UrvcQNZ1Okbj+rbVniijTWE6FGYy4XJq/rHkas8qJMLQ==
+
 lodash.truncate@^4.4.2:
   version "4.4.2"
   resolved "https://registry.npm.taobao.org/lodash.truncate/download/lodash.truncate-4.4.2.tgz#5a350da0b1113b837ecfffd5812cbe58d6eae193"
@@ -8495,6 +8667,11 @@ loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.2.0, loose-envify@^1.3
   integrity sha1-ce5R+nvkyuwaY4OffmgtgTLTDK8=
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
+
+lottie-web@^5.7.8:
+  version "5.9.6"
+  resolved "https://registry.npmmirror.com/lottie-web/-/lottie-web-5.9.6.tgz#62ae68563355d3e04aa75d53dec3dd4bea0e57c9"
+  integrity sha512-JFs7KsHwflugH5qIXBpB4905yC1Sub2MZWtl/elvO/QC6qj1ApqbUZJyjzJseJUtVpgiDaXQLjBlIJGS7UUUXA==
 
 loud-rejection@^1.0.0:
   version "1.6.0"
@@ -10530,6 +10707,11 @@ pretty-time@^1.1.0:
   resolved "https://registry.npm.taobao.org/pretty-time/download/pretty-time-1.1.0.tgz#ffb7429afabb8535c346a34e41873adf3d74dd0e"
   integrity sha1-/7dCmvq7hTXDRqNOQYc63z103Q4=
 
+prismjs@^1.28.0:
+  version "1.28.0"
+  resolved "https://registry.npmmirror.com/prismjs/-/prismjs-1.28.0.tgz#0d8f561fa0f7cf6ebca901747828b149147044b6"
+  integrity sha512-8aaXdYvl1F7iC7Xm1spqSaY/OJBpYW3v+KJ+F17iYxvdc8sfjW194COK5wVhMZX45tGteiBQgdvD/nhxcRwylw==
+
 process-nextick-args@~2.0.0:
   version "2.0.0"
   resolved "http://registry.npm.taobao.org/process-nextick-args/download/process-nextick-args-2.0.0.tgz#a37d732f4271b4ab1ad070d35508e8290788ffaa"
@@ -10579,7 +10761,7 @@ promzard@^0.3.0:
   dependencies:
     read "1"
 
-prop-types@^15.5.10, prop-types@^15.5.7:
+prop-types@15.x, prop-types@^15.5.10, prop-types@^15.5.7, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.npmmirror.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -10932,7 +11114,7 @@ rc-mentions@~1.6.1:
     rc-trigger "^5.0.4"
     rc-util "^5.0.1"
 
-rc-menu@~9.3.2:
+rc-menu@9.3.2, rc-menu@~9.3.2:
   version "9.3.2"
   resolved "https://registry.npmmirror.com/rc-menu/-/rc-menu-9.3.2.tgz#bb842d37ebf71da912bea201cf7ef0a27267ad49"
   integrity sha512-h3m45oY1INZyqphGELkdT0uiPnFzxkML8m0VMhJnk2fowtqfiT7F5tJLT3znEVaPIY80vMy1bClCkgq8U91CzQ==
@@ -11070,6 +11252,17 @@ rc-table@^7.22.2:
   version "7.24.2"
   resolved "https://registry.npmmirror.com/rc-table/-/rc-table-7.24.2.tgz#fbccf5ef4b84cdb38c8a0b416365de157483bf51"
   integrity sha512-yefqhtc4V3BeWG2bnDhWYxWX1MOckvW2KU1J55pntZmIGrov5Hx8tQn2gcs6OM0fJ6NgEwUvVEknsCsWI24zUg==
+  dependencies:
+    "@babel/runtime" "^7.10.1"
+    classnames "^2.2.5"
+    rc-resize-observer "^1.1.0"
+    rc-util "^5.14.0"
+    shallowequal "^1.1.0"
+
+rc-table@~7.22.2:
+  version "7.22.2"
+  resolved "https://registry.npmmirror.com/rc-table/-/rc-table-7.22.2.tgz#218f3f53bc91660560a344c8290a91a841a60b0a"
+  integrity sha512-Ng2gNkGi6ybl6dzneRn2H4Gp8XhIbRa5rXQ7ZhZcgWVmfVMok70UHGPXcf68tXW6O0/qckTf/eOVsoviSvK4sw==
   dependencies:
     "@babel/runtime" "^7.10.1"
     classnames "^2.2.5"
@@ -11266,6 +11459,24 @@ react-dev-utils@^7.0.1:
     strip-ansi "5.0.0"
     text-table "0.2.0"
 
+react-dnd-html5-backend@~16.0.1:
+  version "16.0.1"
+  resolved "https://registry.npmmirror.com/react-dnd-html5-backend/-/react-dnd-html5-backend-16.0.1.tgz#87faef15845d512a23b3c08d29ecfd34871688b6"
+  integrity sha512-Wu3dw5aDJmOGw8WjH1I1/yTH+vlXEL4vmjk5p+MHxP8HuHJS1lAGeIdG/hze1AvNeXWo/JgULV87LyQOr+r5jw==
+  dependencies:
+    dnd-core "^16.0.1"
+
+react-dnd@~16.0.1:
+  version "16.0.1"
+  resolved "https://registry.npmmirror.com/react-dnd/-/react-dnd-16.0.1.tgz#2442a3ec67892c60d40a1559eef45498ba26fa37"
+  integrity sha512-QeoM/i73HHu2XF9aKksIUuamHPDvRglEwdHL4jsp784BgUuWcg6mzfxT0QDdQz8Wj0qyRKx2eMg8iZtWvU4E2Q==
+  dependencies:
+    "@react-dnd/invariant" "^4.0.1"
+    "@react-dnd/shallowequal" "^4.0.1"
+    dnd-core "^16.0.1"
+    fast-deep-equal "^3.1.3"
+    hoist-non-react-statics "^3.3.2"
+
 react-dom@^17.0.1:
   version "17.0.2"
   resolved "https://registry.npmmirror.com/react-dom/-/react-dom-17.0.2.tgz#ecffb6845e3ad8dbfcdc498f0d0a939736502c23"
@@ -11274,6 +11485,14 @@ react-dom@^17.0.1:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     scheduler "^0.20.2"
+
+react-draggable@^4.0.3:
+  version "4.4.5"
+  resolved "https://registry.npmmirror.com/react-draggable/-/react-draggable-4.4.5.tgz#9e37fe7ce1a4cf843030f521a0a4cc41886d7e7c"
+  integrity sha512-OMHzJdyJbYTZo4uQE393fHcqqPYsEtkjfMgvCHr6rejT+Ezn4OZbNyGH50vv+SunC1RMvwOTSWkEODQLzw1M9g==
+  dependencies:
+    clsx "^1.1.1"
+    prop-types "^15.8.1"
 
 react-error-overlay@^5.1.4:
   version "5.1.4"
@@ -11284,6 +11503,14 @@ react-freeze@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmmirror.com/react-freeze/-/react-freeze-1.0.0.tgz#b21c65fe1783743007c8c9a2952b1c8879a77354"
   integrity sha512-yQaiOqDmoKqks56LN9MTgY06O0qQHgV4FUrikH357DydArSZHQhl0BJFqGKIZoTqi8JizF9Dxhuk1FIZD6qCaw==
+
+react-froala-wysiwyg@4.0.11:
+  version "4.0.11"
+  resolved "https://registry.npmmirror.com/react-froala-wysiwyg/-/react-froala-wysiwyg-4.0.11.tgz#0fed65ec27d7938b317c600db1f31bc0fa88427d"
+  integrity sha512-xnPZzWnHqbtyG33TfQ6DRbAJB2DhCI3OSHuQqGHrQmEihIKbWs4fSrFWTWozTCBvilC6A7t8tYXTY60meYUWPg==
+  dependencies:
+    create-react-class "^15.5.2"
+    froala-editor "4.0.11"
 
 react-froala-wysiwyg@~4.0.11:
   version "4.0.12"
@@ -11343,6 +11570,14 @@ react-redux@^7.1.0:
     prop-types "^15.7.2"
     react-is "^17.0.2"
 
+react-resizable@~3.0.4:
+  version "3.0.4"
+  resolved "https://registry.npmmirror.com/react-resizable/-/react-resizable-3.0.4.tgz#aa20108eff28c52c6fddaa49abfbef8abf5e581b"
+  integrity sha512-StnwmiESiamNzdRHbSSvA65b0ZQJ7eVQpPusrSmcpyGKzC0gojhtO62xxH6YOBmepk9dQTBi9yxidL3W4s3EBA==
+  dependencies:
+    prop-types "15.x"
+    react-draggable "^4.0.3"
+
 react-router-cache-route@^1.12.9:
   version "1.12.11"
   resolved "https://registry.npmmirror.com/react-router-cache-route/-/react-router-cache-route-1.12.11.tgz#3e2cbd72b711b09212b30af2bb241abf69b335bd"
@@ -11379,6 +11614,15 @@ react-router@5.3.3:
     react-is "^16.6.0"
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
+
+react-sortable-hoc@~2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmmirror.com/react-sortable-hoc/-/react-sortable-hoc-2.0.0.tgz#f6780d8aa4b922a21f3e754af542f032677078b7"
+  integrity sha512-JZUw7hBsAHXK7PTyErJyI7SopSBFRcFHDjWW5SWjcugY0i6iH7f+eJkY8cJmGMlZ1C9xz1J3Vjz0plFpavVeRg==
+  dependencies:
+    "@babel/runtime" "^7.2.0"
+    invariant "^2.2.4"
+    prop-types "^15.5.7"
 
 react-tiny-virtual-list@^2.0.0:
   version "2.2.0"
@@ -11657,6 +11901,13 @@ redux@^4.0.0, redux@^4.0.1:
   dependencies:
     loose-envify "^1.4.0"
     symbol-observable "^1.2.0"
+
+redux@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.npmmirror.com/redux/-/redux-4.2.0.tgz#46f10d6e29b6666df758780437651eeb2b969f13"
+  integrity sha512-oSBmcKKIuIR4ME29/AeNUnl5L+hvBq7OaJWzaptTQJAntaPvxIJqfnjbaEiCzzaIz+XmVILfqAM3Ob0aXLPfjA==
+  dependencies:
+    "@babel/runtime" "^7.9.2"
 
 regenerate-unicode-properties@^9.0.0:
   version "9.0.0"
@@ -12498,6 +12749,14 @@ source-map-resolve@^0.5.0:
     resolve-url "^0.2.1"
     source-map-url "^0.4.0"
     urix "^0.1.0"
+
+source-map-resolve@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.npmmirror.com/source-map-resolve/-/source-map-resolve-0.6.0.tgz#3d9df87e236b53f16d01e58150fc7711138e5ed2"
+  integrity sha512-KXBr9d/fO/bWo97NXsPIAW1bFSBOuCnjbNTBMO7N59hsv5i9yzRDfcYwwt0l04+VqnKC+EwzvJZIP/qkuMgR/w==
+  dependencies:
+    atob "^2.1.2"
+    decode-uri-component "^0.2.0"
 
 source-map-support@~0.5.12, source-map-support@~0.5.20:
   version "0.5.20"
@@ -13713,6 +13972,17 @@ verror@1.10.0:
     assert-plus "^1.0.0"
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
+
+video-react@^0.15.0:
+  version "0.15.0"
+  resolved "https://registry.npmmirror.com/video-react/-/video-react-0.15.0.tgz#82794a0f862e08c5f3ac2660747360f5ecc735cb"
+  integrity sha512-wF3BwG1qikkSX11nu0KsygxeWehzMaYpd4Uvy1sKLFnCNk794f9TPL4q/+mMmLJ8uYb5DSlgg6VraTHyihiMHQ==
+  dependencies:
+    "@babel/runtime" "^7.4.5"
+    classnames "^2.2.6"
+    lodash.throttle "^4.1.1"
+    prop-types "^15.7.2"
+    redux "^4.0.1"
 
 watchpack@^2.2.0:
   version "2.2.0"

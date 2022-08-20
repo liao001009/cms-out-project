@@ -171,12 +171,22 @@
           flex-direction: column;
           overflow-x: hidden;
           padding: 0;
+          flex: 1;
+
+          .lui-btns-tabs, .tabs {
+            padding: 0 20px;
+            background-color: #fff;
+          }
 
           .form {
             width: 100%;
 
             .lui-xform {
               margin-top: 0;
+
+              .lui-row {
+                padding-bottom: 8px;
+              }
             }
           }
         }
@@ -190,6 +200,7 @@
           border-left: 1px solid #eee;
           transition: width .3s, opacity .3s;
           position: relative;
+          background: #fff;
 
           ._audit-form-collapse-panel {
             margin-bottom: 0;
@@ -200,7 +211,7 @@
   }
 }
 
-@mixin form-page($baseCls, $labelWidth) {
+@mixin form-page($baseCls, $labelWidth:9) {
   .#{$baseCls} {
     .lui-xform {
       background-color: #fff;

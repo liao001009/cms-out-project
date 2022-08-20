@@ -1,0 +1,5 @@
+@import '../../common/common.scss';
+
+$baseCls: cmsProjectInterview-list;
+
+@include list-page($baseCls)
