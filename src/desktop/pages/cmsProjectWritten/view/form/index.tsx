@@ -37,7 +37,7 @@ const XForm = (props) => {
     value,
     MECHANISMNAMES
   })
-  
+
   // 内置$$form对象，组件间的内部调用， 长度校验规则，此逻辑禁止移除与修改
   const { onValuesChange, lengthValidator, ...sysProps } = useSystem({
     props,
@@ -97,7 +97,7 @@ const XForm = (props) => {
                     <XformDatetime
                       {...sysProps}
                       placeholder={fmtMsg(':cmsProjectWritten.form.!{l5hz9wxdne6ahfqosua}', '请输入')}
-                      dataPattern={'yyyy-MM-dd HH:mm'}
+                      dataPattern={'yyyy-MM-dd HH/mm'}
                       showStatus="view"
                     ></XformDatetime>
                   </Form.Item>
@@ -421,7 +421,7 @@ const XForm = (props) => {
                             title: fmtMsg(':cmsProjectWritten.form.!{l5iziae2bzq0rckmq6}', '计划面试开始时间'),
                             name: 'fdBeginTime',
                             placeholder: fmtMsg(':cmsProjectWritten.form.!{l5iziae44d2by5dyv7w}', '请输入'),
-                            dataPattern: 'yyyy-MM-dd HH:mm',
+                            dataPattern: 'yyyy-MM-dd HH/mm',
                             desktop: {
                               type: XformDatetime
                             },
@@ -441,7 +441,7 @@ const XForm = (props) => {
                             title: fmtMsg(':cmsProjectWritten.form.!{l5izhz77fjktqau4o6p}', '计划面试结束时间'),
                             name: 'fdEndTime',
                             placeholder: fmtMsg(':cmsProjectWritten.form.!{l5izhz78u9a8rffwcyn}', '请输入'),
-                            dataPattern: 'yyyy-MM-dd HH:mm',
+                            dataPattern: 'yyyy-MM-dd HH/mm',
                             desktop: {
                               type: XformDatetime
                             },

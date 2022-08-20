@@ -25,7 +25,7 @@ const MECHANISMNAMES = {}
 
 
 const XForm = (props) => {
-  
+
   const detailForms = useRef({
     cmsProjectWrittenDe: createRef() as any
   })
@@ -38,21 +38,21 @@ const XForm = (props) => {
   useEffect(() => {
     init()
     const paramId = props?.match?.params?.id
-    if(props.mode==='add'){
+    if (props.mode === 'add') {
       form.setFieldsValue({
         fdProjectDemand: paramId,
       })
     }
-    if(paramId){
+    if (paramId) {
       initData(paramId)
     }
     form.setFieldsValue({
-      fdNoticeSupplier: ['1'], 
-      fdIsInterview: ['1'], 
+      fdNoticeSupplier: ['1'],
+      fdIsInterview: ['1'],
       fdNoticeInterviewer: ['1']
     })
   }, [])
-  
+
   const init = async () => {
     try {
       const res = await apiSupplier.listSupplierInfo({})
@@ -74,14 +74,14 @@ const XForm = (props) => {
     try {
       const initParam = { conditions: { 'fdProjectDemand.fdId': { '$eq': params } } }
       const resOrder = await apiOrderResponse.listStaff(initParam)
-      const ids = resOrder?.data?.content?.map(i=>{
+      const ids = resOrder?.data?.content?.map(i => {
         return i.fdId
       })
-      if(ids && ids.length>0){
+      if (ids && ids.length > 0) {
         const newParam = {
           fdId: {
             searchKey: '$in',
-            searchValue : ids
+            searchValue: ids
           }
         }
         setDefaultTableCriteria(newParam)
@@ -91,11 +91,11 @@ const XForm = (props) => {
     }
   }
 
-  const checkDetailWS =  (val)=>{
+  const checkDetailWS = (val) => {
     const cmsProjectWrittenDe = form.getFieldValue('cmsProjectWrittenDe')
-    const arr: any  = []
+    const arr: any = []
     cmsProjectWrittenDe?.values?.forEach((v, r) => {
-      if(!v.fdWrittenScores) return
+      if (!v.fdWrittenScores) return
       const fdWrittenPass = val <= v.fdWrittenScores ? '1' : '0'
       sysProps.$$form.current.updateFormItemProps('cmsProjectWrittenDe', {
         rowValue: {
@@ -105,7 +105,7 @@ const XForm = (props) => {
           }
         }
       })
-      if(!arr.includes(v.fdSupplier) && fdWrittenPass==='1'){
+      if (!arr.includes(v.fdSupplier) && fdWrittenPass === '1') {
         arr.push(v.fdSupplier)
       }
     })
@@ -114,7 +114,7 @@ const XForm = (props) => {
     })
   }
 
-  
+
   // 对外暴露接口
   useApi({
     form,
@@ -163,7 +163,7 @@ const XForm = (props) => {
                   <XformDatetime
                     {...sysProps}
                     placeholder={fmtMsg(':cmsProjectWritten.form.!{l5hz9wxdne6ahfqosua}', '请输入')}
-                    dataPattern={'yyyy-MM-dd HH:mm'}
+                    dataPattern={'yyyy-MM-dd HH/mm'}
                     showStatus="edit"
                   ></XformDatetime>
                 </Form.Item>
@@ -192,7 +192,7 @@ const XForm = (props) => {
                       formatType: 'base'
                     }}
                     showStatus="edit"
-                    onChange = {(v)=> checkDetailWS(v) }
+                    onChange={(v) => checkDetailWS(v)}
                   ></XformNumber>
                 </Form.Item>
               </XformFieldset>
@@ -553,7 +553,7 @@ const XForm = (props) => {
                               title: fmtMsg(':cmsProjectWritten.form.!{l5iziae2bzq0rckmq6}', '计划面试开始时间'),
                               name: 'fdBeginTime',
                               placeholder: fmtMsg(':cmsProjectWritten.form.!{l5iziae44d2by5dyv7w}', '请输入'),
-                              dataPattern: 'yyyy-MM-dd HH:mm',
+                              dataPattern: 'yyyy-MM-dd HH/mm',
                               desktop: {
                                 type: XformDatetime
                               },
@@ -573,7 +573,7 @@ const XForm = (props) => {
                               title: fmtMsg(':cmsProjectWritten.form.!{l5izhz77fjktqau4o6p}', '计划面试结束时间'),
                               name: 'fdEndTime',
                               placeholder: fmtMsg(':cmsProjectWritten.form.!{l5izhz78u9a8rffwcyn}', '请输入'),
-                              dataPattern: 'yyyy-MM-dd HH:mm',
+                              dataPattern: 'yyyy-MM-dd HH/mm',
                               desktop: {
                                 type: XformDatetime
                               },
@@ -616,7 +616,7 @@ const XForm = (props) => {
                         canImport={true}
                         showStatus="edit"
                       ></XformDetailTable>
-                    ): (
+                    ) : (
                       <XformDetailTable
                         {...sysProps}
                         $$ref={detailForms.current.cmsProjectWrittenDe}
@@ -911,8 +911,8 @@ const XForm = (props) => {
                         showStatus="edit"
                       ></XformDetailTable>
                     )
-                  } 
-                  
+                  }
+
 
 
 
@@ -948,7 +948,7 @@ const XForm = (props) => {
                 </Form.Item>
               </XformFieldset>
             </GridItem>
-            
+
             <GridItem column={1} row={5} rowSpan={1} columnSpan={1}>
               <XformFieldset
                 labelTextAlign={'left'}
@@ -1118,7 +1118,7 @@ const XForm = (props) => {
                   ></GridItem>
                 </React.Fragment>) : null
             }
-            
+
           </LayoutGrid>
         </XformAppearance>
       </Form>

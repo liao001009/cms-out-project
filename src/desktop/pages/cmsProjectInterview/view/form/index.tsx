@@ -91,7 +91,7 @@ const XForm = (props) => {
                     <XformDatetime
                       {...sysProps}
                       placeholder={fmtMsg(':cmsProjectInterview.form.!{l5hz9wxdne6ahfqosua}', '请输入')}
-                      dataPattern={'yyyy-MM-dd HH:mm'}
+                      dataPattern={'yyyy-MM-dd HH/mm'}
                       showStatus="view"
                     ></XformDatetime>
                   </Form.Item>
@@ -534,7 +534,7 @@ const XForm = (props) => {
                 rowSpan={1}
                 columnSpan={1}
               ></GridItem>
-              
+
               <GridItem
                 column={2}
                 row={5}

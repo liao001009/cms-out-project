@@ -35,13 +35,13 @@ const XForm = (props) => {
   useEffect(() => {
     init()
     const paramId = props?.match?.params?.id
-    if(props.mode==='add'){
+    if (props.mode === 'add') {
       // value.fdProjectDemand=paramId
       form.setFieldsValue({
         fdProjectDemand: paramId
       })
     }
-    if(paramId){
+    if (paramId) {
       initData(paramId)
     }
   }, [])
@@ -66,13 +66,13 @@ const XForm = (props) => {
     try {
       const initParam = { conditions: { 'fdProjectDemand.fdId': { '$eq': params } } }
       const resOrder = await apiOrderResponse.listStaff(initParam)
-      const ids = resOrder?.data?.content?.map(i=>{
+      const ids = resOrder?.data?.content?.map(i => {
         return i.fdId
       })
       const newParam = {
         fdId: {
           searchKey: '$in',
-          searchValue : ids
+          searchValue: ids
         }
       }
       setDefaultTableCriteria(newParam)
@@ -81,11 +81,11 @@ const XForm = (props) => {
     }
   }
 
-  const checkDetailWS =  (val)=>{
+  const checkDetailWS = (val) => {
     const cmsProjectInterDetail = form.getFieldValue('cmsProjectInterDetail')
-    const arr: any  = []
+    const arr: any = []
     cmsProjectInterDetail?.values?.forEach((v, r) => {
-      if(!v.fdInterviewScores) return
+      if (!v.fdInterviewScores) return
       const fdInterviewPass = val <= v.fdInterviewScores ? '1' : '0'
       sysProps.$$form.current.updateFormItemProps('cmsProjectInterDetail', {
         rowValue: {
@@ -95,7 +95,7 @@ const XForm = (props) => {
           }
         }
       })
-      if(!arr.includes(v.fdSupplier) && fdInterviewPass==='1'){
+      if (!arr.includes(v.fdSupplier) && fdInterviewPass === '1') {
         arr.push(v.fdSupplier)
       }
     })
@@ -166,7 +166,7 @@ const XForm = (props) => {
                   <XformDatetime
                     {...sysProps}
                     placeholder={fmtMsg(':cmsProjectInterview.form.!{l5hz9wxdne6ahfqosua}', '请输入')}
-                    dataPattern={'yyyy-MM-dd HH:mm'}
+                    dataPattern={'yyyy-MM-dd HH/mm'}
                     showStatus="edit"
                   ></XformDatetime>
                 </Form.Item>
@@ -195,7 +195,7 @@ const XForm = (props) => {
                       formatType: 'base'
                     }}
                     showStatus="edit"
-                    onChange = {(v)=> checkDetailWS(v) }
+                    onChange={(v) => checkDetailWS(v)}
                   ></XformNumber>
                 </Form.Item>
               </XformFieldset>
@@ -326,6 +326,7 @@ const XForm = (props) => {
                   ]}
                 >
                   <XformDetailTable
+                    key={defaultTableCriteria}
                     {...sysProps}
                     $$ref={detailForms.current.cmsProjectInterDetail}
                     $$tableType="detail"
@@ -341,13 +342,13 @@ const XForm = (props) => {
                       {
                         type: CMSXformModal,
                         controlProps: {
-                          apiKey:apiStaffInfo,
+                          apiKey: apiStaffInfo,
                           apiName: 'listStaffInfo',
                           defaultTableCriteria: defaultTableCriteria,
-                          chooseFdName:'fdName',
-                          columnsProps:outStaffInfoColumns,
-                          criteriaKey:'staffReviewUpgrade',
-                          criteriaProps:['fdStaffName.fdName', 'fdName'],
+                          chooseFdName: 'fdName',
+                          columnsProps: outStaffInfoColumns,
+                          criteriaKey: 'staffReviewUpgrade',
+                          criteriaProps: ['fdStaffName.fdName', 'fdName'],
                           title: fmtMsg(':cmsProjectInterview.form.!{l5i2iuv598u3ufwarkj}', '姓名'),
                           name: 'fdInterviewName',
                           renderMode: 'singlelist',
@@ -355,20 +356,6 @@ const XForm = (props) => {
                           rowCount: 3,
                           modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
                           isForwardView: 'no',
-                          options: [
-                            {
-                              fdName: '选项1',
-                              fdId: '1'
-                            },
-                            {
-                              fdName: '选项2',
-                              fdId: '2'
-                            },
-                            {
-                              fdName: '选项3',
-                              fdId: '3'
-                            }
-                          ],
                           desktop: {
                             type: CMSXformModal
                           },
@@ -382,12 +369,12 @@ const XForm = (props) => {
                             refFieldName: '$fd_name$'
                           },
                           type: CMSXformModal,
-                          onChangeProps : async (v, r)=>{
+                          onChangeProps: async (v, r) => {
                             sysProps.$$form.current.updateFormItemProps('cmsProjectInterDetail', {
                               rowValue: {
                                 rowNum: r,
                                 value: {
-                                  fdSupplier:v.fdSupplier,
+                                  fdSupplier: v.fdSupplier,
                                   fdEmail: v.fdEmail,
                                   fdInterviewScores: '',
                                   fdInterviewPass: '',
@@ -486,11 +473,11 @@ const XForm = (props) => {
                             'onChange': [{
                               function: (v, r) => {
                                 const fdQualifiedMark = form.getFieldValue('fdQualifiedMark')
-                                if(!fdQualifiedMark){
+                                if (!fdQualifiedMark) {
                                   Message.error('请输入合格分数线', 1)
-                                  return 
+                                  return
                                 }
-                                const fdInterviewPass = v>=fdQualifiedMark ? '1' : '0'
+                                const fdInterviewPass = v >= fdQualifiedMark ? '1' : '0'
                                 sysProps.$$form.current.updateFormItemProps('cmsProjectInterDetail', {
                                   rowValue: {
                                     rowNum: r,
@@ -585,7 +572,7 @@ const XForm = (props) => {
                     placeholder={fmtMsg(':cmsProjectInterview.form.!{l5hz9wxdne6ahfqosua}', '请输入')}
                     showStatus={EShowStatus.edit}
                   ></XformInput>
-                  
+
 
                   {/* <XformRelation
                     {...sysProps}
