@@ -10,12 +10,12 @@ import api from '@/api/cmsProjectSelectInfo'
 import apiTemplate from '@/api/cmsProjectSelectInfoTemplate'
 import { $deleteAll } from '@/desktop/shared/deleteAll'
 import './index.scss'
-
+import { Auth } from '@ekp-infra/common'
 
 const baseCls = 'project-selectInfo-list'
 const Content: React.FC<IContentViewProps> = (props) => {
   const { status, data, queryChange, query, refresh, history } = props
-  const { content, totalSize, pageSize, offset } = data
+  const { content = [], totalSize, pageSize, offset } = data
   const [templateData, setTemplateData] = useState<any>({})
   useEffect(() => {
     loadTemplateData()
@@ -296,12 +296,26 @@ const Content: React.FC<IContentViewProps> = (props) => {
               </Button>
               {/* 操作栏 */}
               <React.Fragment>
-                <Button type="primary" onClick={handleAdd}>
-                  新建
-                </Button>
-                <Button type="default" onClick={handleDeleteAll}>
-                  批量删除
-                </Button>
+                <Auth.Auth
+                  authURL='/cmsProjectSelectInfo/add'
+                  authModuleName='cms-out-manage'
+                  unauthorizedPage={null}
+                >
+                  <Button type="primary" onClick={handleAdd}>
+                    新建
+                  </Button>
+                </Auth.Auth>
+                <Auth.Auth
+                  authURL='/cmsProjectSelectInfo/deleteAll'
+                  authModuleName='cms-out-manage'
+                  unauthorizedPage={null}
+                >
+                  <Button type="default" onClick={handleDeleteAll}>
+                    批量删除
+                  </Button>
+                </Auth.Auth>
+
+
               </React.Fragment>
             </Space>
           </div>

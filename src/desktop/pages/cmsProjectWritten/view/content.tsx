@@ -4,8 +4,8 @@ import { Breadcrumb, Button, Message, Modal } from '@lui/core'
 import XForm from './form'
 import api from '@/api/cmsProjectWritten'
 import './index.scss'
-import {cmsHandleBack} from '@/utils/routerUtil'
-
+import { cmsHandleBack } from '@/utils/routerUtil'
+import { Auth } from '@ekp-infra/common'
 Message.config({ maxCount: 1 })
 
 const { confirm } = Modal
@@ -13,7 +13,8 @@ const { confirm } = Modal
 const baseCls = 'cmsProjectWritten-content'
 
 const Content: React.FC<IContentViewProps> = props => {
-  const { data,  history } = props
+  const { data, history, match } = props
+  const params = match?.params || ''
   // 机制组件引用
   const formComponentRef = useRef<any>()
 
@@ -57,8 +58,24 @@ const Content: React.FC<IContentViewProps> = props => {
             <Breadcrumb.Item>查看</Breadcrumb.Item>
           </Breadcrumb>
           <div className='buttons'>
-            <Button type='primary' onClick={handleEdit}>编辑</Button>
-            <Button type='default' onClick={handleDel}>删除</Button>
+            <Auth.Auth
+              authURL='/cmsProjectWritten/edit'
+              authModuleName='cms-out-manage'
+              params={{ vo: { fdId: params['id'] } }}
+              unauthorizedPage={null}
+            >
+              <Button type='primary' onClick={handleEdit}>编辑</Button>
+
+            </Auth.Auth>
+            <Auth.Auth
+              authURL='/cmsProjectWritten/delete'
+              authModuleName='cms-out-manage'
+              params={{ vo: { fdId: params['id'] } }}
+              unauthorizedPage={null}
+            >
+              <Button type='default' onClick={handleDel}>删除</Button>
+
+            </Auth.Auth>
             <Button type='default' onClick={handleClose}>关闭</Button>
           </div>
         </div>

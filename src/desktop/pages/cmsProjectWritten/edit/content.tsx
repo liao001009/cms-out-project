@@ -1,22 +1,22 @@
-import React, {createElement as h, useCallback, useRef} from 'react'
-import {IContentViewProps} from '@ekp-runtime/render-module'
+import React, { createElement as h, useCallback, useRef } from 'react'
+import { IContentViewProps } from '@ekp-runtime/render-module'
 import Icon from '@lui/icons'
-import {Breadcrumb, Button, Message, Modal} from '@lui/core'
-import {EBtnType} from '@lui/core/es/components/Button'
+import { Breadcrumb, Button, Message, Modal } from '@lui/core'
+import { EBtnType } from '@lui/core/es/components/Button'
 import XForm from './form'
 import api from '@/api/cmsProjectWritten'
 import './index.scss'
-import {IProps} from '@/types/common'
-import {ESysLbpmProcessStatus} from '@/utils/status'
-import {cmsHandleBack} from '@/utils/routerUtil'
-
+import { IProps } from '@/types/common'
+import { ESysLbpmProcessStatus } from '@/utils/status'
+import { cmsHandleBack } from '@/utils/routerUtil'
+import { Auth } from '@ekp-infra/common'
 Message.config({ maxCount: 1 })
 
 const bacls = 'cmsProjectWritten-content'
 
 const Content: React.FC<IProps & IContentViewProps> = props => {
-  const { data, history, routerPrefix, mode } = props
-
+  const { data, history, routerPrefix, mode, match } = props
+  const params = match?.params || ''
 
   // 机制组件引用
   const formComponentRef = useRef<any>()
@@ -41,8 +41,8 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
     // 表单机制数据
     if (formComponentRef.current) {
       const formValues = await formComponentRef.current.getValue() || {}
-      const cmsProjectWrittenDe = formValues?.cmsProjectWrittenDe?.values ||[]
-      const newDetail = cmsProjectWrittenDe.map(item=>{
+      const cmsProjectWrittenDe = formValues?.cmsProjectWrittenDe?.values || []
+      const newDetail = cmsProjectWrittenDe.map(item => {
         const newItem = {
           ...item,
         }
@@ -96,14 +96,14 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
     // 编辑提交
     getDataApi(values as any).then(res => {
       if (res.success) {
-        Message.success(fdStatus=== ESysLbpmProcessStatus.DRAFT ? '暂存成功': '提交成功', 1, () => {
+        Message.success(fdStatus === ESysLbpmProcessStatus.DRAFT ? '暂存成功' : '提交成功', 1, () => {
           cmsHandleBack(history, '/cmsProjectWritten/listWritten')
         })
       } else {
-        Message.error(fdStatus=== ESysLbpmProcessStatus.DRAFT ? '暂存失败': '提交失败', 1)
+        Message.error(fdStatus === ESysLbpmProcessStatus.DRAFT ? '暂存失败' : '提交失败', 1)
       }
     }).catch(() => {
-      Message.error(fdStatus=== ESysLbpmProcessStatus.DRAFT ? '暂存失败': '提交失败', 1)
+      Message.error(fdStatus === ESysLbpmProcessStatus.DRAFT ? '暂存失败' : '提交失败', 1)
     })
   }
 
@@ -148,9 +148,31 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
             <Breadcrumb.Item>编辑</Breadcrumb.Item>
           </Breadcrumb>
           <div className='buttons'>
-            <Button type='primary' onClick={() => handleSave(true, ESysLbpmProcessStatus.DRAFT)}>暂存</Button>
-            <Button type='primary' onClick={() => handleSave(false, ESysLbpmProcessStatus.COMPLETED)}>提交</Button>
-            <Button type='default' onClick={handleDelete}>删除</Button>
+            <Auth.Auth
+              authURL='/cmsProjectWritten/save'
+              authModuleName='cms-out-manage'
+              unauthorizedPage={null}
+            >
+              <Button type='primary' onClick={() => handleSave(true, ESysLbpmProcessStatus.DRAFT)}>暂存</Button>
+
+            </Auth.Auth>
+            <Auth.Auth
+              authURL='/cmsProjectWritten/save'
+              authModuleName='cms-out-manage'
+              unauthorizedPage={null}
+            >
+              <Button type='primary' onClick={() => handleSave(false, ESysLbpmProcessStatus.COMPLETED)}>提交</Button>
+
+            </Auth.Auth>
+            <Auth.Auth
+              authURL='/cmsProjectWritten/delete'
+              params={{ vo: { fdId: params['id'] } }}
+              authModuleName='cms-out-manage'
+              unauthorizedPage={null}
+            >
+              <Button type='default' onClick={handleDelete}>删除</Button>
+
+            </Auth.Auth>
             <Button type='default' onClick={handleClose}>关闭</Button>
           </div>
         </div>
@@ -159,7 +181,7 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
           <div className='left'>
             {/* 表单信息 */}
             <div className='form'>
-              <XForm formRef={formComponentRef} {...props}  value={data || {}} />
+              <XForm formRef={formComponentRef} {...props} value={data || {}} />
             </div>
           </div>
         </div>

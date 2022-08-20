@@ -1,17 +1,17 @@
 import api from '@/api/cmsProjectDemand'
-import {Module} from '@ekp-infra/common'
-import {IContentViewProps} from '@ekp-runtime/render-module'
-import {Button, Message, Modal} from '@lui/core'
-import {EBtnType} from '@lui/core/es/components/Button'
+import { Module } from '@ekp-infra/common'
+import { IContentViewProps } from '@ekp-runtime/render-module'
+import { Button, Message, Modal } from '@lui/core'
+import { EBtnType } from '@lui/core/es/components/Button'
 import Icon from '@lui/icons'
-import React, {createElement as h, useCallback, useEffect, useRef, useState} from 'react'
+import React, { createElement as h, useCallback, useEffect, useRef, useState } from 'react'
 import XForm from './form'
 // import './index.scss'
-import {ESysLbpmProcessStatus, getFlowStatus} from '@/desktop/shared/util'
-import {useMkSendData} from '@/utils/mkHooks'
-import {EOperationType} from '@/utils/status'
-import {fmtMsg} from '@ekp-infra/respect'
-import {cmsHandleBack} from '@/utils/routerUtil'
+import { ESysLbpmProcessStatus, getFlowStatus } from '@/desktop/shared/util'
+import { useMkSendData } from '@/utils/mkHooks'
+import { EOperationType } from '@/utils/status'
+import { fmtMsg } from '@ekp-infra/respect'
+import { cmsHandleBack } from '@/utils/routerUtil'
 
 Message.config({ maxCount: 1 })
 const LbpmFormWithLayout = Module.getComponent('sys-lbpm', 'LbpmFormWithLayout', { loading: <React.Fragment></React.Fragment> })
@@ -134,7 +134,7 @@ const Content: React.FC<IContentViewProps> = props => {
     // 编辑暂存
     saveApi({
       ...values,
-      fdFrame:values.fdFrame,
+      fdFrame: values.fdFrame,
       cmsProjectDemandWork: values.cmsProjectDemandWork && values.cmsProjectDemandWork.values || undefined,
       cmsProjectDemandDetail: values.cmsProjectDemandDetail && values.cmsProjectDemandDetail.values || undefined,
       cmsProjectDemandSupp: values.cmsProjectDemandSupp && values.cmsProjectDemandSupp.values || undefined,
@@ -207,13 +207,9 @@ const Content: React.FC<IContentViewProps> = props => {
             if (res.success) {
               Message.success('删除成功')
               history.goto(routerPrefix)
-            } else {
-              Message.error(res.data.exMsg || '删除失败')
             }
-          })
-          .catch((error) => {
-            const errorMes = error.response.data && error.response.data.data.exMsg
-            Message.error(errorMes || '删除失败')
+          }).catch(error => {
+            Message.error(error.resopnse.data.msg || '删除失败')
           })
       }
     })

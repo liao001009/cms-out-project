@@ -380,6 +380,8 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
             Message.success('删除成功')
             cmsHandleBack(history, '/cmsProjectDemand/listDemand')
           }
+        }).catch(error => {
+          Message.error(error.resopnse.data.msg || '删除失败')
         })
       },
       onCancel () {

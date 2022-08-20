@@ -1,21 +1,21 @@
 import apiLbpm from '@/api/cmsLbpm'
 import api from '@/api/cmsStaffReview'
-import {Auth, Module} from '@ekp-infra/common'
-import {IContentViewProps} from '@ekp-runtime/render-module'
-import {Button, Message, Modal} from '@lui/core'
+import { Auth, Module } from '@ekp-infra/common'
+import { IContentViewProps } from '@ekp-runtime/render-module'
+import { Button, Message, Modal } from '@lui/core'
 import Axios from 'axios'
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import XForm from './form'
 //@ts-ignore
-import {getFlowStatus} from '@/desktop/shared/util'
-import {EOperationType, ESysLbpmProcessStatus} from '@/utils/status'
+import { getFlowStatus } from '@/desktop/shared/util'
+import { EOperationType, ESysLbpmProcessStatus } from '@/utils/status'
 //@ts-ignore
-import Status, {EStatusType} from '@elements/status'
+import Status, { EStatusType } from '@elements/status'
 // import './index.scss'
-import {useMkSendData} from '@/utils/mkHooks'
-import {fmtMsg} from '@ekp-infra/respect'
+import { useMkSendData } from '@/utils/mkHooks'
+import { fmtMsg } from '@ekp-infra/respect'
 import Icon from '@lui/icons'
-import {cmsHandleBack} from '@/utils/routerUtil'
+import { cmsHandleBack } from '@/utils/routerUtil'
 
 Message.config({ maxCount: 1 })
 const LbpmFormWithLayout = Module.getComponent('sys-lbpm', 'LbpmFormWithLayout', { loading: <React.Fragment></React.Fragment> })
@@ -221,19 +221,19 @@ const Content: React.FC<IContentViewProps> = props => {
   //   )
   // }, [flowData, params])
 
-  const handleEdit = ()=>{
-    if (Object.keys(flowData).length===0) {
+  const handleEdit = () => {
+    if (Object.keys(flowData).length === 0) {
       return null
     }
     const status = data.fdProcessStatus || getFlowStatus(flowData)
     if (status === ESysLbpmProcessStatus.ABANDONED || status === ESysLbpmProcessStatus.COMPLETED) return null
-    if(status === ESysLbpmProcessStatus.DRAFT || status === ESysLbpmProcessStatus.REJECT || status === ESysLbpmProcessStatus.WITHDRAW || status === ESysLbpmProcessStatus.ACTIVATED) return null
+    if (status === ESysLbpmProcessStatus.DRAFT || status === ESysLbpmProcessStatus.REJECT || status === ESysLbpmProcessStatus.WITHDRAW || status === ESysLbpmProcessStatus.ACTIVATED) return null
     const authParams = {
       vo: { fdId: params['id'] }
     }
     return {
       name: '编辑',
-      action: ()=>{ history.goto(`/cmsStaffReview/edit/${data.fdId}`) },
+      action: () => { history.goto(`/cmsStaffReview/edit/${data.fdId}`) },
       auth: {
         authModuleName: 'cms-out-manage',
         authURL: '/cmsStaffReview/edit',
@@ -251,6 +251,8 @@ const Content: React.FC<IContentViewProps> = props => {
             Message.success('删除成功')
             cmsHandleBack(history, '/cmsStaffReview/listStaffReview')
           }
+        }).catch(error => {
+          Message.error(error.resopnse.data.msg || '删除失败')
         })
       },
       onCancel () {
@@ -259,11 +261,11 @@ const Content: React.FC<IContentViewProps> = props => {
     })
   }, [])
   const handleDel = () => {
-    if (Object.keys(flowData).length===0) {
+    if (Object.keys(flowData).length === 0) {
       return null
     }
     const status = getFlowStatus(flowData)
-    if(status !== ESysLbpmProcessStatus.DRAFT && lbpmComponentRef.current?.checkOperationTypeExist(flowData.identity, EOperationType.handler_replyDraftCooperate)){
+    if (status !== ESysLbpmProcessStatus.DRAFT && lbpmComponentRef.current?.checkOperationTypeExist(flowData.identity, EOperationType.handler_replyDraftCooperate)) {
       return null
     }
     const authParams = {

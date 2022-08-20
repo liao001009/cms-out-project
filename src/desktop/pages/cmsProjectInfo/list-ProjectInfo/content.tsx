@@ -15,7 +15,7 @@ import { Auth } from '@ekp-infra/common'
 const bacls = 'projectInfo-list'
 const Content: React.FC<IContentViewProps> = (props) => {
   const { status, data, queryChange, query, refresh, history } = props
-  const { content, totalSize, pageSize } = data
+  const { content = [], totalSize, pageSize } = data
   const [modalVisible, setModalVisible] = useState<boolean>(false)
 
   // 表格列定义
@@ -327,7 +327,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
                     </Button>
                   </Auth.Auth>
                   <Auth.Auth
-                    authURL='/cmsProjectInfo/delete'
+                    authURL='/cmsProjectInfo/deleteAll'
                     authModuleName='cms-out-manage'
                     unauthorizedPage={null}
                   >
