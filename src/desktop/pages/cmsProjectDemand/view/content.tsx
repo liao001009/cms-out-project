@@ -4,7 +4,7 @@ import { EOperationType, ESysLbpmProcessStatus } from '@/utils/status'
 import { Auth, Module } from '@ekp-infra/common'
 import { IContentViewProps } from '@ekp-runtime/render-module'
 import { Button, Loading, Message, Modal, Tabs } from '@lui/core'
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { Fragment, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import XForm from './form'
 // import './index.scss'
 //@ts-ignore
@@ -30,7 +30,8 @@ import {
 import EditTable from './editTable/EditTable'
 import { useMkSendData } from '@/utils/mkHooks'
 import { cmsHandleBack } from '@/utils/routerUtil'
-
+import { exportTable } from '@/desktop/shared/util'
+import apiSupplier from '@/api/cmsSupplierInfo'
 const { TabPane } = Tabs
 
 Message.config({ maxCount: 1 })
@@ -78,7 +79,11 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   const [saveBtnVisible, setSaveBtnVisible] = useState<boolean>(false)
   // 订单响应路由跳转
   const [orderRouterStatus, setOrderRouterStatus] = useState<string>('')
-
+  const [exportDisabled, setExportDisabled] = useState<boolean>(false)
+  /**需要导出的订单响应列表数据 */
+  const exportOrderData = useRef<any>({})
+  // 发布供应商是否显示
+  const [fdSuppliesVisible, setFdSuppliesVisible] = useState<boolean>(false)
   /** 获取资料上传节点 */
   const getCurrentNode = async () => {
     try {
@@ -108,8 +113,14 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     loadTemplateData()
     roleAuthCheck()
     getOrderRouterStatus()
+    getSupplierStatus()
   }, [])
 
+  const getSupplierStatus = async () => {
+    const userId = mk.getSysConfig().currentUser.fdId
+    const resVisible = await apiSupplier.list({ conditions: { 'fdAdminElement.fdId': { '$eq': userId } } })
+    setFdSuppliesVisible(!!resVisible.data.content.length)
+  }
   // 点击订单响应的跳转路由地址
   const getOrderRouterStatus = async () => {
     try {
@@ -489,7 +500,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         slot={{
           form: (
             <div>
-              <div className='form'><XForm formRef={formComponentRef} value={data || {}} materialVis={materialVis} editFlag={editFlag} /></div>
+              <div className='form'><XForm formRef={formComponentRef} value={data || {}} materialVis={materialVis} editFlag={editFlag} fdSuppliesVisible={fdSuppliesVisible} /></div>
               {renderTab()}
             </div>
           )
@@ -511,9 +522,25 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   }
   const staffReviewRoute = '/cmsStaffReview/view/'
 
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     orderDetailList.current = e
+  }, [])
+
+  // 从子组件获取需要导出的数据
+  const handleExport = useCallback((exportData, columns, hiddenKey, selectArr) => {
+    exportOrderData.current = {
+      exportData, columns, hiddenKey
+    }
+    setExportDisabled(!selectArr.length)
+  }, [exportDisabled])
+
+  // 将数据已Excel的形式导出
+  const handleExportOrder = () => {
+    const { exportData, columns, hiddenKey } = exportOrderData.current
+    console.log('data5559', data)
+    exportTable(exportData, columns, data.fdSubject, hiddenKey)
   }
+
   // 保存订单响应数据
   const handleOrderDetailSave = () => {
     orderDetailList.current.forEach(async (i) => {
@@ -536,8 +563,13 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   }
 
   const operations = useMemo(() => (
-    saveBtnVisible ? <Button type='primary' onClick={handleOrderDetailSave}>保存</Button> : null
-  ), [saveBtnVisible])
+    saveBtnVisible ? (
+      <Fragment>
+        <Button type='primary' style={{ marginRight: '16px' }} onClick={handleOrderDetailSave}>保存</Button>
+        <Button type='primary' style={{ marginRight: '8px' }} disabled={exportDisabled} onClick={handleExportOrder}>导出</Button>
+      </Fragment>
+    ) : null
+  ), [saveBtnVisible, exportDisabled])
 
 
   const renderTab = () => {
@@ -577,10 +609,11 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
               onRowUrl={'/cmsProjectSelectInfo/view/'}
             />
           </TabPane>
-          <TabPane tab="订单响应" key="5">
+          <TabPane tab={fdSuppliesVisible ? '外包人员信息' : '订单响应'} key="5">
             <EditTable
               param={params}
               onchange={(e) => { handleChange(e) }}
+              onExport={(data, columns, hiddenKey, selectArr) => { handleExport(data, columns, hiddenKey, selectArr) }}
             />
           </TabPane>
         </Tabs>
