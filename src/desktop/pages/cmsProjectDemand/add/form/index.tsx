@@ -675,7 +675,7 @@ const XForm = (props) => {
                         formatType: 'base'
                       }}
                       precision={2}
-                      showStatus="edit"
+                      showStatus="readOnly"
                     ></XformMoney>
                   </Form.Item>
                 </XformFieldset>
@@ -891,7 +891,20 @@ const XForm = (props) => {
                               type: XformNumber
                             },
                             type: XformNumber,
-                            showStatus: 'edit'
+                            showStatus: 'edit',
+                            controlActions: {
+                              'onBlur': [{
+                                function: () => {
+                                  const values = sysProps.$$form.current.getFieldsValue('cmsProjectDemandWork').values
+                                  const newPrice = values.reduce((a, b) => {
+                                    return a + b.fdCostApproval
+                                  }, 0)
+                                  form.setFieldsValue({
+                                    fdOrderAmount: newPrice
+                                  })
+                                }
+                              }]
+                            }
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5humco963yvy68le9m}', '费用核定（万元）'),

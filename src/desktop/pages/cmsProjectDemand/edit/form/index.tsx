@@ -681,7 +681,7 @@ const XForm = (props) => {
                         formatType: 'base'
                       }}
                       precision={2}
-                      showStatus="edit"
+                      showStatus="readOnly"
                     ></XformMoney>
                   </Form.Item>
                 </XformFieldset>
