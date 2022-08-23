@@ -69,13 +69,15 @@ const XForm = (props) => {
       const ids = resOrder?.data?.content?.map(i => {
         return i.fdId
       })
-      const newParam = {
-        fdId: {
-          searchKey: '$in',
-          searchValue: ids
+      if(ids.length>0){
+        const newParam = {
+          fdId: {
+            searchKey: '$in',
+            searchValue: ids
+          }
         }
+        setDefaultTableCriteria(newParam)
       }
-      setDefaultTableCriteria(newParam)
     } catch (error) {
       console.error(error)
     }
