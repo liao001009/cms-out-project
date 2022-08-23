@@ -192,10 +192,10 @@ const XForm = (props) => {
                       apiName={'listProjectInfo'}
                       showStatus='add'
                       mark={true}
+                      showTableData={'fdName'}
                       modalTitle='项目名称选择'
                       criteriaKey='projectCriertia'
                       criteriaProps={['fdFrame.fdName']}
-                      defaultDataNull={true}
                       onChangeProps={(v) => {
                         setIsFrameChild(v.fdFrame.fdName === '设计类')
                         setSelectedFrame(v.fdFrame.fdId)
