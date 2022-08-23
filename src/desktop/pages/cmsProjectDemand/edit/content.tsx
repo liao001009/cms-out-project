@@ -129,7 +129,7 @@ const Content: React.FC<IContentViewProps> = props => {
     const saveApi = isDraft ?
       api.save
       : (values.fdProcessStatus === ESysLbpmProcessStatus.WITHDRAW
-        || values.fdProcessStatus === ESysLbpmProcessStatus.DRAFT
+        || values.fdProcessStatus === ESysLbpmProcessStatus.DRAFT || values.fdProcessStatus === ESysLbpmProcessStatus.REJECT
         ? api.update : api.save)
     // 编辑暂存
     saveApi({
