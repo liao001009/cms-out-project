@@ -164,7 +164,16 @@ const XformModal: React.FC<IProps> = (props) => {
       }
     }
   }, [JSON.stringify(defaultTableCriteria), JSON.stringify(otherData), showOther, visible])
-  const getListData = async (data, ...args) => {
+  const getListData = async (data) => {
+    if (showTableData){
+      if ((!data?.conditions[showTableData]) || (!data?.conditions[showTableData]['$contains'])) {
+        setListData([])
+        return
+      }
+    }
+
+    if (Object.keys(defaultTableCriteria).length <= 0) return 
+    
     try {
       const res = await apiKey[apiName](data)
       setListData(res.data)
@@ -344,7 +353,7 @@ const XformModal: React.FC<IProps> = (props) => {
             ) : null
           }
 
-          <Table key={tableProps.id} {...tableProps} onRow={onRowClick} />
+          <Table {...tableProps} onRow={onRowClick} />
         </div>
         <div className="lui-template-list-page">
           {listData.totalSize ? (
