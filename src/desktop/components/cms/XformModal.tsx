@@ -165,10 +165,11 @@ const XformModal: React.FC<IProps> = (props) => {
     }
   }, [JSON.stringify(defaultTableCriteria), JSON.stringify(otherData), showOther, visible])
   const getListData = async (data) => {
-    if (showTableData && !data?.conditions[showTableData] || !data?.conditions[showTableData]['$contains']) {
-      setListData([])
-      return
-    }
+    if (showTableData)
+      if ((!data?.conditions[showTableData]) || (!data?.conditions[showTableData]['$contains'])) {
+        setListData([])
+        return
+      }
     try {
       const res = await apiKey[apiName](data)
       setListData(res.data)
