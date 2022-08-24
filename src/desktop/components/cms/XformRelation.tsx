@@ -32,7 +32,6 @@ export interface IProps extends IContentViewProps {
 const CMSXformRelation: React.FC<IProps> = (props) => {
   const { onChange, showStatus, value, apiRequest, showFdName } = props
   const [frameArray, setFrameArray] = useState<any>([])
-  console.log('values---', value)
 
   useEffect(() => {
     if (showStatus === EShowStatus.add || showStatus === EShowStatus.edit || showStatus === EShowStatus.readOnly) {

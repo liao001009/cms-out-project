@@ -30,7 +30,6 @@ const XForm = (props) => {
   const [supplierInfoArr, setSupplierInfoArr] = useState<any>([])
   const [supplierInfoList, setsupplierInfoList] = useState<any>([])
   const [outStaffInfoArr, setOutStaffInfoArr] = useState<any>([])
-  console.log('value5556', value)
   const getList = async (api, func) => {
     try {
       const res = await api

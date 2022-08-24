@@ -146,7 +146,6 @@ const Content: React.FC<IContentViewProps> = (props) => {
       })
     }
   })
-  console.log(selectedRows)
 
   // 新建
   const handleAdd = useCallback(

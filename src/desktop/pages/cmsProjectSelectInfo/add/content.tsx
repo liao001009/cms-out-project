@@ -1,13 +1,13 @@
 import api from '@/api/cmsProjectSelectInfo'
-import {useMkSendData} from '@/utils/mkHooks'
-import {Module} from '@ekp-infra/common'
-import {fmtMsg} from '@ekp-infra/respect'
-import {IContentViewProps} from '@ekp-runtime/render-module'
-import {Button, Message} from '@lui/core'
-import React, {useCallback, useEffect, useRef, useState} from 'react'
+import { useMkSendData } from '@/utils/mkHooks'
+import { Module } from '@ekp-infra/common'
+import { fmtMsg } from '@ekp-infra/respect'
+import { IContentViewProps } from '@ekp-runtime/render-module'
+import { Button, Message } from '@lui/core'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import XForm from './form'
 import Icon from '@lui/icons'
-import {cmsHandleBack} from '@/utils/routerUtil'
+import { cmsHandleBack } from '@/utils/routerUtil'
 
 // import './index.scss'
 
@@ -23,7 +23,6 @@ const LbpmFormWithLayout = Module.getComponent('sys-lbpm', 'LbpmFormWithLayout',
 const baseCls = 'project-selectInfo-content'
 const Content: React.FC<IContentViewProps> = props => {
   const { data, match, history } = props
-  console.log('datavalue', data)
   const fdId = match.params['fdId']
 
   const templateId = fdId

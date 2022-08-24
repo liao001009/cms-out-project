@@ -319,7 +319,6 @@ const XForm = (props) => {
                               type: CMSXformModal
                             },
                             onChangeProps: (v, r) => {
-                              console.log('vlaues', v)
                               sysProps.$$form.current.updateFormItemProps('cmsProjectStaffList', {
                                 rowValue: {
                                   rowNum: r,
