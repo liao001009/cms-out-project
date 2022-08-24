@@ -56,8 +56,8 @@ export interface IProps extends IContentViewProps {
   showCriteria?: boolean
   /**接口参数(不在conditions里面的) */
   params?: any
-  /** 默认为空数据 */
-  defaultDataNull?: boolean
+  /** 默认列表无数据 */
+  showTableData?: string
   /**是否是项目类型 */
   mark?: boolean
   /** 扩展 */
@@ -89,7 +89,7 @@ const XformModal: React.FC<IProps> = (props) => {
     otherData = {},
     showOther = false,
     params = {},
-    defaultDataNull = false,
+    showTableData = '',
     mark = false
   } = props
 
@@ -165,10 +165,9 @@ const XformModal: React.FC<IProps> = (props) => {
     }
   }, [JSON.stringify(defaultTableCriteria), JSON.stringify(otherData), showOther, visible])
   const getListData = async (data, ...args) => {
-    if (Object.keys(defaultTableCriteria).length <= 0) return 
     try {
       const res = await apiKey[apiName](data)
-      setListData(defaultDataNull ? args.length ? res.data : {} : res.data)
+      setListData(res.data)
     } catch (error) {
       Message.error(error)
     }
@@ -234,13 +233,13 @@ const XformModal: React.FC<IProps> = (props) => {
         getListData({
           ...query,
           conditions: { ...conditions, ...newConditions, ...defaultConditions, ...selectedConditions }
-        }, true)
+        })
       } else {
         setSelectedConditions({ ...conditions, ...newConditions, ...selectedConditions })
         getListData({
           ...query,
           conditions: { ...conditions, ...newConditions, ...selectedConditions }
-        }, true)
+        })
       }
     },
     [query, selectedConditions]
@@ -254,7 +253,7 @@ const XformModal: React.FC<IProps> = (props) => {
       conditions = { 'fdName': { '$contains': value.trim() } }
     }
     setSelectedConditions({ ...conditions })
-    getListData({ ...query, conditions }, true)
+    getListData({ ...query, conditions })
 
   }
   // 确定按钮

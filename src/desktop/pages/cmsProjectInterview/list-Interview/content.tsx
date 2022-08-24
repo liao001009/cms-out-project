@@ -69,7 +69,6 @@ const Content: React.FC<IContentViewProps> = (props) => {
       })
     }
   })
-  console.log(selectedRows)
 
   /** 操作函数集 */
 

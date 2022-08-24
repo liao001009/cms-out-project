@@ -386,7 +386,6 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
       content: '确认删除此记录？',
       onOk () {
         api.delete({ fdId: data.fdId }).then(res => {
-          console.log('删除结果', res)
           if (res.success) {
             Message.success('删除成功')
             cmsHandleBack(history, '/cmsProjectDemand/listDemand')
@@ -537,7 +536,6 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   // 将数据已Excel的形式导出
   const handleExportOrder = () => {
     const { exportData, columns, hiddenKey } = exportOrderData.current
-    console.log('data5559', data)
     exportTable(exportData, columns, data.fdSubject, hiddenKey)
   }
 

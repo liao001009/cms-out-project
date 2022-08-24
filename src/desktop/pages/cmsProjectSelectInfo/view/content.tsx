@@ -216,7 +216,6 @@ const Content: React.FC<IContentViewProps> = props => {
       content: '确认删除此记录？',
       onOk () {
         api.delete({ fdId: data.fdId }).then(res => {
-          console.log('删除结果', res)
           if (res.success) {
             Message.success('删除成功')
             cmsHandleBack(history, '/cmsProjectSelectInfo/listSelectInfo')

@@ -177,7 +177,6 @@ const EditTable = (props: IProps) => {
     }
   }
 
-  console.log('orderDetailList5559', orderDetailList)
   const init = async () => {
     try {
       const res = await apiAuth.roleCheck([{
