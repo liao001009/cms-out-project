@@ -174,7 +174,7 @@ const XformModal: React.FC<IProps> = (props) => {
 
   const getListData = async (data) => {
     if (showTableData) {
-      if ((!data?.conditions[showTableData]) || (!data?.conditions[showTableData]['$contains'])) {
+      if (!data.conditions || (!data?.conditions[showTableData]) || (!data?.conditions[showTableData]['$contains'])) {
         setListData([])
         return
       }
