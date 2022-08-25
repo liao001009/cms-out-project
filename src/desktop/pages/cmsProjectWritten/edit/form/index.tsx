@@ -587,29 +587,6 @@ const XForm = (props) => {
                             },
                             label: fmtMsg(':cmsProjectWritten.form.!{l5izhz77fjktqau4o6p}', '计划面试结束时间')
                           },
-
-
-
-                          {
-                            type: XformInput,
-                            controlProps: {
-                              title: fmtMsg(':cmsProjectWritten.form.!{l5izigssxh9x6w7qrq}', '远程面试会议号'),
-                              maxLength: 100,
-                              name: 'fdMeetingNum',
-                              placeholder: fmtMsg(':cmsProjectWritten.form.!{l5izigstkbcmoluwehn}', '请输入'),
-                              desktop: {
-                                type: XformInput
-                              },
-                              showStatus: 'edit'
-                            },
-                            labelProps: {
-                              title: fmtMsg(':cmsProjectWritten.form.!{l5izigssxh9x6w7qrq}', '远程面试会议号'),
-                              desktop: {
-                                layout: 'vertical'
-                              }
-                            },
-                            label: fmtMsg(':cmsProjectWritten.form.!{l5izigssxh9x6w7qrq}', '远程面试会议号')
-                          }
                         ]}
                         canAddRow={true}
                         canDeleteRow={true}
