@@ -1,10 +1,10 @@
 import api from '@/api/cmsProjectDemand'
-import {getFlowStatus} from '@/desktop/shared/util'
-import {EOperationType, ESysLbpmProcessStatus} from '@/utils/status'
-import {Auth, Module} from '@ekp-infra/common'
-import {IContentViewProps} from '@ekp-runtime/render-module'
-import {Button, Loading, Message, Modal, Tabs} from '@lui/core'
-import React, {memo, useCallback, useEffect, useMemo, useRef, useState} from 'react'
+import { getFlowStatus } from '@/desktop/shared/util'
+import { EOperationType, ESysLbpmProcessStatus } from '@/utils/status'
+import { Auth, Module } from '@ekp-infra/common'
+import { IContentViewProps } from '@ekp-runtime/render-module'
+import { Button, Loading, Message, Modal, Tabs } from '@lui/core'
+import React, { Fragment, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import XForm from './form'
 // import './index.scss'
 //@ts-ignore
@@ -16,9 +16,9 @@ import apiProjectWritten from '@/api/cmsProjectWritten'
 import apiStaffReviewList from '@/api/cmsStaffReview'
 import apiTemplate from '@/api/cmsStaffReviewTemplate'
 import apiAuth from '@/api/sysAuth'
-import {fmtMsg} from '@ekp-infra/respect'
+import { fmtMsg } from '@ekp-infra/respect'
 //@ts-ignore
-import Status, {EStatusType} from '@elements/status'
+import Status, { EStatusType } from '@elements/status'
 import Icon from '@lui/icons'
 import Axios from 'axios'
 import {
@@ -28,9 +28,10 @@ import {
   staffReviewColumns
 } from '../../common/common'
 import EditTable from './editTable/EditTable'
-import {useMkSendData} from '@/utils/mkHooks'
-import {cmsHandleBack} from '@/utils/routerUtil'
-
+import { useMkSendData } from '@/utils/mkHooks'
+import { cmsHandleBack } from '@/utils/routerUtil'
+import { exportTable } from '@/desktop/shared/util'
+import apiSupplier from '@/api/cmsSupplierInfo'
 const { TabPane } = Tabs
 
 Message.config({ maxCount: 1 })
@@ -58,7 +59,6 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   }, [data])
   // 附加按钮显示
   const btnStatus = useMemo(() => {
-    console.log('data5559', data)
     return data.fdProcessStatus === '30'
   }, [data])
 
@@ -79,6 +79,11 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   const [saveBtnVisible, setSaveBtnVisible] = useState<boolean>(false)
   // 订单响应路由跳转
   const [orderRouterStatus, setOrderRouterStatus] = useState<string>('')
+  const [exportDisabled, setExportDisabled] = useState<boolean>(false)
+  /**需要导出的订单响应列表数据 */
+  const exportOrderData = useRef<any>({})
+  // 发布供应商是否显示
+  const [fdSuppliesVisible, setFdSuppliesVisible] = useState<boolean>(false)
   /** 获取资料上传节点 */
   const getCurrentNode = async () => {
     try {
@@ -108,8 +113,15 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     loadTemplateData()
     roleAuthCheck()
     getOrderRouterStatus()
+    getSupplierStatus()
   }, [])
 
+  const getSupplierStatus = async () => {
+    const userId = mk.getSysConfig().currentUser.fdId
+    const resVisible = await apiSupplier.list({ conditions: { 'fdAdminElement.fdId': { '$eq': userId } } })
+    setFdSuppliesVisible(!!resVisible.data.content.length)
+  }
+  // 点击订单响应的跳转路由地址
   const getOrderRouterStatus = async () => {
     try {
       const userId = mk.getSysConfig().currentUser.fdId
@@ -120,6 +132,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     }
   }
 
+  // 校验是否有编辑订单响应列表的权限
   const roleAuthCheck = async () => {
     try {
       const res = await apiAuth.roleCheck([{
@@ -243,11 +256,21 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     })
   }
 
+  // 订单响应点击
+  const handleOrderAction = () => {
+    if (data.fdResponseTime < new Date().getTime()) {
+      Message.error('已超过订单响应时间')
+      return
+    }
+    orderRouterStatus ? history.goto(`/cmsOrderResponse/edit/${orderRouterStatus}`) : history.goto(`/cmsOrderResponse/add/${data.fdId}`)
+  }
+
+  // 订单响应按钮
   const handleOrder = useCallback(() => {
     if (!btnStatus) return null
     return {
       name: '订单响应',
-      action: () => { orderRouterStatus ? history.goto(`/cmsOrderResponse/edit/${orderRouterStatus}`) : history.goto(`/cmsOrderResponse/add/${data.fdId}`) }
+      action: () => { handleOrderAction() }
     }
   }, [history, orderRouterStatus])
 
@@ -363,11 +386,12 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
       content: '确认删除此记录？',
       onOk () {
         api.delete({ fdId: data.fdId }).then(res => {
-          console.log('删除结果', res)
           if (res.success) {
             Message.success('删除成功')
             cmsHandleBack(history, '/cmsProjectDemand/listDemand')
           }
+        }).catch(error => {
+          Message.error(error.resopnse.data.msg || '删除失败')
         })
       },
       onCancel () {
@@ -475,7 +499,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         slot={{
           form: (
             <div>
-              <div className='form'><XForm formRef={formComponentRef} value={data || {}} materialVis={materialVis} editFlag={editFlag} /></div>
+              <div className='form'><XForm formRef={formComponentRef} value={data || {}} materialVis={materialVis} editFlag={editFlag} fdSuppliesVisible={fdSuppliesVisible} /></div>
               {renderTab()}
             </div>
           )
@@ -497,9 +521,24 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   }
   const staffReviewRoute = '/cmsStaffReview/view/'
 
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     orderDetailList.current = e
+  }, [])
+
+  // 从子组件获取需要导出的数据
+  const handleExport = useCallback((exportData, columns, hiddenKey, selectArr) => {
+    exportOrderData.current = {
+      exportData, columns, hiddenKey
+    }
+    setExportDisabled(!selectArr.length)
+  }, [exportDisabled])
+
+  // 将数据已Excel的形式导出
+  const handleExportOrder = () => {
+    const { exportData, columns, hiddenKey } = exportOrderData.current
+    exportTable(exportData, columns, data.fdSubject, hiddenKey)
   }
+
   // 保存订单响应数据
   const handleOrderDetailSave = () => {
     orderDetailList.current.forEach(async (i) => {
@@ -522,8 +561,13 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   }
 
   const operations = useMemo(() => (
-    saveBtnVisible ? <Button type='primary' onClick={handleOrderDetailSave}>保存</Button> : null
-  ), [saveBtnVisible])
+    saveBtnVisible ? (
+      <Fragment>
+        <Button type='primary' style={{ marginRight: '16px' }} onClick={handleOrderDetailSave}>保存</Button>
+        <Button type='primary' style={{ marginRight: '8px' }} disabled={exportDisabled} onClick={handleExportOrder}>导出</Button>
+      </Fragment>
+    ) : null
+  ), [saveBtnVisible, exportDisabled])
 
 
   const renderTab = () => {
@@ -563,10 +607,11 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
               onRowUrl={'/cmsProjectSelectInfo/view/'}
             />
           </TabPane>
-          <TabPane tab="订单响应" key="5">
+          <TabPane tab={fdSuppliesVisible ? '外包人员信息' : '订单响应'} key="5">
             <EditTable
               param={params}
               onchange={(e) => { handleChange(e) }}
+              onExport={(data, columns, hiddenKey, selectArr) => { handleExport(data, columns, hiddenKey, selectArr) }}
             />
           </TabPane>
         </Tabs>

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState, useEffect } from 'react'
 import { IContentViewProps } from '@ekp-runtime/render-module'
 import Icon from '@lui/icons'
 import { Input, Button, Space, Pagination } from '@lui/core'
@@ -12,12 +12,25 @@ import { $deleteAll } from '@/desktop/shared/deleteAll'
 import ListImport from '@/desktop/components/listImport'
 import './index.scss'
 import { Auth } from '@ekp-infra/common'
+import { roleAuthCheck } from '@/desktop/shared/util'
 const bacls = 'projectInfo-list'
 const Content: React.FC<IContentViewProps> = (props) => {
   const { status, data, queryChange, query, refresh, history } = props
-  const { content, totalSize, pageSize } = data
+  const { content = [], totalSize, pageSize } = data
   const [modalVisible, setModalVisible] = useState<boolean>(false)
-
+  // 是否有导入权限
+  const [importRole, setImportRole] = useState<boolean>(false)
+  useEffect(() => {
+    getRole()
+  }, [])
+  const getRole = async () => {
+    const role = await roleAuthCheck([{
+      status: 'checking',
+      key: 'auth0',
+      role: 'ROLE_CMSOUTPROJECTINFO_IMPORT'
+    },])
+    setImportRole(role)
+  }
   // 表格列定义
   const columns = useMemo(
     () => [
@@ -327,7 +340,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
                     </Button>
                   </Auth.Auth>
                   <Auth.Auth
-                    authURL='/cmsProjectInfo/delete'
+                    authURL='/cmsProjectInfo/deleteAll'
                     authModuleName='cms-out-manage'
                     unauthorizedPage={null}
                   >
@@ -360,11 +373,14 @@ const Content: React.FC<IContentViewProps> = (props) => {
           </div>
         </div>
       </div>
-      <ListImport
-        fdEntityName='com.landray.cms.out.manage.core.entity.project.CmsProjectInfo'
-        visible={modalVisible}
-        onCancle={() => setModalVisible(false)}
-      />
+      {
+        importRole ? <ListImport
+          fdEntityName='com.landray.cms.out.manage.core.entity.project.CmsProjectInfo'
+          visible={modalVisible}
+          onCancle={() => setModalVisible(false)}
+        /> : null
+      }
+
     </React.Fragment>
   )
 }

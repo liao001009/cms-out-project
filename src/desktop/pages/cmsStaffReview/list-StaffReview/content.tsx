@@ -10,10 +10,11 @@ import { $deleteAll } from '@/desktop/shared/deleteAll'
 import apiTemplate from '@/api/cmsStaffReviewTemplate'
 import './index.scss'
 import { staffReviewColumns } from '@/desktop/pages/common/common'
+import { Auth } from '@ekp-infra/common'
 const baseCls = 'project-review-list'
 const Content: React.FC<IContentViewProps> = (props) => {
   const { status, data, queryChange, query, refresh, history } = props
-  const { content, totalSize, pageSize } = data
+  const { content = [], totalSize, pageSize } = data
   const [templateData, setTemplateData] = useState<any>({})
 
   useEffect(() => {
@@ -153,7 +154,6 @@ const Content: React.FC<IContentViewProps> = (props) => {
       })
     }
   })
-  console.log(selectedRows)
 
   /** 操作函数集 */
 
@@ -277,12 +277,26 @@ const Content: React.FC<IContentViewProps> = (props) => {
                 </Button>
                 {/* 操作栏 */}
                 <React.Fragment>
-                  <Button type="primary" onClick={handleAdd}>
-                    新建
-                  </Button>
-                  <Button type="default" onClick={handleDeleteAll}>
-                    批量删除
-                  </Button>
+                  <Auth.Auth
+                    authURL='/cmsStaffReview/add'
+                    authModuleName='cms-out-manage'
+                    unauthorizedPage={null}
+                  >
+                    <Button type="primary" onClick={handleAdd}>
+                      新建
+                    </Button>
+                  </Auth.Auth>
+                  <Auth.Auth
+                    authURL='/cmsStaffReview/deleteAll'
+                    authModuleName='cms-out-manage'
+                    unauthorizedPage={null}
+                  >
+                    <Button type="default" onClick={handleDeleteAll}>
+                      批量删除
+                    </Button>
+                  </Auth.Auth>
+
+
                 </React.Fragment>
               </Space>
             </div>

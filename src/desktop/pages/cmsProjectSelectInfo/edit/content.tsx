@@ -1,17 +1,17 @@
 import api from '@/api/cmsProjectSelectInfo'
-import {Module} from '@ekp-infra/common'
-import {IContentViewProps} from '@ekp-runtime/render-module'
-import {Button, Message, Modal} from '@lui/core'
-import {EBtnType} from '@lui/core/es/components/Button'
+import { Module } from '@ekp-infra/common'
+import { IContentViewProps } from '@ekp-runtime/render-module'
+import { Button, Message, Modal } from '@lui/core'
+import { EBtnType } from '@lui/core/es/components/Button'
 import Icon from '@lui/icons'
-import React, {createElement as h, useCallback, useEffect, useRef, useState} from 'react'
+import React, { createElement as h, useCallback, useEffect, useRef, useState } from 'react'
 import XForm from './form'
 // import './index.scss'
-import {ESysLbpmProcessStatus, getFlowStatus} from '@/desktop/shared/util'
-import {useMkSendData} from '@/utils/mkHooks'
-import {EOperationType} from '@/utils/status'
-import {fmtMsg} from '@ekp-infra/respect'
-import {cmsHandleBack} from '@/utils/routerUtil'
+import { ESysLbpmProcessStatus, getFlowStatus } from '@/desktop/shared/util'
+import { useMkSendData } from '@/utils/mkHooks'
+import { EOperationType } from '@/utils/status'
+import { fmtMsg } from '@ekp-infra/respect'
+import { cmsHandleBack } from '@/utils/routerUtil'
 
 
 Message.config({ maxCount: 1 })
@@ -28,7 +28,7 @@ const LbpmFormWithLayout = Module.getComponent('sys-lbpm', 'LbpmFormWithLayout',
 // const PrintRuntime = Module.getComponent('sys-mech-print', 'PrintRuntimeFRagment', { loading: <React.Fragment></React.Fragment> })
 const baseCls = 'project-selectInfo-content'
 const Content: React.FC<IContentViewProps> = props => {
-  const { data,match, history, routerPrefix } = props
+  const { data, match, history, routerPrefix } = props
   const params = match?.params
 
   // 机制组件引用
@@ -197,28 +197,24 @@ const Content: React.FC<IContentViewProps> = props => {
             if (res.success) {
               Message.success('删除成功')
               history.goto(routerPrefix)
-            } else {
-              Message.error(res.data.exMsg || '删除失败')
             }
-          })
-          .catch((error) => {
-            const errorMes = error.response.data && error.response.data.data.exMsg
-            Message.error(errorMes || '删除失败')
+          }).catch(error => {
+            Message.error(error.resopnse.data.msg || '删除失败')
           })
       }
     })
   }
 
 
-  const handleDel = ()=>{
+  const handleDel = () => {
     const status = getFlowStatus(flowData)
-    if(status !== ESysLbpmProcessStatus.DRAFT && lbpmComponentRef.current?.checkOperationTypeExist(flowData?.identity, EOperationType.handler_replyDraftCooperate)) return
+    if (status !== ESysLbpmProcessStatus.DRAFT && lbpmComponentRef.current?.checkOperationTypeExist(flowData?.identity, EOperationType.handler_replyDraftCooperate)) return
     const authParams = {
       vo: { fdId: params['id'] }
     }
     return {
       name: '删除',
-      action: ()=>{ handleDelete() },
+      action: () => { handleDelete() },
       auth: {
         authModuleName: 'cms-out-manage',
         authURL: '/cmsProjectSelectInfo/delete',
@@ -236,7 +232,7 @@ const Content: React.FC<IContentViewProps> = props => {
 
     const status = data?.fdProcessStatus || getFlowStatus(flowData)
     /* 新建文档和草稿有暂存按钮 */
-    if(status !== ESysLbpmProcessStatus.DRAFT || status !== ESysLbpmProcessStatus.REJECT || status !== ESysLbpmProcessStatus.WITHDRAW) return
+    if (status !== ESysLbpmProcessStatus.DRAFT || status !== ESysLbpmProcessStatus.REJECT || status !== ESysLbpmProcessStatus.WITHDRAW) return
 
     return {
       name: '暂存',
@@ -273,7 +269,7 @@ const Content: React.FC<IContentViewProps> = props => {
       auditType: data.fdProcessStatus === '20' ? 'baseInfo' : 'audit',
       approveLayout: 'rightButton',
       wrappedComponentRef: lbpmComponentRef,
-      mechanism:{
+      mechanism: {
         formId: data?.fdTemplate?.fdId,
         processTemplateId: processTemplateId,
         processId: processId
@@ -286,7 +282,7 @@ const Content: React.FC<IContentViewProps> = props => {
         setFlowData(value)
       },
       processId: processId,
-      onSubmit: ()=>{handleSave(false)},
+      onSubmit: () => { handleSave(false) },
       submitting: submitting,
       // extraOperations: extraOperations,
       // onValuesChange: handleLbpmChange,

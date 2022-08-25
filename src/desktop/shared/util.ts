@@ -1,6 +1,7 @@
 import authApi from '@/api/sysAuth'
 import message from '@antd/message'
-
+import * as ExcelJs from 'exceljs'
+import { saveAs } from 'file-saver'
 
 export function processStatus (statusEnum: string) {
   switch (statusEnum) {
@@ -225,4 +226,43 @@ export const renderConditions = (oldConditions, values, arr) => {
     }
   })
   return oldConditions
+}
+
+/**将表格导出 */
+const generateHeaders = (columns, hiddenKey) => {
+  return columns?.map(col => {
+    const obj = {
+      // 显示的 name
+      header: col.title,
+      // 用于数据匹配的 key
+      key: col.dataIndex,
+      hidden: hiddenKey.includes(col.dataIndex),
+      // 列宽
+      width: col.width / 5 || 20,
+    }
+    return obj
+  })
+}
+const saveWorkbook = (workbook, fileName) => {
+  // 导出文件
+  workbook.xlsx.writeBuffer().then((data => {
+    const blob = new Blob([data], { type: '' })
+    saveAs(blob, fileName)
+  }))
+}
+export const exportTable = (data, columns, fileName, hiddenKey) => {
+  // 创建工作簿
+  const workbook = new ExcelJs.Workbook()
+  // 添加sheet
+  const worksheet = workbook.addWorksheet('demo sheet')
+  // 设置 sheet 的默认行高
+  worksheet.properties.defaultRowHeight = 20
+  // 设置列
+  worksheet.columns = generateHeaders(columns, hiddenKey)
+  // 添加行
+  worksheet.addRows(data)
+  // // 导出excel
+  // const name = fileName + new Date().getTime() + '.xlsx'
+  const name = `${fileName}${mk.getFormatTime(new Date(), 'YYYY-MM-DD')}.xlsx`
+  saveWorkbook(workbook, name)
 }

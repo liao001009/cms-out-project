@@ -8,6 +8,7 @@ import { $reduceCriteria } from '@/desktop/shared/criteria'
 import './index.scss'
 import { criertiaObj } from '@/desktop/pages/common/common'
 import { renderConditions } from '@/desktop/shared/util'
+import { isArray } from 'util'
 export enum EShowStatus {
   /** 查看 */
   'view' = 'view',
@@ -56,8 +57,8 @@ export interface IProps extends IContentViewProps {
   showCriteria?: boolean
   /**接口参数(不在conditions里面的) */
   params?: any
-  /** 默认为空数据 */
-  defaultDataNull?: boolean
+  /** 默认列表无数据 */
+  showTableData?: string
   /**是否是项目类型 */
   mark?: boolean
   /** 扩展 */
@@ -89,7 +90,7 @@ const XformModal: React.FC<IProps> = (props) => {
     otherData = {},
     showOther = false,
     params = {},
-    defaultDataNull = false,
+    showTableData = '',
     mark = false
   } = props
 
@@ -101,7 +102,7 @@ const XformModal: React.FC<IProps> = (props) => {
   // 多选时，选中的数据
   const [selectedRowsData, setSelectedRows] = useState<any>([])
   // 表单传过来的初始值，为了点击取消时，还原数据
-  const [initSelectedArr, setInitSelectArr] = useState<any>(value)
+  const [initSelectedArr, setInitSelectArr] = useState<any>(value || [])
   // 用来判断是按了确认按钮还是取消按钮
   const [flag, setFlag] = useState<boolean>(false)
 
@@ -164,10 +165,24 @@ const XformModal: React.FC<IProps> = (props) => {
       }
     }
   }, [JSON.stringify(defaultTableCriteria), JSON.stringify(otherData), showOther, visible])
-  const getListData = async (data, ...args) => {
+
+  // 检验默认筛选项是否有值
+  const checkFlag = () => {
+    const flag = Object.values(defaultTableCriteria).every((i: any) => i['searchValue'] && Object.values(i['searchValue']).length)
+    return flag
+  }
+
+  const getListData = async (data) => {
+    if (showTableData) {
+      if (!data.conditions || (!data?.conditions[showTableData]) || (!data?.conditions[showTableData]['$contains'])) {
+        setListData([])
+        return
+      }
+    }
+    if (!checkFlag()) return
     try {
       const res = await apiKey[apiName](data)
-      setListData(defaultDataNull ? args.length ? res.data : {} : res.data)
+      setListData(res.data)
     } catch (error) {
       Message.error(error)
     }
@@ -233,13 +248,13 @@ const XformModal: React.FC<IProps> = (props) => {
         getListData({
           ...query,
           conditions: { ...conditions, ...newConditions, ...defaultConditions, ...selectedConditions }
-        }, true)
+        })
       } else {
         setSelectedConditions({ ...conditions, ...newConditions, ...selectedConditions })
         getListData({
           ...query,
           conditions: { ...conditions, ...newConditions, ...selectedConditions }
-        }, true)
+        })
       }
     },
     [query, selectedConditions]
@@ -253,7 +268,7 @@ const XformModal: React.FC<IProps> = (props) => {
       conditions = { 'fdName': { '$contains': value.trim() } }
     }
     setSelectedConditions({ ...conditions })
-    getListData({ ...query, conditions }, true)
+    getListData({ ...query, conditions })
 
   }
   // 确定按钮
@@ -289,7 +304,7 @@ const XformModal: React.FC<IProps> = (props) => {
     setFlag(false)
     setVisible(false)
     if (multiple) {
-      setSelectedRows(initSelectedArr.map(i => i.fdId))
+      setSelectedRows(initSelectedArr.length ? initSelectedArr.map(i => i.fdId) : [])
       onChange && onChange(initSelectedArr)
     }
   }

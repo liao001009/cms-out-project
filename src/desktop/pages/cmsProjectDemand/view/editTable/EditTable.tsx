@@ -7,7 +7,7 @@ import apiAuth from '@/api/sysAuth'
 import apiOrder from '@/api/cmsOrderResponse'
 import { Module } from '@ekp-infra/common'
 import apiStaffInfo from '@/api/cmsOutStaffInfo'
-
+import { exportTable } from '@/desktop/shared/util'
 const Upload = Module.getComponent('sys-attach', 'Attachment')
 
 const { useForm } = Table
@@ -16,12 +16,14 @@ import './index.scss'
 interface IProps {
   param?: any
   onchange?: any
+  onExport?: any
 }
 
 const EditTable = (props: IProps) => {
-  const { param, onchange: $onChange } = props
+  const { param, onchange: $onChange, onExport } = props
   const [orderDetailList, setOrderDetailList] = useState<any>([])
   const [editFlag, setEditFlag] = useState<boolean>(false)
+  const [selectedRowsData, setSelectedRows] = useState<any>([])
   const [page, setPage] = useState<any>({
     current: 1,
     pageSize: 10,
@@ -81,13 +83,33 @@ const EditTable = (props: IProps) => {
           render: (text) => <span>{text}</span>
         },
         {
+          title: '电话',
+          dataIndex: 'fdPhoto',
+          render: (text) => <span>{text}</span>
+        },
+        {
           title: '简历',
           dataIndex: 'fdAtt',
-          render: (text: any, record) => {
-            console.log('text5559', text)
-            console.log('record5559', record)
+          render: (text: any) => {
             return (
-              <Upload value={[text]} multiple={false} itemType={'card'} mode='file' viewStatus={true} showStatus={'view'} />
+              <Upload
+                value={[text]}
+                multiple={false}
+                itemType={'card'}
+                mode='file'
+                viewStatus={true}
+                showStatus={'view'}
+                operationDisplayConfig={{
+                  showDownload: true,
+                  showRemove: false,
+                  showChange: false,
+                  showEdit: false
+                }}
+                ItemDisplayConfig={{
+                  showOrder: false,
+                  showHeader: true
+                }}
+              />
             )
           }
         },
@@ -155,7 +177,6 @@ const EditTable = (props: IProps) => {
     }
   }
 
-  console.log('orderDetailList5559', orderDetailList)
   const init = async () => {
     try {
       const res = await apiAuth.roleCheck([{
@@ -210,11 +231,12 @@ const EditTable = (props: IProps) => {
     ]
   }, [])
 
-  // const formPorps = useMemo(() => (), [orderDetailList, page])
-  const { tableProps } = useForm({
+  const { tableProps, selectedRows } = useForm({
     data: orderDetailList || [],
     serial: 'static' as 'static',
-    rowSelection: false,
+    rowSelection: {
+      selectedRowKeys: selectedRowsData,
+    },
     columns,
     onChange,
     operations,
@@ -226,9 +248,36 @@ const EditTable = (props: IProps) => {
       showTotal: (total) => (`共${total}条`),
     }
   })
+  const getSelectData = (arr) => {
+    let newData = orderDetailList.filter(i => arr.includes(i.fdId))
+    newData = renderData(newData)
+    return newData
+  }
+  useEffect(() => {
+    setSelectedRows([...selectedRows])
+    onExport?.(getSelectData(selectedRows), columns, ['fdAtt'], selectedRows)
+  }, [selectedRows])
 
+  // 将数据转变为需要导出的格式
+  const renderData = (data) => {
+    const newDate = data.map(i => {
+      for (const key in i) {
+        if (key === 'fdAtt' || key === 'dynamicProps') continue
+        if (key === 'fdIsQualified') {
+          i.fdIsQualified = i['fdIsQualified'] > 0 ? '是' : '否'
+        }
+        if (typeof i[key] === 'object') {
+          i[key] = i[key].fdName
+        }
+      }
+      return i
+    })
+    return newDate
+  }
   return (
-    <Table {...tableProps} className={'project-demand-edit-table'} />
+    <div>
+      <Table {...tableProps} className={'project-demand-edit-table'} />
+    </div>
   )
 }
 

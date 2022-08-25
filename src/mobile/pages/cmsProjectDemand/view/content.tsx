@@ -90,7 +90,6 @@ const Content: React.FC<IContentViewProps> = props => {
       onAction: (action, index) => {
         if (index > 0) { return }
         api.delete({ fdId: data.fdId }).then(res => {
-          console.log('删除结果', res)
           if (res.success) {
             Toast.show({
               content: '删除成功',

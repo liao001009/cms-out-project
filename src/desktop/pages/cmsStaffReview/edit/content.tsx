@@ -1,16 +1,16 @@
 import api from '@/api/cmsStaffReview'
-import {ESysLbpmProcessStatus, getFlowStatus} from '@/desktop/shared/util'
-import {useMkSendData} from '@/utils/mkHooks'
-import {EOperationType} from '@/utils/status'
-import {Module} from '@ekp-infra/common'
-import {fmtMsg} from '@ekp-infra/respect'
-import {IContentViewProps} from '@ekp-runtime/render-module'
-import {Button, Message, Modal} from '@lui/core'
-import {EBtnType} from '@lui/core/es/components/Button'
+import { ESysLbpmProcessStatus, getFlowStatus } from '@/desktop/shared/util'
+import { useMkSendData } from '@/utils/mkHooks'
+import { EOperationType } from '@/utils/status'
+import { Module } from '@ekp-infra/common'
+import { fmtMsg } from '@ekp-infra/respect'
+import { IContentViewProps } from '@ekp-runtime/render-module'
+import { Button, Message, Modal } from '@lui/core'
+import { EBtnType } from '@lui/core/es/components/Button'
 import Icon from '@lui/icons'
-import React, {createElement as h, useCallback, useEffect, useRef, useState} from 'react'
+import React, { createElement as h, useCallback, useEffect, useRef, useState } from 'react'
 import XForm from './form'
-import {cmsHandleBack} from '@/utils/routerUtil'
+import { cmsHandleBack } from '@/utils/routerUtil'
 // import './index.scss'
 
 Message.config({ maxCount: 1 })
@@ -124,11 +124,10 @@ const Content: React.FC<IContentViewProps> = props => {
     if (await _beforeSave(isDraft) === false) {
       return
     }
-    console.log('values5559v', values)
     const saveApi = isDraft ?
       api.save
       : (values.fdProcessStatus === ESysLbpmProcessStatus.WITHDRAW
-        || values.fdProcessStatus === ESysLbpmProcessStatus.DRAFT
+        || values.fdProcessStatus === ESysLbpmProcessStatus.DRAFT || values.fdProcessStatus === ESysLbpmProcessStatus.REJECT
         ? api.update : api.save)
     // 编辑暂存
     saveApi({
@@ -204,13 +203,9 @@ const Content: React.FC<IContentViewProps> = props => {
             if (res.success) {
               Message.success('删除成功')
               history.goto(routerPrefix)
-            } else {
-              Message.error(res.data.exMsg || '删除失败')
             }
-          })
-          .catch((error) => {
-            const errorMes = error.response.data && error.response.data.data.exMsg
-            Message.error(errorMes || '删除失败')
+          }).catch(error => {
+            Message.error(error.resopnse.data.msg || '删除失败')
           })
       }
     })

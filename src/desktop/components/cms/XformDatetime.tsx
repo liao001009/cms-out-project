@@ -40,28 +40,22 @@ export const enum EFormatType {
 
 export interface IProps {
   /** function */
-  onChange?:(v)=>void
+  onChange?: (v) => void
   /** 组件状态 */
-  showStatus?:EShowStatus
+  showStatus?: EShowStatus
   /** 组件数据 */
-  value?:any
+  value?: any
   /** 时间格式 */
-  dataPattern?:EFormatType | string
+  dataPattern?: EFormatType | string
   /** 确定 */
-  onOk?:(v)=>void
+  onOk?: (v) => void
   /** 提示 */
-  placeholder?:string
-  testValue?:any
+  placeholder?: string
+  testValue?: any
 }
 
-const CMSXformRelation : React.FC<IProps> = (props) =>{
-  const { onChange,showStatus,value,dataPattern,onOk,placeholder,testValue } = props 
-  console.log('value',value)
-  console.log('testValue',testValue)
-
-  
-  console.log('moment(value)',moment(value))
-  
+const CMSXformRelation: React.FC<IProps> = (props) => {
+  const { onChange, showStatus, value, dataPattern, onOk, placeholder, testValue } = props
 
   const changePattern = useMemo(() => {
     // antd和后台时间格式有区别，转换一下
@@ -135,7 +129,6 @@ const CMSXformRelation : React.FC<IProps> = (props) =>{
   const handleChange = useCallback((evt) => {
     const date = clearOtherTime(evt?._d)
     const newValue = evt && date.getTime()
-    console.log('newValue',newValue)
     onChange && onChange(newValue)
   }, [])
 
@@ -147,7 +140,7 @@ const CMSXformRelation : React.FC<IProps> = (props) =>{
     <div>
       {
         showStatus === 'edit' || showStatus === 'add' ? (
-          <DatePicker 
+          <DatePicker
             format={changePattern}
             onOk={handleOk}
             onChange={handleChange}
@@ -158,7 +151,7 @@ const CMSXformRelation : React.FC<IProps> = (props) =>{
           <span>{value}</span>
         )
       }
-      
+
     </div>
   )
 }

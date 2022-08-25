@@ -10,11 +10,11 @@ import api from '@/api/cmsProjectWritten'
 import { useAdd } from '@/desktop/shared/add'
 import { $deleteAll } from '@/desktop/shared/deleteAll'
 import './index.scss'
-
+import { Auth } from '@ekp-infra/common'
 const baseCls = 'cmsProjectWritten-list'
 const Content: React.FC<IContentViewProps> = (props) => {
   const { status, data, queryChange, query, refresh, history } = props
-  const { content, totalSize, pageSize, offset } = data
+  const { content = [], totalSize, pageSize, offset } = data
 
   // 表格列定义
   const columns = useMemo(
@@ -265,12 +265,26 @@ const Content: React.FC<IContentViewProps> = (props) => {
               </Button>
               {/* 操作栏 */}
               <React.Fragment>
-                <Button type="primary" onClick={handleAdd}>
-                  新建
-                </Button>
-                <Button type="default" onClick={handleDeleteAll}>
-                  批量删除
-                </Button>
+                <Auth.Auth
+                  authURL='/cmsProjectWritten/add'
+                  authModuleName='cms-out-manage'
+                  unauthorizedPage={null}
+                >
+                  <Button type="primary" onClick={handleAdd}>
+                    新建
+                  </Button>
+                </Auth.Auth>
+                <Auth.Auth
+                  authURL='/cmsProjectWritten/deleteAll'
+                  authModuleName='cms-out-manage'
+                  unauthorizedPage={null}
+                >
+                  <Button type="default" onClick={handleDeleteAll}>
+                    批量删除
+                  </Button>
+                </Auth.Auth>
+
+
               </React.Fragment>
             </Space>
           </div>

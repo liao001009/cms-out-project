@@ -192,10 +192,10 @@ const XForm = (props) => {
                       apiName={'listProjectInfo'}
                       showStatus='add'
                       mark={true}
+                      showTableData={'fdName'}
                       modalTitle='项目名称选择'
                       criteriaKey='projectCriertia'
                       criteriaProps={['fdFrame.fdName']}
-                      defaultDataNull={true}
                       onChangeProps={(v) => {
                         setIsFrameChild(v.fdFrame.fdName === '设计类')
                         setSelectedFrame(v.fdFrame.fdId)
@@ -571,7 +571,7 @@ const XForm = (props) => {
                               <CMSXformModal
                                 {...props}
                                 columnsProps={supplierColumns}
-                                chooseFdName='fdSupplierName'
+                                chooseFdName='fdName'
                                 apiKey={apiSupplier}
                                 apiName={'listSupplierInfo'}
                                 criteriaKey='supplierCriertia'
@@ -681,7 +681,7 @@ const XForm = (props) => {
                         formatType: 'base'
                       }}
                       precision={2}
-                      showStatus="edit"
+                      showStatus="readOnly"
                     ></XformMoney>
                   </Form.Item>
                 </XformFieldset>
@@ -1172,7 +1172,7 @@ const XForm = (props) => {
                       showFooter={true}
                       multiple={true}
                       defaultTableCriteria={{
-                        'fdSupplierName': {
+                        'fdName': {
                           searchKey: '$contains',
                           searchValue: assignSupplier || undefined
                         },
@@ -1244,7 +1244,7 @@ const XForm = (props) => {
                             apiKey: apiSupplier,
                             apiName: 'listSupplierInfo',
                             criteriaKey: 'supplierCriertia',
-                            chooseFdName: 'fdSupplierName',
+                            chooseFdName: 'fdName',
                             criteriaProps: ['fdOrgCode', 'fdFrame.fdName'],
                             columnsProps: supplierColumns,
                             title: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称'),

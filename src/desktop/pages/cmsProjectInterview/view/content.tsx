@@ -4,16 +4,16 @@ import { Breadcrumb, Button, Message, Modal } from '@lui/core'
 import XForm from './form'
 import api from '@/api/cmsProjectInterview'
 import './index.scss'
-import {cmsHandleBack} from '@/utils/routerUtil'
-
+import { cmsHandleBack } from '@/utils/routerUtil'
+import { Auth } from '@ekp-infra/common'
 Message.config({ maxCount: 1 })
 
 const { confirm } = Modal
 const baseCls = 'cmsProjectInterview-content'
 
 const Content: React.FC<IContentViewProps> = props => {
-  const { data,  history } = props
-
+  const { data, history, match } = props
+  const params = match?.params || ''
   // 机制组件引用
   const formComponentRef = useRef<any>()
 
@@ -32,11 +32,12 @@ const Content: React.FC<IContentViewProps> = props => {
       content: '确认删除此记录？',
       onOk () {
         api.delete({ fdId: data.fdId }).then(res => {
-          console.log('删除结果', res)
           if (res.success) {
             Message.success('删除成功')
             cmsHandleBack(history, '/cmsProjectInterview/listInterview')
           }
+        }).catch(error => {
+          Message.error(error.resopnse.data.msg || '删除失败')
         })
       },
       onCancel () {
@@ -56,8 +57,24 @@ const Content: React.FC<IContentViewProps> = props => {
             <Breadcrumb.Item>查看</Breadcrumb.Item>
           </Breadcrumb>
           <div className='buttons'>
-            <Button type='primary' onClick={handleEdit}>编辑</Button>
-            <Button type='default' onClick={handleDel}>删除</Button>
+            <Auth.Auth
+              authURL='/cmsProjectInterview/edit'
+              authModuleName='cms-out-manage'
+              params={{ vo: { fdId: params['id'] } }}
+              unauthorizedPage={null}
+            >
+              <Button type='primary' onClick={handleEdit}>编辑</Button>
+
+            </Auth.Auth>
+            <Auth.Auth
+              authURL='/cmsProjectInterview/delete'
+              params={{ vo: { fdId: params['id'] } }}
+              authModuleName='cms-out-manage'
+              unauthorizedPage={null}
+            >
+              <Button type='default' onClick={handleDel}>删除</Button>
+
+            </Auth.Auth>
             <Button type='default' onClick={handleClose}>关闭</Button>
           </div>
         </div>

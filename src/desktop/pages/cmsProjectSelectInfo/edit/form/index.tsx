@@ -141,6 +141,7 @@ const XForm = (props) => {
                       apiName={'listProjectInfo'}
                       showStatus='readOnly'
                       mark={true}
+                      showTableData={'fdName'}
                       modalTitle='项目名称选择'
                       criteriaKey='projectCriertia'
                       criteriaProps={['fdFrame.fdName']}
@@ -203,7 +204,7 @@ const XForm = (props) => {
                     <CMSXformModal
                       {...props}
                       columnsProps={supplierColumns}
-                      chooseFdName='fdSupplierName'
+                      chooseFdName='fdName'
                       apiKey={apiSupplier}
                       apiName={'listSupplierInfo'}
                       criteriaKey='supplierCriertia'
@@ -227,7 +228,7 @@ const XForm = (props) => {
                     <CMSXformModal
                       {...props}
                       columnsProps={supplierColumns}
-                      chooseFdName='fdSupplierName'
+                      chooseFdName='fdName'
                       apiKey={apiSupplier}
                       apiName={'listSupplierInfo'}
                       criteriaKey='supplierCriertia'
@@ -312,7 +313,6 @@ const XForm = (props) => {
                               type: CMSXformModal
                             },
                             onChangeProps: (v, r) => {
-                              console.log('vlaues', v)
                               sysProps.$$form.current.updateFormItemProps('cmsProjectStaffList', {
                                 rowValue: {
                                   rowNum: r,

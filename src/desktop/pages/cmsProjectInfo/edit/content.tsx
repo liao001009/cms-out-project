@@ -1,19 +1,20 @@
-import React, {createElement as h, Fragment, useCallback, useRef} from 'react'
-import {IContentViewProps} from '@ekp-runtime/render-module'
+import React, { createElement as h, Fragment, useCallback, useRef } from 'react'
+import { IContentViewProps } from '@ekp-runtime/render-module'
 import Icon from '@lui/icons'
-import {Breadcrumb, Button, Message, Modal} from '@lui/core'
-import {EBtnType} from '@lui/core/es/components/Button'
+import { Breadcrumb, Button, Message, Modal } from '@lui/core'
+import { EBtnType } from '@lui/core/es/components/Button'
 import XForm from './form'
 import api from '@/api/cmsProjectInfo'
 import './index.scss'
-import {IProps} from '@/types/common'
-import {cmsHandleBack} from '@/utils/routerUtil'
-
+import { IProps } from '@/types/common'
+import { cmsHandleBack } from '@/utils/routerUtil'
+import { Auth } from '@ekp-infra/common'
 
 const bacls = 'projectInfo-content'
 
 const Content: React.FC<IProps & IContentViewProps> = props => {
-  const { data, history, routerPrefix, mode } = props
+  const { data, history, routerPrefix, mode, match } = props
+  const params = match?.params || ''
   // 机制组件引用
   const formComponentRef = useRef<any>()
 
@@ -37,7 +38,7 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
     // 表单机制数据
     if (formComponentRef.current) {
       const formValues = await formComponentRef.current.getValue() || {}
-      if(mode==='add'){
+      if (mode === 'add') {
         values = {
           ...values,
           ...formValues,
@@ -45,7 +46,7 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
             fdId: formValues.fdFrame
           }
         }
-      }else{
+      } else {
         values = {
           ...values,
           ...formValues
@@ -142,13 +143,32 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
             {
               mode === 'add' ? (
                 <Fragment>
-                  <Button type='primary' onClick={() => handleSave(false)}>提交</Button>
+                  <Auth.Auth
+                    authURL='/cmsProjectInfo/add'
+                    authModuleName='cms-out-manage'
+                    unauthorizedPage={null}
+                  >
+                    <Button type='primary' onClick={() => handleSave(false)}>提交</Button>
+                  </Auth.Auth>
                   <Button type='default' onClick={handleClose}>关闭</Button>
                 </Fragment>
               ) : (
                 <Fragment>
-                  <Button type='primary' onClick={() => handleSave(true)}>保存</Button>
-                  <Button type='default' onClick={handleDelete}>删除</Button>
+                  <Auth.Auth
+                    authURL='/cmsProjectInfo/save'
+                    authModuleName='cms-out-manage'
+                    unauthorizedPage={null}
+                  >
+                    <Button type='primary' onClick={() => handleSave(true)}>保存</Button>
+                  </Auth.Auth>
+                  <Auth.Auth
+                    authURL='/cmsProjectInfo/delete'
+                    authModuleName='cms-out-manage'
+                    params={{ vo: { fdId: params['id'] } }}
+                    unauthorizedPage={null}
+                  >
+                    <Button type='default' onClick={handleDelete}>删除</Button>
+                  </Auth.Auth>
                 </Fragment>
               )
             }

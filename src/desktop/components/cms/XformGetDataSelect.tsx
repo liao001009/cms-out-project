@@ -29,7 +29,6 @@ export interface IProps extends IContentViewProps {
 const XformGetDataSelect: React.FC<IProps> = (props) => {
   const { onChange, showStatus, value, initData, apiRequest, conditions = {}, showFdName = '', rowIndex } = props
   const [listData, setListData] = useState<any>([])   //接口返回数据
-  console.log('props-------', props)
 
   useEffect(() => {
     if (showStatus === EShowStatus.add || showStatus === EShowStatus.edit || showStatus === EShowStatus.readOnly) {
