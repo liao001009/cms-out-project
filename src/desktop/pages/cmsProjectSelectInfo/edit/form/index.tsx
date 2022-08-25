@@ -204,7 +204,7 @@ const XForm = (props) => {
                     <CMSXformModal
                       {...props}
                       columnsProps={supplierColumns}
-                      chooseFdName='fdSupplierName'
+                      chooseFdName='fdName'
                       apiKey={apiSupplier}
                       apiName={'listSupplierInfo'}
                       criteriaKey='supplierCriertia'
@@ -228,7 +228,7 @@ const XForm = (props) => {
                     <CMSXformModal
                       {...props}
                       columnsProps={supplierColumns}
-                      chooseFdName='fdSupplierName'
+                      chooseFdName='fdName'
                       apiKey={apiSupplier}
                       apiName={'listSupplierInfo'}
                       criteriaKey='supplierCriertia'

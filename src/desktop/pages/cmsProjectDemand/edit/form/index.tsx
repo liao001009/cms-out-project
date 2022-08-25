@@ -571,7 +571,7 @@ const XForm = (props) => {
                               <CMSXformModal
                                 {...props}
                                 columnsProps={supplierColumns}
-                                chooseFdName='fdSupplierName'
+                                chooseFdName='fdName'
                                 apiKey={apiSupplier}
                                 apiName={'listSupplierInfo'}
                                 criteriaKey='supplierCriertia'
@@ -1172,7 +1172,7 @@ const XForm = (props) => {
                       showFooter={true}
                       multiple={true}
                       defaultTableCriteria={{
-                        'fdSupplierName': {
+                        'fdName': {
                           searchKey: '$contains',
                           searchValue: assignSupplier || undefined
                         },
@@ -1244,7 +1244,7 @@ const XForm = (props) => {
                             apiKey: apiSupplier,
                             apiName: 'listSupplierInfo',
                             criteriaKey: 'supplierCriertia',
-                            chooseFdName: 'fdSupplierName',
+                            chooseFdName: 'fdName',
                             criteriaProps: ['fdOrgCode', 'fdFrame.fdName'],
                             columnsProps: supplierColumns,
                             title: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称'),

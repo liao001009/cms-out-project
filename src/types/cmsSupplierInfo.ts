@@ -34,7 +34,7 @@ export interface ICmsSupplierInfo extends IBaseType {
   //供应商信息
   fdColDqya4q: string
   //供应商名称
-  fdSupplierName: string
+  fdName: string
   //组织机构代码
   fdOrgCode: string
   //供应商合作状态

@@ -20,7 +20,7 @@ export const supplierColumns = [
   /*供应商名称*/
   {
     title: '供应商名称',
-    dataIndex: 'fdSupplierName',
+    dataIndex: 'fdName',
     render: (value) => value
   },
   /*组织机构代码*/
@@ -609,7 +609,7 @@ const demandSupplier = () => {
   return (
     <React.Fragment>
       <Criteria.Input name="fdOrgCode" title="组织机构代码"></Criteria.Input>
-      <Criteria.Input name="fdSupplierName" title="供应商名称"></Criteria.Input>
+      <Criteria.Input name="fdName" title="供应商名称"></Criteria.Input>
       <Criteria.Criterion
         canMulti={false}
         options={[

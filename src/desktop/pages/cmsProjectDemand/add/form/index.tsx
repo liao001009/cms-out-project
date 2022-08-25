@@ -565,7 +565,7 @@ const XForm = (props) => {
                               <CMSXformModal
                                 {...props}
                                 columnsProps={supplierColumns}
-                                chooseFdName='fdSupplierName'
+                                chooseFdName='fdName'
                                 defaultTableCriteria={{
                                   'fdFrame.fdId': {
                                     searchKey: '$eq',
@@ -1169,17 +1169,17 @@ const XForm = (props) => {
                         refFieldName: '$fd_supplier_name$'
                       }}
                       columnsProps={supplierColumns}
-                      chooseFdName='fdSupplierName'
+                      chooseFdName='fdName'
                       apiKey={apiSupplier}
                       apiName={'listSupplierInfo'}
                       criteriaKey='demandSupplier'
                       showStatus='add'
-                      criteriaProps={['fdOrgCode', 'fdFrame.fdName', 'fdSupplierName']}
+                      criteriaProps={['fdOrgCode', 'fdFrame.fdName', 'fdName']}
                       modalTitle='供应商选择'
                       showFooter={true}
                       multiple={true}
                       defaultTableCriteria={{
-                        'fdSupplierName': {
+                        'fdName': {
                           searchKey: '$eq',
                           searchValue: assignSupplier || undefined
                         },
@@ -1251,7 +1251,7 @@ const XForm = (props) => {
                             apiKey: apiSupplier,
                             apiName: 'listSupplierInfo',
                             criteriaKey: 'supplierCriertia',
-                            chooseFdName: 'fdSupplierName',
+                            chooseFdName: 'fdName',
                             criteriaProps: ['fdOrgCode', 'fdFrame.fdName'],
                             columnsProps: supplierColumns,
                             title: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称'),
