@@ -8,6 +8,7 @@ import { $reduceCriteria } from '@/desktop/shared/criteria'
 import './index.scss'
 import { criertiaObj } from '@/desktop/pages/common/common'
 import { renderConditions } from '@/desktop/shared/util'
+import { isArray } from 'util'
 export enum EShowStatus {
   /** 查看 */
   'view' = 'view',
@@ -101,7 +102,7 @@ const XformModal: React.FC<IProps> = (props) => {
   // 多选时，选中的数据
   const [selectedRowsData, setSelectedRows] = useState<any>([])
   // 表单传过来的初始值，为了点击取消时，还原数据
-  const [initSelectedArr, setInitSelectArr] = useState<any>(value)
+  const [initSelectedArr, setInitSelectArr] = useState<any>(value || [])
   // 用来判断是按了确认按钮还是取消按钮
   const [flag, setFlag] = useState<boolean>(false)
 
@@ -164,16 +165,21 @@ const XformModal: React.FC<IProps> = (props) => {
       }
     }
   }, [JSON.stringify(defaultTableCriteria), JSON.stringify(otherData), showOther, visible])
+
+  // 检验默认筛选项是否有值
+  const checkFlag = () => {
+    const flag = Object.values(defaultTableCriteria).every((i: any) => i['searchValue'] && Object.values(i['searchValue']).length)
+    return flag
+  }
+
   const getListData = async (data) => {
-    if (showTableData){
+    if (showTableData) {
       if ((!data?.conditions[showTableData]) || (!data?.conditions[showTableData]['$contains'])) {
         setListData([])
         return
       }
     }
-
-    if (Object.keys(defaultTableCriteria).length <= 0) return 
-    
+    if (!checkFlag()) return
     try {
       const res = await apiKey[apiName](data)
       setListData(res.data)
@@ -298,7 +304,7 @@ const XformModal: React.FC<IProps> = (props) => {
     setFlag(false)
     setVisible(false)
     if (multiple) {
-      setSelectedRows(initSelectedArr.map(i => i.fdId))
+      setSelectedRows(initSelectedArr.length ? initSelectedArr.map(i => i.fdId) : [])
       onChange && onChange(initSelectedArr)
     }
   }
