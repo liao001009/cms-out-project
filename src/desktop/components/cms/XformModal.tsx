@@ -105,7 +105,8 @@ const XformModal: React.FC<IProps> = (props) => {
   const [initSelectedArr, setInitSelectArr] = useState<any>(value || [])
   // 用来判断是按了确认按钮还是取消按钮
   const [flag, setFlag] = useState<boolean>(false)
-
+  // 已选中的筛选项
+  const [newSelecteCon, setNewSelecteCon] = useState<any>({})
   /** 组装表格列头筛选项 */
   const getDefaultTableColumns = () => {
     if (Object.keys(defaultTableCriteria).length <= 0) return {}
@@ -173,8 +174,9 @@ const XformModal: React.FC<IProps> = (props) => {
   }
 
   const getListData = async (data) => {
+    console.log('data5559', data)
     if (showTableData) {
-      if (!data.conditions || (!data?.conditions[showTableData]) || (!data?.conditions[showTableData]['$contains'])) {
+      if ((!data?.conditions[showTableData]) || (!data?.conditions[showTableData]['$contains'])) {
         setListData([])
         return
       }
@@ -213,7 +215,11 @@ const XformModal: React.FC<IProps> = (props) => {
   // 分页操作 
   const handlePage = useCallback(
     (pageNo: number, pageSize: number) => {
-      queryChange({ ...query, offset: (pageNo - 1) * pageSize, pageSize })
+      let conditions
+      if (Object.keys(newSelecteCon).length) {
+        conditions = newSelecteCon
+      }
+      getListData({ ...query, offset: (pageNo - 1) * pageSize, pageSize, conditions })
     },
     [query]
   )
@@ -224,6 +230,11 @@ const XformModal: React.FC<IProps> = (props) => {
         onClick: () => {
           onChange && onChange(record)
           setVisible(false)
+          setSelectedConditions({})
+          if (mark) {
+            setListData([])
+          }
+          setNewSelecteCon({})
           setFdName(record[chooseFdName])
           // @ts-ignore
           onChangeProps && onChangeProps(record, rowIndex)
@@ -244,13 +255,13 @@ const XformModal: React.FC<IProps> = (props) => {
           defaultConditionsKey[defaultTableCriteria[key]['searchKey']] = defaultTableCriteria[key]['searchValue']
           defaultConditions[key] = defaultTableCriteria[key]['searchValue'] && defaultConditionsKey
         })
-        setSelectedConditions({ ...conditions, ...newConditions, ...defaultConditions, ...selectedConditions, })
+        setNewSelecteCon({ ...conditions, ...newConditions, ...defaultConditions, ...selectedConditions })
         getListData({
           ...query,
           conditions: { ...conditions, ...newConditions, ...defaultConditions, ...selectedConditions }
         })
       } else {
-        setSelectedConditions({ ...conditions, ...newConditions, ...selectedConditions })
+        setNewSelecteCon({ ...conditions, ...newConditions, ...selectedConditions })
         getListData({
           ...query,
           conditions: { ...conditions, ...newConditions, ...selectedConditions }
@@ -260,14 +271,15 @@ const XformModal: React.FC<IProps> = (props) => {
     [query, selectedConditions]
   )
   const handleSearch = (value) => {
-    if (!value) return
+    // if (!value) return
     let conditions: any = {}
-    if (Object.keys(selectedConditions).length) {
-      conditions = { ...selectedConditions, 'fdName': { '$contains': value } }
+    console.log('newSelecteCon5559', newSelecteCon)
+    if (Object.keys(newSelecteCon).length) {
+      conditions = { ...newSelecteCon, 'fdName': { '$contains': value } }
     } else {
       conditions = { 'fdName': { '$contains': value.trim() } }
     }
-    setSelectedConditions({ ...conditions })
+    setSelectedConditions({ 'fdName': { '$contains': value.trim() } })
     getListData({ ...query, conditions })
 
   }
@@ -275,6 +287,11 @@ const XformModal: React.FC<IProps> = (props) => {
   const handleOk = useCallback(() => {
     setVisible(false)
     setFlag(true)
+    setSelectedConditions({})
+    if (mark) {
+      setListData([])
+    }
+    setNewSelecteCon({})
     const newData = listData?.content.length && listData?.content.filter(item => selectedRowsData.includes(item.fdId))
     setInitSelectArr(newData)
     onChange && onChange(newData)
@@ -303,6 +320,11 @@ const XformModal: React.FC<IProps> = (props) => {
   const handleCancel = () => {
     setFlag(false)
     setVisible(false)
+    setSelectedConditions({})
+    if (mark) {
+      setListData([])
+    }
+    setNewSelecteCon({})
     if (multiple) {
       setSelectedRows(initSelectedArr.length ? initSelectedArr.map(i => i.fdId) : [])
       onChange && onChange(initSelectedArr)
