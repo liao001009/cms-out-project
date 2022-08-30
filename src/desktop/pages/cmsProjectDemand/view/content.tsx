@@ -300,7 +300,13 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     if (!btnStatus) return null
     return {
       name: fmtMsg(':cmsProjectInterview.form.!{l5j0eriwqaq645oi9c}', '外包人员评审'),
-      action: () => { history.goto(`/cmsStaffReview/add/${templateData.fdId}/${data.fdId}`) }
+      action: () => {
+        if (!templateData) {
+          Message.error('请先配置模板', 1)
+          return
+        }
+        history.goto(`/cmsStaffReview/add/${templateData.fdId}/${data.fdId}`)
+      }
     }
   }, [history, templateData])
 
@@ -439,8 +445,8 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
       handleOrder(),
       handleEnterWritten(),
       handleEnterInterview(),
-      handleEnterSelectInfo(),
       handleEnterStaffReview(),
+      handleEnterSelectInfo(),
       handleEdit(),
       handleDel(),
       handleClose()
@@ -573,8 +579,15 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   const renderTab = () => {
     return (
       <div className='lui-btns-tabs'>
-        <Tabs defaultActiveKey="1" tabBarExtraContent={operations} onChange={(v) => setSaveBtnVisible(v === '5')}>
-          <TabPane tab="笔试" key="1">
+        <Tabs defaultActiveKey="1" tabBarExtraContent={operations} onChange={(v) => setSaveBtnVisible(v === '1')}>
+          <TabPane tab={fdSuppliesVisible ? '外包人员信息' : '订单响应'} key="1">
+            <EditTable
+              param={params}
+              onchange={(e) => { handleChange(e) }}
+              onExport={(data, columns, hiddenKey, selectArr) => { handleExport(data, columns, hiddenKey, selectArr) }}
+            />
+          </TabPane>
+          <TabPane tab="笔试" key="2">
             <CmsListView
               apiRequest={apiProjectWritten.listWritten}
               columns={cmsProjectWrittenList}
@@ -582,7 +595,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
               onRowUrl={'/cmsProjectWritten/view/'}
             />
           </TabPane>
-          <TabPane tab="面试" key="2">
+          <TabPane tab="面试" key="3">
             <CmsListView
               apiRequest={apiProjectInterview.listInterview}
               columns={cmsProjectInterviewList}
@@ -590,7 +603,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
               onRowUrl={'/cmsProjectInterview/view/'}
             />
           </TabPane>
-          <TabPane tab="外包人员评审" key="3" >
+          <TabPane tab="外包人员评审" key="4" >
             <CmsListView
               apiRequest={apiStaffReviewList.listStaffReview}
               columns={staffReviewColumns}
@@ -598,20 +611,13 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
               onRowUrl={staffReviewRoute}
             />
           </TabPane>
-          <TabPane tab="中选信息" key="4">
+          <TabPane tab="中选信息" key="5">
             <CmsListView
               history={history}
               params={staffReviewParams}
               apiRequest={apiSelectInfo.listSelectInfo}
               columns={projectSelectInfocolumns}
               onRowUrl={'/cmsProjectSelectInfo/view/'}
-            />
-          </TabPane>
-          <TabPane tab={fdSuppliesVisible ? '外包人员信息' : '订单响应'} key="5">
-            <EditTable
-              param={params}
-              onchange={(e) => { handleChange(e) }}
-              onExport={(data, columns, hiddenKey, selectArr) => { handleExport(data, columns, hiddenKey, selectArr) }}
             />
           </TabPane>
         </Tabs>
