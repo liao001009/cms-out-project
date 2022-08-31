@@ -346,7 +346,7 @@ const Content: React.FC<IContentViewProps> = props => {
                 <Icon name='left' />
                 {fmtMsg(':button.back', '返回')}
               </Button>
-              项目管理 &gt; 查看
+              项目管理&gt; 外包人员评审 &gt; 查看
             </div>
           </div>
         )}
