@@ -76,7 +76,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   // 订单响应列表数据
   const orderDetailList = useRef<any>()
   // 订单响应提交按钮的显隐
-  const [saveBtnVisible, setSaveBtnVisible] = useState<boolean>(false)
+  const [saveBtnVisible, setSaveBtnVisible] = useState<boolean>(true)
   // 订单响应路由跳转
   const [orderRouterStatus, setOrderRouterStatus] = useState<string>('')
   const [exportDisabled, setExportDisabled] = useState<boolean>(false)
