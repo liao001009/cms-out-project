@@ -30,7 +30,7 @@ import {
 import EditTable from './editTable/EditTable'
 import { useMkSendData } from '@/utils/mkHooks'
 import { cmsHandleBack } from '@/utils/routerUtil'
-import { exportTable } from '@/desktop/shared/util'
+import { exportTable, roleAuthCheck } from '@/desktop/shared/util'
 import apiSupplier from '@/api/cmsSupplierInfo'
 const { TabPane } = Tabs
 
@@ -76,7 +76,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   // 订单响应列表数据
   const orderDetailList = useRef<any>()
   // 订单响应提交按钮的显隐
-  const [saveBtnVisible, setSaveBtnVisible] = useState<boolean>(true)
+  const [saveBtnVisible, setSaveBtnVisible] = useState<boolean>(btnStatus)
   // 订单响应路由跳转
   const [orderRouterStatus, setOrderRouterStatus] = useState<string>('')
   const [exportDisabled, setExportDisabled] = useState<boolean>(false)
@@ -84,6 +84,17 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   const exportOrderData = useRef<any>({})
   // 发布供应商是否显示
   const [fdSuppliesVisible, setFdSuppliesVisible] = useState<boolean>(false)
+  // 导出权限
+  const [exportRole, setExportRole] = useState<boolean>(false)
+  // 获取是否有导出订单响应列表的权限
+  const getRole = async () => {
+    const role = await roleAuthCheck([{
+      status: 'checking',
+      key: 'auth0',
+      role: 'ROLE_CMSOUTPROJECTINFO_IMPORT'
+    },])
+    setExportRole(role)
+  }
   /** 获取资料上传节点 */
   const getCurrentNode = async () => {
     try {
@@ -107,13 +118,14 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
       setMaterialVis(false)
     }
   }
-
+  console.log('data5559', data)
   useEffect(() => {
     getCurrentNode()
     loadTemplateData()
-    roleAuthCheck()
+    getEditFlag()
     getOrderRouterStatus()
     getSupplierStatus()
+    getRole()
   }, [])
 
   const getSupplierStatus = async () => {
@@ -133,14 +145,14 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   }
 
   // 校验是否有编辑订单响应列表的权限
-  const roleAuthCheck = async () => {
+  const getEditFlag = async () => {
     try {
-      const res = await apiAuth.roleCheck([{
+      const res = await roleAuthCheck([{
         status: 'checking',
         key: 'auth0',
         role: 'ROLE_CMSOUTMANAGE_FRAME_ADMIN'
       }])
-      setEditFlag(res.data.auth0)
+      setEditFlag(res)
     } catch (error) {
       console.log('error', error)
     }
@@ -569,17 +581,27 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   const operations = useMemo(() => (
     saveBtnVisible ? (
       <Fragment>
-        <Button type='primary' style={{ marginRight: '16px' }} onClick={handleOrderDetailSave}>保存</Button>
-        <Button type='primary' style={{ marginRight: '8px' }} disabled={exportDisabled} onClick={handleExportOrder}>导出</Button>
+        <Auth.Auth
+          authURL='/cmsOrderResponse/updateDetail'
+          authModuleName='cms-out-manage'
+          unauthorizedPage={null}
+        >
+          <Button type='primary' style={{ marginRight: '16px' }} onClick={handleOrderDetailSave}>保存</Button>
+        </Auth.Auth>
+        {
+          exportRole ? (
+            <Button type='primary' style={{ marginRight: '8px' }} disabled={exportDisabled} onClick={handleExportOrder}>导出</Button>
+          ) : null
+        }
       </Fragment>
     ) : null
-  ), [saveBtnVisible, exportDisabled])
+  ), [saveBtnVisible, exportDisabled, data.fdProcessStatus])
 
 
   const renderTab = () => {
     return (
       <div className='lui-btns-tabs'>
-        <Tabs defaultActiveKey="1" tabBarExtraContent={operations} onChange={(v) => setSaveBtnVisible(v === '1')}>
+        <Tabs defaultActiveKey="1" tabBarExtraContent={operations} onChange={(v) => setSaveBtnVisible(v === '1' && data.fdProcessStatus === '30')}>
           <TabPane tab={fdSuppliesVisible ? '外包人员信息' : '订单响应'} key="1">
             <EditTable
               param={params}
