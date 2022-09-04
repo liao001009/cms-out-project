@@ -211,7 +211,7 @@
   }
 }
 
-@mixin form-page($baseCls, $labelWidth:9) {
+@mixin form-page($baseCls, $labelWidth:12) {
   .#{$baseCls} {
     .lui-xform {
       background-color: #fff;
