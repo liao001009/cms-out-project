@@ -479,7 +479,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         processTemplateId: processTemplateId,
         processId: processId
       },
-      formValue: null,
+      formValue: {},
       getFormValue: () => formComponentRef?.current?.getValue?.(),
       moduleCode: 'cms-out-manage-demand',
       entityName,
