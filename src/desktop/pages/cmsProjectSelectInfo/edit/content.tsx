@@ -274,7 +274,7 @@ const Content: React.FC<IContentViewProps> = props => {
         processTemplateId: processTemplateId,
         processId: processId
       },
-      formValue: null,
+      formValue: {},
       getFormValue: () => formComponentRef?.current?.getValue?.(),
       moduleCode: 'cms-out-manage-selectInfo',
       entityName,
