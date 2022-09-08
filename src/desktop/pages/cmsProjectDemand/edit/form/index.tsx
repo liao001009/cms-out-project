@@ -580,7 +580,7 @@ const XForm = (props) => {
                                 defaultTableCriteria={{
                                   'fdFrame.fdId': {
                                     searchKey: '$eq',
-                                    searchValue: selectedFrame || ''
+                                    searchValue: selectedFrame || undefined
                                   }
                                 }}
                                 criteriaProps={['fdOrgCode', 'fdFrame.fdName']}
@@ -1178,7 +1178,7 @@ const XForm = (props) => {
                         },
                         'fdFrame.fdId': {
                           searchKey: '$eq',
-                          searchValue: selectedFrame || ''
+                          searchValue: selectedFrame || undefined
                         }
                       }}
                       onChange={(v) => {
