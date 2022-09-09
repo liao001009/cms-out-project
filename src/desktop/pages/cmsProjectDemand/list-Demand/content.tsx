@@ -241,7 +241,11 @@ const Content: React.FC<IContentViewProps> = (props) => {
     (record) => {
       return {
         onClick: () => {
-          history.goto(`/cmsProjectDemand/view/${record.fdId}`)
+          if (record.fdProcessStatus < 20) {
+            history.goto(`/cmsProjectDemand/edit/${record.fdId}`)
+          } else {
+            history.goto(`/cmsProjectDemand/view/${record.fdId}`)
+          }
         }
       }
     },

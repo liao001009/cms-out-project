@@ -61,6 +61,8 @@ export interface IProps extends IContentViewProps {
   showTableData?: string
   /**是否是项目类型 */
   mark?: boolean
+  /**默认可以发起请求 */
+  defaultSearch: boolean
   /** 扩展 */
   [key: string]: any
 }
@@ -91,7 +93,8 @@ const XformModal: React.FC<IProps> = (props) => {
     showOther = false,
     params = {},
     showTableData = '',
-    mark = false
+    mark = false,
+    defaultSearch = false
   } = props
 
   const [listData, setListData] = useState<any>([])
@@ -181,7 +184,7 @@ const XformModal: React.FC<IProps> = (props) => {
         return
       }
     }
-    if (!checkFlag()) return
+    if (!defaultSearch && !checkFlag()) return
     try {
       const res = await apiKey[apiName](data)
       setListData(res.data)
