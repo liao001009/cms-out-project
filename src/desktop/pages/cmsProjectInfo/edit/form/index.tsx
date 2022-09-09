@@ -24,11 +24,11 @@ const XForm = (props) => {
 
   useEffect(() => {
     init()
-    if (Object.keys(value).length && value.fdFrame) {
-      form.setFieldsValue({
-        fdFrame: value.fdFrame.fdId
-      })
-    }
+    // if (Object.keys(value).length && value.fdFrame) {
+    //   form.setFieldsValue({
+    //     fdFrame: value.fdFrame.fdId
+    //   })
+    // }
   }, [])
 
   const init = async () => {
@@ -243,6 +243,11 @@ const XForm = (props) => {
                       options={frameArray}
                       optionSource={'custom'}
                       showStatus="edit"
+                      onChange={(v) => {
+                        form.setFieldsValue({
+                          fdFrame: { fdId: v }
+                        })
+                      }}
                     ></XformSelect>
                   </Form.Item>
                 </XformFieldset>

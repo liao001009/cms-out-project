@@ -38,21 +38,10 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
     // 表单机制数据
     if (formComponentRef.current) {
       const formValues = await formComponentRef.current.getValue() || {}
-      if (mode === 'add') {
-        values = {
-          ...values,
-          ...formValues,
-          fdFrame: {
-            fdId: formValues.fdFrame
-          }
-        }
-      } else {
-        values = {
-          ...values,
-          ...formValues
-        }
+      values = {
+        ...values,
+        ...formValues
       }
-
       if (formValues.mechanisms) {
         delete values.mechanisms
       }
