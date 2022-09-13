@@ -48,17 +48,35 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
         }
         return newItem
       })
+
+      let fdProjectDemand = formValues.fdProjectDemand
+      if(typeof(fdProjectDemand)==='string'){
+        fdProjectDemand = {fdId: fdProjectDemand}
+      }
+
+      const fdIsInterview = formValues?.fdIsInterview?.[formValues?.fdIsInterview?.length-1]
+      const fdNoticeSupplier = formValues?.fdNoticeSupplier?.[formValues?.fdNoticeSupplier?.length-1]
+      let fdInterviewer = formValues?.fdInterviewer
+      let fdSupplierTotal = formValues?.fdSupplierTotal
+      if(fdIsInterview==='0'){
+        fdInterviewer = [],
+        fdSupplierTotal = []
+      }
+      if(fdSupplierTotal==='0'){
+        fdSupplierTotal = []
+      }
+      
       values = {
         ...values,
         ...formValues,
         fdStatus: fdStatus,
-        fdIsInterview: formValues?.fdIsInterview?.[0],
-        fdNoticeInterviewer: formValues?.fdNoticeInterviewer?.[0],
-        fdNoticeSupplier: formValues?.fdNoticeSupplier?.[0],
+        fdIsInterview: fdIsInterview ||'0',
+        fdNoticeSupplier: fdNoticeSupplier || '0',
+        fdNoticeInterviewer: formValues?.fdNoticeInterviewer?.[0] || '0',
         cmsProjectWrittenDe: newDetail,
-        fdProjectDemand: {
-          fdId: formValues.fdProjectDemand
-        }
+        fdProjectDemand,
+        fdInterviewer,
+        fdSupplierTotal
       }
       if (formValues.mechanisms) {
         delete values.mechanisms
@@ -76,7 +94,6 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
         return false
       }
     }
-
     return true
   }
 
