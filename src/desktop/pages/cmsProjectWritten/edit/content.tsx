@@ -146,7 +146,7 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
           <Breadcrumb>
             <Breadcrumb.Item>项目管理</Breadcrumb.Item>
             <Breadcrumb.Item>录入笔试成绩</Breadcrumb.Item>
-            <Breadcrumb.Item>编辑</Breadcrumb.Item>
+            <Breadcrumb.Item>{mode === 'add' ? '新建' : '编辑'}</Breadcrumb.Item>
           </Breadcrumb>
           <div className='buttons'>
             <Auth.Auth

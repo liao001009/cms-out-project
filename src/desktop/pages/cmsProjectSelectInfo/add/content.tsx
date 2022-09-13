@@ -3,14 +3,13 @@ import { useMkSendData } from '@/utils/mkHooks'
 import { Module } from '@ekp-infra/common'
 import { fmtMsg } from '@ekp-infra/respect'
 import { IContentViewProps } from '@ekp-runtime/render-module'
-import { Button, Message } from '@lui/core'
+import { Button, Message, Modal } from '@lui/core'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import XForm from './form'
 import Icon from '@lui/icons'
 import { cmsHandleBack } from '@/utils/routerUtil'
 
 // import './index.scss'
-
 Message.config({ maxCount: 1 })
 const LbpmFormWithLayout = Module.getComponent('sys-lbpm', 'LbpmFormWithLayout', { loading: <React.Fragment></React.Fragment> })
 // 流程页签
@@ -24,7 +23,12 @@ const baseCls = 'project-selectInfo-content'
 const Content: React.FC<IContentViewProps> = props => {
   const { data, match, history } = props
   const fdId = match.params['fdId']
-
+  // 弹窗的显隐
+  const [modalVisible, setModalVisible] = useState<boolean>(false)
+  // 是否发起提交请求
+  const [handleFlag, setHandleFlag] = useState<boolean>(false)
+  // 表单数据
+  const [formValue, setFormValue] = useState<any>()
   const templateId = fdId
   // 机制组件引用
   const formComponentRef = useRef<any>()
@@ -98,7 +102,6 @@ const Content: React.FC<IContentViewProps> = props => {
     }
     return true
   }
-
   // 提交/暂存通用逻辑
   const handleSave = async (isDraft: boolean) => {
     // 校验文档
@@ -112,7 +115,7 @@ const Content: React.FC<IContentViewProps> = props => {
       return
     }
     if (values.fdSelectedSupplier.length === 0 && values.fdFailSupplier.length === 0) {
-      return Message.error('落选供应商和中选供应商必须要有数据哦', 1)
+      return Message.error('落选供应商或中选供应商必须要有数据哦', 1)
     }
     const { cmsProjectStaffList } = values
     values = {
@@ -127,7 +130,38 @@ const Content: React.FC<IContentViewProps> = props => {
         }
       }) : cmsProjectStaffList || undefined,
     }
-    // 提交
+    setFormValue({
+      values,
+      isDraft
+    })
+    const res = await api.findBudgetInfo({
+      date: values.fdCreateTime,
+      frameId: values.fdFrame.fdId
+    })
+    // 预算总额 冻结预算金额 占用预算金额
+    const { totalAmount, freezeAmount, occupyAmount } = res.data
+    const restAmout = totalAmount - freezeAmount - occupyAmount
+    if (restAmout <= 0) {
+      setModalVisible(true)
+    } else {
+      setModalVisible(false)
+      // 提交
+      api.add(values).then(res => {
+        if (res.success) {
+          Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
+            cmsHandleBack(history, '/cmsProjectSelectInfo/listSelectInfo')
+          })
+        } else {
+          Message.error(isDraft ? '暂存失败' : '提交失败', 1)
+        }
+      }).catch(() => {
+        Message.error(isDraft ? '暂存失败' : '提交失败', 1)
+      })
+    }
+  }
+  // 弹窗确认事件
+  const handleOk = () => {
+    const { values, isDraft } = formValue
     api.add(values).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
@@ -140,7 +174,6 @@ const Content: React.FC<IContentViewProps> = props => {
       Message.error(isDraft ? '暂存失败' : '提交失败', 1)
     })
   }
-
   //暂存
   const handleDraft = () => {
     return {
@@ -226,6 +259,15 @@ const Content: React.FC<IContentViewProps> = props => {
   return (
     <div className={`${baseCls}`}>
       {renderInnerContent()}
+      <Modal
+        visible={modalVisible}
+        onOk={handleOk}
+        onCancel={() => {
+          setModalVisible(false)
+        }}
+      >
+        <p>预算不足了</p>
+      </Modal>
     </div>
   )
 
