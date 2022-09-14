@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, Fragment } from 'react'
 import { fmtMsg } from '@ekp-infra/respect'
 import { Table } from '@lui/pro'
 import { Select, Input } from '@lui/core'
@@ -7,7 +7,6 @@ import apiAuth from '@/api/sysAuth'
 import apiOrder from '@/api/cmsOrderResponse'
 import { Module } from '@ekp-infra/common'
 import apiStaffInfo from '@/api/cmsOutStaffInfo'
-import { exportTable } from '@/desktop/shared/util'
 const Upload = Module.getComponent('sys-attach', 'Attachment')
 
 const { useForm } = Table
@@ -50,66 +49,72 @@ const EditTable = (props: IProps) => {
           /**供应商名称 */
           title: '供应商名称',
           dataIndex: 'fdSupplier',
-          render: (text) => <span>{text && text.fdName}</span>
+          render: (text) => <span title={text && text.fdName}>{text && text.fdName}</span>
         },
         {
           title: '姓名',
           dataIndex: 'fdOutName',
-          render: (text) => <span>{text && text.fdName}</span>
+          render: (text) => <span title={text && text.fdName}>{text && text.fdName}</span>
         },
         {
           title: '岗位',
           dataIndex: 'fdPost',
-          render: (text) => <span>{text && text.fdName}</span>
+          render: (text) => <span title={text && text.fdName}>{text && text.fdName}</span>
         },
         {
           title: '所属框架',
           dataIndex: 'fdFrame',
-          render: (text) => <span>{text && text.fdName}</span>
+          render: (text) => <span title={text && text.fdName}>{text && text.fdName}</span>
         },
         {
           title: '自评级别',
           dataIndex: 'fdSkillLevel',
-          render: (text) => <span>{text}</span>
+          render: (text) => <span title={text}>{text}</span>
         },
         {
           title: '评定级别',
           dataIndex: 'fdConfirmLevel',
-          render: (text) => <span>{text && text.fdName}</span>
+          render: (text) => <span title={text && text.fdName}>{text && text.fdName}</span>
         },
         {
           title: '邮箱',
           dataIndex: 'fdEmail',
-          render: (text) => <span>{text}</span>
+          render: (text) => <span title={text}>{text}</span>
         },
         {
           title: '电话',
           dataIndex: 'fdPhoto',
-          render: (text) => <span>{text}</span>
+          render: (text) => <span title={text}>{text}</span>
         },
         {
           title: '简历',
           dataIndex: 'fdAtt',
           render: (text: any) => {
             return (
-              <Upload
-                value={[text]}
-                multiple={false}
-                itemType={'card'}
-                mode='file'
-                viewStatus={true}
-                showStatus={'view'}
-                operationDisplayConfig={{
-                  showDownload: true,
-                  showRemove: false,
-                  showChange: false,
-                  showEdit: false
-                }}
-                ItemDisplayConfig={{
-                  showOrder: false,
-                  showHeader: true
-                }}
-              />
+              <Fragment>
+                {
+                  text ? (
+                    <Upload
+                      value={[text]}
+                      multiple={false}
+                      itemType={'card'}
+                      mode='file'
+                      viewStatus={true}
+                      showStatus={'view'}
+                      operationDisplayConfig={{
+                        showDownload: true,
+                        showRemove: false,
+                        showChange: false,
+                        showEdit: false
+                      }}
+                      ItemDisplayConfig={{
+                        showOrder: false,
+                        showHeader: true
+                      }}
+                    />
+                  ) : null
+                }
+              </Fragment>
             )
           }
         },
@@ -136,7 +141,7 @@ const EditTable = (props: IProps) => {
           saveEvent: 'blur',
           render: (text) => {
             return (
-              editFlag ? (<Input.TextArea defaultValue={text} placeholder='请输入' />) : (<span className='text-area' title=''>{text !== undefined ? '' : text}</span>)
+              editFlag ? (<Input.TextArea defaultValue={text} placeholder='请输入' />) : (<span className='text-area' title={text || ''}>{text !== undefined ? '' : text}</span>)
             )
           }
         }
@@ -145,7 +150,7 @@ const EditTable = (props: IProps) => {
   }, [editFlag, orderDetailList])
 
   const conactStaffInfo = async (list) => {
-    const newData: any = await Promise.all(list.map((i) => {
+    const newData: any = await Promise.all(list.map(i => {
       return (async () => {
         const res = await apiStaffInfo.get({ fdId: i.fdOutName.fdId, mechanisms: { load: '*' } })
         return res
@@ -158,9 +163,10 @@ const EditTable = (props: IProps) => {
         return k
       })
       setOrderDetailList(res)
+    } else {
+      setOrderDetailList(list)
     }
   }
-
   const getOrderDetail = async (pageParms = {}) => {
     try {
       const res = await apiOrder.listOrderDetail({

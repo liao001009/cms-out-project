@@ -223,6 +223,12 @@
       // .ele-xform-view {
       //   margin-top: 3px;
       // }
+      .ele-xform-detail-table-toolbar-right-buttons {
+        & > button[title=列设置] {
+          display: none !important;
+        }
+      }
+
       .ele-grid-item {
         margin-left: -1px;
         margin-top: -1px;
