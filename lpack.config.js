@@ -30,7 +30,7 @@ const lpackConfig = {
   // 变量，业务模块可通过process.env.xxx获取相关值
   variables: {
     // 开发环境模拟用户身份
-    xAuthDebugger: 'caixy2',
+    xAuthDebugger: 'caixy',
     // 模块名
     moduleName: moduleName,
     // 平台，desktop、manage、mobile

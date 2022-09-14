@@ -37,6 +37,10 @@ const Content: React.FC<IContentViewProps> = props => {
   const rightComponentRef = useRef<any>()
   const [flowData, setFlowData] = useState<any>({}) // 流程数据
   const [submitting, setSubmitting] = useState<boolean>(true)
+  // 弹窗的显隐
+  const [modalVisible, setModalVisible] = useState<boolean>(false)
+  // 是否发起提交请求
+  const [handleFlag, setHandleFlag] = useState<boolean>(true)
   // const [roleArr, setRoleArr] = useState<any>([])   // 流程角色
   // useEffect(() => {
   //   mk.on('SYS_LBPM_AUDIT_FORM_INIT_DATA', (val) => {
@@ -127,8 +131,24 @@ const Content: React.FC<IContentViewProps> = props => {
     if (await _beforeSave(isDraft) === false) {
       return
     }
+    if (values.fdSelectedSupplier.length === 0 && values.fdFailSupplier.length === 0) {
+      return Message.error('落选供应商或中选供应商必须要有数据哦', 1)
+    }
+
+    const res = await api.findBudgetInfo({
+      date: values.fdCreateTime,
+      frameId: values.fdFrame.fdId
+    })
+
+    // 预算总额 冻结预算金额 占用预算金额
+    const { totalAmount, freezeAmount, occupyAmount } = res.data
+    if ((totalAmount - freezeAmount - occupyAmount) <= 0) {
+      setModalVisible(true)
+    } else {
+      setModalVisible(false)
+    }
     // 编辑提交
-    api.save(values as any).then(res => {
+    handleFlag && api.save(values as any).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
           cmsHandleBack(history, '/cmsProjectSelectInfo/listSelectInfo')
@@ -324,6 +344,19 @@ const Content: React.FC<IContentViewProps> = props => {
   return (
     <div className={`${baseCls}`}>
       {renderInnerContent()}
+      <Modal
+        visible={modalVisible}
+        onOk={() => {
+          setModalVisible(false)
+          setHandleFlag(true)
+        }}
+        onCancel={() => {
+          setModalVisible(false)
+          setHandleFlag(false)
+        }}
+      >
+        <p>预算不足了</p>
+      </Modal>
     </div>
   )
 
