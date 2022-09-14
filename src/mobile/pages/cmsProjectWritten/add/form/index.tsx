@@ -383,7 +383,7 @@ const XForm = (props) => {
                     controlProps: {
                       title: fmtMsg(':cmsProjectWritten.form.!{l5izeh8ya568lfqhw1}', '学历'),
                       maxLength: 100,
-                      name: 'fdMajor',
+                      name: 'fdHighestEducation',
                       placeholder: fmtMsg(':cmsProjectWritten.form.!{l5izeh91gp0ih9z8wmv}', '请输入'),
                       mobile: {
                         layout: 'vertical',

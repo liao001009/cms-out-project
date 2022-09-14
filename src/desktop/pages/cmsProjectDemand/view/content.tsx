@@ -6,8 +6,6 @@ import { IContentViewProps } from '@ekp-runtime/render-module'
 import { Button, Loading, Message, Modal, Tabs } from '@lui/core'
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import XForm from './form'
-// import './index.scss'
-//@ts-ignore
 import apiLbpm from '@/api/cmsLbpm'
 import apiOrder from '@/api/cmsOrderResponse'
 import apiProjectInterview from '@/api/cmsProjectInterview'
@@ -16,6 +14,7 @@ import apiProjectWritten from '@/api/cmsProjectWritten'
 import apiStaffReviewList from '@/api/cmsStaffReview'
 import apiTemplate from '@/api/cmsStaffReviewTemplate'
 import apiAuth from '@/api/sysAuth'
+import apiProjectTemplate from '@/api/cmsProjectSelectInfoTemplate'
 import { fmtMsg } from '@ekp-infra/respect'
 //@ts-ignore
 import Status, { EStatusType } from '@elements/status'
@@ -36,13 +35,6 @@ const { TabPane } = Tabs
 
 Message.config({ maxCount: 1 })
 const LbpmFormWithLayout = Module.getComponent('sys-lbpm', 'LbpmFormWithLayout', { loading: <React.Fragment></React.Fragment> })
-// // 流程页签
-// const LBPMTabs = Module.getComponent('sys-lbpm', 'LBPMTabs', { loading: <Loading /> })
-// // 流程机制
-// const LBPMFormFragment = Module.getComponent('sys-lbpm', 'LBPMFormFragment', { loading: <Loading /> })
-// // 权限机制
-// const RightFragment = Module.getComponent('sys-right', 'RightFragment', { loading: <Loading /> })
-
 const CmsListView = Module.getComponent('cms-out-manage', 'CmsListView', { loading: <Loading /> })
 
 const { confirm } = Modal
@@ -68,11 +60,12 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   const rightComponentRef = useRef<any>()
 
   const [flowData, setFlowData] = useState<any>({}) // 流程数据
-  // const [roleArr, setRoleArr] = useState<any>([])   // 流程角色
   const [materialVis, setMaterialVis] = useState<boolean>(true)
   const [editFlag, setEditFlag] = useState<boolean>(false)
   /**外包人员评审模板 */
-  const [templateData, setTemplateData] = useState<any>({})
+  const [staffTemplateData, setStaffTemplateData] = useState<any>({})
+  // 发布中选信息模板
+  const [projectTemplateData, setProjectTemplateData] = useState<any>({})
   // 订单响应列表数据
   const orderDetailList = useRef<any>()
   // 订单响应提交按钮的显隐
@@ -87,13 +80,47 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   // 导出权限
   const [exportRole, setExportRole] = useState<boolean>(false)
   // 获取是否有导出订单响应列表的权限
-  const getRole = async () => {
+  const getExportRole = async () => {
     const role = await roleAuthCheck([{
       status: 'checking',
       key: 'auth0',
-      role: 'ROLE_CMSOUTPROJECTINFO_IMPORT'
+      role: 'ROLE_CMSOUTPROJECTDEMAND_ORDERWEXPORT'
     },])
     setExportRole(role)
+  }
+  // 获取是否有外包人员评审和发布中选信息的权限
+  const getAuth = async () => {
+    try {
+      const res = await apiAuth.roleCheck([
+        {
+          status: 'checking',
+          key: 'auth0',
+          role: 'ROLE_CMSOUTPROJECTDEMAND_STAFFREVIEW'
+        },
+        {
+          status: 'checking',
+          key: 'auth1',
+          role: 'ROLE_CMSOUTPROJECTDEMAND_RELEASE'
+        }
+      ])
+      const { auth0, auth1 } = res.data
+      if (auth0) {
+        await loadTemplateData({
+          sorts: { fdCreateTime: 'desc' },
+          columns: ['fdId', 'fdName', 'fdCode', 'fdCreator', 'fdCreateTime'],
+        }, apiTemplate.list, setStaffTemplateData)
+      }
+      if (auth1) {
+        await loadTemplateData({
+          sorts: {
+            fdCreateTime: 'desc'
+          },
+          columns: ['fdId', 'fdName', 'fdCode', 'fdCreator', 'fdCreateTime']
+        }, apiProjectTemplate.list, setProjectTemplateData)
+      }
+    } catch (error) {
+      Message.error(error.response.data.msg || '请求失败')
+    }
   }
   /** 获取资料上传节点 */
   const getCurrentNode = async () => {
@@ -114,18 +141,16 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         setMaterialVis(false)
       }
     } catch (error) {
-      console.error('errortest2', error)
       setMaterialVis(false)
     }
   }
-  console.log('data5559', data)
   useEffect(() => {
     getCurrentNode()
-    loadTemplateData()
     getEditFlag()
     getOrderRouterStatus()
     getSupplierStatus()
-    getRole()
+    getExportRole()
+    getAuth()
   }, [])
 
   const getSupplierStatus = async () => {
@@ -137,7 +162,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   const getOrderRouterStatus = async () => {
     try {
       const userId = mk.getSysConfig().currentUser.fdId
-      const res = await apiOrder.listOrder({ conditions: { 'fdSupplier.fdAdminElement.fdId': { '$eq': userId } } })
+      const res = await apiOrder.listOrder({ conditions: { 'fdSupplier.fdAdminElement.fdId': { '$eq': userId }, 'fdProjectDemand.fdId': { '$eq': data.fdId } } })
       res.data.content.length && setOrderRouterStatus(res.data.content[0].fdId)
     } catch (error) {
       console.log('error', error)
@@ -158,19 +183,16 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     }
   }
 
-
-  const loadTemplateData = async () => {
+  // 获取模板
+  const loadTemplateData = async (params: any, api: any, func: Function) => {
     try {
-      const res = await apiTemplate.list({
-        //@ts-ignore
-        sorts: { fdCreateTime: 'desc' },
-        columns: ['fdId', 'fdName', 'fdCode', 'fdCreator', 'fdCreateTime'],
-      })
-      setTemplateData(res?.data?.content[0])
+      const res = await api(params)
+      func(res?.data?.content[0])
     } catch (error) {
-      console.error(error)
+      Message.error(error.response.data.msg || '获取模板失败')
     }
   }
+
   // 校验
   const _validate = async (isDraft: boolean) => {
     // 表单校验
@@ -282,7 +304,11 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     if (!btnStatus) return null
     return {
       name: '订单响应',
-      action: () => { handleOrderAction() }
+      action: () => { handleOrderAction() },
+      auth: {
+        authModuleName: 'cms-out-manage',
+        authURL: '/cmsOrderResponse/add',
+      }
     }
   }, [history, orderRouterStatus])
 
@@ -290,7 +316,11 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     if (!btnStatus) return null
     return {
       name: fmtMsg(':cmsProjectWritten.form.!{l5hz6ugsxfxlg2nyfs7}', '录入笔试成绩'),
-      action: () => { history.goto(`/cmsProjectWritten/add/${data.fdId}`) }
+      action: () => { history.goto(`/cmsProjectWritten/add/${data.fdId}`) },
+      auth: {
+        authModuleName: 'cms-out-manage',
+        authURL: '/cmsProjectWritten/add',
+      }
     }
   }, [history])
 
@@ -298,29 +328,47 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     if (!btnStatus) return null
     return {
       name: fmtMsg(':cmsProjectInterview.form.!{l5hz6ugsxfxlg2nyfs7}', '录入面试成绩'),
-      action: () => { history.goto(`/cmsProjectInterview/add/${data.fdId}`) }
+      action: () => { history.goto(`/cmsProjectInterview/add/${data.fdId}`) },
+      auth: {
+        authModuleName: 'cms-out-manage',
+        authURL: '/cmsProjectInterview/add',
+      }
     }
   }, [history])
   const handleEnterSelectInfo = useCallback(() => {
     if (!btnStatus) return null
     return {
       name: fmtMsg(':menu.!{mctpwprd794p}', '发布中选信息'),
-      action: () => { history.goto(`/cmsProjectSelectInfo/add/${data.fdId}`) }
+      action: () => {
+        if (!projectTemplateData) {
+          Message.error('请先配置模板', 1)
+          return
+        }
+        history.goto(`/cmsProjectSelectInfo/add/${projectTemplateData.fdId}/${data.fdId}`)
+      },
+      auth: {
+        authModuleName: 'cms-out-manage',
+        authURL: '/cmsProjectSelectInfo/add',
+      }
     }
-  }, [history])
+  }, [history, projectTemplateData])
   const handleEnterStaffReview = useCallback(() => {
     if (!btnStatus) return null
     return {
       name: fmtMsg(':cmsProjectInterview.form.!{l5j0eriwqaq645oi9c}', '外包人员评审'),
       action: () => {
-        if (!templateData) {
+        if (!staffTemplateData) {
           Message.error('请先配置模板', 1)
           return
         }
-        history.goto(`/cmsStaffReview/add/${templateData.fdId}/${data.fdId}`)
+        history.goto(`/cmsStaffReview/add/${staffTemplateData.fdId}/${data.fdId}`)
+      },
+      auth: {
+        authModuleName: 'cms-out-manage',
+        authURL: '/cmsStaffReview/add',
       }
     }
-  }, [history, templateData])
+  }, [history, staffTemplateData])
 
   // 提交按钮
   // const _btn_submit = useMemo(() => {

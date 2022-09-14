@@ -40,6 +40,10 @@ const Content: React.FC<IContentViewProps> = (props) => {
             {
               value: '1',
               label: '是'
+            },
+            {
+              value: '0',
+              label: '否'
             }
           ]
           const option = options.find((option) => option.value === value)
@@ -60,6 +64,10 @@ const Content: React.FC<IContentViewProps> = (props) => {
             {
               value: '1',
               label: '是'
+            },
+            {
+              value: '0',
+              label: '否'
             }
           ]
           const option = options.find((option) => option.value === value)
@@ -80,6 +88,10 @@ const Content: React.FC<IContentViewProps> = (props) => {
             {
               value: '1',
               label: '是'
+            },
+            {
+              value: '0',
+              label: '否'
             }
           ]
           const option = options.find((option) => option.value === value)

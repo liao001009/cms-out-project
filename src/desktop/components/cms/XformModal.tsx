@@ -8,7 +8,6 @@ import { $reduceCriteria } from '@/desktop/shared/criteria'
 import './index.scss'
 import { criertiaObj } from '@/desktop/pages/common/common'
 import { renderConditions } from '@/desktop/shared/util'
-import { isArray } from 'util'
 export enum EShowStatus {
   /** 查看 */
   'view' = 'view',
@@ -75,7 +74,6 @@ const XformModal: React.FC<IProps> = (props) => {
     value,
     criteriaKey,
     query = {},
-    queryChange,
     history,
     chooseFdName = '',
     columnsProps = [],
@@ -177,7 +175,6 @@ const XformModal: React.FC<IProps> = (props) => {
   }
 
   const getListData = async (data) => {
-    console.log('data5559', data)
     if (showTableData) {
       if ((!data?.conditions[showTableData]) || (!data?.conditions[showTableData]['$contains'])) {
         setListData([])
@@ -276,7 +273,6 @@ const XformModal: React.FC<IProps> = (props) => {
   const handleSearch = (value) => {
     // if (!value) return
     let conditions: any = {}
-    console.log('newSelecteCon5559', newSelecteCon)
     if (Object.keys(newSelecteCon).length) {
       conditions = { ...newSelecteCon, 'fdName': { '$contains': value } }
     } else {
