@@ -46,7 +46,7 @@ const XForm = (props) => {
     detailForms
   })
   useEffect(()=>{
-    // // 后端数据结构是字符串，要求前端用checkbox，所以只能转换
+    // 后端数据结构是字符串，要求前端用checkbox，所以只能转换
     form.setFieldsValue({
       fdNoticeSupplier: [value.fdNoticeSupplier],
       fdIsInterview: [value.fdIsInterview],
@@ -336,7 +336,6 @@ const XForm = (props) => {
         }
       )
     }
-
     return data
   },[])
 
@@ -499,7 +498,7 @@ const XForm = (props) => {
                       layout={'vertical'}
                       hiddenLabel={true}
                       columns={columns}
-                      canExport={true}
+                      canExport={false}
                       showStatus="view"
                     ></XformDetailTable>
                   </Form.Item>
