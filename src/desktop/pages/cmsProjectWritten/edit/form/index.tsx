@@ -1,6 +1,7 @@
 import apiOrderResponse from '@/api/cmsOrderResponse'
 import apiStaffInfo from '@/api/cmsOutStaffInfo'
 import apiSupplier from '@/api/cmsSupplierInfo'
+import XformExecl from '@/desktop/components/cms/XformExecl'
 import CMSXformModal from '@/desktop/components/cms/XformModal'
 import GridItem from '@/desktop/components/form/GridItem'
 import LayoutGrid from '@/desktop/components/form/LayoutGrid'
@@ -17,15 +18,15 @@ import { outStaffInfoColumns } from '@/desktop/pages/common/common'
 import { useApi, useSystem } from '@/desktop/shared/formHooks'
 import { EShowStatus } from '@/types/showStatus'
 import { fmtMsg } from '@ekp-infra/respect'
-import { Form, Message } from '@lui/core'
+import { Button, Form, Message } from '@lui/core'
 import React, { createRef, useEffect, useRef, useState } from 'react'
+import Icon from '@lui/icons'
 import './index.scss'
 
 const MECHANISMNAMES = {}
 
 
 const XForm = (props) => {
-
   const detailForms = useRef({
     cmsProjectWrittenDe: createRef() as any
   })
@@ -33,10 +34,18 @@ const XForm = (props) => {
   const [form] = Form.useForm()
   const [ivVisible, setIvVisible] = useState<string>(value.fdIsInterview || '1')
   const [nSVisible, setNSVisible] = useState<string>(value.fdNoticeSupplier|| '1')
-
   const [supplierData, setSupplierData] = useState<any>([])
   const [defaultTableCriteria, setDefaultTableCriteria] = useState<any>({})
-
+  const [staffInfo, setStaffInfo] = useState<any>([])
+  const getTag = ()=>{
+    setTimeout(()=>{
+      const parentNode = document.querySelector('div[class="ele-xform-detail-table-toolbar-right-buttons"]')
+      const uploadDown = document.getElementById('uploadDown')||document.createElement('div')
+      const addRow = document.querySelector('button[title="添加行"]')
+      parentNode?.insertBefore(uploadDown, addRow)
+      uploadDown.style.display = 'block'
+    },500)
+  }
   useEffect(() => {
     init()
     const paramId = props?.match?.params?.id
@@ -57,8 +66,8 @@ const XForm = (props) => {
     if (paramId) {
       initData(paramId)
     }
-    console.log('value=----',value)
-    
+    getStaffInfo()
+    getTag()
   }, [])
 
   const init = async () => {
@@ -330,23 +339,23 @@ const XForm = (props) => {
           type: XformNumber,
           showStatus: 'edit',
           controlActions: {
-            'onChange': [{
+            'onBlur': [{
               function: (v, r) => {
                 const fdQualifiedMark = form.getFieldValue('fdQualifiedMark')
                 if (!fdQualifiedMark) {
                   Message.error('请输入合格分数线', 1)
                   return
                 }
-                // const fdWrittenPass = v >= fdQualifiedMark ? '1' : '0'
-                // sysProps.$$form.current.updateFormItemProps('cmsProjectWrittenDe', {
-                //   rowValue: {
-                //     rowNum: r,
-                //     value: {
-                //       fdWrittenPass: fdWrittenPass,
-                //     }
-                //   }
-                // })
-                checkDetailWS(fdQualifiedMark)
+                const fdWrittenPass = fdQualifiedMark <= v.target.value ? '1' : '0'
+                sysProps.$$form.current.updateFormItemProps('cmsProjectWrittenDe', {
+                  rowValue: {
+                    rowNum: r,
+                    value: {
+                      fdWrittenPass: fdWrittenPass,
+                    }
+                  }
+                })
+                // checkDetailWS(fdQualifiedMark)
               }
             }]
           }
@@ -466,23 +475,89 @@ const XForm = (props) => {
   }
 
 
+  const [visible, setVisible] = useState<boolean>(false)
+  
+
+  const uploadExecl = ()=>{
+    setVisible(true)
+  }
+  const handleCancel = ()=>{
+    setVisible(false)
+  }
+  
+  const downloadExecl = ()=>{
+    window.open(mk.getResourcePath('@module:cms-out-project/desktop/static/attach/笔试成绩模板.xlsx'),'_blank')
+  }
+  
+
+  const handlerChange = (data)=>{
+    const array = Object.values(data)
+    setDetailTable(array)
+  }
+
+  const getField = (str: string)=>{
+    return str.substring(str.lastIndexOf('/')+1)
+  }
+
+  const getStaffInfo = async () => {
+    try {
+      // const conditions = { conditions: { 'fdName': { '$eq': keyVal } } }
+      const res = await apiStaffInfo.listStaffInfo({})
+      setStaffInfo(res?.data?.content)
+    } catch (error) {
+      console.log('error', error)
+    }
+  }
+
+  const checkPersonInfo = (keyVal)=>{
+    if(!staffInfo){
+      return 
+    }
+    return staffInfo.find(item=>item.fdName===keyVal)
+  }
+
+  
+
+  
+  const setDetailTable  = (data)=>{
+    const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectWrittenDe').values
+    valuesData.length && detailForms.current.cmsProjectWrittenDe.current.deleteAll()
+    const fdQualifiedMark = form.getFieldValue('fdQualifiedMark')
+    if(data.length>0){
+      const newValue = data[0]?.map(i => {
+        let item : any= {}
+        Object.keys(i).forEach(key=>{
+          const field = getField(key)
+          item = {
+            ...item, 
+            [field] : i[key],
+          }
+          console.log('fdW--item',item)
+          
+        })
+        const fdWrittenPass = Number(item['fdWrittenScores']) <= Number(fdQualifiedMark) ? '0' : '1'
+        const personInfo = checkPersonInfo( item['fdInterviewName'] )
+        item['fdInterviewName'] = personInfo
+        item = {
+          ...item,
+          ...personInfo,
+          fdWrittenPass
+        }
+        return item
+      })
+      detailForms.current.cmsProjectWrittenDe.current.updateValues(newValue)
+      handleCancel()
+    }
+    
+  }
+
 
   return (
     <div className="lui-xform">
       <Form form={form} colPadding={false} onValuesChange={onValuesChange}>
         <XformAppearance>
           <LayoutGrid columns={2} rows={9}>
-            <GridItem
-              column={2}
-              row={1}
-              style={{
-                display: 'none',
-                textAlign: 'center',
-                justifyContent: 'center'
-              }}
-              rowSpan={1}
-              columnSpan={1}
-            ></GridItem>
+           
             <GridItem column={1} row={2} rowSpan={1} columnSpan={1}>
               <XformFieldset
                 mobileContentAlign={'right'}
@@ -531,7 +606,7 @@ const XForm = (props) => {
                       formatType: 'base'
                     }}
                     showStatus="edit"
-                    onChange={(v) => checkDetailWS(v)}
+                    onblur={(v) => checkDetailWS(v)}
                   ></XformNumber>
                 </Form.Item>
               </XformFieldset>
@@ -589,6 +664,14 @@ const XForm = (props) => {
                 </Form.Item>
               </XformFieldset>
             </GridItem>
+            <div id='uploadDown' style={{display:'none'}}>
+              <Button.Group amount={2} className='lui-test-btn-group' shape='link'>
+                <Button onClick={() => { uploadExecl() }} type='default' label='上传' icon={<Icon type='vector' name='upload' />} />
+                <Button onClick={() => { downloadExecl() }} type='default' label='下载模板' icon={<Icon type='vector' name='download' />} >
+                </Button>
+              </Button.Group>
+              <XformExecl onChange={(info) => { handlerChange(info) }} handleCancel={()=>{handleCancel()}} visible={visible} />
+            </div>
             <GridItem column={1} row={4} columnSpan={2} rowSpan={1}>
               <XformFieldset>
                 <Form.Item
@@ -609,7 +692,7 @@ const XForm = (props) => {
                     }
                   ]}
                 >
-
+                  
                   <XformDetailTable
                     {...sysProps}
                     $$ref={detailForms.current.cmsProjectWrittenDe}
@@ -625,42 +708,15 @@ const XForm = (props) => {
                     columns={columns()}
                     canAddRow={true}
                     canDeleteRow={true}
-                    canImport={true}
+                    canImport={false}
                     showStatus="edit"
                   ></XformDetailTable>
 
                 </Form.Item>
               </XformFieldset>
             </GridItem>
-            <GridItem
-              column={2}
-              row={4}
-              style={{
-                display: 'none'
-              }}
-              rowSpan={1}
-              columnSpan={1}
-            ></GridItem>
-            <GridItem column={1} row={8} columnSpan={2} rowSpan={1}
-              style={{
-                display: 'none'
-              }}
-            >
-              <XformFieldset
-                labelTextAlign={'left'}
-                mobileContentAlign={'right'}
-                title={fmtMsg(':cmsProjectWritten.form.!{l5iypuiahn8xqzb9qmc}', '项目需求')}
-                layout={'horizontal'}
-              >
-                <Form.Item name={'fdProjectDemand'}>
-                  <XformInput
-                    {...sysProps}
-                    placeholder={fmtMsg(':cmsProjectInterview.form.!{l5hz9wxdne6ahfqosua}', '请输入')}
-                    showStatus={EShowStatus.edit}
-                  ></XformInput>
-                </Form.Item>
-              </XformFieldset>
-            </GridItem>
+       
+           
 
             <GridItem column={1} row={5} rowSpan={1} columnSpan={1}>
               <XformFieldset
@@ -789,18 +845,10 @@ const XForm = (props) => {
                 </Form.Item>
               </XformFieldset>
             </GridItem>
-            <GridItem
-              column={2}
-              row={6}
-              style={{
-                display: 'none'
-              }}
-              rowSpan={1}
-              columnSpan={1}
-            ></GridItem>
+           
                 
 
-            <GridItem column={1} row={7} columnSpan={2} rowSpan={1}>
+            <GridItem column={1} row={7} columnSpan={1} rowSpan={1}>
               <XformFieldset
                 labelTextAlign={'left'}
                 mobileContentAlign={'right'}
@@ -834,15 +882,27 @@ const XForm = (props) => {
                 </Form.Item>
               </XformFieldset>
             </GridItem>
-            <GridItem
-              column={2}
-              row={7}
+           
+            <GridItem column={2} row={7} columnSpan={1} rowSpan={1}
               style={{
                 display: 'none'
               }}
-              rowSpan={1}
-              columnSpan={1}
-            ></GridItem>
+            >
+              <XformFieldset
+                labelTextAlign={'left'}
+                mobileContentAlign={'right'}
+                title={fmtMsg(':cmsProjectWritten.form.!{l5iypuiahn8xqzb9qmc}', '项目需求')}
+                layout={'horizontal'}
+              >
+                <Form.Item name={'fdProjectDemand'}>
+                  <XformInput
+                    {...sysProps}
+                    placeholder={fmtMsg(':cmsProjectInterview.form.!{l5hz9wxdne6ahfqosua}', '请输入')}
+                    showStatus={EShowStatus.edit}
+                  ></XformInput>
+                </Form.Item>
+              </XformFieldset>
+            </GridItem>
              
 
           </LayoutGrid>
