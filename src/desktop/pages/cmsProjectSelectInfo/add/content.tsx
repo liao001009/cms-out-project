@@ -12,24 +12,15 @@ import { cmsHandleBack } from '@/utils/routerUtil'
 // import './index.scss'
 Message.config({ maxCount: 1 })
 const LbpmFormWithLayout = Module.getComponent('sys-lbpm', 'LbpmFormWithLayout', { loading: <React.Fragment></React.Fragment> })
-// 流程页签
-// const LBPMTabs = Module.getComponent('sys-lbpm', 'LBPMTabs', { loading: <Loading /> })
-// // 流程机制
-// const LBPMFormFragment = Module.getComponent('sys-lbpm', 'LBPMFormFragment', { loading: <Loading /> })
-// // 权限机制
-// const RightFragment = Module.getComponent('sys-right', 'RightFragment', { loading: <Loading /> })
-
 const baseCls = 'project-selectInfo-content'
 const Content: React.FC<IContentViewProps> = props => {
   const { data, match, history } = props
   const fdId = match.params['fdId']
+  const templateId = match.params['templateId']
   // 弹窗的显隐
   const [modalVisible, setModalVisible] = useState<boolean>(false)
-  // 是否发起提交请求
-  const [handleFlag, setHandleFlag] = useState<boolean>(false)
   // 表单数据
   const [formValue, setFormValue] = useState<any>()
-  const templateId = fdId
   // 机制组件引用
   const formComponentRef = useRef<any>()
   const lbpmComponentRef = useRef<any>()
@@ -161,6 +152,7 @@ const Content: React.FC<IContentViewProps> = props => {
   }
   // 弹窗确认事件
   const handleOk = () => {
+    setModalVisible(false)
     const { values, isDraft } = formValue
     api.add(values).then(res => {
       if (res.success) {

@@ -44,7 +44,6 @@ const baseCls = 'project-demand-content'
 const Content: React.FC<IContentViewProps> = memo((props) => {
   const { data, match, history } = props
   const params = match?.params as any
-
   // 模板id
   const templateId = useMemo(() => {
     return data?.fdTemplate?.fdId
