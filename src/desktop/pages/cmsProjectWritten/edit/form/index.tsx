@@ -355,7 +355,7 @@ const XForm = (props) => {
                     }
                   }
                 })
-                // checkDetailWS(fdQualifiedMark)
+                checkDetailWS(fdQualifiedMark)
               }
             }]
           }
@@ -606,7 +606,7 @@ const XForm = (props) => {
                       formatType: 'base'
                     }}
                     showStatus="edit"
-                    onblur={(v) => checkDetailWS(v)}
+                    onChange={(v) => checkDetailWS(v)}
                   ></XformNumber>
                 </Form.Item>
               </XformFieldset>
