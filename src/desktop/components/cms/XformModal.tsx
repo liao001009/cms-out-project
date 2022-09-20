@@ -67,7 +67,6 @@ export interface IProps extends IContentViewProps {
 }
 
 const XformModal: React.FC<IProps> = (props) => {
-
   const {
     onChange,
     showStatus,
@@ -97,7 +96,7 @@ const XformModal: React.FC<IProps> = (props) => {
 
   const [listData, setListData] = useState<any>([])
   const [visible, setVisible] = useState<boolean>(false)
-  const [fdName, setFdName] = useState<string>(value && value.fdName || '')
+  const [fdName, setFdName] = useState<string>(value && value?.fdName || '')
   // 选中的筛选项
   const [selectedConditions, setSelectedConditions] = useState<any>({})
   // 多选时，选中的数据
@@ -176,7 +175,11 @@ const XformModal: React.FC<IProps> = (props) => {
 
   const getListData = async (data) => {
     if (showTableData) {
-      if ((!data?.conditions[showTableData]) || (!data?.conditions[showTableData]['$contains'])) {
+      if (!data.conditions) {
+        setListData([])
+        return
+      }
+      if ((!data.conditions[showTableData]) || (!data.conditions[showTableData]['$contains'])) {
         setListData([])
         return
       }
@@ -271,7 +274,6 @@ const XformModal: React.FC<IProps> = (props) => {
     [query, selectedConditions]
   )
   const handleSearch = (value) => {
-    // if (!value) return
     let conditions: any = {}
     if (Object.keys(newSelecteCon).length) {
       conditions = { ...newSelecteCon, 'fdName': { '$contains': value } }
@@ -340,7 +342,7 @@ const XformModal: React.FC<IProps> = (props) => {
     <React.Fragment>
       <div>
         {
-          showStatus === 'edit' || showStatus === 'add' || showStatus === 'readOnly' ? multiple ? (
+          showStatus === 'edit' || showStatus === 'add' || showStatus === 'readOnly' ? (multiple && value?.length) ? (
             <div className='multiple-input' style={showStatus === 'readOnly' ? readOnlyStyle : {}} onClick={() => setVisible(true)}>
               {renderTag()}
             </div>
