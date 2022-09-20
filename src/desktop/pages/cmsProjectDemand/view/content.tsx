@@ -44,7 +44,6 @@ const baseCls = 'project-demand-content'
 const Content: React.FC<IContentViewProps> = memo((props) => {
   const { data, match, history } = props
   const params = match?.params as any
-
   // 模板id
   const templateId = useMemo(() => {
     return data?.fdTemplate?.fdId
@@ -298,10 +297,10 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     }
     orderRouterStatus ? history.goto(`/cmsOrderResponse/edit/${orderRouterStatus}`) : history.goto(`/cmsOrderResponse/add/${data.fdId}`)
   }
-
   // 订单响应按钮
   const handleOrder = useCallback(() => {
     if (!btnStatus) return null
+    if (data.fdProcessFlag && data.fdProcessFlag.includes('2')) return null
     return {
       name: '订单响应',
       action: () => { handleOrderAction() },
@@ -310,10 +309,11 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         authURL: '/cmsOrderResponse/add',
       }
     }
-  }, [history, orderRouterStatus])
+  }, [history, orderRouterStatus, data?.fdProcessFlag, btnStatus])
 
   const handleEnterWritten = useCallback(() => {
-    if (!btnStatus) return null
+    if (!btnStatus || !data.fdProcessFlag) return null
+    if (data.fdProcessFlag && !(data.fdProcessFlag.includes('1') && !data.fdProcessFlag.includes('2'))) return null
     return {
       name: fmtMsg(':cmsProjectWritten.form.!{l5hz6ugsxfxlg2nyfs7}', '录入笔试成绩'),
       action: () => { history.goto(`/cmsProjectWritten/add/${data.fdId}`) },
@@ -322,10 +322,11 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         authURL: '/cmsProjectWritten/add',
       }
     }
-  }, [history])
+  }, [history, data?.fdProcessFlag, btnStatus])
 
   const handleEnterInterview = useCallback(() => {
-    if (!btnStatus) return null
+    if (!btnStatus || !data.fdProcessFlag) return null
+    if (data.fdProcessFlag && !(data.fdProcessFlag.includes('2') && !data.fdProcessFlag.includes('3'))) return null
     return {
       name: fmtMsg(':cmsProjectInterview.form.!{l5hz6ugsxfxlg2nyfs7}', '录入面试成绩'),
       action: () => { history.goto(`/cmsProjectInterview/add/${data.fdId}`) },
@@ -334,9 +335,10 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         authURL: '/cmsProjectInterview/add',
       }
     }
-  }, [history])
+  }, [history, data?.fdProcessFlag])
   const handleEnterSelectInfo = useCallback(() => {
-    if (!btnStatus) return null
+    if (!btnStatus || !data.fdProcessFlag) return null
+    if (data.fdProcessFlag && !(data.fdProcessFlag.includes('4') && !data.fdProcessFlag.includes('5'))) return null
     return {
       name: fmtMsg(':menu.!{mctpwprd794p}', '发布中选信息'),
       action: () => {
@@ -351,9 +353,10 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         authURL: '/cmsProjectSelectInfo/add',
       }
     }
-  }, [history, projectTemplateData])
+  }, [history, projectTemplateData, data?.fdProcessFlag, btnStatus])
   const handleEnterStaffReview = useCallback(() => {
-    if (!btnStatus) return null
+    if (!btnStatus || !data.fdProcessFlag) return null
+    if (data.fdProcessFlag && !(data.fdProcessFlag.includes('3') && !data.fdProcessFlag.includes('4'))) return null
     return {
       name: fmtMsg(':cmsProjectInterview.form.!{l5j0eriwqaq645oi9c}', '外包人员评审'),
       action: () => {
@@ -368,63 +371,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         authURL: '/cmsStaffReview/add',
       }
     }
-  }, [history, staffTemplateData])
-
-  // 提交按钮
-  // const _btn_submit = useMemo(() => {
-  //   const submitBtn = <Button type='primary' onClick={() => handleSave(false)}>提交</Button>
-  //   if (roleArr && roleArr.length) {
-  //     return submitBtn
-  //   } else {
-  //     return null
-  //   }
-  // }, [data, flowData, params])
-
-
-
-  // 编辑按钮
-  // const _btn_edit = useMemo(() => {
-  //   const status = data.fdProcessStatus || getFlowStatus(flowData)
-  //   if (status === ESysLbpmProcessStatus.ABANDONED || status === ESysLbpmProcessStatus.COMPLETED) return null
-  //   const editBtn = <Button onClick={handleEdit}>编辑</Button>
-  //   const authEditBtn = <Auth.Auth
-  //     authURL='/cmsProjectDemand/edit'
-  //     authModuleName='cms-out-manage'
-  //     params={{
-  //       vo: { fdId: params['id'] }
-  //     }}
-  //   >
-  //     {editBtn}
-  //   </Auth.Auth>
-  //   return (
-  //     status === ESysLbpmProcessStatus.DRAFT || status === ESysLbpmProcessStatus.REJECT || status === ESysLbpmProcessStatus.WITHDRAW)
-  //     ? authEditBtn
-  //     // 流程流转中并且有编辑权限，可编辑表单
-  //     : (status === ESysLbpmProcessStatus.ACTIVATED
-  //       && authEditBtn
-  //     )
-  // }, [params, data])
-
-  // 删除按钮
-  // const _btn_delete = useMemo(() => {
-  //   const status = getFlowStatus(flowData)
-  //   const deleteBtn = <Button type='default' onClick={handleDel}>删除</Button>
-  //   return (
-  //     // 如果有回复协同的操作，则要校验权限
-  //     status === ESysLbpmProcessStatus.DRAFT && !lbpmComponentRef.current.checkOperationTypeExist(flowData.identity, EOperationType.handler_replyDraftCooperate)
-  //       ? deleteBtn
-  //       : <Auth.Auth authURL='/cmsProjectDemand/delete'
-  //         authModuleName='cms-out-manage'
-  //         params={{
-  //           vo: { fdId: params['id'] }
-  //         }}>
-  //         {deleteBtn}
-  //       </Auth.Auth>
-  //   )
-  // }, [flowData, params])
-
-
-
+  }, [history, staffTemplateData, data?.fdProcessFlag, btnStatus])
 
   const handleEdit = () => {
     if (Object.keys(flowData).length === 0) {
@@ -566,7 +513,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
           form: (
             <div>
               <div className='form'><XForm formRef={formComponentRef} value={data || {}} materialVis={materialVis} editFlag={editFlag} fdSuppliesVisible={fdSuppliesVisible} /></div>
-              {renderTab()}
+              {data.fdProcessStatus === '30' ? renderTab() : null}
             </div>
           )
         }}
