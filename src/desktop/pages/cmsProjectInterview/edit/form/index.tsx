@@ -97,7 +97,8 @@ const XForm = (props) => {
           }
         }
       })
-      if (!arr.includes(v.fdSupplier) && fdInterviewPass === '1') {
+      const checkArr = arr.findIndex(item=>item.fdId===v.fdSupplier.fdId)
+      if (checkArr===-1 && fdInterviewPass === '1') {
         arr.push(v.fdSupplier)
       }
     })
@@ -263,41 +264,6 @@ const XForm = (props) => {
                 </Form.Item>
               </XformFieldset>
             </GridItem>
-            {/* <GridItem column={1} row={6} columnSpan={2} rowSpan={1}>
-              <XformFieldset
-                labelTextAlign={'left'}
-                mobileContentAlign={'right'}
-                title={fmtMsg(':cmsProjectInterview.form.!{l5q3jmj77gupec4wbbd}', '文档状态')}
-                layout={'horizontal'}
-              >
-                <Form.Item
-                  name={'fdStatus'}
-                  rules={[
-                    {
-                      validator: lengthValidator(50)
-                    }
-                  ]}
-                >
-                  <XformSelect
-                    {...sysProps}
-                    placeholder={fmtMsg(':cmsProjectInterview.form.!{l5q3jmj9thzmdrhi7z}', '请输入')}
-                    options={[
-                      {
-                        label: fmtMsg(':cmsProjectInterview.form.!{l5q3jmjaxjc18jsh4m}', '草稿'),
-                        value: '10'
-                      },
-                      {
-                        label: fmtMsg(':cmsProjectInterview.form.!{l5q3jmjd68mza9jsp8k}', '结束'),
-                        value: '30'
-                      }
-                    ]}
-                    optionSource={'custom'}
-                    passValue={true}
-                    showStatus="edit"
-                  ></XformSelect>
-                </Form.Item>
-              </XformFieldset>
-            </GridItem> */}
             <GridItem
               column={2}
               row={6}
@@ -472,7 +438,7 @@ const XForm = (props) => {
                           type: XformNumber,
                           showStatus: 'edit',
                           controlActions: {
-                            'onChange': [{
+                            'onBlur': [{
                               function: (v, r) => {
                                 const fdQualifiedMark = form.getFieldValue('fdQualifiedMark')
                                 if (!fdQualifiedMark) {
@@ -542,7 +508,7 @@ const XForm = (props) => {
                     ]}
                     canAddRow={true}
                     canDeleteRow={true}
-                    canImport={true}
+                    canImport={false}
                     showStatus="edit"
                   ></XformDetailTable>
                 </Form.Item>
@@ -574,40 +540,6 @@ const XForm = (props) => {
                     placeholder={fmtMsg(':cmsProjectInterview.form.!{l5hz9wxdne6ahfqosua}', '请输入')}
                     showStatus={EShowStatus.edit}
                   ></XformInput>
-
-
-                  {/* <XformRelation
-                    {...sysProps}
-                    renderMode={'select'}
-                    direction={'column'}
-                    rowCount={3}
-                    modelName={'com.landray.sys.xform.core.entity.design.SysXFormDesign'}
-                    options={[
-                      {
-                        fdName: '选项1',
-                        fdId: '1'
-                      },
-                      {
-                        fdName: '选项2',
-                        fdId: '2'
-                      },
-                      {
-                        fdName: '选项3',
-                        fdId: '3'
-                      }
-                    ]}
-                    relationCfg={{
-                      appCode: '1g77dbphcw10w198swtqlij1fbb1uj3tkuw0',
-                      xformName: '项目需求',
-                      modelId: '1g7oh4ag9w11wci9gw3c6rh9h3ebmc2619w0',
-                      tableType: 'main',
-                      tableName: 'mk_model_202207128b999',
-                      showFields: '$项目名称$',
-                      refFieldName: '$fd_project$'
-                    }}
-                    isForwardView={'no'}
-                    showStatus="edit"
-                  ></XformRelation> */}
                 </Form.Item>
               </XformFieldset>
             </GridItem>

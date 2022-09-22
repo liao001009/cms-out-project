@@ -123,7 +123,8 @@ const XForm = (props) => {
           }
         }
       })
-      if (!arr.includes(v.fdSupplier) && fdWrittenPass === '1') {
+      const checkArr = arr.findIndex(item=>item.fdId===v.fdSupplier.fdId)
+      if (checkArr===-1 && fdWrittenPass === '1') {
         arr.push(v.fdSupplier)
       }
     })
