@@ -223,7 +223,7 @@ const EditTable = (props: IProps) => {
         Message.success('发送成功')
       }
     } catch (error) {
-      Message.error(error.resopnse.data.msg || '发送失败')
+      Message.error(error.response.data.msg || '发送失败')
     }
   }
   const onChange = (v) => {
