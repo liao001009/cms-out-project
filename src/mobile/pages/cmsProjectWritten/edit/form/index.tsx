@@ -55,7 +55,7 @@ const XForm = (props) => {
             </Form.Item>
           </XformFieldset>
           <XformFieldset
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectWritten.form.!{l5hz9wxb6v3gf05totp}', '笔试时间')}
             layout={'horizontal'}
             labelTextAlign={'left'}
@@ -73,7 +73,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectWritten.form.!{l5hzdv81cemh8kpfcn}', '合格分数线')}
             layout={'horizontal'}
             required={true}
@@ -92,7 +92,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectWritten.fdCreator', '创建者')}
             layout={'horizontal'}
           >
@@ -118,7 +118,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectWritten.fdCreateTime', '创建时间')}
             layout={'horizontal'}
           >
@@ -541,7 +541,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectWritten.form.!{l5hzk88ieqeuw2kxojw}', '是否面试')}
             layout={'horizontal'}
           >
@@ -573,7 +573,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectWritten.form.!{l5hzlb769gv64l5j7ke}', '面试官')}
             layout={'horizontal'}
           >
@@ -594,7 +594,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectWritten.form.!{l5hzkchugrzq1fyh4b}', '邮件通知供应商')}
             layout={'horizontal'}
           >
@@ -676,7 +676,7 @@ const XForm = (props) => {
           </Form.Item>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectWritten.form.!{l5hzkx122azhemlsism}', '邮件通知面试官')}
             layout={'horizontal'}
           >
@@ -708,7 +708,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectWritten.form.!{l5iypuiahn8xqzb9qmc}', '项目需求')}
             layout={'horizontal'}
           >

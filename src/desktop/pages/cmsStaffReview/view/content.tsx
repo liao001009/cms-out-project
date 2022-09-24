@@ -6,12 +6,10 @@ import { Button, Message, Modal } from '@lui/core'
 import Axios from 'axios'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import XForm from './form'
-//@ts-ignore
 import { getFlowStatus } from '@/desktop/shared/util'
 import { EOperationType, ESysLbpmProcessStatus } from '@/utils/status'
 //@ts-ignore
 import Status, { EStatusType } from '@elements/status'
-// import './index.scss'
 import { useMkSendData } from '@/utils/mkHooks'
 import { fmtMsg } from '@ekp-infra/respect'
 import Icon from '@lui/icons'
@@ -19,19 +17,12 @@ import { cmsHandleBack } from '@/utils/routerUtil'
 
 Message.config({ maxCount: 1 })
 const LbpmFormWithLayout = Module.getComponent('sys-lbpm', 'LbpmFormWithLayout', { loading: <React.Fragment></React.Fragment> })
-// // 流程页签
-// const LBPMTabs = Module.getComponent('sys-lbpm', 'LBPMTabs', { loading: <Loading /> })
-// // 流程机制
-// const LBPMFormFragment = Module.getComponent('sys-lbpm', 'LBPMFormFragment', { loading: <Loading /> })
-// // 权限机制
-// const RightFragment = Module.getComponent('sys-right', 'RightFragment', { loading: <Loading /> })
 
 const { confirm } = Modal
 const baseCls = 'project-review-content'
 const Content: React.FC<IContentViewProps> = props => {
   const { data, history, match } = props
   const [materialVis, setMaterialVis] = useState<boolean>(true)
-  // const [roleArr, setRoleArr] = useState<any>([])   // 流程角色
   const [flowData, setFlowData] = useState<any>({}) // 流程数据
   const { params } = match
   // 模板id

@@ -105,7 +105,7 @@ const XForm = (props) => {
               <GridItem column={1} row={2} rowSpan={1} columnSpan={2}>
                 <XformFieldset
                   labelTextAlign={'left'}
-                  mobileContentAlign={'right'}
+                  mobileContentAlign={'left'}
                   title={fmtMsg(':cmsProjectSelectInfo.form.!{l5luvc6l7kcfxu610qi}', '主题')}
                   layout={'horizontal'}
                   required={true}
@@ -128,7 +128,7 @@ const XForm = (props) => {
               </GridItem>
               <GridItem column={1} row={3} rowSpan={1} columnSpan={2}>
                 <XformFieldset
-                  mobileContentAlign={'right'}
+                  mobileContentAlign={'left'}
                   title={fmtMsg(':cmsProjectSelectInfo.form.!{l5luujunniw1ehkz4od}', '项目名称')}
                   layout={'horizontal'}
                 >
@@ -140,7 +140,7 @@ const XForm = (props) => {
               <GridItem column={1} row={4} rowSpan={1} columnSpan={1}>
                 <XformFieldset
                   labelTextAlign={'left'}
-                  mobileContentAlign={'right'}
+                  mobileContentAlign={'left'}
                   title={fmtMsg(':cmsProjectSelectInfo.form.!{l5luy97lcs2tji2td2q}', '项目编号')}
                   layout={'horizontal'}
                 >
@@ -163,7 +163,7 @@ const XForm = (props) => {
               <GridItem column={2} row={4} rowSpan={1} columnSpan={1}>
                 <XformFieldset
                   labelTextAlign={'left'}
-                  mobileContentAlign={'right'}
+                  mobileContentAlign={'left'}
                   title={fmtMsg(':cmsProjectSelectInfo.form.!{l5luypqfsx8hpajwtvq}', '项目负责人')}
                   layout={'horizontal'}
                 >
@@ -184,7 +184,7 @@ const XForm = (props) => {
               <GridItem column={1} row={5} rowSpan={1} columnSpan={2}>
                 <XformFieldset
                   labelTextAlign={'left'}
-                  mobileContentAlign={'right'}
+                  mobileContentAlign={'left'}
                   title={fmtMsg(':cmsProjectSelectInfo.form.!{l5lv9ncd9rasnnkldum}', '中选供应商')}
                   layout={'horizontal'}
                 >
@@ -196,7 +196,7 @@ const XForm = (props) => {
               <GridItem column={1} row={6} rowSpan={1} columnSpan={2}>
                 <XformFieldset
                   labelTextAlign={'left'}
-                  mobileContentAlign={'right'}
+                  mobileContentAlign={'left'}
                   title={fmtMsg(':cmsProjectSelectInfo.form.!{l5lv9ttgp5tnh2aaym}', '落选供应商')}
                   layout={'horizontal'}
                 >
@@ -274,7 +274,7 @@ const XForm = (props) => {
               <GridItem column={1} row={7} rowSpan={1} columnSpan={2}>
                 <XformFieldset
                   labelTextAlign={'left'}
-                  mobileContentAlign={'right'}
+                  mobileContentAlign={'left'}
                   title={fmtMsg(':cmsProjectSelectInfo.form.!{l5m0dspgq56rtvxth9}', '描述说明')}
                   layout={'horizontal'}
                 >
@@ -461,7 +461,7 @@ const XForm = (props) => {
               <GridItem column={1} row={9} rowSpan={1} columnSpan={2}>
                 <XformFieldset
                   labelTextAlign={'left'}
-                  mobileContentAlign={'right'}
+                  mobileContentAlign={'left'}
                   title={fmtMsg(':cmsProjectSelectInfo.form.!{l5lvnd7suu30hkja4ts}', '供应商确认')}
                   layout={'horizontal'}
                 >
