@@ -44,7 +44,6 @@ const baseCls = 'project-demand-content'
 const Content: React.FC<IContentViewProps> = memo((props) => {
   const { data, match, history } = props
   const params = match?.params as any
-
   // 模板id
   const templateId = useMemo(() => {
     return data?.fdTemplate?.fdId
@@ -59,9 +58,10 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   const lbpmComponentRef = useRef<any>()
   const rightComponentRef = useRef<any>()
 
-  const [flowData, setFlowData] = useState<any>({}) // 流程数据
+  // 流程数据
+  const [flowData, setFlowData] = useState<any>({})
+  // 资料上传节点是否显示
   const [materialVis, setMaterialVis] = useState<boolean>(true)
-  const [editFlag, setEditFlag] = useState<boolean>(false)
   /**外包人员评审模板 */
   const [staffTemplateData, setStaffTemplateData] = useState<any>({})
   // 发布中选信息模板
@@ -79,6 +79,15 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   const [fdSuppliesVisible, setFdSuppliesVisible] = useState<boolean>(false)
   // 导出权限
   const [exportRole, setExportRole] = useState<boolean>(false)
+
+  // 当前登录人的id
+  const userId = mk.getSysConfig().currentUser.fdId
+
+  // 当前登录人是否是框架管理员
+  const editFlag = useMemo(() => {
+    return userId === data.fdFrameAdmin.fdId
+  }, [data?.fdFrameAdmin?.fdId])
+
   // 获取是否有导出订单响应列表的权限
   const getExportRole = async () => {
     const role = await roleAuthCheck([{
@@ -146,22 +155,20 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   }
   useEffect(() => {
     getCurrentNode()
-    getEditFlag()
     getOrderRouterStatus()
     getSupplierStatus()
     getExportRole()
     getAuth()
   }, [])
 
+  // 判断当前登录人是不是供应商管理员
   const getSupplierStatus = async () => {
-    const userId = mk.getSysConfig().currentUser.fdId
-    const resVisible = await apiSupplier.list({ conditions: { 'fdAdminElement.fdId': { '$eq': userId } } })
-    setFdSuppliesVisible(!!resVisible.data.content.length)
+    const res = await apiSupplier.list({ conditions: { 'fdAdminElement.fdId': { '$eq': userId } } })
+    setFdSuppliesVisible(!!res.data.content.length)
   }
   // 点击订单响应的跳转路由地址
   const getOrderRouterStatus = async () => {
     try {
-      const userId = mk.getSysConfig().currentUser.fdId
       const res = await apiOrder.listOrder({ conditions: { 'fdSupplier.fdAdminElement.fdId': { '$eq': userId }, 'fdProjectDemand.fdId': { '$eq': data.fdId } } })
       res.data.content.length && setOrderRouterStatus(res.data.content[0].fdId)
     } catch (error) {
@@ -169,19 +176,6 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     }
   }
 
-  // 校验是否有编辑订单响应列表的权限
-  const getEditFlag = async () => {
-    try {
-      const res = await roleAuthCheck([{
-        status: 'checking',
-        key: 'auth0',
-        role: 'ROLE_CMSOUTMANAGE_FRAME_ADMIN'
-      }])
-      setEditFlag(res)
-    } catch (error) {
-      console.log('error', error)
-    }
-  }
 
   // 获取模板
   const loadTemplateData = async (params: any, api: any, func: Function) => {
@@ -298,10 +292,10 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     }
     orderRouterStatus ? history.goto(`/cmsOrderResponse/edit/${orderRouterStatus}`) : history.goto(`/cmsOrderResponse/add/${data.fdId}`)
   }
-
   // 订单响应按钮
   const handleOrder = useCallback(() => {
     if (!btnStatus) return null
+    if (data.fdProcessFlag && data.fdProcessFlag.includes('2')) return null
     return {
       name: '订单响应',
       action: () => { handleOrderAction() },
@@ -310,10 +304,11 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         authURL: '/cmsOrderResponse/add',
       }
     }
-  }, [history, orderRouterStatus])
+  }, [history, orderRouterStatus, data?.fdProcessFlag, btnStatus])
 
   const handleEnterWritten = useCallback(() => {
-    if (!btnStatus) return null
+    if (!btnStatus || !data.fdProcessFlag) return null
+    if (data.fdProcessFlag && !(data.fdProcessFlag.includes('1') && !data.fdProcessFlag.includes('4'))) return null
     return {
       name: fmtMsg(':cmsProjectWritten.form.!{l5hz6ugsxfxlg2nyfs7}', '录入笔试成绩'),
       action: () => { history.goto(`/cmsProjectWritten/add/${data.fdId}`) },
@@ -322,10 +317,11 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         authURL: '/cmsProjectWritten/add',
       }
     }
-  }, [history])
+  }, [history, data?.fdProcessFlag, btnStatus])
 
   const handleEnterInterview = useCallback(() => {
-    if (!btnStatus) return null
+    if (!btnStatus || !data.fdProcessFlag) return null
+    if (data.fdProcessFlag && !(data.fdProcessFlag.includes('1') && !data.fdProcessFlag.includes('4'))) return null
     return {
       name: fmtMsg(':cmsProjectInterview.form.!{l5hz6ugsxfxlg2nyfs7}', '录入面试成绩'),
       action: () => { history.goto(`/cmsProjectInterview/add/${data.fdId}`) },
@@ -334,9 +330,10 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         authURL: '/cmsProjectInterview/add',
       }
     }
-  }, [history])
+  }, [history, data?.fdProcessFlag])
   const handleEnterSelectInfo = useCallback(() => {
-    if (!btnStatus) return null
+    if (!btnStatus || !data.fdProcessFlag) return null
+    if (data.fdProcessFlag && !(data.fdProcessFlag.includes('4') && !data.fdProcessFlag.includes('5'))) return null
     return {
       name: fmtMsg(':menu.!{mctpwprd794p}', '发布中选信息'),
       action: () => {
@@ -351,9 +348,10 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         authURL: '/cmsProjectSelectInfo/add',
       }
     }
-  }, [history, projectTemplateData])
+  }, [history, projectTemplateData, data?.fdProcessFlag, btnStatus])
   const handleEnterStaffReview = useCallback(() => {
-    if (!btnStatus) return null
+    if (!btnStatus || !data.fdProcessFlag) return null
+    if (data.fdProcessFlag && !(data.fdProcessFlag.includes('3') && !data.fdProcessFlag.includes('5'))) return null
     return {
       name: fmtMsg(':cmsProjectInterview.form.!{l5j0eriwqaq645oi9c}', '外包人员评审'),
       action: () => {
@@ -368,63 +366,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         authURL: '/cmsStaffReview/add',
       }
     }
-  }, [history, staffTemplateData])
-
-  // 提交按钮
-  // const _btn_submit = useMemo(() => {
-  //   const submitBtn = <Button type='primary' onClick={() => handleSave(false)}>提交</Button>
-  //   if (roleArr && roleArr.length) {
-  //     return submitBtn
-  //   } else {
-  //     return null
-  //   }
-  // }, [data, flowData, params])
-
-
-
-  // 编辑按钮
-  // const _btn_edit = useMemo(() => {
-  //   const status = data.fdProcessStatus || getFlowStatus(flowData)
-  //   if (status === ESysLbpmProcessStatus.ABANDONED || status === ESysLbpmProcessStatus.COMPLETED) return null
-  //   const editBtn = <Button onClick={handleEdit}>编辑</Button>
-  //   const authEditBtn = <Auth.Auth
-  //     authURL='/cmsProjectDemand/edit'
-  //     authModuleName='cms-out-manage'
-  //     params={{
-  //       vo: { fdId: params['id'] }
-  //     }}
-  //   >
-  //     {editBtn}
-  //   </Auth.Auth>
-  //   return (
-  //     status === ESysLbpmProcessStatus.DRAFT || status === ESysLbpmProcessStatus.REJECT || status === ESysLbpmProcessStatus.WITHDRAW)
-  //     ? authEditBtn
-  //     // 流程流转中并且有编辑权限，可编辑表单
-  //     : (status === ESysLbpmProcessStatus.ACTIVATED
-  //       && authEditBtn
-  //     )
-  // }, [params, data])
-
-  // 删除按钮
-  // const _btn_delete = useMemo(() => {
-  //   const status = getFlowStatus(flowData)
-  //   const deleteBtn = <Button type='default' onClick={handleDel}>删除</Button>
-  //   return (
-  //     // 如果有回复协同的操作，则要校验权限
-  //     status === ESysLbpmProcessStatus.DRAFT && !lbpmComponentRef.current.checkOperationTypeExist(flowData.identity, EOperationType.handler_replyDraftCooperate)
-  //       ? deleteBtn
-  //       : <Auth.Auth authURL='/cmsProjectDemand/delete'
-  //         authModuleName='cms-out-manage'
-  //         params={{
-  //           vo: { fdId: params['id'] }
-  //         }}>
-  //         {deleteBtn}
-  //       </Auth.Auth>
-  //   )
-  // }, [flowData, params])
-
-
-
+  }, [history, staffTemplateData, data?.fdProcessFlag, btnStatus])
 
   const handleEdit = () => {
     if (Object.keys(flowData).length === 0) {
@@ -566,7 +508,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
           form: (
             <div>
               <div className='form'><XForm formRef={formComponentRef} value={data || {}} materialVis={materialVis} editFlag={editFlag} fdSuppliesVisible={fdSuppliesVisible} /></div>
-              {renderTab()}
+              {data.fdProcessStatus === '30' ? renderTab() : null}
             </div>
           )
         }}
@@ -606,8 +548,8 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   }
 
   // 保存订单响应数据
-  const handleOrderDetailSave = () => {
-    orderDetailList.current.forEach(async (i) => {
+  const handleOrderDetailSave = async () => {
+    const requestArr = orderDetailList.current.map(i => {
       const params = {
         fdId: i.fdMain.fdId,
         cmsOrderDetail: [
@@ -618,24 +560,24 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
           }
         ]
       }
-      try {
-        await apiOrder.updateDetail(params)
-      } catch (error) {
-        console.log('error', error)
-      }
+      return apiOrder.updateDetail(params)
     })
+    const res = await Promise.all(requestArr)
+    //@ts-ignore
+    const success = res.every(i => i.success)
+    if (success) {
+      Message.success('保存成功')
+    } else {
+      Message.error('保存失败')
+    }
   }
 
   const operations = useMemo(() => (
     saveBtnVisible ? (
       <Fragment>
-        <Auth.Auth
-          authURL='/cmsOrderResponse/updateDetail'
-          authModuleName='cms-out-manage'
-          unauthorizedPage={null}
-        >
-          <Button type='primary' style={{ marginRight: '16px' }} onClick={handleOrderDetailSave}>保存</Button>
-        </Auth.Auth>
+        {
+          editFlag ? <Button type='primary' style={{ marginRight: '16px' }} onClick={handleOrderDetailSave}>保存</Button> : null
+        }
         {
           exportRole ? (
             <Button type='primary' style={{ marginRight: '8px' }} disabled={exportDisabled} onClick={handleExportOrder}>导出</Button>
@@ -643,7 +585,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         }
       </Fragment>
     ) : null
-  ), [saveBtnVisible, exportDisabled, data.fdProcessStatus])
+  ), [saveBtnVisible, exportDisabled, data.fdProcessStatus, editFlag])
 
 
   const renderTab = () => {
@@ -652,44 +594,51 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         <Tabs defaultActiveKey="1" tabBarExtraContent={operations} onChange={(v) => setSaveBtnVisible(v === '1' && data.fdProcessStatus === '30')}>
           <TabPane tab={fdSuppliesVisible ? '外包人员信息' : '订单响应'} key="1">
             <EditTable
+              editFlag={editFlag}
               param={params}
               onchange={(e) => { handleChange(e) }}
               onExport={(data, columns, hiddenKey, selectArr) => { handleExport(data, columns, hiddenKey, selectArr) }}
             />
           </TabPane>
-          <TabPane tab="笔试" key="2">
-            <CmsListView
-              apiRequest={apiProjectWritten.listWritten}
-              columns={cmsProjectWrittenList}
-              params={staffReviewParams}
-              onRowUrl={'/cmsProjectWritten/view/'}
-            />
-          </TabPane>
-          <TabPane tab="面试" key="3">
-            <CmsListView
-              apiRequest={apiProjectInterview.listInterview}
-              columns={cmsProjectInterviewList}
-              params={staffReviewParams}
-              onRowUrl={'/cmsProjectInterview/view/'}
-            />
-          </TabPane>
-          <TabPane tab="外包人员评审" key="4" >
-            <CmsListView
-              apiRequest={apiStaffReviewList.listStaffReview}
-              columns={staffReviewColumns}
-              params={staffReviewParams}
-              onRowUrl={staffReviewRoute}
-            />
-          </TabPane>
-          <TabPane tab="中选信息" key="5">
-            <CmsListView
-              history={history}
-              params={staffReviewParams}
-              apiRequest={apiSelectInfo.listSelectInfo}
-              columns={projectSelectInfocolumns}
-              onRowUrl={'/cmsProjectSelectInfo/view/'}
-            />
-          </TabPane>
+          {
+            !fdSuppliesVisible ? (
+              <Fragment>
+                <TabPane tab="笔试" key="2">
+                  <CmsListView
+                    apiRequest={apiProjectWritten.listWritten}
+                    columns={cmsProjectWrittenList}
+                    params={staffReviewParams}
+                    onRowUrl={'/cmsProjectWritten/view/'}
+                  />
+                </TabPane>
+                <TabPane tab="面试" key="3">
+                  <CmsListView
+                    apiRequest={apiProjectInterview.listInterview}
+                    columns={cmsProjectInterviewList}
+                    params={staffReviewParams}
+                    onRowUrl={'/cmsProjectInterview/view/'}
+                  />
+                </TabPane>
+                <TabPane tab="外包人员评审" key="4" >
+                  <CmsListView
+                    apiRequest={apiStaffReviewList.listStaffReview}
+                    columns={staffReviewColumns}
+                    params={staffReviewParams}
+                    onRowUrl={staffReviewRoute}
+                  />
+                </TabPane>
+                <TabPane tab="中选信息" key="5">
+                  <CmsListView
+                    history={history}
+                    params={staffReviewParams}
+                    apiRequest={apiSelectInfo.listSelectInfo}
+                    columns={projectSelectInfocolumns}
+                    onRowUrl={'/cmsProjectSelectInfo/view/'}
+                  />
+                </TabPane>
+              </Fragment>
+            ) : null
+          }
         </Tabs>
       </div>
     )
@@ -709,130 +658,6 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
       </div>
     </Auth.Auth>
   )
-
-  // return (
-  //   <Auth.Auth
-  //     authURL='/cmsProjectDemand/get'
-  //     authModuleName='cms-out-manage'
-  //     params={{ vo: { fdId: params['id'] } }}
-  //     unauthorizedPage={
-  //       <Status type={EStatusType._403} title='抱歉，您暂无权限访问当前页面' />
-  //     }
-  //   >
-  //     <div className={baseCls}>
-  //       <div className='lui-approve-template'>
-  //         {/* 操作区 */}
-  //         <div className='lui-approve-template-header'>
-  //           <Breadcrumb>
-  //             <Breadcrumb.Item>项目管理</Breadcrumb.Item>
-  //             <Breadcrumb.Item>查看</Breadcrumb.Item>
-  //           </Breadcrumb>
-  //           <div className='buttons'>
-  //             {_btn_submit}
-  //             {_btn_edit}
-  //             {_btn_delete}
-  //             <Button type='default' onClick={handleEnterSelectInfo}>{fmtMsg(':menu.!{mctpwprd794p}', '发布中选信息')}</Button>
-  //             <Button type='default' onClick={handleEnterWritten}>{fmtMsg(':cmsProjectWritten.form.!{l5hz6ugsxfxlg2nyfs7}', '录入笔试成绩')}</Button>
-  //             <Button type='default' onClick={handleEnterInterview}>{fmtMsg(':cmsProjectInterview.form.!{l5hz6ugsxfxlg2nyfs7}', '录入面试成绩')}</Button>
-  //             <Button type='default' onClick={handleEnterStaffReview}>{fmtMsg(':cmsProjectInterview.form.!{l5j0eriwqaq645oi9c}', '外包人员评审')}</Button>
-  //             <Button type='default' onClick={handleOrder}>订单响应</Button>
-  //             <Button type='default' onClick={handleClose}>关闭</Button>
-  //           </div >
-  //         </div >
-  //         {/* 内容区 */}
-  //         <div className='lui-approve-template-content' >
-  //           <div className='left'>
-  //             {/* 表单信息 */}
-  //             <div className='form'>
-  //               <XForm formRef={formComponentRef} value={data || {}} materialVis={materialVis} editFlag={editFlag} />
-  //             </div>
-  //             <div className='lui-btns-tabs'>
-  //               <Tabs defaultActiveKey="1" tabBarExtraContent={operations} onChange={(v) => setSaveBtnVisible(v === '5')}>
-  //                 <TabPane tab="笔试" key="1">
-  //                   <CmsListView
-  //                     apiRequest={apiProjectWritten.listWritten}
-  //                     columns={cmsProjectWrittenList}
-  //                     params={staffReviewParams}
-  //                     onRowUrl={'/cmsProjectWritten/view/'}
-  //                   />
-  //                 </TabPane>
-  //                 <TabPane tab="面试" key="2">
-  //                   <CmsListView
-  //                     apiRequest={apiProjectInterview.listInterview}
-  //                     columns={cmsProjectInterviewList}
-  //                     params={staffReviewParams}
-  //                     onRowUrl={'/cmsProjectInterview/view/'}
-  //                   />
-  //                 </TabPane>
-  //                 <TabPane tab="外包人员评审" key="3" >
-  //                   <CmsListView
-  //                     apiRequest={apiStaffReviewList.listStaffReview}
-  //                     columns={staffReviewColumns}
-  //                     params={staffReviewParams}
-  //                     onRowUrl={staffReviewRoute}
-  //                   />
-  //                 </TabPane>
-  //                 <TabPane tab="中选信息" key="4">
-  //                   <CmsListView
-  //                     history={history}
-  //                     params={staffReviewParams}
-  //                     apiRequest={apiSelectInfo.listSelectInfo}
-  //                     columns={projectSelectInfocolumns}
-  //                     onRowUrl={'/cmsProjectSelectInfo/view/'}
-  //                   />
-  //                 </TabPane>
-  //                 <TabPane tab="订单响应" key="5">
-  //                   <EditTable
-  //                     param={params}
-  //                     onchange={(e) => { handleChange(e) }}
-  //                   />
-  //                 </TabPane>
-  //               </Tabs>
-  //             </div>
-  //             {/* 机制页签 */}
-  //             <div className='tabs'>
-  //               <LBPMTabs
-  //                 fdId={templateId}
-  //                 processId={data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId}
-  //                 getFormValue={() => formComponentRef.current && formComponentRef.current.getValue()}
-  //                 extra={[
-  //                   {
-  //                     key: 'right',
-  //                     name: '权限管理',
-  //                     children: (
-  //                       <RightFragment
-  //                         wrapperRef={rightComponentRef}
-  //                         hasFlow={true}
-  //                         mechanism={data?.mechanisms && data?.mechanisms['sys-right']}
-  //                         getFormValue={() => formComponentRef.current && formComponentRef.current.getValue()} />
-  //                     )
-  //                   }
-  //                 ]} />
-  //             </div>
-  //           </div>
-  //           <div className='right'>
-  //             {/* 审批操作 */}
-  //             <div className='lui-approve-template-main'>
-  //               <LBPMFormFragment
-  //                 auditType={data.fdProcessStatus === '30' ? 'baseInfo' : 'audit'}
-  //                 mode='view'
-  //                 approveLayout='rightButton'
-  //                 wrappedComponentRef={lbpmComponentRef}
-  //                 moduleCode='cms-out-manage-demand'
-  //                 onChange={(v) => setFlowData(v)}
-  //                 mechanism={{
-  //                   formId: templateId,
-  //                   processTemplateId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdTemplateId,
-  //                   processId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId
-  //                 }}
-  //                 getFormValue={() => formComponentRef.current && formComponentRef.current.getValue()} />
-  //             </div>
-  //           </div>
-  //         </div>
-  //       </div >
-  //     </div >
-  //   </Auth.Auth >
-  // )
 })
 
 export default Content
