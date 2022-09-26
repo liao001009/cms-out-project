@@ -90,7 +90,7 @@ const EditTable = (props: IProps) => {
         },
         {
           title: '电话',
-          dataIndex: 'fdPhoto',
+          dataIndex: 'fdPhone',
           width: 120,
           render: (text) => <span title={text}>{text}</span>
         },

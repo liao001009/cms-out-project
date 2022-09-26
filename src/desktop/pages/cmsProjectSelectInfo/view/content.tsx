@@ -196,12 +196,7 @@ const Content: React.FC<IContentViewProps> = props => {
 
 
   const handleEdit = () => {
-    if (Object.keys(flowData).length === 0) {
-      return null
-    }
-    const status = data.fdProcessStatus || getFlowStatus(flowData)
-    if (status === ESysLbpmProcessStatus.ABANDONED || status === ESysLbpmProcessStatus.COMPLETED) return null
-    if (status === ESysLbpmProcessStatus.DRAFT || status === ESysLbpmProcessStatus.REJECT || status === ESysLbpmProcessStatus.WITHDRAW || status === ESysLbpmProcessStatus.ACTIVATED) return null
+
     const authParams = {
       vo: { fdId: params['id'] }
     }
@@ -234,13 +229,7 @@ const Content: React.FC<IContentViewProps> = props => {
     })
   }, [])
   const handleDel = () => {
-    if (Object.keys(flowData).length === 0) {
-      return null
-    }
-    const status = getFlowStatus(flowData)
-    if (status !== ESysLbpmProcessStatus.DRAFT && lbpmComponentRef.current?.checkOperationTypeExist(flowData.identity, EOperationType.handler_replyDraftCooperate)) {
-      return null
-    }
+
     const authParams = {
       vo: { fdId: params['id'] }
     }
