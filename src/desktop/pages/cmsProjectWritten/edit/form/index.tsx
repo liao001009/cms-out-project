@@ -123,7 +123,8 @@ const XForm = (props) => {
           }
         }
       })
-      if (!arr.includes(v.fdSupplier) && fdWrittenPass === '1') {
+      const checkArr = arr.findIndex(item=>item.fdId===v.fdSupplier.fdId)
+      if (checkArr===-1 && fdWrittenPass === '1') {
         arr.push(v.fdSupplier)
       }
     })
@@ -355,7 +356,7 @@ const XForm = (props) => {
                     }
                   }
                 })
-                // checkDetailWS(fdQualifiedMark)
+                checkDetailWS(fdQualifiedMark)
               }
             }]
           }
@@ -606,7 +607,7 @@ const XForm = (props) => {
                       formatType: 'base'
                     }}
                     showStatus="edit"
-                    onblur={(v) => checkDetailWS(v)}
+                    onChange={(v) => checkDetailWS(v)}
                   ></XformNumber>
                 </Form.Item>
               </XformFieldset>

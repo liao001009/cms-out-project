@@ -2328,7 +2328,7 @@
     solarlunar "~2.0.7"
     video-react "^0.15.0"
 
-"@lui/core@^5.1.0-beta.181":
+"@lui/core@^5.1.0-beta.285":
   version "5.1.0-rc.4"
   resolved "http://npm.landray.com.cn/@lui%2fcore/-/core-5.1.0-rc.4.tgz#8c3dcfbbf451e8dfe126fd8f882d9f218f54c0eb"
   integrity sha512-Q2KO6i+7a1DEpLxJmmJ+bS71bmLVOuFhRrOA7TnATvNxwjdEUhSSmUuZmLlOVensAilXuL6+QzsZH6Z5Anynqg==

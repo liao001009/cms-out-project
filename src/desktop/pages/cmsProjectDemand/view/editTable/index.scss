@@ -10,4 +10,18 @@
       white-space: initial;
     }
   }
+
+  .lui-pro-table-cell-serial {
+    white-space: nowrap;
+  }
+
+  .lui-table-thead > tr > th {
+    color: #354052;
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  .lui-table-thead > tr > th:not(:last-child):not(.lui-table-row-expand-icon-cell):not([colspan])::before {
+    display: none;
+  }
 }

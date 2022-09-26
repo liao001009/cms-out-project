@@ -118,10 +118,14 @@ const Content: React.FC<IContentViewProps> = props => {
       return
     }
     // 拼装提交数据
-    const values = await _formatValue(isDraft)
+    let values = await _formatValue(isDraft)
     // 文档提交前事件
     if (await _beforeSave(isDraft) === false) {
       return
+    }
+    values = {
+      ...values,
+      cmsProjectStaffList: Array.isArray(values.cmsProjectStaffList) ? values.cmsProjectStaffList : values.cmsProjectStaffList.values
     }
     // 提交
     api.update(values as any).then(res => {

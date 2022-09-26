@@ -99,7 +99,6 @@ const XForm = (props) => {
   }
 
   const getProjectDemand = async (fdId) => {
-
     const res = await apiProjectDemand.listDemand({
       'conditions': {
         'cmsProjectDemandSupp.fdSupplier.fdId': {
@@ -120,6 +119,14 @@ const XForm = (props) => {
     setSelectedPostData(newSelectPost)
   }, [selectedFrame, postData, levelData])
 
+  const handleSetFdSupplier = (val) => {
+    setAssignSupplier(val.fdName)
+    form.setFieldsValue({
+      fdSupplies: []
+    })
+    const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectDemandSupp').values
+    valuesData.length && detailForms.current.cmsProjectDemandSupp.current.deleteAll()
+  }
   // 对外暴露接口
   useApi({
     form,
@@ -578,7 +585,7 @@ const XForm = (props) => {
                                 showStatus='add'
                                 modalTitle='供应商选择'
                                 criteriaProps={['fdOrgCode', 'fdFrame.fdName']}
-                                onChange={(v) => setAssignSupplier(v.fdName)}
+                                onChange={(v) => handleSetFdSupplier(v)}
                               />
                             </Form.Item>
                           </XformFieldset>
@@ -1143,7 +1150,7 @@ const XForm = (props) => {
                       canDeleteRow={true}
                       canImport={false}
                       canExport={false}
-                      canExpand={false}
+                      canExpand={true}
                       showStatus="edit"
                     ></XformDetailTable>
                   </Form.Item>
@@ -1276,7 +1283,7 @@ const XForm = (props) => {
                               refFieldName: '$fd_supplier_name$'
                             },
 
-                            showStatus: 'edit'
+                            showStatus: 'readOnly'
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称'),
@@ -1291,6 +1298,7 @@ const XForm = (props) => {
                           type: XformSelect,
                           controlProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架'),
+                            placeholder: fmtMsg(':cmsOutStaffInfo.form.!{l3mpxl7izzanc6s2rh}', '请输入'),
                             name: 'fdFrame',
                             renderMode: 'select',
                             direction: 'column',
@@ -1365,11 +1373,11 @@ const XForm = (props) => {
                           label: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额')
                         }
                       ]}
-                      canAddRow={true}
-                      canDeleteRow={true}
+                      canAddRow={false}
+                      canDeleteRow={false}
                       canImport={false}
                       canExport={false}
-                      canExpand={false}
+                      canExpand={true}
                       showStatus="edit"
                     ></XformDetailTable>
                   </Form.Item>
