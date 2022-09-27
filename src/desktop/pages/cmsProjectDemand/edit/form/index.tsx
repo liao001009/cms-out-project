@@ -785,6 +785,7 @@ const XForm = (props) => {
                   <Form.Item
                     name={'cmsProjectDemandWork'}
                     noStyle
+                    validateTrigger={false}
                     rules={[
                       {
                         validator: (rule, value, callback) => {
@@ -952,6 +953,7 @@ const XForm = (props) => {
                   <Form.Item
                     name={'cmsProjectDemandDetail'}
                     noStyle
+                    validateTrigger={false}
                     rules={[
                       {
                         validator: (rule, value, callback) => {
@@ -1209,6 +1211,7 @@ const XForm = (props) => {
                 <XformFieldset>
                   <Form.Item
                     name={'cmsProjectDemandSupp'}
+                    validateTrigger={false}
                     noStyle
                     rules={[
                       {

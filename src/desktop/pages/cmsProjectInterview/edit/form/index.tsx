@@ -69,7 +69,7 @@ const XForm = (props) => {
       const ids = resOrder?.data?.content?.map(i => {
         return i.fdId
       })
-      if(ids.length>0){
+      if (ids.length > 0) {
         const newParam = {
           fdId: {
             searchKey: '$in',
@@ -97,8 +97,8 @@ const XForm = (props) => {
           }
         }
       })
-      const checkArr = arr.findIndex(item=>item.fdId===v.fdSupplier.fdId)
-      if (checkArr===-1 && fdInterviewPass === '1') {
+      const checkArr = arr.findIndex(item => item.fdId === v.fdSupplier.fdId)
+      if (checkArr === -1 && fdInterviewPass === '1') {
         arr.push(v.fdSupplier)
       }
     })
@@ -277,6 +277,7 @@ const XForm = (props) => {
               <XformFieldset>
                 <Form.Item
                   name={'cmsProjectInterDetail'}
+                  validateTrigger={false}
                   noStyle
                   rules={[
                     {

@@ -247,6 +247,7 @@ const XForm = (props) => {
                 <XformFieldset>
                   <Form.Item
                     name={'cmsStaffReviewDetail'}
+                    validateTrigger={false}
                     noStyle
                     rules={[
                       {

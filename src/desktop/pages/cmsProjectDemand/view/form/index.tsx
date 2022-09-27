@@ -687,6 +687,7 @@ const XForm = (props) => {
                 <XformFieldset>
                   <Form.Item
                     name={'cmsProjectDemandWork'}
+                    validateTrigger={false}
                     noStyle
                     rules={[
                       {
@@ -838,6 +839,7 @@ const XForm = (props) => {
                 <XformFieldset>
                   <Form.Item
                     name={'cmsProjectDemandDetail'}
+                    validateTrigger={false}
                     noStyle
                     rules={[
                       {
@@ -1016,6 +1018,7 @@ const XForm = (props) => {
                     <XformFieldset>
                       <Form.Item
                         name={'cmsProjectDemandSupp'}
+                        validateTrigger={false}
                         noStyle
                         rules={[
                           {
