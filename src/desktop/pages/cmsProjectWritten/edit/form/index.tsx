@@ -33,22 +33,22 @@ const XForm = (props) => {
   const { formRef: formRef, value: value } = props
   const [form] = Form.useForm()
   const [ivVisible, setIvVisible] = useState<string>(value.fdIsInterview || '1')
-  const [nSVisible, setNSVisible] = useState<string>(value.fdNoticeSupplier|| '1')
+  const [nSVisible, setNSVisible] = useState<string>(value.fdNoticeSupplier || '1')
   const [supplierData, setSupplierData] = useState<any>([])
   const [defaultTableCriteria, setDefaultTableCriteria] = useState<any>({})
   const [staffInfo, setStaffInfo] = useState<any>([])
-  const getTag = ()=>{
-    setTimeout(()=>{
+  const getTag = () => {
+    setTimeout(() => {
       const parentNode = document.querySelector('div[class="ele-xform-detail-table-toolbar-right-buttons"]')
-      const uploadDown = document.getElementById('uploadDown')||document.createElement('div')
+      const uploadDown = document.getElementById('uploadDown') || document.createElement('div')
       const addRow = document.querySelector('button[title="添加行"]')
       parentNode?.insertBefore(uploadDown, addRow)
       uploadDown.style.display = 'block'
-    },500)
+    }, 500)
   }
   useEffect(() => {
     init()
-    const paramId = props?.match?.params?.id
+    let paramId = props?.match?.params?.id
     if (props.mode === 'add') {
       form.setFieldsValue({
         fdProjectDemand: paramId,
@@ -56,12 +56,12 @@ const XForm = (props) => {
         fdIsInterview: ['1'],
         fdNoticeInterviewer: ['1']
       })
-    }else{
+    } else {
       // 后端数据结构是字符串，要求前端用checkbox，所以只能转换
       value.fdIsInterview = [value.fdIsInterview]
       value.fdNoticeSupplier = [value.fdNoticeSupplier]
       value.fdNoticeInterviewer = [value.fdNoticeInterviewer]
-
+      paramId = value.fdProjectDemand.fdId
     }
     if (paramId) {
       initData(paramId)
@@ -82,7 +82,7 @@ const XForm = (props) => {
         return item
       })
       setSupplierData(arr)
-      
+
     } catch (error) {
       console.log('error', error)
     }
@@ -123,8 +123,8 @@ const XForm = (props) => {
           }
         }
       })
-      const checkArr = arr.findIndex(item=>item.fdId===v.fdSupplier.fdId)
-      if (checkArr===-1 && fdWrittenPass === '1') {
+      const checkArr = arr.findIndex(item => item.fdId === v.fdSupplier.fdId)
+      if (checkArr === -1 && fdWrittenPass === '1') {
         arr.push(v.fdSupplier)
       }
     })
@@ -148,14 +148,15 @@ const XForm = (props) => {
     detailForms
   })
 
-  useEffect(()=>{
+  useEffect(() => {
     columns()
-  },[ivVisible])
+  }, [ivVisible])
 
-  const columns = ()=>{
+  const columns = () => {
     const data: any[] = [
       {
         type: CMSXformModal,
+        key: defaultTableCriteria,
         controlProps: {
           apiKey: apiStaffInfo,
           apiName: 'listStaffInfo',
@@ -202,7 +203,7 @@ const XForm = (props) => {
               rowValue: {
                 rowNum: r,
                 value: {
-                  fdSupplier: v.fdSupplier, 
+                  fdSupplier: v.fdSupplier,
                   fdHighestEducation: v.fdHighestEducation,
                   fdEmail: v.fdEmail,
                   fdWrittenPass: '',
@@ -409,8 +410,8 @@ const XForm = (props) => {
         label: fmtMsg(':cmsProjectWritten.form.!{l5i2sy26tahw90jp8ej}', '是否通过笔试')
       },
     ]
-    if(ivVisible==='1'){
-      data.push( 
+    if (ivVisible === '1') {
+      data.push(
         {
           type: XformDatetime,
           controlProps: {
@@ -477,27 +478,27 @@ const XForm = (props) => {
 
 
   const [visible, setVisible] = useState<boolean>(false)
-  
 
-  const uploadExecl = ()=>{
+
+  const uploadExecl = () => {
     setVisible(true)
   }
-  const handleCancel = ()=>{
+  const handleCancel = () => {
     setVisible(false)
   }
-  
-  const downloadExecl = ()=>{
-    window.open(mk.getResourcePath('@module:cms-out-project/desktop/static/attach/笔试成绩模板.xlsx'),'_blank')
-  }
-  
 
-  const handlerChange = (data)=>{
+  const downloadExecl = () => {
+    window.open(mk.getResourcePath('@module:cms-out-project/desktop/static/attach/笔试成绩模板.xlsx'), '_blank')
+  }
+
+
+  const handlerChange = (data) => {
     const array = Object.values(data)
     setDetailTable(array)
   }
 
-  const getField = (str: string)=>{
-    return str.substring(str.lastIndexOf('/')+1)
+  const getField = (str: string) => {
+    return str.substring(str.lastIndexOf('/') + 1)
   }
 
   const getStaffInfo = async () => {
@@ -510,34 +511,34 @@ const XForm = (props) => {
     }
   }
 
-  const checkPersonInfo = (keyVal)=>{
-    if(!staffInfo){
-      return 
+  const checkPersonInfo = (keyVal) => {
+    if (!staffInfo) {
+      return
     }
-    return staffInfo.find(item=>item.fdName===keyVal)
+    return staffInfo.find(item => item.fdName === keyVal)
   }
 
-  
 
-  
-  const setDetailTable  = (data)=>{
+
+
+  const setDetailTable = (data) => {
     const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectWrittenDe').values
     valuesData.length && detailForms.current.cmsProjectWrittenDe.current.deleteAll()
     const fdQualifiedMark = form.getFieldValue('fdQualifiedMark')
-    if(data.length>0){
+    if (data.length > 0) {
       const newValue = data[0]?.map(i => {
-        let item : any= {}
-        Object.keys(i).forEach(key=>{
+        let item: any = {}
+        Object.keys(i).forEach(key => {
           const field = getField(key)
           item = {
-            ...item, 
-            [field] : i[key],
+            ...item,
+            [field]: i[key],
           }
-          console.log('fdW--item',item)
-          
+          console.log('fdW--item', item)
+
         })
         const fdWrittenPass = Number(item['fdWrittenScores']) <= Number(fdQualifiedMark) ? '0' : '1'
-        const personInfo = checkPersonInfo( item['fdInterviewName'] )
+        const personInfo = checkPersonInfo(item['fdInterviewName'])
         item['fdInterviewName'] = personInfo
         item = {
           ...item,
@@ -549,7 +550,7 @@ const XForm = (props) => {
       detailForms.current.cmsProjectWrittenDe.current.updateValues(newValue)
       handleCancel()
     }
-    
+
   }
 
 
@@ -558,7 +559,7 @@ const XForm = (props) => {
       <Form form={form} colPadding={false} onValuesChange={onValuesChange}>
         <XformAppearance>
           <LayoutGrid columns={2} rows={9}>
-           
+
             <GridItem column={1} row={2} rowSpan={1} columnSpan={1}>
               <XformFieldset
                 mobileContentAlign={'right'}
@@ -659,19 +660,19 @@ const XForm = (props) => {
                     placeholder={'请输入'}
                     dataPattern={'yyyy-MM-dd'}
                     showStatus={EShowStatus.readOnly}
-                    // defaultValueType='now'
-                    // defaultValue={new Date().getTime()}
+                  // defaultValueType='now'
+                  // defaultValue={new Date().getTime()}
                   ></XformDatetime>
                 </Form.Item>
               </XformFieldset>
             </GridItem>
-            <div id='uploadDown' style={{display:'none'}}>
+            <div id='uploadDown' style={{ display: 'none' }}>
               <Button.Group amount={2} className='lui-test-btn-group' shape='link'>
                 <Button onClick={() => { uploadExecl() }} type='default' label='上传' icon={<Icon type='vector' name='upload' />} />
                 <Button onClick={() => { downloadExecl() }} type='default' label='下载模板' icon={<Icon type='vector' name='download' />} >
                 </Button>
               </Button.Group>
-              <XformExecl onChange={(info) => { handlerChange(info) }} handleCancel={()=>{handleCancel()}} visible={visible} />
+              <XformExecl onChange={(info) => { handlerChange(info) }} handleCancel={() => { handleCancel() }} visible={visible} />
             </div>
             <GridItem column={1} row={4} columnSpan={2} rowSpan={1}>
               <XformFieldset>
@@ -693,7 +694,7 @@ const XForm = (props) => {
                     }
                   ]}
                 >
-                  
+
                   <XformDetailTable
                     {...sysProps}
                     $$ref={detailForms.current.cmsProjectWrittenDe}
@@ -716,8 +717,8 @@ const XForm = (props) => {
                 </Form.Item>
               </XformFieldset>
             </GridItem>
-       
-           
+
+
 
             <GridItem column={1} row={5} rowSpan={1} columnSpan={1}>
               <XformFieldset
@@ -749,7 +750,7 @@ const XForm = (props) => {
                     optionSource={'custom'}
                     showStatus="edit"
                     onChange={(v) => {
-                      setIvVisible(v[v.length-1])
+                      setIvVisible(v[v.length - 1])
                       // form.setFieldsValue({
                       //   fdInterviewer: [],
                       //   fdSupplierTotal: []
@@ -767,7 +768,7 @@ const XForm = (props) => {
                 mobileContentAlign={'right'}
                 title={fmtMsg(':cmsProjectWritten.form.!{l5hzlb769gv64l5j7ke}', '面试官')}
                 layout={'horizontal'}
-                hidden={ivVisible !== '1'} 
+                hidden={ivVisible !== '1'}
               >
                 <Form.Item name={'fdInterviewer'}>
                   <XformAddress
@@ -792,7 +793,7 @@ const XForm = (props) => {
                 mobileContentAlign={'right'}
                 title={fmtMsg(':cmsProjectWritten.form.!{l5hzkchugrzq1fyh4b}', '邮件通知供应商')}
                 layout={'horizontal'}
-                hidden={ivVisible !== '1'} 
+                hidden={ivVisible !== '1'}
               >
                 <Form.Item
                   name={'fdNoticeSupplier'}
@@ -817,7 +818,7 @@ const XForm = (props) => {
                     optionSource={'custom'}
                     showStatus="edit"
                     onChange={(v) => {
-                      setNSVisible(v[v.length-1])
+                      setNSVisible(v[v.length - 1])
                       // form.setFieldsValue({
                       //   fdSupplierTotal: []
                       // })
@@ -826,7 +827,7 @@ const XForm = (props) => {
                 </Form.Item>
               </XformFieldset>
             </GridItem>
-            
+
             <GridItem column={2} row={6} columnSpan={1} rowSpan={1}
             >
               <XformFieldset
@@ -846,8 +847,8 @@ const XForm = (props) => {
                 </Form.Item>
               </XformFieldset>
             </GridItem>
-           
-                
+
+
 
             <GridItem column={1} row={7} columnSpan={1} rowSpan={1}>
               <XformFieldset
@@ -855,7 +856,7 @@ const XForm = (props) => {
                 mobileContentAlign={'right'}
                 title={fmtMsg(':cmsProjectWritten.form.!{l5hzkx122azhemlsism}', '邮件通知面试官')}
                 layout={'horizontal'}
-                hidden={ivVisible !== '1'} 
+                hidden={ivVisible !== '1'}
               >
                 <Form.Item
                   name={'fdNoticeInterviewer'}
@@ -883,7 +884,7 @@ const XForm = (props) => {
                 </Form.Item>
               </XformFieldset>
             </GridItem>
-           
+
             <GridItem column={2} row={7} columnSpan={1} rowSpan={1}
               style={{
                 display: 'none'
@@ -904,7 +905,7 @@ const XForm = (props) => {
                 </Form.Item>
               </XformFieldset>
             </GridItem>
-             
+
 
           </LayoutGrid>
         </XformAppearance>

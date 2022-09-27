@@ -169,7 +169,15 @@ const XformModal: React.FC<IProps> = (props) => {
 
   // 检验默认筛选项是否有值
   const checkFlag = () => {
-    const flag = Object.values(defaultTableCriteria).every((i: any) => i['searchValue'] && Object.values(i['searchValue']).length)
+    let flag = false
+    if (!Object.keys(defaultTableCriteria).length) return flag
+    flag = Object.values(defaultTableCriteria).every((i: any) => {
+      if (i['searchValue'] && Object.values(i['searchValue']).length) {
+        return true
+      } else {
+        return false
+      }
+    })
     return flag
   }
 
@@ -185,6 +193,8 @@ const XformModal: React.FC<IProps> = (props) => {
       }
     }
     if (!defaultSearch && !checkFlag()) return
+    console.log('checkFlag5559', checkFlag())
+    console.log('defaultTableCriteria5559', defaultTableCriteria)
     try {
       const res = await apiKey[apiName](data)
       setListData(res.data)
