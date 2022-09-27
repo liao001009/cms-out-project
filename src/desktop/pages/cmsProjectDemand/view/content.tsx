@@ -1,6 +1,4 @@
 import api from '@/api/cmsProjectDemand'
-import { getFlowStatus } from '@/desktop/shared/util'
-import { EOperationType, ESysLbpmProcessStatus } from '@/utils/status'
 import { Auth, Module } from '@ekp-infra/common'
 import { IContentViewProps } from '@ekp-runtime/render-module'
 import { Button, Loading, Message, Modal, Tabs } from '@lui/core'
@@ -58,8 +56,6 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   const lbpmComponentRef = useRef<any>()
   const rightComponentRef = useRef<any>()
 
-  // 流程数据
-  const [flowData, setFlowData] = useState<any>({})
   // 资料上传节点是否显示
   const [materialVis, setMaterialVis] = useState<boolean>(true)
   /**外包人员评审模板 */
@@ -462,9 +458,6 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
       getFormValue: () => formComponentRef?.current?.getValue?.(),
       moduleCode: 'cms-out-manage-demand',
       entityName,
-      onChange: (value) => {
-        setFlowData(value)
-      },
       processId: processId,
       onSubmit: () => { handleSave(false) },
       submitting: false,

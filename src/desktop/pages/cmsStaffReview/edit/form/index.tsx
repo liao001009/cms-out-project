@@ -12,12 +12,12 @@ import XformInput from '@/desktop/components/form/XformInput'
 import XformDatetime from '@/desktop/components/form/XformDatetime'
 import XformAddress from '@/desktop/components/form/XformAddress'
 import XformDetailTable from '@/desktop/components/form/XformDetailTable'
-import XformRelation from '@/desktop/components/form/XformRelation'
 import XformNumber from '@/desktop/components/form/XformNumber'
 import XformSelect from '@/desktop/components/form/XformSelect'
 import CMSXformModal, { EShowStatus } from '@/desktop/components/cms/XformModal'
 import apiSupplierInfo from '@/api/cmsSupplierInfo'
 import apiOutStaffInfo from '@/api/cmsOutStaffInfo'
+import apiLevel from '@/api/cmsLevelInfo'
 import { supplierColumns } from '@/desktop/pages/common/common'
 const MECHANISMNAMES = {}
 const baseCls = 'project-review-form'
@@ -30,6 +30,7 @@ const XForm = (props) => {
   const [supplierInfoArr, setSupplierInfoArr] = useState<any>([])
   const [supplierInfoList, setsupplierInfoList] = useState<any>([])
   const [outStaffInfoArr, setOutStaffInfoArr] = useState<any>([])
+  const [levelList, setLevelList] = useState<any>([])
   const getList = async (api, func) => {
     try {
       const res = await api
@@ -77,6 +78,7 @@ const XForm = (props) => {
   }
   useEffect(() => {
     getList(apiOutStaffInfo.listStaffInfo({}), setOutStaffInfoArr)
+    getList(apiLevel.list({}), setLevelList)
     getSupplier()
   }, [])
   // 对外暴露接口
@@ -477,44 +479,16 @@ const XForm = (props) => {
                           label: fmtMsg(':cmsStaffReview.form.!{l5m8ahrw75gp6s7y6qi}', '评审结论')
                         },
                         {
-                          type: XformRelation,
+                          type: XformSelect,
                           controlProps: {
                             title: fmtMsg(':cmsStaffReview.form.!{l5j0obajl93mj68ky2f}', '定级'),
                             name: 'fdConfirmLevel',
                             placeholder: fmtMsg(':cmsStaffReview.form.!{l5j0oball6b84dapmal}', '请输入'),
-                            options: [
-                              {
-                                label: fmtMsg(':cmsStaffReview.form.!{l5j0obamvt9a487ivrk}', '选项1'),
-                                value: '1'
-                              },
-                              {
-                                label: fmtMsg(':cmsStaffReview.form.!{l5j0obao2673dij5ja1}', '选项2'),
-                                value: '2'
-                              },
-                              {
-                                label: fmtMsg(':cmsStaffReview.form.!{l5j0obapf66egvmgped}', '选项3'),
-                                value: '3'
-                              }
-                            ],
-                            optionSource: 'custom',
+                            options: levelList,
                             desktop: {
-                              type: XformRelation
+                              type: XformSelect
                             },
-                            type: XformRelation,
-                            renderMode: 'select',
-                            direction: 'column',
-                            rowCount: 3,
-                            modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
-                            isForwardView: 'no',
-                            relationCfg: {
-                              appCode: '1g776q10pw10w5j2w27q4fgr1u02jiv194w0',
-                              xformName: '级别信息',
-                              modelId: '1g777241qw10w6osw2h8p1ig2rgc7nf192w0',
-                              tableType: 'main',
-                              tableName: 'mk_model_20220705zz96g',
-                              showFields: '$级别名称$',
-                              refFieldName: '$fd_level_name$'
-                            },
+                            type: XformSelect,
                             showStatus: 'readOnly'
                           },
                           labelProps: {
@@ -526,8 +500,8 @@ const XForm = (props) => {
                           label: fmtMsg(':cmsStaffReview.form.!{l5j0obajl93mj68ky2f}', '定级')
                         }
                       ]}
-                      canAddRow={true}
-                      canDeleteRow={true}
+                      canAddRow={false}
+                      canDeleteRow={false}
                       canImport={false}
                       showStatus="edit"
                     ></XformDetailTable>

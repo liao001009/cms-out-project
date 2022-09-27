@@ -6,8 +6,6 @@ import { Button, Message, Modal } from '@lui/core'
 import Axios from 'axios'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import XForm from './form'
-import { getFlowStatus } from '@/desktop/shared/util'
-import { EOperationType, ESysLbpmProcessStatus } from '@/utils/status'
 //@ts-ignore
 import Status, { EStatusType } from '@elements/status'
 import { useMkSendData } from '@/utils/mkHooks'
@@ -23,7 +21,6 @@ const baseCls = 'project-review-content'
 const Content: React.FC<IContentViewProps> = props => {
   const { data, history, match } = props
   const [materialVis, setMaterialVis] = useState<boolean>(true)
-  const [flowData, setFlowData] = useState<any>({}) // 流程数据
   const { params } = match
   // 模板id
   const templateId = useMemo(() => {
@@ -36,7 +33,7 @@ const Content: React.FC<IContentViewProps> = props => {
       const nodeInfosData = await apiLbpm.getCurrentNodeInfo({
         processInstanceId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId
       })
-      const url = mk.getSysConfig('apiUrlPrefix') + '/cms-out-manage/cmsStaffReview/loadNodeExtendPropertiesOnProcess'
+      const url = mk.getSysConfig('apiUrlPrefix') + '/cms-out-manage/cmsOutManageCommon/loadNodeExtendPropertiesOnProcess'
       const processData = await Axios.post(url, {
         fdId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId
       })
@@ -53,6 +50,7 @@ const Content: React.FC<IContentViewProps> = props => {
       setMaterialVis(false)
     }
   }
+
   useEffect(() => {
     getCurrentNode()
   }, [])
@@ -245,9 +243,6 @@ const Content: React.FC<IContentViewProps> = props => {
       getFormValue: () => formComponentRef?.current?.getValue?.(),
       moduleCode: 'cms-out-manage-review',
       entityName,
-      onChange: (value) => {
-        setFlowData(value)
-      },
       processId: processId,
       onSubmit: () => { handleSave(false) },
       submitting: false,
