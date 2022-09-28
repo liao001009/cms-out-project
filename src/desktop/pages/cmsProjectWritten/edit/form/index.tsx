@@ -44,7 +44,7 @@ const XForm = (props) => {
       const addRow = document.querySelector('button[title="添加行"]')
       parentNode?.insertBefore(uploadDown, addRow)
       uploadDown.style.display = 'block'
-    }, 500)
+    }, 900)
   }
   useEffect(() => {
     init()
@@ -132,6 +132,7 @@ const XForm = (props) => {
       fdSupplierTotal: arr
     })
   }
+
 
 
   // 对外暴露接口
