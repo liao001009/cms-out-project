@@ -27,12 +27,8 @@ const XForm = (props) => {
   const detailForms = useRef({
     cmsProjectStaffList: createRef() as any
   })
-  const { formRef: formRef } = props
-  let { value: value } = props
-  value = {
-    ...value,
-    fdSubject: value.fdProjectDemand.fdName
-  }
+  const { formRef: formRef, value: value } = props
+
   const [form] = Form.useForm()
   const [fdLevelData, setFdLevelData] = useState<any>([])
   useEffect(() => {
@@ -121,7 +117,7 @@ const XForm = (props) => {
                     <XformInput
                       {...sysProps}
                       placeholder={fmtMsg(':cmsProjectSelectInfo.form.!{l5luvc6m0fjjfi00tpz6}', '请输入')}
-                      showStatus="readOnly"
+                      showStatus="edit"
                     ></XformInput>
                   </Form.Item>
                 </XformFieldset>
