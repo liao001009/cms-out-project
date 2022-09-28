@@ -29,9 +29,30 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
       if (formErrors?.length > 0 && !isDraft) {
         return false
       }
+      //检查明细表姓名是否重复
+      const formValues = await formComponentRef.current.getValue() || {}
+      const cmsProjectWrittenDe = formValues?.cmsProjectWrittenDe?.values || []
+      const isRep = isReplace(cmsProjectWrittenDe)
+      if(isRep){
+        Message.error('姓名不能重复！')
+        return !isRep
+      }
     }
     return true
   }
+
+
+  const isReplace = (arr) => {
+    const hash = {}
+    for (const i in arr) {
+      if (!hash[arr[i].fdInterviewName.fdId]) {
+        hash[arr[i].fdInterviewName.fdId] = true
+      }
+    }
+    return Object.keys(hash).length < arr.length
+  }
+
+
 
   // 提交数据封装
   const _formatValue = async (isDraft: boolean, fdStatus: string) => {
@@ -50,27 +71,27 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
       })
 
       let fdProjectDemand = formValues.fdProjectDemand
-      if(typeof(fdProjectDemand)==='string'){
-        fdProjectDemand = {fdId: fdProjectDemand}
+      if (typeof (fdProjectDemand) === 'string') {
+        fdProjectDemand = { fdId: fdProjectDemand }
       }
 
-      const fdIsInterview = formValues?.fdIsInterview?.[formValues?.fdIsInterview?.length-1]
-      const fdNoticeSupplier = formValues?.fdNoticeSupplier?.[formValues?.fdNoticeSupplier?.length-1]
+      const fdIsInterview = formValues?.fdIsInterview?.[formValues?.fdIsInterview?.length - 1]
+      const fdNoticeSupplier = formValues?.fdNoticeSupplier?.[formValues?.fdNoticeSupplier?.length - 1]
       let fdInterviewer = formValues?.fdInterviewer
       let fdSupplierTotal = formValues?.fdSupplierTotal
-      if(fdIsInterview==='0'){
+      if (fdIsInterview === '0') {
         fdInterviewer = [],
         fdSupplierTotal = []
       }
-      if(fdSupplierTotal==='0'){
+      if (fdSupplierTotal === '0') {
         fdSupplierTotal = []
       }
-      
+
       values = {
         ...values,
         ...formValues,
         fdStatus: fdStatus,
-        fdIsInterview: fdIsInterview ||'0',
+        fdIsInterview: fdIsInterview || '0',
         fdNoticeSupplier: fdNoticeSupplier || '0',
         fdNoticeInterviewer: formValues?.fdNoticeInterviewer?.[0] || '0',
         cmsProjectWrittenDe: newDetail,

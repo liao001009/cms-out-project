@@ -1,20 +1,22 @@
-import React, { useRef, createRef } from 'react'
-import './index.scss'
+import apiStaffInfo from '@/api/cmsOutStaffInfo'
+import apiSupplier from '@/api/cmsSupplierInfo'
+import CMSXformModal, { EShowStatus } from '@/desktop/components/cms/XformModal'
+import GridItem from '@/desktop/components/form/GridItem'
+import LayoutGrid from '@/desktop/components/form/LayoutGrid'
+import XformAddress from '@/desktop/components/form/XformAddress'
+import XformAppearance from '@/desktop/components/form/XformAppearance'
+import XformDatetime from '@/desktop/components/form/XformDatetime'
+import XformDescription from '@/desktop/components/form/XformDescription'
+import XformDetailTable from '@/desktop/components/form/XformDetailTable'
+import XformFieldset from '@/desktop/components/form/XformFieldset'
+import XformInput from '@/desktop/components/form/XformInput'
+import XformNumber from '@/desktop/components/form/XformNumber'
+import XformSelect from '@/desktop/components/form/XformSelect'
+import { useApi, useSystem } from '@/desktop/shared/formHooks'
 import { fmtMsg } from '@ekp-infra/respect'
 import { Form } from '@lui/core'
-import { useApi, useSystem } from '@/desktop/shared/formHooks'
-import XformAppearance from '@/desktop/components/form/XformAppearance'
-import LayoutGrid from '@/desktop/components/form/LayoutGrid'
-import GridItem from '@/desktop/components/form/GridItem'
-import XformDescription from '@/desktop/components/form/XformDescription'
-import XformFieldset from '@/desktop/components/form/XformFieldset'
-import XformDatetime from '@/desktop/components/form/XformDatetime'
-import XformNumber from '@/desktop/components/form/XformNumber'
-import XformAddress from '@/desktop/components/form/XformAddress'
-import XformSelect from '@/desktop/components/form/XformSelect'
-import XformDetailTable from '@/desktop/components/form/XformDetailTable'
-import XformRelation from '@/desktop/components/form/XformRelation'
-import XformInput from '@/desktop/components/form/XformInput'
+import React, { createRef, useEffect, useRef, useState } from 'react'
+import './index.scss'
 
 const MECHANISMNAMES = {}
 
@@ -38,6 +40,26 @@ const XForm = (props) => {
     form,
     detailForms
   })
+  const [supplierData, setSupplierData] = useState<any>([])
+  const init = async () => {
+    try {
+      const res = await apiSupplier.listSupplierInfo({})
+      const arr = res.data.content.map(i => {
+        const item = {
+          value: i.fdId,
+          label: i.fdName,
+          ...i
+        }
+        return item
+      })
+      setSupplierData(arr)
+    } catch (error) {
+      console.log('error', error)
+    }
+  }
+  useEffect(() => {
+    init()
+  }, [])
   return (
     <div className={baseCls}>
       <div className="lui-xform">
@@ -205,8 +227,15 @@ const XForm = (props) => {
                       hiddenLabel={true}
                       columns={[
                         {
-                          type: XformRelation,
+                          type: CMSXformModal,
                           controlProps: {
+                            apiKey: apiStaffInfo,
+                            apiName: 'listStaffInfo',
+                            // defaultTableCriteria: defaultTableCriteria,
+                            chooseFdName: 'fdName',
+                            // columnsProps: outStaffInfoColumns,
+                            criteriaKey: 'staffReviewUpgrade',
+                            criteriaProps: ['fdStaffName.fdName', 'fdName'],
                             title: fmtMsg(':cmsProjectInterview.form.!{l5i2iuv598u3ufwarkj}', '姓名'),
                             name: 'fdInterviewName',
                             renderMode: 'singlelist',
@@ -214,22 +243,8 @@ const XForm = (props) => {
                             rowCount: 3,
                             modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
                             isForwardView: 'no',
-                            options: [
-                              {
-                                fdName: '选项1',
-                                fdId: '1'
-                              },
-                              {
-                                fdName: '选项2',
-                                fdId: '2'
-                              },
-                              {
-                                fdName: '选项3',
-                                fdId: '3'
-                              }
-                            ],
                             desktop: {
-                              type: XformRelation
+                              type: CMSXformModal
                             },
                             relationCfg: {
                               appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
@@ -240,103 +255,21 @@ const XForm = (props) => {
                               showFields: '$姓名$',
                               refFieldName: '$fd_name$'
                             },
-                            type: XformRelation,
-                            datasource: {
-                              queryCollection: {
-                                linkType: '$and',
-                                query: []
-                              },
-                              sorters: [],
-                              columns: [
-                                {
-                                  name: 'fd_name',
-                                  label: '姓名'
-                                },
-                                {
-                                  name: 'fd_inner_team',
-                                  label: '当前所属招证内部团队'
-                                },
-                                {
-                                  name: 'fd_project',
-                                  label: '当前项目'
-                                },
-                                {
-                                  name: 'fd_entry_date',
-                                  label: '参加工作日期'
-                                },
-                                {
-                                  name: 'fd_confirm_level',
-                                  label: '定级级别'
-                                },
-                                {
-                                  name: 'fdSupplier',
-                                  label: '组织信息/所属供应商'
-                                },
-                                {
-                                  name: 'fd_work_address',
-                                  label: '工作地'
-                                },
-                                {
-                                  name: 'fd_current_project_nature',
-                                  label: '当前项目性质'
-                                },
-                                {
-                                  name: 'fd_first_entrance_date',
-                                  label: '首次入场时间'
-                                },
-                                {
-                                  name: 'fd_last_upgrade_date',
-                                  label: '上次调级时间'
-                                },
-                                {
-                                  name: 'fd_status_info',
-                                  label: '状态信息'
-                                }
-                              ],
-                              filters: [
-                                {
-                                  name: 'fd_name',
-                                  label: '姓名'
-                                },
-                                {
-                                  name: 'fd_project',
-                                  label: '当前项目'
-                                },
-                                {
-                                  name: 'fd_inner_team',
-                                  label: '当前所属招证内部团队'
-                                },
-                                {
-                                  name: 'fd_confirm_level',
-                                  label: '定级级别'
-                                },
-                                {
-                                  name: 'fdSupplier',
-                                  label: '组织信息/所属供应商'
-                                },
-                                {
-                                  name: 'fd_work_address',
-                                  label: '工作地'
-                                },
-                                {
-                                  name: 'fd_first_entrance_date',
-                                  label: '首次入场时间'
-                                },
-                                {
-                                  name: 'fd_last_upgrade_date',
-                                  label: '上次调级时间'
-                                },
-                                {
-                                  name: 'fd_current_project_nature',
-                                  label: '当前项目性质'
-                                },
-                                {
-                                  name: 'fd_status_info',
-                                  label: '状态信息'
-                                }
-                              ],
-                              isListThrough: true
-                            },
+                            type: CMSXformModal,
+                            // onChangeProps: async (v, r) => {
+                            //   sysProps.$$form.current.updateFormItemProps('cmsProjectInterDetail', {
+                            //     rowValue: {
+                            //       rowNum: r,
+                            //       value: {
+                            //         fdSupplier: v.fdSupplier,
+                            //         fdEmail: v.fdEmail,
+                            //         fdInterviewScores: '',
+                            //         fdInterviewPass: '',
+                            //         fdInterviewName: v
+                            //       }
+                            //     }
+                            //   })
+                            // },
                             showStatus: 'view'
                           },
                           labelProps: {
@@ -356,41 +289,6 @@ const XForm = (props) => {
                         {
                           type: XformSelect,
                           controlProps: {
-                            title: fmtMsg(':cmsProjectInterview.form.!{l5q3jamudzqrim6stpg}', '单选下拉框1'),
-                            maxLength: 50,
-                            name: 'fdColZgcc49',
-                            placeholder: fmtMsg(':cmsProjectInterview.form.!{l5q3jamx4wexfjfyjsn}', '请输入'),
-                            options: [
-                              {
-                                label: fmtMsg(':cmsProjectInterview.form.!{l5q3jamzuxmmwh88b5o}', '选项1'),
-                                value: '1'
-                              },
-                              {
-                                label: fmtMsg(':cmsProjectInterview.form.!{l5q3jan1q1awh3zk55q}', '选项2'),
-                                value: '2'
-                              },
-                              {
-                                label: fmtMsg(':cmsProjectInterview.form.!{l5q3jan3nk5lq6o8b2}', '选项3'),
-                                value: '3'
-                              }
-                            ],
-                            optionSource: 'custom',
-                            desktop: {
-                              type: XformSelect
-                            },
-                            showStatus: 'view'
-                          },
-                          labelProps: {
-                            title: fmtMsg(':cmsProjectInterview.form.!{l5q3jamudzqrim6stpg}', '单选下拉框1'),
-                            desktop: {
-                              layout: 'vertical'
-                            }
-                          },
-                          label: fmtMsg(':cmsProjectInterview.form.!{l5q3jamudzqrim6stpg}', '单选下拉框1')
-                        },
-                        {
-                          type: XformRelation,
-                          controlProps: {
                             title: fmtMsg(':cmsProjectInterview.form.!{l5i2e44y9gjv4vhmjr5}', '供应商名称'),
                             placeholder: fmtMsg(':cmsProjectInterview.form.!{l5i2r5c9cv95w3a6gai}', '请输入'),
                             name: 'fdSupplier',
@@ -399,22 +297,9 @@ const XForm = (props) => {
                             rowCount: 3,
                             modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
                             isForwardView: 'no',
-                            options: [
-                              {
-                                fdName: '选项1',
-                                fdId: '1'
-                              },
-                              {
-                                fdName: '选项2',
-                                fdId: '2'
-                              },
-                              {
-                                fdName: '选项3',
-                                fdId: '3'
-                              }
-                            ],
+                            options: supplierData,
                             desktop: {
-                              type: XformRelation
+                              type: XformSelect
                             },
                             relationCfg: {
                               appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
@@ -425,8 +310,8 @@ const XForm = (props) => {
                               showFields: '$供应商名称$',
                               refFieldName: '$fd_supplier_name$'
                             },
-                            type: XformRelation,
-                            showStatus: 'view'
+                            type: XformSelect,
+                            showStatus: EShowStatus.view
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectInterview.form.!{l5i2e44y9gjv4vhmjr5}', '供应商名称'),
@@ -447,7 +332,7 @@ const XForm = (props) => {
                               type: XformInput
                             },
                             type: XformInput,
-                            showStatus: 'view'
+                            showStatus: EShowStatus.view
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectInterview.form.!{l5i2r5c8ax8fakvlo08}', '邮箱'),
@@ -470,7 +355,28 @@ const XForm = (props) => {
                               type: XformNumber
                             },
                             type: XformNumber,
-                            showStatus: 'view'
+                            showStatus: 'view',
+                            // controlActions: {
+                            //   'onBlur': [{
+                            //     function: (v, r) => {
+                            //       const fdQualifiedMark = form.getFieldValue('fdQualifiedMark')
+                            //       if (!fdQualifiedMark) {
+                            //         Message.error('请输入合格分数线', 1)
+                            //         return
+                            //       }
+                            //       const fdInterviewPass = v >= fdQualifiedMark ? '1' : '0'
+                            //       sysProps.$$form.current.updateFormItemProps('cmsProjectInterDetail', {
+                            //         rowValue: {
+                            //           rowNum: r,
+                            //           value: {
+                            //             fdInterviewPass: fdInterviewPass,
+                            //           }
+                            //         }
+                            //       })
+                            //       checkDetailWS(fdQualifiedMark)
+                            //     }
+                            //   }]
+                            // }
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectInterview.form.!{l5i2r9d4aemiawkvbr}', '面试得分'),
