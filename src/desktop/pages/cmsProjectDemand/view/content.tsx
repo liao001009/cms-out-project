@@ -71,11 +71,12 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   const [exportDisabled, setExportDisabled] = useState<boolean>(false)
   /**需要导出的订单响应列表数据 */
   const exportOrderData = useRef<any>({})
-  // 发布供应商是否显示
+  // 是否为供应商管理员
   const [fdSuppliesVisible, setFdSuppliesVisible] = useState<boolean>(false)
   // 导出权限
   const [exportRole, setExportRole] = useState<boolean>(false)
-
+  // 订单响应是否更改
+  const [detailChange, setDetailChange] = useState<boolean>(false)
   // 当前登录人的id
   const userId = mk.getSysConfig().currentUser.fdId
 
@@ -513,6 +514,9 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
 
   const handleChange = useCallback((e) => {
     orderDetailList.current = e
+    if (e.length) {
+      setDetailChange(true)
+    }
   }, [])
 
   // 从子组件获取需要导出的数据
@@ -531,6 +535,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
 
   // 保存订单响应数据
   const handleOrderDetailSave = async () => {
+    if (!orderDetailList.current.length) return
     const requestArr = orderDetailList.current.map(i => {
       const params = {
         fdId: i.fdMain.fdId,
@@ -558,7 +563,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     saveBtnVisible ? (
       <Fragment>
         {
-          editFlag ? <Button type='primary' style={{ marginRight: '16px' }} onClick={handleOrderDetailSave}>保存</Button> : null
+          editFlag ? <Button type='primary' style={{ marginRight: '16px' }} disabled={!detailChange} onClick={handleOrderDetailSave}>保存</Button> : null
         }
         {
           exportRole ? (
@@ -567,7 +572,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         }
       </Fragment>
     ) : null
-  ), [saveBtnVisible, exportDisabled, data.fdProcessStatus, editFlag])
+  ), [saveBtnVisible, exportDisabled, data.fdProcessStatus, editFlag, detailChange])
 
 
   const renderTab = () => {

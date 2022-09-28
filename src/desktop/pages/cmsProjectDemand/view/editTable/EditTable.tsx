@@ -37,7 +37,6 @@ const EditTable = (props: IProps) => {
   }, [])
 
   const hasChangedData = () => {
-    console.log('5559', 5559)
     const newData = orderDetailList.filter(i => i.changed)
     $onChange?.(newData)
   }
@@ -131,29 +130,27 @@ const EditTable = (props: IProps) => {
           title: '是否合格',
           width: 120,
           dataIndex: 'fdIsQualified',
-          editable: false,
+          key: 'fdIsQualified',
+          editable: !editFlag,
           saveEvent: 'change',
-          render: (text) => {
+          render: (text, record) => {
             return (
-              editFlag ? (
-                <Select defaultValue={text} style={{ width: '100px' }}>
-                  <Select.Option value={'0'}>否</Select.Option>
-                  <Select.Option value={'1'}>是</Select.Option>
-                </Select>
-              ) : (<span>{text === undefined ? '' : text === '0' ? '否' : '是'}</span>)
+              <Select onSelect={(val) => handleChangeValue(val, record, 'fdIsQualified')} defaultValue={text} style={{ width: '100px' }}>
+                <Select.Option value={'0'}>否</Select.Option>
+                <Select.Option value={'1'}>是</Select.Option>
+              </Select>
             )
           }
         },
         {
           title: '备注',
           dataIndex: 'fdRemarks',
+          key: 'fdRemarks',
           width: 200,
-          editable: false,
+          editable: !editFlag,
           saveEvent: 'blur',
-          render: (text) => {
-            return (
-              editFlag ? (<Input.TextArea defaultValue={text} placeholder='请输入' />) : (<span className='text-area' title={text || ''}>{text !== undefined ? '' : text}</span>)
-            )
+          render: (text, record) => {
+            return <Input.TextArea defaultValue={text} placeholder='请输入' onChange={(text) => handleChangeValue(text, record, 'fdRemarks')} />
           }
         }
       ]
@@ -161,15 +158,14 @@ const EditTable = (props: IProps) => {
   }, [editFlag, orderDetailList])
 
   const conactStaffInfo = async (list) => {
-    const newData: any = await Promise.all(list.map(i => {
-      return (async () => {
-        const res = await apiStaffInfo.get({ fdId: i.fdOutName.fdId, mechanisms: { load: '*' } })
-        return res
-      })()
-    }))
+    const result = list.map(i => {
+      return apiStaffInfo.get({ fdId: i.fdOutName.fdId, mechanisms: { load: '*' } })
+    })
+    const newData = await Promise.all(result)
     if (newData.length) {
       const newList = JSON.parse(JSON.stringify(list))
       const res = newList.map((k, v) => {
+        //@ts-ignore
         k.fdAtt = newData[v].data.mechanisms.attachment.find(i => i.fdEntityKey === 'fdResumeAtt')
         return k
       })
@@ -195,23 +191,30 @@ const EditTable = (props: IProps) => {
   }
 
 
-
-  const onSave = async (row) => {
+  const handleChangeValue = (val, record, type) => {
     const newData = [...orderDetailList]
-    const index = newData.findIndex((item) => row.fdId === item.fdId)
+    if (type === 'fdRemarks') {
+      record[type] = val.target.value
+    } else {
+      record[type] = val
+    }
+    const index = newData.findIndex((item) => record.fdId === item.fdId)
     if (index > -1) {
       const item = newData[index]
-      row.changed = true
+      record.changed = true
       newData.splice(index, 1, {
         ...item,
-        ...row,
+        ...record,
       })
     } else {
-      row.changed = true
-      newData.push(row)
+      record.changed = true
+      newData.push(record)
     }
-    console.log('newData5559', newData)
     setOrderDetailList(newData)
+  }
+
+  const onSave = async (row) => {
+    console.log('row5559', row)
   }
 
   const handleBtnClick = async (e) => {
