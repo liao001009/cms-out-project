@@ -34,12 +34,14 @@ const XForm = (props) => {
   const [defaultTableCriteria, setDefaultTableCriteria] = useState<any>({})
   useEffect(() => {
     init()
-    const paramId = props?.match?.params?.id
+    let paramId = props?.match?.params?.id
     if (props.mode === 'add') {
       // value.fdProjectDemand=paramId
       form.setFieldsValue({
         fdProjectDemand: paramId
       })
+    }else{
+      paramId = value?.fdProjectDemand?.fdId
     }
     if (paramId) {
       initData(paramId)
