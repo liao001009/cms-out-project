@@ -62,6 +62,8 @@ export interface IProps extends IContentViewProps {
   mark?: boolean
   /** 扩展 */
   [key: string]: any
+  /**默认可以发起请求 */
+  defaultSearch: boolean
 }
 
 const XformModal: React.FC<IProps> = (props) => {
@@ -89,6 +91,7 @@ const XformModal: React.FC<IProps> = (props) => {
     params = {},
     showTableData = '',
     mark = false,
+    defaultSearch = false
   } = props
 
   const [listData, setListData] = useState<any>([])
@@ -189,7 +192,7 @@ const XformModal: React.FC<IProps> = (props) => {
       }
     }
     if (Object.keys(defaultTableCriteria).length) {
-      if (!checkFlag()) return
+      if (!defaultSearch && !checkFlag()) return
     }
     try {
       const res = await apiKey[apiName](data)

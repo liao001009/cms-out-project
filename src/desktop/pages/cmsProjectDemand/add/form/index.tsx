@@ -573,6 +573,7 @@ const XForm = (props) => {
                                 {...props}
                                 columnsProps={supplierColumns}
                                 chooseFdName='fdName'
+                                defaultSearch={true}
                                 defaultTableCriteria={{
                                   'fdFrame.fdId': {
                                     searchKey: '$eq',
@@ -1178,6 +1179,7 @@ const XForm = (props) => {
                       modalTitle='供应商选择'
                       showFooter={true}
                       multiple={true}
+                      defaultSearch={true}
                       defaultTableCriteria={{
                         'fdName': {
                           searchKey: '$eq',
