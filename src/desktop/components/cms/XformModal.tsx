@@ -60,8 +60,6 @@ export interface IProps extends IContentViewProps {
   showTableData?: string
   /**是否是项目类型 */
   mark?: boolean
-  /**默认可以发起请求 */
-  defaultSearch: boolean
   /** 扩展 */
   [key: string]: any
 }
@@ -91,7 +89,6 @@ const XformModal: React.FC<IProps> = (props) => {
     params = {},
     showTableData = '',
     mark = false,
-    defaultSearch = false
   } = props
 
   const [listData, setListData] = useState<any>([])
@@ -170,7 +167,6 @@ const XformModal: React.FC<IProps> = (props) => {
   // 检验默认筛选项是否有值
   const checkFlag = () => {
     let flag = false
-    if (!Object.keys(defaultTableCriteria).length) return flag
     flag = Object.values(defaultTableCriteria).every((i: any) => {
       if (i['searchValue'] && Object.values(i['searchValue']).length) {
         return true
@@ -192,9 +188,9 @@ const XformModal: React.FC<IProps> = (props) => {
         return
       }
     }
-    if (!defaultSearch && !checkFlag()) return
-    console.log('checkFlag5559', checkFlag())
-    console.log('defaultTableCriteria5559', defaultTableCriteria)
+    if (Object.keys(defaultTableCriteria).length) {
+      if (!checkFlag()) return
+    }
     try {
       const res = await apiKey[apiName](data)
       setListData(res.data)
