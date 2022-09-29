@@ -17,7 +17,6 @@ import CMSXformModal from '@/desktop/components/cms/XformModal'
 import { outStaffInfoColumns, projectColumns, supplierColumns } from '@/desktop/pages/common/common'
 import apiProject from '@/api/cmsProjectInfo'
 import apiSupplier from '@/api/cmsSupplierInfo'
-import apiLevelInfo from '@/api/cmsLevelInfo'
 import apiStaffInfo from '@/api/cmsOutStaffInfo'
 import XformSelect from '@/desktop/components/form/XformSelect'
 
@@ -31,25 +30,21 @@ const XForm = (props) => {
 
   const [form] = Form.useForm()
   const [fdLevelData, setFdLevelData] = useState<any>([])
+  const [fdSupplierData, setfdSupplierData] = useState<any>([])
   useEffect(() => {
-    getLevelData()
+    getInfo('fdConfirmLevel', setFdLevelData)
+    getInfo('fdSupplier', setfdSupplierData)
   }, [])
-  const getLevelData = async () => {
-    try {
-      const res = await apiLevelInfo.list({})
-      const newArr = res.data.content.map(i => {
-        const item = {
-          value: i.fdId,
-          label: i.fdName,
-          ...i
-        }
-        return item
-      })
 
-      setFdLevelData(newArr)
-    } catch (error) {
-      console.log('error', error)
-    }
+  const getInfo = async (key, func) => {
+    const newArr = value.cmsProjectStaffList.map(i => {
+      const item = {
+        value: i[key].fdId,
+        label: i[key].fdName,
+      }
+      return item
+    })
+    func(newArr)
   }
   // 对外暴露接口
   useApi({
@@ -345,15 +340,16 @@ const XForm = (props) => {
                           label: fmtMsg(':cmsProjectSelectInfo.form.!{l5lvypnlzsscq0s59bm}', '姓名')
                         },
                         {
-                          type: XformInput,
+                          type: XformSelect,
                           controlProps: {
                             title: fmtMsg(':cmsProjectSelectInfo.form.!{l5lvyw442h1gb4vaxv6}', '供应商名称'),
                             name: 'fdSupplier',
+                            options: fdSupplierData,
                             placeholder: fmtMsg(':cmsStaffReviewUpgrade.form.!{l3sb91q7vi4t09qtc6f}', '请输入'),
                             desktop: {
-                              type: XformInput
+                              type: XformSelect
                             },
-                            type: XformInput,
+                            type: XformSelect,
                             showStatus: 'readOnly'
                           },
                           labelProps: {

@@ -15,9 +15,7 @@ import XformRichText from '@/desktop/components/form/XformRichText'
 import XformDetailTable from '@/desktop/components/form/XformDetailTable'
 import XformTextarea from '@/desktop/components/form/XformTextarea'
 import XformSelect from '@/desktop/components/form/XformSelect'
-import apiLevelInfo from '@/api/cmsLevelInfo'
 import XformModal from '@/desktop/components/cms/XformModal'
-import apiSupplier from '@/api/cmsSupplierInfo'
 
 const MECHANISMNAMES = {}
 const baseCls = 'project-selectInfo-form'
@@ -35,29 +33,22 @@ const XForm = (props) => {
   }
   const [form] = Form.useForm()
   const [fdLevelData, setFdLevelData] = useState<any>([])
-  const [fdSupplierData, setfdSupplier] = useState<any>([])
+  const [fdSupplierData, setfdSupplierData] = useState<any>([])
 
   useEffect(() => {
-    getInfo(apiLevelInfo.list, setFdLevelData)
-    getInfo(apiSupplier.listSupplierInfo, setfdSupplier)
+    getInfo('fdConfirmLevel', setFdLevelData)
+    getInfo('fdSupplier', setfdSupplierData)
   }, [])
 
-  const getInfo = async (api, set) => {
-    try {
-      const res = await api({})
-      const newArr = res.data.content.map(i => {
-        const item = {
-          value: i.fdId,
-          label: i.fdName,
-          ...i
-        }
-        return item
-      })
-
-      set(newArr)
-    } catch (error) {
-      console.log('error', error)
-    }
+  const getInfo = async (key, func) => {
+    const newArr = value.cmsProjectStaffList.map(i => {
+      const item = {
+        value: i[key].fdId,
+        label: i[key].fdName,
+      }
+      return item
+    })
+    func(newArr)
   }
   // 对外暴露接口
   useApi({

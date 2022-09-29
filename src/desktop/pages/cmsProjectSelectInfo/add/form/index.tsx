@@ -17,7 +17,6 @@ import CMSXformModal from '@/desktop/components/cms/XformModal'
 import { outStaffInfoColumns, projectColumns, supplierColumns } from '@/desktop/pages/common/common'
 import apiProject from '@/api/cmsProjectInfo'
 import apiSupplier from '@/api/cmsSupplierInfo'
-import apiLevelInfo from '@/api/cmsLevelInfo'
 import apiStaffInfo from '@/api/cmsOutStaffInfo'
 import XformSelect from '@/desktop/components/form/XformSelect'
 
@@ -33,26 +32,19 @@ const XForm = (props) => {
   const [fdLevelData, setFdLevelData] = useState<any>([])
   const [fdSupplierData, setfdSupplierData] = useState<any>([])
   useEffect(() => {
-    getInfo(apiLevelInfo.list, setFdLevelData)
-    getInfo(apiSupplier.listSupplierInfo, setfdSupplierData)
+    getInfo('fdConfirmLevel', setFdLevelData)
+    getInfo('fdSupplier', setfdSupplierData)
   }, [])
 
-  const getInfo = async (api, set) => {
-    try {
-      const res = await api({})
-      const newArr = res.data.content.map(i => {
-        const item = {
-          value: i.fdId,
-          label: i.fdName,
-          ...i
-        }
-        return item
-      })
-
-      set(newArr)
-    } catch (error) {
-      console.log('error', error)
-    }
+  const getInfo = async (key, func) => {
+    const newArr = value.cmsProjectStaffList.map(i => {
+      const item = {
+        value: i[key].fdId,
+        label: i[key].fdName,
+      }
+      return item
+    })
+    func(newArr)
   }
   // 对外暴露接口
   useApi({
@@ -446,9 +438,9 @@ const XForm = (props) => {
                           label: fmtMsg(':cmsProjectSelectInfo.form.!{l5lvz3us0mcivqan3zxi}', '级别')
                         }
                       ]}
-                      canAddRow={true}
-                      canDeleteRow={true}
-                      canImport={true}
+                      canExport={false}
+                      canAddRow={false}
+                      canDeleteRow={false}
                       showStatus="edit"
                     ></XformDetailTable>
                   </Form.Item>
