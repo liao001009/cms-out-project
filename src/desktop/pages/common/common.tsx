@@ -181,33 +181,34 @@ export const outStaffInfoColumns = [
   {
     title: '定级级别',
     dataIndex: 'fdConfirmLevel',
-    render: (value) => {
-      const options = [
-        {
-          value: '1',
-          label: '资深'
-        },
-        {
-          value: '2',
-          label: '高级'
-        },
-        {
-          value: '3',
-          label: '中级'
-        },
-        {
-          value: '4',
-          label: '初级'
-        }
-      ]
-      const option = options.find((option) => option.value === value)
+    // render: (value) => {
+    //   const options = [
+    //     {
+    //       value: '1',
+    //       label: '资深'
+    //     },
+    //     {
+    //       value: '2',
+    //       label: '高级'
+    //     },
+    //     {
+    //       value: '3',
+    //       label: '中级'
+    //     },
+    //     {
+    //       value: '4',
+    //       label: '初级'
+    //     }
+    //   ]
+    //   const option = options.find((option) => option.value === value)
 
-      if (!option) {
-        return value
-      }
+    //   if (!option) {
+    //     return value
+    //   }
 
-      return option.label
-    }
+    //   return option.label
+    // }
+    render: (value) => value && value.fdName
   },
   /*状态信息*/
   {
