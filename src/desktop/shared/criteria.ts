@@ -15,10 +15,12 @@ export const $reduceCriteria = (originQuery, newValue) => {
           // 单选
           if (value[0].value) {
             if (typeof value[0].value === 'string') {
-              if(name.indexOf('.')===-1||name.indexOf('.fdId')!==-1){
-                acc[name] = { $eq: value[0].value || undefined }
-              }else{
+              if(name.indexOf('.')!==-1 || name.indexOf('.fdId')!==-1){
                 acc[name] = { $contains: value[0].value || undefined }
+              }else if(name.toLowerCase().indexOf('code')!==-1){
+                acc[name] = { $contains: value[0].value || undefined }
+              }else{
+                acc[name] = { $eq: value[0].value || undefined }
               }
             } else {
               acc[name] = { $gte: value[0].value[0].value, $lte: value[0].value[1].value, }
