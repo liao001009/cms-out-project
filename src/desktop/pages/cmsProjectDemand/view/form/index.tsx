@@ -833,7 +833,7 @@ const XForm = (props) => {
                               label: fmtMsg(':cmsProjectDemand.form.!{l5hur3x2uh2nrghy2cp}', '工期要求')
                             }
                           ]}
-                          canExport={true}
+                          canExport={false}
                           showStatus="view"
                         ></XformDetailTable>
                       </Form.Item>
@@ -991,7 +991,7 @@ const XForm = (props) => {
                           label: fmtMsg(':cmsProjectDemand.form.!{l5hvhi5ruejee5eeyv}', '经验和技能要求')
                         }
                       ]}
-                      canExport={true}
+                      canExport={false}
                       showStatus="view"
                     ></XformDetailTable>
                   </Form.Item>
