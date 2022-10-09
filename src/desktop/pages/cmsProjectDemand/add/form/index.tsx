@@ -585,7 +585,7 @@ const XForm = (props) => {
                                 criteriaKey='demandSupplier'
                                 showStatus='add'
                                 modalTitle='供应商选择'
-                                criteriaProps={['fdOrgCode', 'fdFrame.fdName']}
+                                criteriaProps={['fdOrgCode', 'fdFrame.fdName', 'fdName']}
                                 onChange={(v) => handleSetFdSupplier(v)}
                               />
                             </Form.Item>
@@ -1182,7 +1182,7 @@ const XForm = (props) => {
                       defaultSearch={true}
                       defaultTableCriteria={{
                         'fdName': {
-                          searchKey: '$eq',
+                          searchKey: '$contains',
                           searchValue: assignSupplier || undefined
                         },
                         'fdFrame.fdId': {
