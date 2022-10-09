@@ -292,7 +292,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   // 订单响应按钮
   const handleOrder = useCallback(() => {
     if (!btnStatus) return null
-    if (data.fdProcessFlag && data.fdProcessFlag.includes('2')) return null
+    if (data.fdProcessFlag && (data.fdProcessFlag.includes('2') || data.fdProcessFlag.includes('3'))) return null
     return {
       name: '订单响应',
       action: () => { handleOrderAction() },
