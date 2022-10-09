@@ -197,22 +197,10 @@ const Content: React.FC<IContentViewProps> = (props) => {
   const handleCriteriaChange = useCallback(
     (value, values) => {
       const conditions = $reduceCriteria(query, values)
-      let conditionsCompare = {} as any
-      if (conditions.fdFrame) {
-        conditionsCompare = {
-          'fdFrame.fdName': { ...conditions.fdFrame },
-          ...conditions
-        }
-        delete conditionsCompare.fdFrame
-      } else {
-        conditionsCompare = {
-          ...conditions
-        }
-      }
       queryChange &&
         queryChange({
           ...query,
-          conditions: conditionsCompare
+          conditions
         })
     },
     [query]
@@ -272,7 +260,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
               {/* 筛选器 */}
               <Criteria key="criteria" onChange={handleCriteriaChange}>
                 <Criteria.Input name="fdCode" title="项目编号"></Criteria.Input>
-                <Criteria.Input name="fdFrame" title="项目所属框架"></Criteria.Input>
+                <Criteria.Input name="fdFrame.fdName" title="项目所属框架"></Criteria.Input>
                 <Criteria.Criterion
                   canMulti={false}
                   options={[
