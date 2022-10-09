@@ -191,14 +191,17 @@ const XformModal: React.FC<IProps> = (props) => {
         return
       }
     }
-    if (Object.keys(defaultTableCriteria).length) {
-      if (!defaultSearch && !checkFlag()) return
-    }
     try {
+      if (Object.keys(defaultTableCriteria).length) {
+        if (!defaultSearch && !checkFlag()) {
+          setListData([])
+          return
+        }
+      }
       const res = await apiKey[apiName](data)
       setListData(res.data)
     } catch (error) {
-      Message.error(error)
+      Message.error(error.response.data.msg || '请求失败')
     }
   }
   // 表格列定义
