@@ -462,7 +462,7 @@ const XForm = (props) => {
                       {...sysProps}
                       placeholder={fmtMsg(':cmsProjectSelectInfo.form.!{l5lvnd7uknt2pxu03br}', '请输入')}
                       height={3}
-                      showStatus="edit"
+                      showStatus="readOnly"
                     ></XformTextarea>
                   </Form.Item>
                 </XformFieldset>

@@ -54,14 +54,13 @@ const XForm = (props) => {
   // 设计类需求子类显隐
   const [isFrameChild, setIsFrameChild] = useState<boolean>(value.fdFrame.fdName === '设计类')
   // 供应商范围
-  const [isSupplierRange, setIsSupplierRange] = useState<boolean>(value.fdIsAppoint === '1')
+  const [isSupplierRange, setIsSupplierRange] = useState<boolean>(value.fdSupplierRange === '1')
   // 指定供应商值
   const [assignSupplier, setAssignSupplier] = useState<string | undefined>(value?.fdSupplier?.fdName || '')
   // 选定的框架类型
-  const [selectedFrame, setSelectedFrame] = useState<string>('')
+  const [selectedFrame, setSelectedFrame] = useState<string>(value?.fdFrame?.fdId || '')
   useEffect(() => {
     init()
-    setSelectedFrame(value?.fdFrame?.fdId || '')
   }, [])
 
   useEffect(() => {
@@ -1154,15 +1153,6 @@ const XForm = (props) => {
                   <Form.Item name={'fdSupplies'}>
                     <CMSXformModal
                       {...props}
-                      relationCfg={{
-                        appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
-                        xformName: '供应商信息',
-                        modelId: '1g777qg92w10wcf2w1jiihhv3oqp4s6nr9w0',
-                        tableType: 'main',
-                        tableName: 'mk_model_20220705vk0ha',
-                        showFields: '$供应商名称$',
-                        refFieldName: '$fd_supplier_name$'
-                      }}
                       columnsProps={supplierColumns}
                       chooseFdName='fdName'
                       apiKey={apiSupplier}
@@ -1173,6 +1163,7 @@ const XForm = (props) => {
                       modalTitle='供应商选择'
                       showFooter={true}
                       multiple={true}
+                      defaultSearch={true}
                       defaultTableCriteria={{
                         'fdName': {
                           searchKey: '$contains',

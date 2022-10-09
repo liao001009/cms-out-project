@@ -258,14 +258,13 @@ const Content: React.FC<IContentViewProps> = (props) => {
         <div className="lui-template-list-criteria">
           <div className="left">
             {/* 搜索 */}
-            <Input.Search allowClear placeholder="请输入关键词搜索" onSearch={handleSearch} />
+            <Input.Search allowClear placeholder="请输入主题" onSearch={handleSearch} />
           </div>
           <div className="right">
             {/* 筛选器 */}
             <Criteria key="criteria" onChange={handleCriteriaChange}>
-              <Criteria.Input name="fdProject.fdName" title="项目名称"></Criteria.Input>
-              <Criteria.Input name="fdSubject" title="主题"></Criteria.Input>
-              <Criteria.Input name="fdFrame.fdName" title="所属框架"></Criteria.Input>
+              <Criteria.Input name="fdProject.fdName" title="项目名称" placeholder='请输入项目名称'></Criteria.Input>
+              <Criteria.Input name="fdFrame.fdName" title="所属框架" placeholder='请输入框架名称'></Criteria.Input>
               <Criteria.Calendar
                 options={Criteria.Calendar.buildOptions()}
                 name="fdCreateTime"
