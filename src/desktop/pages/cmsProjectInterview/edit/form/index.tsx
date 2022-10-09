@@ -40,7 +40,7 @@ const XForm = (props) => {
       form.setFieldsValue({
         fdProjectDemand: paramId
       })
-    }else{
+    } else {
       paramId = value?.fdProjectDemand?.fdId
     }
     if (paramId) {
@@ -71,15 +71,13 @@ const XForm = (props) => {
       const ids = resOrder?.data?.content?.map(i => {
         return i.fdId
       })
-      if (ids.length > 0) {
-        const newParam = {
-          fdId: {
-            searchKey: '$in',
-            searchValue: ids
-          }
+      const newParam = {
+        fdId: {
+          searchKey: '$in',
+          searchValue: ids
         }
-        setDefaultTableCriteria(newParam)
       }
+      setDefaultTableCriteria(newParam)
     } catch (error) {
       console.error(error)
     }
