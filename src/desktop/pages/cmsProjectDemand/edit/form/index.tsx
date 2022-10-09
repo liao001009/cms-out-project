@@ -50,7 +50,7 @@ const XForm = (props) => {
   // 选中级别数据
   const [selectedLevelData, setSelectedLevelData] = useState<any>([])
   // 是否指定供应商单选
-  const [isSuppler, setIsSuppler] = useState<boolean>(value.fdSupplierRange === '1')
+  const [isSuppler, setIsSuppler] = useState<boolean>(value.fdIsAppoint === '1')
   // 设计类需求子类显隐
   const [isFrameChild, setIsFrameChild] = useState<boolean>(value.fdFrame.fdName === '设计类')
   // 供应商范围
@@ -573,7 +573,7 @@ const XForm = (props) => {
                                 chooseFdName='fdName'
                                 apiKey={apiSupplier}
                                 apiName={'listSupplierInfo'}
-                                criteriaKey='supplierCriertia'
+                                criteriaKey='demandSupplier'
                                 showStatus='add'
                                 modalTitle='供应商选择'
                                 defaultTableCriteria={{
@@ -582,7 +582,7 @@ const XForm = (props) => {
                                     searchValue: selectedFrame || undefined
                                   }
                                 }}
-                                criteriaProps={['fdOrgCode', 'fdFrame.fdName']}
+                                criteriaProps={['fdOrgCode', 'fdFrame.fdName', 'fdName']}
                                 onChange={(v) => setAssignSupplier(v.fdName)}
                               />
                             </Form.Item>
@@ -1157,9 +1157,9 @@ const XForm = (props) => {
                       chooseFdName='fdName'
                       apiKey={apiSupplier}
                       apiName={'listSupplierInfo'}
-                      criteriaKey='supplierCriertia'
+                      criteriaKey='demandSupplier'
                       showStatus='edit'
-                      criteriaProps={['fdOrgCode', 'fdFrame.fdName']}
+                      criteriaProps={['fdOrgCode', 'fdFrame.fdName', 'fdName']}
                       modalTitle='供应商选择'
                       showFooter={true}
                       multiple={true}
@@ -1237,9 +1237,9 @@ const XForm = (props) => {
                           controlProps: {
                             apiKey: apiSupplier,
                             apiName: 'listSupplierInfo',
-                            criteriaKey: 'supplierCriertia',
+                            criteriaKey: 'demandSupplier',
                             chooseFdName: 'fdName',
-                            criteriaProps: ['fdOrgCode', 'fdFrame.fdName'],
+                            criteriaProps: ['fdOrgCode', 'fdFrame.fdName', 'fdName'],
                             columnsProps: supplierColumns,
                             title: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称'),
                             name: 'fdSupplier',
