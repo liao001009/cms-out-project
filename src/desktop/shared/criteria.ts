@@ -15,7 +15,7 @@ export const $reduceCriteria = (originQuery, newValue) => {
           // 单选
           if (value[0].value) {
             if (typeof value[0].value === 'string') {
-              if(name.indexOf('.')!==-1 || name.indexOf('.fdId')!==-1){
+              if(name.indexOf('.fdName')!==-1){
                 acc[name] = { $contains: value[0].value || undefined }
               }else if(name.toLowerCase().indexOf('code')!==-1){
                 acc[name] = { $contains: value[0].value || undefined }
