@@ -79,6 +79,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   const [detailChange, setDetailChange] = useState<boolean>(false)
   // 当前登录人的id
   const userId = mk.getSysConfig().currentUser.fdId
+  const [isRequired, setIsRequired] = useState<boolean>(true)
 
   // 当前登录人是否是框架管理员
   const editFlag = useMemo(() => {
@@ -251,6 +252,11 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
 
   // 提交/暂存通用逻辑
   const handleSave = async (isDraft: boolean) => {
+    const res = lbpmComponentRef.current.getOperationType()
+    console.log('res5559', res)
+    if (res !== 'handler_pass') {
+      setIsRequired(false)
+    }
     // 校验文档
     if (await _validate(isDraft) === false) {
       return
@@ -265,9 +271,9 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     api.update({
       ...values,
       fdFrame: values.fdFrame,
-      cmsProjectDemandWork: values.cmsProjectDemandWork && values.cmsProjectDemandWork.values || undefined,
-      cmsProjectDemandDetail: values.cmsProjectDemandDetail && values.cmsProjectDemandDetail.values || undefined,
-      cmsProjectDemandSupp: values.cmsProjectDemandSupp && values.cmsProjectDemandSupp.values || undefined,
+      cmsProjectDemandWork: Array.isArray(values.cmsProjectDemandWork) ? values.cmsProjectDemandWork : values.cmsProjectDemandWork.values,
+      cmsProjectDemandDetail: Array.isArray(values.cmsProjectDemandDetail) ? values.cmsProjectDemandDetail : values.cmsProjectDemandDetail.values,
+      cmsProjectDemandSupp: Array.isArray(values.cmsProjectDemandSupp) ? values.cmsProjectDemandSupp : values.cmsProjectDemandSupp.values
     }).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
@@ -490,7 +496,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         slot={{
           form: (
             <div>
-              <div className='form'><XForm formRef={formComponentRef} value={data || {}} materialVis={materialVis} editFlag={editFlag} fdSuppliesVisible={fdSuppliesVisible} /></div>
+              <div className='form'><XForm formRef={formComponentRef} value={data || {}} materialVis={materialVis} editFlag={editFlag} fdSuppliesVisible={fdSuppliesVisible} isRequired={isRequired} /></div>
               {data.fdProcessStatus === '30' ? renderTab() : null}
             </div>
           )

@@ -106,27 +106,19 @@ const Content: React.FC<IContentViewProps> = props => {
       return
     }
     // 拼装提交数据
-    const values = await _formatValue(isDraft)
+    let values = await _formatValue(isDraft)
     // 文档提交前事件
     if (await _beforeSave(isDraft) === false) {
       return
     }
     // 提交
-    api.add({
+    values = {
       ...values,
-      // fdFrame: values.fdFrame,
-      cmsProjectDemandWork: values.cmsProjectDemandWork && values.cmsProjectDemandWork.values || undefined,
-      cmsProjectDemandDetail: values?.cmsProjectDemandDetail?.values?.length && values.cmsProjectDemandDetail.values.map(item => ({
-        ...item,
-        fdPost: {
-          fdId: item.fdPost
-        },
-        fdSkillLevel: {
-          fdId: item.fdSkillLevel
-        }
-      })) || undefined,
-      cmsProjectDemandSupp: values.cmsProjectDemandSupp && values.cmsProjectDemandSupp.values || undefined,
-    }).then(res => {
+      cmsProjectDemandWork: Array.isArray(values.cmsProjectDemandWork) ? values.cmsProjectDemandWork : values.cmsProjectDemandWork.values,
+      cmsProjectDemandDetail: Array.isArray(values.cmsProjectDemandDetail) ? values.cmsProjectDemandDetail : values.cmsProjectDemandDetail.values,
+      cmsProjectDemandSupp: Array.isArray(values.cmsProjectDemandSupp) ? values.cmsProjectDemandSupp : values.cmsProjectDemandSupp.values
+    }
+    api.add(values).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
           handleBack()
