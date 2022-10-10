@@ -22,6 +22,7 @@ import { Button, Form, Message } from '@lui/core'
 import React, { createRef, useEffect, useRef, useState } from 'react'
 import Icon from '@lui/icons'
 import './index.scss'
+import moment from 'moment'
 
 const MECHANISMNAMES = {}
 
@@ -44,7 +45,7 @@ const XForm = (props) => {
       const addRow = document.querySelector('button[title="添加行"]')
       parentNode?.insertBefore(uploadDown, addRow)
       uploadDown.style.display = 'block'
-    }, 900)
+    }, 1000)
   }
   useEffect(() => {
     init()
@@ -520,7 +521,15 @@ const XForm = (props) => {
   }
 
 
-
+  const formatDate = (numb, format) =>{
+    const old = numb - 1
+    const t = Math.round((old - Math.floor(old)) * 24 * 60 * 60)
+    const time = new Date(1900, 0, old, 0, 0, t)
+    const year = time.getFullYear()
+    const month = time.getMonth() + 1
+    const date = time.getDate()
+    return year + format + (month < 10 ? '0' + month : month) + format + (date < 10 ? '0' + date : date)
+  }
 
   const setDetailTable = (data) => {
     const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectWrittenDe').values
@@ -535,16 +544,19 @@ const XForm = (props) => {
             ...item,
             [field]: i[key],
           }
-          console.log('fdW--item', item)
-
         })
+        const fdBeginTime = moment(formatDate(item['fdBeginTime'],'-'))
+        const fdEndTime = moment(formatDate(item['fdEndTime'],'-'))
+        
         const fdWrittenPass = Number(item['fdWrittenScores']) <= Number(fdQualifiedMark) ? '0' : '1'
         const personInfo = checkPersonInfo(item['fdInterviewName'])
         item['fdInterviewName'] = personInfo
         item = {
           ...item,
           ...personInfo,
-          fdWrittenPass
+          fdWrittenPass,
+          fdBeginTime,
+          fdEndTime
         }
         return item
       })
