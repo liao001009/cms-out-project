@@ -161,6 +161,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
       event.stopPropagation()
       if (!templateData?.fdId) {
         Message.error('请先配置下流程模板')
+        return
       }
       history.goto(`/cmsProjectDemand/add/${templateData.fdId}`)
     },
