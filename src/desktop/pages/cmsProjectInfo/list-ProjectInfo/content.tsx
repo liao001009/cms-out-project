@@ -191,7 +191,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
         fdName: { $contains: keyword.trim() }
       }
     })
-  }, [])
+  }, [query])
 
   /** 筛选 */
   const handleCriteriaChange = useCallback(
@@ -254,13 +254,13 @@ const Content: React.FC<IContentViewProps> = (props) => {
           <div className="lui-template-list-criteria">
             <div className="left">
               {/* 搜索 */}
-              <Input.Search allowClear placeholder="请输入关键词搜索" onSearch={handleSearch} />
+              <Input.Search allowClear placeholder="请输入项目名称" onSearch={handleSearch} />
             </div>
             <div className="right">
               {/* 筛选器 */}
               <Criteria key="criteria" onChange={handleCriteriaChange}>
-                <Criteria.Input name="fdCode" title="项目编号"></Criteria.Input>
-                <Criteria.Input name="fdFrame.fdName" title="项目所属框架"></Criteria.Input>
+                <Criteria.Input name="fdCode" title="项目编号" placeholder='请输入项目编号'></Criteria.Input>
+                <Criteria.Input name="fdFrame.fdName" title="项目所属框架" placeholder='请输入项目所属框架'></Criteria.Input>
                 <Criteria.Criterion
                   canMulti={false}
                   options={[

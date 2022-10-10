@@ -1005,7 +1005,21 @@ const XForm = (props) => {
                               refFieldName: '$fd_post_name$'
                             },
                             type: XformSelect,
-                            showStatus: 'edit'
+                            showStatus: 'edit',
+                            controlActions: {
+                              'onChange': [{
+                                function: (v, r) => {
+                                  sysProps.$$form.current.updateFormItemProps('cmsProjectDemandDetail', {
+                                    rowValue: {
+                                      rowNum: r,
+                                      value: {
+                                        fdPost: { fdId: v },
+                                      }
+                                    }
+                                  })
+                                }
+                              }]
+                            }
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5hvhou5kykloq4ftbr}', '岗位'),
@@ -1057,6 +1071,7 @@ const XForm = (props) => {
                                       rowNum: r,
                                       value: {
                                         fdSkillRemand: levelItem.fdRemark,
+                                        fdSkillLevel: { fdId: v }
                                       }
                                     }
                                   })
