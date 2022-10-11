@@ -35,7 +35,7 @@ const XForm = (props) => {
     cmsProjectDemandSupp: createRef() as any,
     cmsProjectDemandOrder: createRef() as any
   })
-  const { formRef: formRef, value: value, materialVis, fdSuppliesVisible } = props
+  const { formRef: formRef, value: value, materialVis, fdSuppliesVisible, isRequired } = props
   const [form] = Form.useForm()
   // 框架数据
   const [frameData, setFrameData] = useState<any>([])
@@ -560,13 +560,13 @@ const XForm = (props) => {
                         mobileContentAlign={'right'}
                         title={fmtMsg(':cmsProjectDemand.form.!{l5hx79yiywiixyt0gwo}', '评审时间')}
                         layout={'horizontal'}
-                        required={true}
+                        required={isRequired}
                       >
                         <Form.Item
                           name={'fdApprovalTime'}
                           rules={[
                             {
-                              required: true,
+                              required: isRequired,
                               message: fmtMsg(':required', '内容不能为空')
                             }
                           ]}
@@ -584,7 +584,7 @@ const XForm = (props) => {
                     <GridItem column={21} row={15} rowSpan={1} columnSpan={6} style={{ display: 'flex', alignItems: 'center' }}>
                       <XformFieldset
                         compose={true}
-                        required={true}
+                        required={isRequired}
                         layout={'horizontal'}
                         title={fmtMsg(':cmsProjectDemand.form.!{l5hxh9fpx14ur0jgeue}', '人数区间')}
                       >
@@ -595,7 +595,7 @@ const XForm = (props) => {
                         name={'fdLowPerson'}
                         rules={[
                           {
-                            required: true,
+                            required: isRequired,
                             message: fmtMsg(':required', '内容不能为空')
                           }
                         ]}
@@ -626,7 +626,7 @@ const XForm = (props) => {
                         name={'fdUpPerson'}
                         rules={[
                           {
-                            required: true,
+                            required: isRequired,
                             message: fmtMsg(':required', '内容不能为空')
                           }
                         ]}
@@ -833,7 +833,7 @@ const XForm = (props) => {
                               label: fmtMsg(':cmsProjectDemand.form.!{l5hur3x2uh2nrghy2cp}', '工期要求')
                             }
                           ]}
-                          canExport={true}
+                          canExport={false}
                           showStatus="view"
                         ></XformDetailTable>
                       </Form.Item>
@@ -991,7 +991,7 @@ const XForm = (props) => {
                           label: fmtMsg(':cmsProjectDemand.form.!{l5hvhi5ruejee5eeyv}', '经验和技能要求')
                         }
                       ]}
-                      canExport={true}
+                      canExport={false}
                       showStatus="view"
                     ></XformDetailTable>
                   </Form.Item>

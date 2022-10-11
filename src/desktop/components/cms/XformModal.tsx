@@ -191,14 +191,17 @@ const XformModal: React.FC<IProps> = (props) => {
         return
       }
     }
-    if (Object.keys(defaultTableCriteria).length) {
-      if (!defaultSearch && !checkFlag()) return
-    }
     try {
+      if (Object.keys(defaultTableCriteria).length) {
+        if (!defaultSearch && !checkFlag()) {
+          setListData([])
+          return
+        }
+      }
       const res = await apiKey[apiName](data)
       setListData(res.data)
     } catch (error) {
-      Message.error(error)
+      Message.error(error.response.data.msg || '请求失败')
     }
   }
   // 表格列定义
@@ -259,7 +262,7 @@ const XformModal: React.FC<IProps> = (props) => {
   const handleCriteriaChange = useCallback(
     (value, values) => {
       const conditions = $reduceCriteria(query, values)
-      const newConditions = renderConditions(conditions, values, criteriaProps)
+      let newConditions
       if (Object.keys(defaultTableCriteria).length) {
         const defaultConditions = {}
         Object.keys(defaultTableCriteria).forEach(key => {
@@ -267,18 +270,15 @@ const XformModal: React.FC<IProps> = (props) => {
           defaultConditionsKey[defaultTableCriteria[key]['searchKey']] = defaultTableCriteria[key]['searchValue']
           defaultConditions[key] = defaultTableCriteria[key]['searchValue'] && defaultConditionsKey
         })
-        setNewSelecteCon({ ...conditions, ...newConditions, ...defaultConditions, ...selectedConditions })
-        getListData({
-          ...query,
-          conditions: { ...conditions, ...newConditions, ...defaultConditions, ...selectedConditions }
-        })
+        newConditions = renderConditions({ ...conditions, ...defaultConditions, ...selectedConditions }, values, criteriaProps)
       } else {
-        setNewSelecteCon({ ...conditions, ...newConditions, ...selectedConditions })
-        getListData({
-          ...query,
-          conditions: { ...conditions, ...newConditions, ...selectedConditions }
-        })
+        newConditions = renderConditions({ ...conditions, ...selectedConditions }, values, criteriaProps)
       }
+      setNewSelecteCon(newConditions)
+      getListData({
+        ...query,
+        conditions: newConditions
+      })
     },
     [query, selectedConditions]
   )

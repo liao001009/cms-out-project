@@ -521,7 +521,7 @@ const XForm = (props) => {
   }
 
 
-  const formatDate = (numb, format) =>{
+  const formatDate = (numb, format) => {
     const old = numb - 1
     const t = Math.round((old - Math.floor(old)) * 24 * 60 * 60)
     const time = new Date(1900, 0, old, 0, 0, t)
@@ -545,9 +545,9 @@ const XForm = (props) => {
             [field]: i[key],
           }
         })
-        const fdBeginTime = moment(formatDate(item['fdBeginTime'],'-'))
-        const fdEndTime = moment(formatDate(item['fdEndTime'],'-'))
-        
+        const fdBeginTime = moment(formatDate(item['fdBeginTime'], '-'))
+        const fdEndTime = moment(formatDate(item['fdEndTime'], '-'))
+
         const fdWrittenPass = Number(item['fdWrittenScores']) <= Number(fdQualifiedMark) ? '0' : '1'
         const personInfo = checkPersonInfo(item['fdInterviewName'])
         item['fdInterviewName'] = personInfo

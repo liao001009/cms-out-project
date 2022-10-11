@@ -131,15 +131,15 @@ const EditTable = (props: IProps) => {
           width: 120,
           dataIndex: 'fdIsQualified',
           key: 'fdIsQualified',
-          editable: !editFlag,
+          editable: false,
           saveEvent: 'change',
           render: (text, record) => {
-            return (
+            return editFlag ? (
               <Select onSelect={(val) => handleChangeValue(val, record, 'fdIsQualified')} defaultValue={text} style={{ width: '100px' }}>
                 <Select.Option value={'0'}>否</Select.Option>
                 <Select.Option value={'1'}>是</Select.Option>
               </Select>
-            )
+            ) : (<span>{text === '0' ? '否' : '是'}</span>)
           }
         },
         {

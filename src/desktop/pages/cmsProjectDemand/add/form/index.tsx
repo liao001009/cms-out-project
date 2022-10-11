@@ -585,7 +585,7 @@ const XForm = (props) => {
                                 criteriaKey='demandSupplier'
                                 showStatus='add'
                                 modalTitle='供应商选择'
-                                criteriaProps={['fdOrgCode', 'fdFrame.fdName']}
+                                criteriaProps={['fdOrgCode', 'fdFrame.fdName', 'fdName']}
                                 onChange={(v) => handleSetFdSupplier(v)}
                               />
                             </Form.Item>
@@ -1011,17 +1011,23 @@ const XForm = (props) => {
                             desktop: {
                               type: XformSelect
                             },
-                            relationCfg: {
-                              appCode: '1g776q10pw10w5j2w27q4fgr1u02jiv194w0',
-                              xformName: '岗位信息',
-                              modelId: '1g77748i8w10w776w1qndvaerni3ke2996w0',
-                              tableType: 'main',
-                              tableName: 'mk_model_2022070583983',
-                              showFields: '$岗位名称$',
-                              refFieldName: '$fd_post_name$'
-                            },
+
                             type: XformSelect,
-                            showStatus: 'edit'
+                            showStatus: 'edit',
+                            controlActions: {
+                              'onChange': [{
+                                function: (v, r) => {
+                                  sysProps.$$form.current.updateFormItemProps('cmsProjectDemandDetail', {
+                                    rowValue: {
+                                      rowNum: r,
+                                      value: {
+                                        fdPost: { fdId: v },
+                                      }
+                                    }
+                                  })
+                                }
+                              }]
+                            }
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5hvhou5kykloq4ftbr}', '岗位'),
@@ -1053,15 +1059,6 @@ const XForm = (props) => {
                             desktop: {
                               type: XformSelect
                             },
-                            relationCfg: {
-                              appCode: '1g776q10pw10w5j2w27q4fgr1u02jiv194w0',
-                              xformName: '级别信息',
-                              modelId: '1g777241qw10w6osw2h8p1ig2rgc7nf192w0',
-                              tableType: 'main',
-                              tableName: 'mk_model_20220705zz96g',
-                              showFields: '$级别名称$',
-                              refFieldName: '$fd_level_name$'
-                            },
                             type: XformSelect,
                             showStatus: 'edit',
                             controlActions: {
@@ -1073,6 +1070,7 @@ const XForm = (props) => {
                                       rowNum: r,
                                       value: {
                                         fdSkillRemand: levelItem.fdRemark,
+                                        fdSkillLevel: { fdId: v }
                                       }
                                     }
                                   })
@@ -1182,7 +1180,7 @@ const XForm = (props) => {
                       defaultSearch={true}
                       defaultTableCriteria={{
                         'fdName': {
-                          searchKey: '$eq',
+                          searchKey: '$contains',
                           searchValue: assignSupplier || undefined
                         },
                         'fdFrame.fdId': {
