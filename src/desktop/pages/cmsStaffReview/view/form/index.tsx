@@ -15,8 +15,8 @@ import XformDetailTable from '@/desktop/components/form/XformDetailTable'
 import XformNumber from '@/desktop/components/form/XformNumber'
 import XformSelect from '@/desktop/components/form/XformSelect'
 import XformGetDataSelect from '@/desktop/components/cms/XformGetDataSelect'
-import apiSupplierInfo from '@/api/cmsSupplierInfo'
-import apiOutStaffInfo from '@/api/cmsOutStaffInfo'
+// import apiSupplierInfo from '@/api/cmsSupplierInfo'
+// import apiOutStaffInfo from '@/api/cmsOutStaffInfo'
 import CMSXformModal, { EShowStatus } from '@/desktop/components/cms/XformModal'
 import apiLevel from '@/api/cmsLevelInfo'
 const MECHANISMNAMES = {}
@@ -30,20 +30,26 @@ const XForm = (props) => {
   const [supplierInfoList, setsupplierInfoList] = useState<any>([])
   const [outStaffInfoArr, setOutStaffInfoArr] = useState<any>([])
   const [levelList, setLevelList] = useState<any>({})
-  const getList = async (api, func) => {
-    try {
-      const res = await api
-      const newData = res.data.content.map(i => {
-        const item = {
-          value: i.fdId,
-          label: i.fdName
+  // 数据去重
+  const removeSameData = (val) => {
+    for (let i = 0; i < val.length; i++) {
+      for (let j = i + 1; j < val.length; j++) {
+        if (val[i].value === val[j].value) {
+          delete val[i]
         }
-        return item
-      })
-      func(newData)
-    } catch (error) {
-      console.log('error', error)
+      }
     }
+    return val.filter(i => i)
+  }
+  const getList = (key, func) => {
+    const newData = value?.cmsStaffReviewDetail?.length && value.cmsStaffReviewDetail.map(i => {
+      const item = {
+        value: i[key].fdId,
+        label: i[key].fdName
+      }
+      return item
+    })
+    func(removeSameData(newData))
   }
 
   const getLevelList = async () => {
@@ -64,12 +70,11 @@ const XForm = (props) => {
   }
 
   useEffect(() => {
+    getList('fdOutName', setOutStaffInfoArr)
+    getList('fdSupplier', setsupplierInfoList)
     getLevelList()
   }, [value])
-  useEffect(() => {
-    getList(apiOutStaffInfo.listStaffInfo({}), setOutStaffInfoArr)
-    getList(apiSupplierInfo.listSupplierInfo({}), setsupplierInfoList)
-  }, [])
+
   // 对外暴露接口
   useApi({
     form,
@@ -467,7 +472,7 @@ const XForm = (props) => {
                             title: fmtMsg(':cmsStaffReview.form.!{l5j0obajl93mj68ky2f}', '定级'),
                             name: 'fdConfirmLevel',
                             initData: levelList,
-                            showFdName: 'fdLevelName',
+                            showFdName: 'fdName',
                             placeholder: fmtMsg(':cmsStaffReview.form.!{l5j0oball6b84dapmal}', '请输入'),
                             optionSource: 'custom',
                             desktop: {
