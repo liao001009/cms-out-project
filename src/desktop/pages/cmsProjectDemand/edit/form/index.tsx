@@ -50,18 +50,17 @@ const XForm = (props) => {
   // 选中级别数据
   const [selectedLevelData, setSelectedLevelData] = useState<any>([])
   // 是否指定供应商单选
-  const [isSuppler, setIsSuppler] = useState<boolean>(value.fdSupplierRange === '1')
+  const [isSuppler, setIsSuppler] = useState<boolean>(value.fdIsAppoint === '1')
   // 设计类需求子类显隐
   const [isFrameChild, setIsFrameChild] = useState<boolean>(value.fdFrame.fdName === '设计类')
   // 供应商范围
-  const [isSupplierRange, setIsSupplierRange] = useState<boolean>(value.fdIsAppoint === '1')
+  const [isSupplierRange, setIsSupplierRange] = useState<boolean>(value.fdSupplierRange === '1')
   // 指定供应商值
   const [assignSupplier, setAssignSupplier] = useState<string | undefined>(value?.fdSupplier?.fdName || '')
   // 选定的框架类型
-  const [selectedFrame, setSelectedFrame] = useState<string>('')
+  const [selectedFrame, setSelectedFrame] = useState<string>(value?.fdFrame?.fdId || '')
   useEffect(() => {
     init()
-    setSelectedFrame(value?.fdFrame?.fdId || '')
   }, [])
 
   useEffect(() => {
@@ -574,7 +573,7 @@ const XForm = (props) => {
                                 chooseFdName='fdName'
                                 apiKey={apiSupplier}
                                 apiName={'listSupplierInfo'}
-                                criteriaKey='supplierCriertia'
+                                criteriaKey='demandSupplier'
                                 showStatus='add'
                                 modalTitle='供应商选择'
                                 defaultTableCriteria={{
@@ -583,7 +582,7 @@ const XForm = (props) => {
                                     searchValue: selectedFrame || undefined
                                   }
                                 }}
-                                criteriaProps={['fdOrgCode', 'fdFrame.fdName']}
+                                criteriaProps={['fdOrgCode', 'fdFrame.fdName', 'fdName']}
                                 onChange={(v) => setAssignSupplier(v.fdName)}
                               />
                             </Form.Item>
@@ -785,6 +784,7 @@ const XForm = (props) => {
                   <Form.Item
                     name={'cmsProjectDemandWork'}
                     noStyle
+                    validateTrigger={false}
                     rules={[
                       {
                         validator: (rule, value, callback) => {
@@ -952,6 +952,7 @@ const XForm = (props) => {
                   <Form.Item
                     name={'cmsProjectDemandDetail'}
                     noStyle
+                    validateTrigger={false}
                     rules={[
                       {
                         validator: (rule, value, callback) => {
@@ -1004,7 +1005,21 @@ const XForm = (props) => {
                               refFieldName: '$fd_post_name$'
                             },
                             type: XformSelect,
-                            showStatus: 'edit'
+                            showStatus: 'edit',
+                            controlActions: {
+                              'onChange': [{
+                                function: (v, r) => {
+                                  sysProps.$$form.current.updateFormItemProps('cmsProjectDemandDetail', {
+                                    rowValue: {
+                                      rowNum: r,
+                                      value: {
+                                        fdPost: { fdId: v },
+                                      }
+                                    }
+                                  })
+                                }
+                              }]
+                            }
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5hvhou5kykloq4ftbr}', '岗位'),
@@ -1056,6 +1071,7 @@ const XForm = (props) => {
                                       rowNum: r,
                                       value: {
                                         fdSkillRemand: levelItem.fdRemark,
+                                        fdSkillLevel: { fdId: v }
                                       }
                                     }
                                   })
@@ -1152,25 +1168,17 @@ const XForm = (props) => {
                   <Form.Item name={'fdSupplies'}>
                     <CMSXformModal
                       {...props}
-                      relationCfg={{
-                        appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
-                        xformName: '供应商信息',
-                        modelId: '1g777qg92w10wcf2w1jiihhv3oqp4s6nr9w0',
-                        tableType: 'main',
-                        tableName: 'mk_model_20220705vk0ha',
-                        showFields: '$供应商名称$',
-                        refFieldName: '$fd_supplier_name$'
-                      }}
                       columnsProps={supplierColumns}
                       chooseFdName='fdName'
                       apiKey={apiSupplier}
                       apiName={'listSupplierInfo'}
-                      criteriaKey='supplierCriertia'
+                      criteriaKey='demandSupplier'
                       showStatus='edit'
-                      criteriaProps={['fdOrgCode', 'fdFrame.fdName']}
+                      criteriaProps={['fdOrgCode', 'fdFrame.fdName', 'fdName']}
                       modalTitle='供应商选择'
                       showFooter={true}
                       multiple={true}
+                      defaultSearch={true}
                       defaultTableCriteria={{
                         'fdName': {
                           searchKey: '$contains',
@@ -1209,6 +1217,7 @@ const XForm = (props) => {
                 <XformFieldset>
                   <Form.Item
                     name={'cmsProjectDemandSupp'}
+                    validateTrigger={false}
                     noStyle
                     rules={[
                       {
@@ -1243,9 +1252,9 @@ const XForm = (props) => {
                           controlProps: {
                             apiKey: apiSupplier,
                             apiName: 'listSupplierInfo',
-                            criteriaKey: 'supplierCriertia',
+                            criteriaKey: 'demandSupplier',
                             chooseFdName: 'fdName',
-                            criteriaProps: ['fdOrgCode', 'fdFrame.fdName'],
+                            criteriaProps: ['fdOrgCode', 'fdFrame.fdName', 'fdName'],
                             columnsProps: supplierColumns,
                             title: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称'),
                             name: 'fdSupplier',

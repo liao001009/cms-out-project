@@ -15,20 +15,12 @@ import XformDatetime from '@/desktop/components/form/XformDatetime'
 import XformNumber from '@/desktop/components/form/XformNumber'
 import XformDetailTable from '@/desktop/components/form/XformDetailTable'
 import XformSelect from '@/desktop/components/form/XformSelect'
-// import XformTextarea from '@/desktop/components/form/XformTextarea'
-// import XformButton from '@/desktop/components/form/XformButton'
 import XformMoney from '@/desktop/components/form/XformMoney'
 import CMSXformModal from '@/desktop/components/cms/XformModal'
-
-// import api from '@/api/cmsProjectDemand'
 import apiFrameInfo from '@/api/cmsFrameInfo'
 import apiPostInfo from '@/api/cmsPostInfo'
 import apiLevelInfo from '@/api/cmsLevelInfo'
-// import { Module } from '@ekp-infra/common'
 import { EShowStatus } from '@/types/showStatus'
-
-// const Upload = Module.getComponent('sys-attach', 'Upload')
-
 
 const MECHANISMNAMES = {
   'cmsProjectDemandOrder.fdResumeAtt': 'attachmentDict'
@@ -43,7 +35,7 @@ const XForm = (props) => {
     cmsProjectDemandSupp: createRef() as any,
     cmsProjectDemandOrder: createRef() as any
   })
-  const { formRef: formRef, value: value, materialVis, editFlag, fdSuppliesVisible } = props
+  const { formRef: formRef, value: value, materialVis, fdSuppliesVisible, isRequired } = props
   const [form] = Form.useForm()
   // 框架数据
   const [frameData, setFrameData] = useState<any>([])
@@ -456,27 +448,31 @@ const XForm = (props) => {
                   </GridItem>
                 )
               }
+              {
+                fdSuppliesVisible ? null : (
+                  <GridItem column={1} row={12} rowSpan={1} columnSpan={40}>
+                    <XformFieldset
+                      labelTextAlign={'left'}
+                      mobileContentAlign={'right'}
+                      title={fmtMsg(':cmsProjectDemand.form.!{l5hu3p9hgtqae2rfxr6}', '订单金额')}
+                      layout={'horizontal'}
+                    >
+                      <Form.Item name={'fdOrderAmount'}>
+                        <XformMoney
+                          {...sysProps}
+                          placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hu3p9i1j80lnhffd}', '请输入')}
+                          numberFormat={{
+                            formatType: 'base'
+                          }}
+                          precision={2}
+                          showStatus="view"
+                        ></XformMoney>
+                      </Form.Item>
+                    </XformFieldset>
+                  </GridItem>
+                )
+              }
 
-              <GridItem column={1} row={12} rowSpan={1} columnSpan={40}>
-                <XformFieldset
-                  labelTextAlign={'left'}
-                  mobileContentAlign={'right'}
-                  title={fmtMsg(':cmsProjectDemand.form.!{l5hu3p9hgtqae2rfxr6}', '订单金额')}
-                  layout={'horizontal'}
-                >
-                  <Form.Item name={'fdOrderAmount'}>
-                    <XformMoney
-                      {...sysProps}
-                      placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hu3p9i1j80lnhffd}', '请输入')}
-                      numberFormat={{
-                        formatType: 'base'
-                      }}
-                      precision={2}
-                      showStatus="view"
-                    ></XformMoney>
-                  </Form.Item>
-                </XformFieldset>
-              </GridItem>
               <GridItem column={1} row={13} rowSpan={1} columnSpan={20}>
                 <XformFieldset
                   labelTextAlign={'left'}
@@ -564,13 +560,13 @@ const XForm = (props) => {
                         mobileContentAlign={'right'}
                         title={fmtMsg(':cmsProjectDemand.form.!{l5hx79yiywiixyt0gwo}', '评审时间')}
                         layout={'horizontal'}
-                        required={true}
+                        required={isRequired}
                       >
                         <Form.Item
                           name={'fdApprovalTime'}
                           rules={[
                             {
-                              required: true,
+                              required: isRequired,
                               message: fmtMsg(':required', '内容不能为空')
                             }
                           ]}
@@ -588,7 +584,7 @@ const XForm = (props) => {
                     <GridItem column={21} row={15} rowSpan={1} columnSpan={6} style={{ display: 'flex', alignItems: 'center' }}>
                       <XformFieldset
                         compose={true}
-                        required={true}
+                        required={isRequired}
                         layout={'horizontal'}
                         title={fmtMsg(':cmsProjectDemand.form.!{l5hxh9fpx14ur0jgeue}', '人数区间')}
                       >
@@ -599,7 +595,7 @@ const XForm = (props) => {
                         name={'fdLowPerson'}
                         rules={[
                           {
-                            required: true,
+                            required: isRequired,
                             message: fmtMsg(':required', '内容不能为空')
                           }
                         ]}
@@ -630,7 +626,7 @@ const XForm = (props) => {
                         name={'fdUpPerson'}
                         rules={[
                           {
-                            required: true,
+                            required: isRequired,
                             message: fmtMsg(':required', '内容不能为空')
                           }
                         ]}
@@ -689,161 +685,167 @@ const XForm = (props) => {
                   display: 'none'
                 }}
               ></GridItem>
-              <GridItem column={1} row={16} rowSpan={1} columnSpan={40}>
-                <XformFieldset>
-                  <Form.Item
-                    name={'cmsProjectDemandWork'}
-                    noStyle
-                    rules={[
-                      {
-                        validator: (rule, value, callback) => {
-                          detailForms.current.cmsProjectDemandWork.current
-                            .validate()
-                            .then((error) => {
-                              error ? callback(error) : callback()
-                            })
-                            .catch(() => {
-                              callback('明细表校验不通过！')
-                            })
-                        }
-                      }
-                    ]}
-                  >
-                    <XformDetailTable
-                      {...sysProps}
-                      $$ref={detailForms.current.cmsProjectDemandWork}
-                      $$tableType="detail"
-                      $$tableName="cmsProjectDemandWork"
-                      title={fmtMsg(':cmsProjectDemand.form.!{l5huinae76gwwbeute}', '工作分解')}
-                      defaultRowNumber={1}
-                      mobileRender={['simple']}
-                      pcSetting={['pagination']}
-                      showNumber={true}
-                      layout={'vertical'}
-                      columns={[
-                        {
-                          type: XformInput,
-                          controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5hum1no49vp6cu4uf}', '任务/模块名称'),
-                            maxLength: 100,
-                            name: 'fdTaskName',
-                            placeholder: fmtMsg(':cmsProjectDemand.form.!{l5hum1npins4qa32u7s}', '请输入'),
-                            desktop: {
-                              type: XformInput
+              {
+                fdSuppliesVisible ? null : (
+                  <GridItem column={1} row={16} rowSpan={1} columnSpan={40}>
+                    <XformFieldset>
+                      <Form.Item
+                        name={'cmsProjectDemandWork'}
+                        validateTrigger={false}
+                        noStyle
+                        rules={[
+                          {
+                            validator: (rule, value, callback) => {
+                              detailForms.current.cmsProjectDemandWork.current
+                                .validate()
+                                .then((error) => {
+                                  error ? callback(error) : callback()
+                                })
+                                .catch(() => {
+                                  callback('明细表校验不通过！')
+                                })
+                            }
+                          }
+                        ]}
+                      >
+                        <XformDetailTable
+                          {...sysProps}
+                          $$ref={detailForms.current.cmsProjectDemandWork}
+                          $$tableType="detail"
+                          $$tableName="cmsProjectDemandWork"
+                          title={fmtMsg(':cmsProjectDemand.form.!{l5huinae76gwwbeute}', '工作分解')}
+                          defaultRowNumber={1}
+                          mobileRender={['simple']}
+                          pcSetting={['pagination']}
+                          showNumber={true}
+                          layout={'vertical'}
+                          columns={[
+                            {
+                              type: XformInput,
+                              controlProps: {
+                                title: fmtMsg(':cmsProjectDemand.form.!{l5hum1no49vp6cu4uf}', '任务/模块名称'),
+                                maxLength: 100,
+                                name: 'fdTaskName',
+                                placeholder: fmtMsg(':cmsProjectDemand.form.!{l5hum1npins4qa32u7s}', '请输入'),
+                                desktop: {
+                                  type: XformInput
+                                },
+                                type: XformInput,
+                                showStatus: 'view'
+                              },
+                              labelProps: {
+                                title: fmtMsg(':cmsProjectDemand.form.!{l5hum1no49vp6cu4uf}', '任务/模块名称'),
+                                desktop: {
+                                  layout: 'vertical'
+                                },
+                                labelTextAlign: 'left'
+                              },
+                              label: fmtMsg(':cmsProjectDemand.form.!{l5hum1no49vp6cu4uf}', '任务/模块名称'),
                             },
-                            type: XformInput,
-                            showStatus: 'view'
-                          },
-                          labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5hum1no49vp6cu4uf}', '任务/模块名称'),
-                            desktop: {
-                              layout: 'vertical'
+                            {
+                              type: XformInput,
+                              controlProps: {
+                                title: fmtMsg(':cmsProjectDemand.form.!{l5hulwvhnlkr08pckwk}', '功能'),
+                                maxLength: 100,
+                                name: 'fdFunction',
+                                placeholder: fmtMsg(':cmsProjectDemand.form.!{l5hulwvidzdoomav25t}', '请输入'),
+                                desktop: {
+                                  type: XformInput
+                                },
+                                type: XformInput,
+                                showStatus: 'view'
+                              },
+                              labelProps: {
+                                title: fmtMsg(':cmsProjectDemand.form.!{l5hulwvhnlkr08pckwk}', '功能'),
+                                desktop: {
+                                  layout: 'vertical'
+                                },
+                                labelTextAlign: 'left'
+                              },
+                              label: fmtMsg(':cmsProjectDemand.form.!{l5hulwvhnlkr08pckwk}', '功能')
                             },
-                            labelTextAlign: 'left'
-                          },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5hum1no49vp6cu4uf}', '任务/模块名称'),
-                        },
-                        {
-                          type: XformInput,
-                          controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5hulwvhnlkr08pckwk}', '功能'),
-                            maxLength: 100,
-                            name: 'fdFunction',
-                            placeholder: fmtMsg(':cmsProjectDemand.form.!{l5hulwvidzdoomav25t}', '请输入'),
-                            desktop: {
-                              type: XformInput
+                            {
+                              type: XformInput,
+                              controlProps: {
+                                title: fmtMsg(':cmsProjectDemand.form.!{l5hum4xpfoabugxs41n}', '子任务'),
+                                maxLength: 100,
+                                name: 'fdSubtask',
+                                placeholder: fmtMsg(':cmsProjectDemand.form.!{l5hum4xqafagoyvy9f5}', '请输入'),
+                                desktop: {
+                                  type: XformInput
+                                },
+                                type: XformInput,
+                                showStatus: 'view'
+                              },
+                              labelProps: {
+                                title: fmtMsg(':cmsProjectDemand.form.!{l5hum4xpfoabugxs41n}', '子任务'),
+                                desktop: {
+                                  layout: 'vertical'
+                                },
+                                labelTextAlign: 'left'
+                              },
+                              label: fmtMsg(':cmsProjectDemand.form.!{l5hum4xpfoabugxs41n}', '子任务')
                             },
-                            type: XformInput,
-                            showStatus: 'view'
-                          },
-                          labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5hulwvhnlkr08pckwk}', '功能'),
-                            desktop: {
-                              layout: 'vertical'
+                            {
+                              type: XformNumber,
+                              controlProps: {
+                                title: fmtMsg(':cmsProjectDemand.form.!{l5humco963yvy68le9m}', '费用核定（万元）'),
+                                name: 'fdCostApproval',
+                                placeholder: fmtMsg(':cmsProjectDemand.form.!{l5humcoa14k6b3skr3h}', '请输入'),
+                                numberFormat: {
+                                  formatType: 'base'
+                                },
+                                desktop: {
+                                  type: XformNumber
+                                },
+                                type: XformNumber,
+                                showStatus: 'view'
+                              },
+                              labelProps: {
+                                title: fmtMsg(':cmsProjectDemand.form.!{l5humco963yvy68le9m}', '费用核定（万元）'),
+                                desktop: {
+                                  layout: 'vertical'
+                                },
+                                labelTextAlign: 'left'
+                              },
+                              label: fmtMsg(':cmsProjectDemand.form.!{l5humco963yvy68le9m}', '费用核定（万元）'),
                             },
-                            labelTextAlign: 'left'
-                          },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5hulwvhnlkr08pckwk}', '功能')
-                        },
-                        {
-                          type: XformInput,
-                          controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5hum4xpfoabugxs41n}', '子任务'),
-                            maxLength: 100,
-                            name: 'fdSubtask',
-                            placeholder: fmtMsg(':cmsProjectDemand.form.!{l5hum4xqafagoyvy9f5}', '请输入'),
-                            desktop: {
-                              type: XformInput
-                            },
-                            type: XformInput,
-                            showStatus: 'view'
-                          },
-                          labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5hum4xpfoabugxs41n}', '子任务'),
-                            desktop: {
-                              layout: 'vertical'
-                            },
-                            labelTextAlign: 'left'
-                          },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5hum4xpfoabugxs41n}', '子任务')
-                        },
-                        {
-                          type: XformNumber,
-                          controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5humco963yvy68le9m}', '费用核定（万元）'),
-                            name: 'fdCostApproval',
-                            placeholder: fmtMsg(':cmsProjectDemand.form.!{l5humcoa14k6b3skr3h}', '请输入'),
-                            numberFormat: {
-                              formatType: 'base'
-                            },
-                            desktop: {
-                              type: XformNumber
-                            },
-                            type: XformNumber,
-                            showStatus: 'view'
-                          },
-                          labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5humco963yvy68le9m}', '费用核定（万元）'),
-                            desktop: {
-                              layout: 'vertical'
-                            },
-                            labelTextAlign: 'left'
-                          },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5humco963yvy68le9m}', '费用核定（万元）'),
-                        },
-                        {
-                          type: XformInput,
-                          controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5hur3x2uh2nrghy2cp}', '工期要求'),
-                            maxLength: 100,
-                            name: 'fdConPeriod',
-                            placeholder: fmtMsg(':cmsProjectDemand.form.!{l5hur3x33mxezfwee47}', '请输入'),
-                            desktop: {
-                              type: XformInput
-                            },
-                            type: XformInput,
-                            showStatus: 'view'
-                          },
-                          labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5hur3x2uh2nrghy2cp}', '工期要求'),
-                            desktop: {
-                              layout: 'vertical'
-                            },
-                            labelTextAlign: 'left'
-                          },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5hur3x2uh2nrghy2cp}', '工期要求')
-                        }
-                      ]}
-                      canExport={true}
-                      showStatus="view"
-                    ></XformDetailTable>
-                  </Form.Item>
-                </XformFieldset>
-              </GridItem>
+                            {
+                              type: XformInput,
+                              controlProps: {
+                                title: fmtMsg(':cmsProjectDemand.form.!{l5hur3x2uh2nrghy2cp}', '工期要求'),
+                                maxLength: 100,
+                                name: 'fdConPeriod',
+                                placeholder: fmtMsg(':cmsProjectDemand.form.!{l5hur3x33mxezfwee47}', '请输入'),
+                                desktop: {
+                                  type: XformInput
+                                },
+                                type: XformInput,
+                                showStatus: 'view'
+                              },
+                              labelProps: {
+                                title: fmtMsg(':cmsProjectDemand.form.!{l5hur3x2uh2nrghy2cp}', '工期要求'),
+                                desktop: {
+                                  layout: 'vertical'
+                                },
+                                labelTextAlign: 'left'
+                              },
+                              label: fmtMsg(':cmsProjectDemand.form.!{l5hur3x2uh2nrghy2cp}', '工期要求')
+                            }
+                          ]}
+                          canExport={false}
+                          showStatus="view"
+                        ></XformDetailTable>
+                      </Form.Item>
+                    </XformFieldset>
+                  </GridItem>
+                )
+              }
               <GridItem column={1} row={17} rowSpan={1} columnSpan={40}>
                 <XformFieldset>
                   <Form.Item
                     name={'cmsProjectDemandDetail'}
+                    validateTrigger={false}
                     noStyle
                     rules={[
                       {
@@ -989,593 +991,189 @@ const XForm = (props) => {
                           label: fmtMsg(':cmsProjectDemand.form.!{l5hvhi5ruejee5eeyv}', '经验和技能要求')
                         }
                       ]}
-                      canExport={true}
+                      canExport={false}
                       showStatus="view"
                     ></XformDetailTable>
                   </Form.Item>
                 </XformFieldset>
               </GridItem>
               {
-                fdSuppliesVisible ? (
-                  <GridItem column={1} row={18} rowSpan={1} columnSpan={40}>
-                    <XformFieldset
-                      labelTextAlign={'left'}
-                      mobileContentAlign={'right'}
-                      title={fmtMsg(':cmsProjectDemand.form.!{l5jfuzfeh4xamxk7vb4}', '发布供应商')}
-                      layout={'horizontal'}
-                    >
-                      <Form.Item name={'fdSupplies'}>
-                        <CMSXformModal
-                          {...props}
-                          showStatus={EShowStatus.view}
-                          chooseFdName='fdName'
-                          multiple={true}
-                        />
-                      </Form.Item>
-                    </XformFieldset>
-                  </GridItem>
-                ) : null
-              }
-              {
-                !editFlag ? (
-                  <GridItem column={1} row={19} rowSpan={1} columnSpan={40}>
-                    <XformFieldset>
-                      <Form.Item
-                        name={'cmsProjectDemandSupp'}
-                        noStyle
-                        rules={[
-                          {
-                            validator: (rule, value, callback) => {
-                              detailForms.current.cmsProjectDemandSupp.current
-                                .validate()
-                                .then((error) => {
-                                  error ? callback(error) : callback()
-                                })
-                                .catch(() => {
-                                  callback('明细表校验不通过！')
-                                })
-                            }
-                          }
-                        ]}
+                !fdSuppliesVisible ? (
+                  <Fragment>
+                    <GridItem column={1} row={18} rowSpan={1} columnSpan={40}>
+                      <XformFieldset
+                        labelTextAlign={'left'}
+                        mobileContentAlign={'right'}
+                        title={fmtMsg(':cmsProjectDemand.form.!{l5jfuzfeh4xamxk7vb4}', '发布供应商')}
+                        layout={'horizontal'}
                       >
-                        <XformDetailTable
-                          {...sysProps}
-                          $$ref={detailForms.current.cmsProjectDemandSupp}
-                          $$tableType="detail"
-                          $$tableName="cmsProjectDemandSupp"
-                          title={fmtMsg(':cmsProjectDemand.form.!{l5hvsnakv4ck8q22sqp}', '发布供应商')}
-                          defaultRowNumber={1}
-                          mobileRender={['simple']}
-                          pcSetting={['pagination']}
-                          showNumber={true}
-                          layout={'vertical'}
-                          hiddenLabel={true}
-                          columns={[
+                        <Form.Item name={'fdSupplies'}>
+                          <CMSXformModal
+                            {...props}
+                            showStatus={EShowStatus.view}
+                            chooseFdName='fdName'
+                            multiple={true}
+                          />
+                        </Form.Item>
+                      </XformFieldset>
+                    </GridItem>
+                    <GridItem column={1} row={19} rowSpan={1} columnSpan={40}>
+                      <XformFieldset>
+                        <Form.Item
+                          name={'cmsProjectDemandSupp'}
+                          validateTrigger={false}
+                          noStyle
+                          rules={[
                             {
-                              type: CMSXformModal,
-                              controlProps: {
-                                modalTitle: '供应商',
-                                chooseFdName: 'fdName',
-                                title: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称'),
-                                name: 'fdSupplier',
-                                renderMode: 'singlelist',
-                                direction: 'column',
-                                rowCount: 3,
-                                modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
-                                isForwardView: 'no',
-                                desktop: {
-                                  type: CMSXformModal
-                                },
-                                type: CMSXformModal,
-                                relationCfg: {
-                                  appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
-                                  xformName: '供应商信息',
-                                  modelId: '1g777qg92w10wcf2w1jiihhv3oqp4s6nr9w0',
-                                  tableType: 'main',
-                                  tableName: 'mk_model_20220705vk0ha',
-                                  showFields: '$供应商名称$',
-                                  refFieldName: '$fd_supplier_name$'
-                                },
-                                showStatus: 'view'
-                              },
-                              labelProps: {
-                                title: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称'),
-                                desktop: {
-                                  layout: 'vertical'
-                                },
-                                labelTextAlign: 'left'
-                              },
-                              label: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称')
-                            },
-                            {
-                              type: XformSelect,
-                              controlProps: {
-                                title: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架'),
-                                name: 'fdFrame',
-                                renderMode: 'select',
-                                direction: 'column',
-                                rowCount: 3,
-                                modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
-                                isForwardView: 'no',
-                                options: frameData,
-                                desktop: {
-                                  type: XformSelect
-                                },
-                                type: XformSelect,
-                                relationCfg: {
-                                  appCode: '1g776q10pw10w5j2w27q4fgr1u02jiv194w0',
-                                  xformName: '框架信息',
-                                  modelId: '1g776skc9w10w5s5w1of8s041q6o7vv2liw0',
-                                  tableType: 'main',
-                                  tableName: 'mk_model_20220705d9xao',
-                                  showFields: '$框架名称$',
-                                  refFieldName: '$fd_name$'
-                                },
-                                showStatus: 'view'
-                              },
-                              labelProps: {
-                                title: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架'),
-                                desktop: {
-                                  layout: 'vertical'
-                                },
-                                labelTextAlign: 'left'
-                              },
-                              label: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架')
-                            },
-                            {
-                              type: XformDatetime,
-                              controlProps: {
-                                title: fmtMsg(':cmsProjectDemand.form.!{l5jfsj2yyw86i6eb5z}', '上次发布需求时间'),
-                                name: 'fdLastTime',
-                                placeholder: fmtMsg(':cmsProjectDemand.form.!{l5jfsj2zv2npau0ak0g}', '请输入'),
-                                dataPattern: 'yyyy-MM-dd HH:mm',
-                                desktop: {
-                                  type: XformDatetime
-                                },
-                                showStatus: 'view'
-                              },
-                              labelProps: {
-                                title: fmtMsg(':cmsProjectDemand.form.!{l5jfsj2yyw86i6eb5z}', '上次发布需求时间'),
-                                desktop: {
-                                  layout: 'vertical'
-                                },
-                                labelTextAlign: 'left'
-                              },
-                              label: fmtMsg(':cmsProjectDemand.form.!{l5jfsj2yyw86i6eb5z}', '上次发布需求时间')
-                            },
-                            {
-                              type: XformInput,
-                              controlProps: {
-                                title: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额'),
-                                maxLength: 100,
-                                name: 'fdAnnualRatio',
-                                placeholder: fmtMsg(':cmsProjectDemand.form.!{l5jg2w81dql7tlq4wp}', '请输入'),
-                                desktop: {
-                                  type: XformInput
-                                },
-                                showStatus: 'view'
-                              },
-                              labelProps: {
-                                title: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额'),
-                                desktop: {
-                                  layout: 'vertical'
-                                },
-                                labelTextAlign: 'left'
-                              },
-                              label: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额')
+                              validator: (rule, value, callback) => {
+                                detailForms.current.cmsProjectDemandSupp.current
+                                  .validate()
+                                  .then((error) => {
+                                    error ? callback(error) : callback()
+                                  })
+                                  .catch(() => {
+                                    callback('明细表校验不通过！')
+                                  })
+                              }
                             }
                           ]}
-                          canExport={true}
-                          showStatus="view"
-                        ></XformDetailTable>
-                      </Form.Item>
-                    </XformFieldset>
-                  </GridItem>
-                ) : null
-              }
-              {/*
-              <GridItem column={1} row={20} rowSpan={1} columnSpan={40}>
-                <XformFieldset>
-                  <Form.Item
-                    name={'cmsProjectDemandOrder'}
-                    noStyle
-                    rules={[
-                      {
-                        validator: (rule, value, callback) => {
-                          detailForms.current.cmsProjectDemandOrder.current
-                            .validate()
-                            .then((error) => {
-                              error ? callback(error) : callback()
-                            })
-                            .catch(() => {
-                              callback('明细表校验不通过！')
-                            })
-                        }
-                      }
-                    ]}
-                  >
-                    <XformDetailTable
-                      {...sysProps}
-                      $$ref={detailForms.current.cmsProjectDemandOrder}
-                      $$tableType="detail"
-                      $$tableName="cmsProjectDemandOrder"
-                      title={fmtMsg(':cmsProjectDemand.form.!{l5j1vtrejcmjzq5qx1f}', '订单响应')}
-                      defaultRowNumber={1}
-                      mobileRender={['simple']}
-                      pcSetting={['pagination']}
-                      showNumber={true}
-                      layout={'vertical'}
-                      columns={[
-                        {
-                          type: CMSXformModal,
-                          controlProps: {
-                            modalTitle: '供应商',
-                            chooseFdName: 'fdName',
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j1xs1sd2qc3t4rrrk}', '供应商名称'),
-                            name: 'fdSupplier',
-                            renderMode: 'select',
-                            direction: 'column',
-                            rowCount: 3,
-                            modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
-                            isForwardView: 'no',
-                            desktop: {
-                              type: CMSXformModal
-                            },
-                            type: CMSXformModal,
-                            relationCfg: {
-                              appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
-                              xformName: '供应商信息',
-                              modelId: '1g777qg92w10wcf2w1jiihhv3oqp4s6nr9w0',
-                              tableType: 'main',
-                              tableName: 'mk_model_20220705vk0ha',
-                              showFields: '$供应商名称$',
-                              refFieldName: '$fd_supplier_name$'
-                            },
-                            showStatus: 'view'
-                          },
-                          labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j1xs1sd2qc3t4rrrk}', '供应商名称'),
-                            desktop: {
-                              layout: 'vertical'
-                            },
-                            labelTextAlign: 'left'
-                          },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5j1xs1sd2qc3t4rrrk}', '供应商名称')
-                        },
-                        {
-                          type: CMSXformModal,
-                          controlProps: {
-                            modalTitle: '人员信息',
-                            chooseFdName: 'fdName',
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j22y5le315op72brr}', '姓名'),
-                            name: 'fdOutName',
-                            renderMode: 'select',
-                            direction: 'column',
-                            rowCount: 3,
-                            modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
-                            desktop: {
-                              type: CMSXformModal
-                            },
-                            type: CMSXformModal,
-                            relationCfg: {
-                              appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
-                              xformName: '外包人员信息',
-                              modelId: '1g7tuuns0w13w13engw3a36caf238o0d15w0',
-                              tableType: 'main',
-                              tableName: 'mk_model_20220714k2uvx',
-                              showFields: '$姓名$',
-                              refFieldName: '$fd_name$'
-                            },
-                            isForwardView: 'no',
-                            showStatus: 'view'
-                          },
-                          labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j22y5le315op72brr}', '姓名'),
-                            desktop: {
-                              layout: 'vertical'
-                            },
-                            labelTextAlign: 'left'
-                          },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5j22y5le315op72brr}', '姓名')
-                        },
-                        {
-                          type: XformSelect,
-                          controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j233a3cz5onu9osf9}', '岗位名称'),
-                            name: 'fdPost',
-                            renderMode: 'select',
-                            direction: 'column',
-                            rowCount: 3,
-                            modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
-                            isForwardView: 'no',
-                            options: postData,
-                            desktop: {
-                              type: XformSelect
-                            },
-                            type: XformSelect,
-                            relationCfg: {
-                              appCode: '1g776q10pw10w5j2w27q4fgr1u02jiv194w0',
-                              xformName: '岗位信息',
-                              modelId: '1g77748i8w10w776w1qndvaerni3ke2996w0',
-                              tableType: 'main',
-                              tableName: 'mk_model_2022070583983',
-                              showFields: '$岗位名称$',
-                              refFieldName: '$fd_post_name$'
-                            },
-                            showStatus: 'view'
-                          },
-                          labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j233a3cz5onu9osf9}', '岗位名称'),
-                            desktop: {
-                              layout: 'vertical'
-                            },
-                            labelTextAlign: 'left'
-                          },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5j233a3cz5onu9osf9}', '岗位名称')
-                        },
-                        {
-                          type: XformSelect,
-                          controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架'),
-                            name: 'fdFrame',
-                            renderMode: 'select',
-                            direction: 'column',
-                            rowCount: 3,
-                            modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
-                            isForwardView: 'no',
-                            options: frameData,
-                            desktop: {
-                              type: XformSelect
-                            },
-                            type: XformSelect,
-                            relationCfg: {
-                              appCode: '1g776q10pw10w5j2w27q4fgr1u02jiv194w0',
-                              xformName: '框架信息',
-                              modelId: '1g776skc9w10w5s5w1of8s041q6o7vv2liw0',
-                              tableType: 'main',
-                              tableName: 'mk_model_20220705d9xao',
-                              showFields: '$框架名称$',
-                              refFieldName: '$fd_name$'
-                            },
-                            showStatus: 'view'
-                          },
-                          labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架'),
-                            desktop: {
-                              layout: 'vertical'
-                            },
-                            labelTextAlign: 'left'
-                          },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架')
-                        },
-                        {
-                          type: XformInput,
-                          controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j24j36s9mgz4vszhs}', '自评级别'),
-                            maxLength: 100,
-                            name: 'fdSkillLevel',
-                            placeholder: fmtMsg(':cmsProjectDemand.form.!{l5j24j386bisym5t39l}', '请输入'),
-                            desktop: {
-                              type: XformInput
-                            },
-                            type: XformInput,
-                            showStatus: 'view'
-                          },
-                          labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j24j36s9mgz4vszhs}', '自评级别'),
-                            desktop: {
-                              layout: 'vertical'
-                            },
-                            labelTextAlign: 'left'
-                          },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5j24j36s9mgz4vszhs}', '自评级别')
-                        },
-                        {
-                          type: XformSelect,
-                          controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j24sendhb5tjvhw7a}', '评定级别'),
-                            maxLength: 50,
-                            name: 'fdConfirmLevel',
-                            placeholder: fmtMsg(':cmsProjectDemand.form.!{l5j24seo1h8l92yt4xm}', '请输入'),
-                            options: levelData,
-                            optionSource: 'custom',
-                            desktop: {
-                              type: XformSelect
-                            },
-                            type: XformSelect,
-                            showStatus: 'view'
-                          },
-                          labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j24sendhb5tjvhw7a}', '评定级别'),
-                            desktop: {
-                              layout: 'vertical'
-                            },
-                            labelTextAlign: 'left'
-                          },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5j24sendhb5tjvhw7a}', '评定级别')
-                        },
-                        {
-                          type: XformInput,
-                          controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j2509v6emztje7u2j}', '邮箱'),
-                            maxLength: 100,
-                            name: 'fdEmail',
-                            placeholder: fmtMsg(':cmsProjectDemand.form.!{l5j2509x5xkcmk4bd16}', '请输入'),
-                            desktop: {
-                              type: XformInput
-                            },
-                            type: XformInput,
-                            showStatus: 'view'
-                          },
-                          labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j2509v6emztje7u2j}', '邮箱'),
-                            desktop: {
-                              layout: 'vertical'
-                            },
-                            labelTextAlign: 'left'
-                          },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5j2509v6emztje7u2j}', '邮箱')
-                        },
-                        // {
-                        //   type: XformInput,
-                        //   controlProps: {
-                        //     title: fmtMsg(':cmsProjectDemand.form.!{l5j25jer26thjw90iqm}', '电话'),
-                        //     maxLength: 100,
-                        //     name: 'fdPhone',
-                        //     placeholder: fmtMsg(':cmsProjectDemand.form.!{l5j25jeuplifqvy528s}', '请输入'),
-                        //     desktop: {
-                        //       type: XformInput
-                        //     },
-                        //     type: XformInput,
-                        //     showStatus: 'view'
-                        //   },
-                        //   labelProps: {
-                        //     title: fmtMsg(':cmsProjectDemand.form.!{l5j25jer26thjw90iqm}', '电话'),
-                        //     desktop: {
-                        //       layout: 'vertical'
-                        //     },
-                        //     labelTextAlign: 'left'
-                        //   },
-                        //   label: fmtMsg(':cmsProjectDemand.form.!{l5j25jer26thjw90iqm}', '电话')
-                        // },
-                        {
-                          type: Upload,
-                          controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j25yszc316bqtsrhl}', '简历'),
-                            maxLength: 200,
-                            name: 'fdResumeAtt',
-                            uploadMode: 'card',
-                            singleMaxSize: 5120000,
-                            desktop: {
-                              type: Upload
-                            },
-                            type: Upload,
-                            downloadCount: true,
-                            showStatus: 'view'
-                          },
-                          labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j25yszc316bqtsrhl}', '简历'),
-                            desktop: {
-                              layout: 'vertical'
-                            },
-                            labelTextAlign: 'left'
-                          },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5j25yszc316bqtsrhl}', '简历')
-                        },
-                        {
-                          type: XformRadio,
-                          controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j26cqoz3wzsifnnwa}', '是否合格'),
-                            maxLength: 50,
-                            name: 'fdIsQualified',
-                            options: [
+                        >
+                          <XformDetailTable
+                            {...sysProps}
+                            $$ref={detailForms.current.cmsProjectDemandSupp}
+                            $$tableType="detail"
+                            $$tableName="cmsProjectDemandSupp"
+                            title={fmtMsg(':cmsProjectDemand.form.!{l5hvsnakv4ck8q22sqp}', '发布供应商')}
+                            defaultRowNumber={1}
+                            mobileRender={['simple']}
+                            pcSetting={['pagination']}
+                            showNumber={true}
+                            layout={'vertical'}
+                            hiddenLabel={true}
+                            columns={[
                               {
-                                label: fmtMsg(':cmsProjectDemand.form.!{l5j26cqvnum8db5jrhd}', '是'),
-                                value: '1'
+                                type: CMSXformModal,
+                                controlProps: {
+                                  modalTitle: '供应商',
+                                  chooseFdName: 'fdName',
+                                  title: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称'),
+                                  name: 'fdSupplier',
+                                  renderMode: 'singlelist',
+                                  direction: 'column',
+                                  rowCount: 3,
+                                  modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
+                                  isForwardView: 'no',
+                                  desktop: {
+                                    type: CMSXformModal
+                                  },
+                                  type: CMSXformModal,
+                                  relationCfg: {
+                                    appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
+                                    xformName: '供应商信息',
+                                    modelId: '1g777qg92w10wcf2w1jiihhv3oqp4s6nr9w0',
+                                    tableType: 'main',
+                                    tableName: 'mk_model_20220705vk0ha',
+                                    showFields: '$供应商名称$',
+                                    refFieldName: '$fd_supplier_name$'
+                                  },
+                                  showStatus: 'view'
+                                },
+                                labelProps: {
+                                  title: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称'),
+                                  desktop: {
+                                    layout: 'vertical'
+                                  },
+                                  labelTextAlign: 'left'
+                                },
+                                label: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称')
                               },
                               {
-                                label: fmtMsg(':cmsProjectDemand.form.!{l5j26cqzjravhhpl8se}', '否'),
-                                value: '0'
-                              }
-                            ],
-                            rowCount: 3,
-                            direction: 'column',
-                            serialType: 'empty',
-                            optionSource: 'custom',
-                            desktop: {
-                              type: XformRadio
-                            },
-                            type: XformRadio,
-                            showStatus: editFlag ? 'edit' : 'view'
-                          },
-                          labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j26cqoz3wzsifnnwa}', '是否合格'),
-                            desktop: {
-                              layout: 'vertical'
-                            },
-                            labelTextAlign: 'left'
-                          },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5j26cqoz3wzsifnnwa}', '是否合格')
-                        },
-                        {
-                          type: XformTextarea,
-                          controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j26p7w7agm9t6dzoh}', '备注'),
-                            maxLength: 2000,
-                            name: 'fdRemarks',
-                            placeholder: fmtMsg(':cmsProjectDemand.form.!{l5j26p7xe8i3jwpphtl}', '请输入'),
-                            height: 3,
-                            desktop: {
-                              type: XformTextarea
-                            },
-                            type: XformTextarea,
-                            showStatus: editFlag ? 'edit' : 'view'
-                          },
-                          labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j26p7w7agm9t6dzoh}', '备注'),
-                            desktop: {
-                              layout: 'vertical'
-                            },
-                            labelTextAlign: 'left'
-                          },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5j26p7w7agm9t6dzoh}', '备注')
-                        },
-                        {
-                          type: XformButton,
-                          controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j284e1tfa3eumv70i}', '操作'),
-                            name: 'fdSendMessage',
-                            btnCfg: {
-                              inputVal: fmtMsg(':cmsProjectDemand.form.!{l5j284egz9yczrzil9}', '发送提醒'),
-                              colorMap: {
-                                background: {
-                                  label: '背景色',
-                                  color: '#4285F4'
+                                type: XformSelect,
+                                controlProps: {
+                                  title: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架'),
+                                  name: 'fdFrame',
+                                  renderMode: 'select',
+                                  direction: 'column',
+                                  rowCount: 3,
+                                  modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
+                                  isForwardView: 'no',
+                                  options: frameData,
+                                  desktop: {
+                                    type: XformSelect
+                                  },
+                                  type: XformSelect,
+                                  relationCfg: {
+                                    appCode: '1g776q10pw10w5j2w27q4fgr1u02jiv194w0',
+                                    xformName: '框架信息',
+                                    modelId: '1g776skc9w10w5s5w1of8s041q6o7vv2liw0',
+                                    tableType: 'main',
+                                    tableName: 'mk_model_20220705d9xao',
+                                    showFields: '$框架名称$',
+                                    refFieldName: '$fd_name$'
+                                  },
+                                  showStatus: 'view'
                                 },
-                                font: {
-                                  label: '文字色',
-                                  color: '#fff'
-                                }
+                                labelProps: {
+                                  title: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架'),
+                                  desktop: {
+                                    layout: 'vertical'
+                                  },
+                                  labelTextAlign: 'left'
+                                },
+                                label: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架')
+                              },
+                              {
+                                type: XformDatetime,
+                                controlProps: {
+                                  title: fmtMsg(':cmsProjectDemand.form.!{l5jfsj2yyw86i6eb5z}', '上次发布需求时间'),
+                                  name: 'fdLastTime',
+                                  placeholder: fmtMsg(':cmsProjectDemand.form.!{l5jfsj2zv2npau0ak0g}', '请输入'),
+                                  dataPattern: 'yyyy-MM-dd HH:mm',
+                                  desktop: {
+                                    type: XformDatetime
+                                  },
+                                  showStatus: 'view'
+                                },
+                                labelProps: {
+                                  title: fmtMsg(':cmsProjectDemand.form.!{l5jfsj2yyw86i6eb5z}', '上次发布需求时间'),
+                                  desktop: {
+                                    layout: 'vertical'
+                                  },
+                                  labelTextAlign: 'left'
+                                },
+                                label: fmtMsg(':cmsProjectDemand.form.!{l5jfsj2yyw86i6eb5z}', '上次发布需求时间')
+                              },
+                              {
+                                type: XformInput,
+                                controlProps: {
+                                  title: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额'),
+                                  maxLength: 100,
+                                  name: 'fdAnnualRatio',
+                                  placeholder: fmtMsg(':cmsProjectDemand.form.!{l5jg2w81dql7tlq4wp}', '请输入'),
+                                  desktop: {
+                                    type: XformInput
+                                  },
+                                  showStatus: 'view'
+                                },
+                                labelProps: {
+                                  title: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额'),
+                                  desktop: {
+                                    layout: 'vertical'
+                                  },
+                                  labelTextAlign: 'left'
+                                },
+                                label: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额')
                               }
-                            },
-                            controlActions: {
-                              'onClick': [{
-                                function: async (v, r) => {
-                                  try {
-                                    await api.sendRemind({
-                                      fdId: value.cmsProjectDemandOrder[r].fdId
-                                    })
-                                  } catch (error) {
-                                    console.error('error', error)
-                                  }
-                                }
-                              }]
-                            },
-                            typeCfg: {
-                              type: 'js',
-                            },
-                            desktop: {
-                              type: XformButton
-                            },
-                            type: XformButton,
-                            showStatus: 'view'
-                          },
-                          labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5j284e1tfa3eumv70i}', '操作'),
-                            desktop: {
-                              layout: 'vertical'
-                            },
-                            labelTextAlign: 'left'
-                          },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5j284e1tfa3eumv70i}', '操作')
-                        }
-                      ]}
-                      canExport={true}
-                      showStatus="view"
-                    ></XformDetailTable>
-                  </Form.Item>
-                </XformFieldset>
-              </GridItem> */}
+                            ]}
+                            canExport={true}
+                            showStatus="view"
+                          ></XformDetailTable>
+                        </Form.Item>
+                      </XformFieldset>
+                    </GridItem>
+                  </Fragment>
+                ) : null
+              }
             </LayoutGrid>
           </XformAppearance>
         </Form>

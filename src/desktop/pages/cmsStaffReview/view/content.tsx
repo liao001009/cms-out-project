@@ -7,11 +7,7 @@ import Axios from 'axios'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import XForm from './form'
 //@ts-ignore
-import { getFlowStatus } from '@/desktop/shared/util'
-import { EOperationType, ESysLbpmProcessStatus } from '@/utils/status'
-//@ts-ignore
 import Status, { EStatusType } from '@elements/status'
-// import './index.scss'
 import { useMkSendData } from '@/utils/mkHooks'
 import { fmtMsg } from '@ekp-infra/respect'
 import Icon from '@lui/icons'
@@ -19,20 +15,12 @@ import { cmsHandleBack } from '@/utils/routerUtil'
 
 Message.config({ maxCount: 1 })
 const LbpmFormWithLayout = Module.getComponent('sys-lbpm', 'LbpmFormWithLayout', { loading: <React.Fragment></React.Fragment> })
-// // 流程页签
-// const LBPMTabs = Module.getComponent('sys-lbpm', 'LBPMTabs', { loading: <Loading /> })
-// // 流程机制
-// const LBPMFormFragment = Module.getComponent('sys-lbpm', 'LBPMFormFragment', { loading: <Loading /> })
-// // 权限机制
-// const RightFragment = Module.getComponent('sys-right', 'RightFragment', { loading: <Loading /> })
 
 const { confirm } = Modal
 const baseCls = 'project-review-content'
 const Content: React.FC<IContentViewProps> = props => {
   const { data, history, match } = props
   const [materialVis, setMaterialVis] = useState<boolean>(true)
-  // const [roleArr, setRoleArr] = useState<any>([])   // 流程角色
-  const [flowData, setFlowData] = useState<any>({}) // 流程数据
   const { params } = match
   // 模板id
   const templateId = useMemo(() => {
@@ -45,7 +33,7 @@ const Content: React.FC<IContentViewProps> = props => {
       const nodeInfosData = await apiLbpm.getCurrentNodeInfo({
         processInstanceId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId
       })
-      const url = mk.getSysConfig('apiUrlPrefix') + '/cms-out-manage/cmsStaffReview/loadNodeExtendPropertiesOnProcess'
+      const url = mk.getSysConfig('apiUrlPrefix') + '/cms-out-manage/cmsOutManageCommon/loadNodeExtendPropertiesOnProcess'
       const processData = await Axios.post(url, {
         fdId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId
       })
@@ -62,11 +50,9 @@ const Content: React.FC<IContentViewProps> = props => {
       setMaterialVis(false)
     }
   }
+
   useEffect(() => {
     getCurrentNode()
-    // mk.on('SYS_LBPM_AUDIT_FORM_INIT_DATA', (val) => {
-    //   val?.roles && setRoleArr(val.roles)
-    // })
   }, [])
   // 机制组件引用
   const formComponentRef = useRef<any>()
@@ -168,66 +154,9 @@ const Content: React.FC<IContentViewProps> = props => {
     })
   }
 
-  // 提交按钮
-  // const _btn_submit = useMemo(() => {
-  //   const submitBtn = <Button type='primary' onClick={() => handleSave(false)}>提交</Button>
-  //   if (roleArr && roleArr.length) {
-  //     return submitBtn
-  //   } else {
-  //     return null
-  //   }
-  // }, [data, flowData, params])
-
-
-
-  // 编辑按钮
-  // const _btn_edit = useMemo(() => {
-  //   const status = data.fdProcessStatus || getFlowStatus(flowData)
-  //   if (status === ESysLbpmProcessStatus.ABANDONED || status === ESysLbpmProcessStatus.COMPLETED) return null
-  //   const editBtn = <Button onClick={handleEdit}>编辑</Button>
-  //   const authEditBtn = <Auth.Auth
-  //     authURL='/cmsProjectDemand/edit'
-  //     authModuleName='cms-out-manage'
-  //     params={{
-  //       vo: { fdId: params['id'] }
-  //     }}
-  //   >
-  //     {editBtn}
-  //   </Auth.Auth>
-  //   return (
-  //     status === ESysLbpmProcessStatus.DRAFT || status === ESysLbpmProcessStatus.REJECT || status === ESysLbpmProcessStatus.WITHDRAW)
-  //     ? authEditBtn
-  //     // 流程流转中并且有编辑权限，可编辑表单
-  //     : (status === ESysLbpmProcessStatus.ACTIVATED
-  //       && authEditBtn
-  //     )
-  // }, [params, data])
-
-  // 删除按钮
-  // const _btn_delete = useMemo(() => {
-  //   const status = getFlowStatus(flowData)
-  //   const deleteBtn = <Button type='default' onClick={handleDel}>删除</Button>
-  //   return (
-  //     // 如果有回复协同的操作，则要校验权限
-  //     status === ESysLbpmProcessStatus.DRAFT && !lbpmComponentRef.current.checkOperationTypeExist(flowData.identity, EOperationType.handler_replyDraftCooperate)
-  //       ? deleteBtn
-  //       : <Auth.Auth authURL='/cmsProjectDemand/delete'
-  //         authModuleName='cms-out-manage'
-  //         params={{
-  //           vo: { fdId: params['id'] }
-  //         }}>
-  //         {deleteBtn}
-  //       </Auth.Auth>
-  //   )
-  // }, [flowData, params])
 
   const handleEdit = () => {
-    if (Object.keys(flowData).length === 0) {
-      return null
-    }
-    const status = data.fdProcessStatus || getFlowStatus(flowData)
-    if (status === ESysLbpmProcessStatus.ABANDONED || status === ESysLbpmProcessStatus.COMPLETED) return null
-    if (status === ESysLbpmProcessStatus.DRAFT || status === ESysLbpmProcessStatus.REJECT || status === ESysLbpmProcessStatus.WITHDRAW || status === ESysLbpmProcessStatus.ACTIVATED) return null
+
     const authParams = {
       vo: { fdId: params['id'] }
     }
@@ -251,7 +180,7 @@ const Content: React.FC<IContentViewProps> = props => {
             cmsHandleBack(history, '/cmsStaffReview/listStaffReview')
           }
         }).catch(error => {
-          Message.error(error.resopnse.data.msg || '删除失败')
+          Message.error(error.response.data.msg || '删除失败')
         })
       },
       onCancel () {
@@ -260,13 +189,7 @@ const Content: React.FC<IContentViewProps> = props => {
     })
   }, [])
   const handleDel = () => {
-    if (Object.keys(flowData).length === 0) {
-      return null
-    }
-    const status = getFlowStatus(flowData)
-    if (status !== ESysLbpmProcessStatus.DRAFT && lbpmComponentRef.current?.checkOperationTypeExist(flowData.identity, EOperationType.handler_replyDraftCooperate)) {
-      return null
-    }
+
     const authParams = {
       vo: { fdId: params['id'] }
     }
@@ -320,9 +243,6 @@ const Content: React.FC<IContentViewProps> = props => {
       getFormValue: () => formComponentRef?.current?.getValue?.(),
       moduleCode: 'cms-out-manage-review',
       entityName,
-      onChange: (value) => {
-        setFlowData(value)
-      },
       processId: processId,
       onSubmit: () => { handleSave(false) },
       submitting: false,

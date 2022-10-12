@@ -27,10 +27,29 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
       if (formErrors?.length > 0 && !isDraft) {
         return false
       }
+      //检查明细表姓名是否重复
+      const formValues = await formComponentRef.current.getValue() || {}
+      const cmsProjectInterDetail = formValues?.cmsProjectInterDetail?.values || []
+      const isRep = isReplace(cmsProjectInterDetail)
+      if (isRep) {
+        Message.error('姓名不能重复！')
+        return !isRep
+      }
     }
 
     return true
   }
+
+  const isReplace = (arr) => {
+    const hash = {}
+    for (const i in arr) {
+      if (!hash[arr[i].fdInterviewName.fdId]) {
+        hash[arr[i].fdInterviewName.fdId] = true
+      }
+    }
+    return Object.keys(hash).length < arr.length
+  }
+
 
   // 提交数据封装
   const _formatValue = async (isDraft: boolean, fdStatus: string) => {

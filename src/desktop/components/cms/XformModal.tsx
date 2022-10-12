@@ -60,10 +60,10 @@ export interface IProps extends IContentViewProps {
   showTableData?: string
   /**是否是项目类型 */
   mark?: boolean
-  /**默认可以发起请求 */
-  defaultSearch: boolean
   /** 扩展 */
   [key: string]: any
+  /**默认可以发起请求 */
+  defaultSearch: boolean
 }
 
 const XformModal: React.FC<IProps> = (props) => {
@@ -169,7 +169,14 @@ const XformModal: React.FC<IProps> = (props) => {
 
   // 检验默认筛选项是否有值
   const checkFlag = () => {
-    const flag = Object.values(defaultTableCriteria).every((i: any) => i['searchValue'] && Object.values(i['searchValue']).length)
+    let flag = false
+    flag = Object.values(defaultTableCriteria).every((i: any) => {
+      if (i['searchValue'] && Object.values(i['searchValue']).length) {
+        return true
+      } else {
+        return false
+      }
+    })
     return flag
   }
 
@@ -184,12 +191,17 @@ const XformModal: React.FC<IProps> = (props) => {
         return
       }
     }
-    if (!defaultSearch && !checkFlag()) return
     try {
+      if (Object.keys(defaultTableCriteria).length) {
+        if (!defaultSearch && !checkFlag()) {
+          setListData([])
+          return
+        }
+      }
       const res = await apiKey[apiName](data)
       setListData(res.data)
     } catch (error) {
-      Message.error(error)
+      Message.error(error.response.data.msg || '请求失败')
     }
   }
   // 表格列定义
@@ -250,7 +262,7 @@ const XformModal: React.FC<IProps> = (props) => {
   const handleCriteriaChange = useCallback(
     (value, values) => {
       const conditions = $reduceCriteria(query, values)
-      const newConditions = renderConditions(conditions, values, criteriaProps)
+      let newConditions
       if (Object.keys(defaultTableCriteria).length) {
         const defaultConditions = {}
         Object.keys(defaultTableCriteria).forEach(key => {
@@ -258,18 +270,15 @@ const XformModal: React.FC<IProps> = (props) => {
           defaultConditionsKey[defaultTableCriteria[key]['searchKey']] = defaultTableCriteria[key]['searchValue']
           defaultConditions[key] = defaultTableCriteria[key]['searchValue'] && defaultConditionsKey
         })
-        setNewSelecteCon({ ...conditions, ...newConditions, ...defaultConditions, ...selectedConditions })
-        getListData({
-          ...query,
-          conditions: { ...conditions, ...newConditions, ...defaultConditions, ...selectedConditions }
-        })
+        newConditions = renderConditions({ ...conditions, ...defaultConditions, ...selectedConditions }, values, criteriaProps)
       } else {
-        setNewSelecteCon({ ...conditions, ...newConditions, ...selectedConditions })
-        getListData({
-          ...query,
-          conditions: { ...conditions, ...newConditions, ...selectedConditions }
-        })
+        newConditions = renderConditions({ ...conditions, ...selectedConditions }, values, criteriaProps)
       }
+      setNewSelecteCon(newConditions)
+      getListData({
+        ...query,
+        conditions: newConditions
+      })
     },
     [query, selectedConditions]
   )

@@ -114,12 +114,7 @@ const Content: React.FC<IContentViewProps> = props => {
       fdProjectDemand: {
         fdId
       },
-      cmsProjectStaffList: cmsProjectStaffList?.values?.length ? cmsProjectStaffList.values.map(item => {
-        return {
-          ...item,
-          fdSupplier: item.fdSupplierObj,
-        }
-      }) : cmsProjectStaffList || undefined,
+      cmsProjectStaffList: Array.isArray(cmsProjectStaffList) ? cmsProjectStaffList : cmsProjectStaffList.values
     }
     setFormValue({
       values,

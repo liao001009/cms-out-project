@@ -1,10 +1,13 @@
-import React, { useState, useRef, useCallback } from 'react'
+import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react'
 import { Module } from '@ekp-infra/common'
 import { IContentViewProps } from '@ekp-runtime/render-module'
 import { Loading, Anchor, Toast, Modal } from '@mui/core'
 import api from '@/api/cmsProjectDemand'
 import XForm from './form'
 import './index.scss'
+import apiLbpm from '@/api/cmsLbpm'
+import Axios from 'axios'
+import apiSupplier from '@/api/cmsSupplierInfo'
 
 // 流程审批组件
 const LBPMFormFragment = Module.getComponent('sys-lbpm', 'AuditFormFragment', { loading: <Loading /> })
@@ -18,8 +21,53 @@ const Content: React.FC<IContentViewProps> = props => {
   // 机制组件引用
   const formComponentRef = useRef<any>()
   const lbpmComponentRef = useRef<any>()
-  const [lbpmChartVisible, setlbpmChartVisible] = useState<boolean>(false)
 
+  //  当前登录人的id
+  const userId = mk.getSysConfig().currentUser.fdId
+
+  const [lbpmChartVisible, setlbpmChartVisible] = useState<boolean>(false)
+  // 资料上传节点是否显示
+  const [materialVis, setMaterialVis] = useState<boolean>(true)
+  // 发布供应商是否显示
+  const [fdSuppliesVisible, setFdSuppliesVisible] = useState<boolean>(false)
+
+  // 判断当前登录人是不是供应商管理员
+  const getSupplierStatus = async () => {
+    const res = await apiSupplier.list({ conditions: { 'fdAdminElement.fdId': { '$eq': userId } } })
+    setFdSuppliesVisible(!!res.data.content.length)
+  }
+
+  // 当前登录人是否是框架管理员
+  const editFlag = useMemo(() => {
+    return userId === data.fdFrameAdmin.fdId
+  }, [data?.fdFrameAdmin?.fdId])
+
+  /** 获取资料上传节点 */
+  const getCurrentNode = async () => {
+    try {
+      const nodeInfosData = await apiLbpm.getCurrentNodeInfo({
+        processInstanceId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId
+      })
+      const url = mk.getSysConfig('apiUrlPrefix') + '/cms-out-manage/cmsOutManageCommon/loadNodeExtendPropertiesOnProcess'
+      const processData = await Axios.post(url, {
+        fdId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId
+      })
+      if (nodeInfosData.data.currentNodeCards.length || processData.data.length) {
+        const newArr = processData.data.filter(item => {
+          return nodeInfosData.data.currentNodeCards.find(item2 => item.nodeId === item2.fdNodeId && item2.fdCurrentHandlers.some(item3 => item3.id === mk.getSysConfig('currentUser').fdId))
+        })
+        setMaterialVis(newArr.length ? newArr[0].extendProperty.supplierApprove === 'false' ? false : true : false)
+      } else {
+        setMaterialVis(false)
+      }
+    } catch (error) {
+      setMaterialVis(false)
+    }
+  }
+  useEffect(() => {
+    getCurrentNode()
+    getSupplierStatus()
+  }, [])
   // 校验
   const _validate = async (isDraft: boolean) => {
     // 表单校验
@@ -148,7 +196,7 @@ const Content: React.FC<IContentViewProps> = props => {
             {/* 表单信息 */}
             <div className='title'>审批详情</div>
             <div className='inner'>
-              <XForm formRef={formComponentRef} value={data || {}} />
+              <XForm formRef={formComponentRef} value={data || {}} materialVis={materialVis} fdSuppliesVisible={fdSuppliesVisible} editFlag={editFlag} />
             </div>
           </Anchor.Panel>
           <Anchor.Panel index='approve' title='审批信息'>
@@ -173,7 +221,7 @@ const Content: React.FC<IContentViewProps> = props => {
           mechanism={data.mechanisms && data.mechanisms['lbpmProcess']}
           doOperation={handleSave}
           customizeOperations={[
-            { name: '编辑', action: handleEdit },
+            // { name: '编辑', action: handleEdit },
             { name: '删除', action: handleDel },
             { name: '流程图', icon: 'flow-chart', action: () => setlbpmChartVisible(true) }
           ]}
@@ -181,6 +229,7 @@ const Content: React.FC<IContentViewProps> = props => {
       </div>
       {/* 流程图弹窗 */}
       <LBPMChart
+        className='test'
         mechanism={data?.mechanisms && data.mechanisms['lbpmProcess']}
         getFormValue={() => formComponentRef.current?.getValue()}
         visible={lbpmChartVisible}

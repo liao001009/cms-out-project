@@ -72,7 +72,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectDemand.form.!{l5m0jv4pp0n540afo2d}', '主题')}
             layout={'horizontal'}
             required={true}
@@ -93,7 +93,7 @@ const XForm = (props) => {
             </Form.Item>
           </XformFieldset>
           <XformFieldset
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectDemand.form.!{l5hsja2npf5yc4nlqj}', '项目名称')}
             layout={'horizontal'}
             labelTextAlign={'left'}
@@ -301,7 +301,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectDemand.form.!{l5hskhi8cgpynm5py6m}', '项目编号')}
             layout={'horizontal'}
             required={true}
@@ -324,7 +324,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectDemand.form.!{l5htahiltc89au91i0d}', '所属部门')}
             layout={'horizontal'}
             required={true}
@@ -345,7 +345,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectDemand.form.!{l5htan5uzruygvtzgnk}', '所属团队')}
             layout={'horizontal'}
             required={true}
@@ -366,7 +366,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectDemand.form.!{l5htati10ogp6u4pyr4n}', '项目负责人')}
             layout={'horizontal'}
             required={true}
@@ -387,7 +387,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectDemand.form.!{l5htbm1i443cb33w5p9}', '内部负责人')}
             layout={'horizontal'}
           >
@@ -406,7 +406,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectDemand.form.!{l5htlddeosjl3v9jri}', '所属框架')}
             layout={'horizontal'}
             required={true}
@@ -449,7 +449,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectDemand.form.!{l5hu16e6mscf4v6vz9}', '项目性质')}
             layout={'horizontal'}
             required={true}
@@ -485,7 +485,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectDemand.form.!{l5hu1fkme7t0hcs6rzg}', '供应商范围')}
             layout={'horizontal'}
             required={true}
@@ -521,7 +521,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectDemand.form.!{l5hu1sgpxwx7n0fkx9}', '是否指定供应商')}
             layout={'horizontal'}
           >
@@ -556,7 +556,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectDemand.form.!{l5hu2utft6lbporlys}', '指定供应商名称')}
             layout={'horizontal'}
           >
@@ -650,7 +650,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectDemand.form.!{l5hu3cliu0idfkp0p3p}', '设计类需求子类')}
             layout={'horizontal'}
             required={true}
@@ -686,7 +686,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectDemand.form.!{l5hu3p9hgtqae2rfxr6}', '订单金额')}
             layout={'horizontal'}
           >
@@ -705,7 +705,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectDemand.fdCreator', '创建者')}
             layout={'horizontal'}
           >
@@ -732,7 +732,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectDemand.fdCreateTime', '创建时间')}
             layout={'horizontal'}
           >
@@ -748,7 +748,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectDemand.form.!{l5hx79yiywiixyt0gwo}', '评审时间')}
             layout={'horizontal'}
           >
@@ -1349,7 +1349,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsProjectDemand.form.!{l5jfuzfeh4xamxk7vb4}', '发布供应商')}
             layout={'horizontal'}
           >

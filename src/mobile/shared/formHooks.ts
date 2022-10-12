@@ -215,13 +215,16 @@ const VALUE_EXECUTOR = {
       }
     },
     // 获取值
-    get: (values, mechanisms, name) => {
+    get: (values, mechanisms, name, flag) => {
       const names = name.split('.')
       let targetMechanisms: Array<object> = []
       // 明细表
       if (names.length > 1) {
+        if (flag) return
         const [tableName, colName] = names
-        values[tableName]?.values?.forEach((value) => {
+        const newData = Array.isArray(values[tableName]) ? values[tableName] : values[tableName]?.values
+        newData?.length && newData.forEach((value) => {
+          if (typeof value[colName] !== 'object') return
           const { mechanismValue, mechanismKey } = value[colName]
           targetMechanisms.push(...mechanismValue)
           value[colName] = mechanismKey
@@ -232,11 +235,11 @@ const VALUE_EXECUTOR = {
         if (!value) {
           return
         }
-        if (!mechanisms[VALUE_EXECUTOR.attachmentDict.key]) {
-          mechanisms[VALUE_EXECUTOR.attachmentDict.key] = []
-        }
         targetMechanisms = value
         values[name] = name
+      }
+      if (!mechanisms[VALUE_EXECUTOR.attachmentDict.key]) {
+        mechanisms[VALUE_EXECUTOR.attachmentDict.key] = []
       }
       mechanisms[VALUE_EXECUTOR.attachmentDict.key].push(...targetMechanisms)
     }
@@ -274,16 +277,17 @@ export const useApi = (payload: IApi) => {
         return form.validateFields()
       },
       // 获取表单值
-      getValue: () => {
+      getValue: (flag = false) => {
         const values = form.getFieldsValue() || {}
+        const newValue = JSON.parse(JSON.stringify(values))
         const mechanisms = {}
         Object.keys(MECHANISMNAMES).forEach((name) => {
           const dict = MECHANISMNAMES[name]
           if (VALUE_EXECUTOR[dict]) {
-            VALUE_EXECUTOR[dict].get(values, mechanisms, name)
+            VALUE_EXECUTOR[dict].get(newValue, mechanisms, name, flag)
           }
         })
-        return Object.assign(values, { mechanisms })
+        return Object.assign(newValue, { mechanisms })
       }
     }),
     [form]

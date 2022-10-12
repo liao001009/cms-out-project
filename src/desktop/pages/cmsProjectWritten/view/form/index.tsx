@@ -29,7 +29,7 @@ const XForm = (props) => {
     cmsProjectWrittenDe: createRef() as any
   })
   const { formRef: formRef, value: value } = props
-  
+
   const [form] = Form.useForm()
   // 对外暴露接口
   useApi({
@@ -45,17 +45,17 @@ const XForm = (props) => {
     form,
     detailForms
   })
-  useEffect(()=>{
+  useEffect(() => {
     // 后端数据结构是字符串，要求前端用checkbox，所以只能转换
     form.setFieldsValue({
       fdNoticeSupplier: [value.fdNoticeSupplier],
       fdIsInterview: [value.fdIsInterview],
       fdNoticeInterviewer: [value.fdNoticeInterviewer]
     })
-  },[])
+  }, [])
 
-  const columns = useMemo(()=>{
-    const data : any[] =[
+  const columns = useMemo(() => {
+    const data: any[] = [
       {
         type: CMSXformModal,
         controlProps: {
@@ -270,9 +270,9 @@ const XForm = (props) => {
         },
         label: fmtMsg(':cmsProjectWritten.form.!{l5i2sy26tahw90jp8ej}', '是否通过笔试')
       },
-      
+
     ]
-    if(value.fdIsInterview==='1'){
+    if (value.fdIsInterview === '1') {
       data.push(
         {
           type: XformDatetime,
@@ -337,7 +337,7 @@ const XForm = (props) => {
       )
     }
     return data
-  },[])
+  }, [])
 
 
 
@@ -469,6 +469,7 @@ const XForm = (props) => {
                 <XformFieldset>
                   <Form.Item
                     name={'cmsProjectWrittenDe'}
+                    validateTrigger={false}
                     noStyle
                     rules={[
                       {
@@ -537,7 +538,7 @@ const XForm = (props) => {
                   mobileContentAlign={'right'}
                   title={fmtMsg(':cmsProjectWritten.form.!{l5hzk88ieqeuw2kxojw}', '是否面试')}
                   layout={'horizontal'}
-                  hidden = {value.fdIsInterview==='0'}
+                  hidden={value.fdIsInterview === '0'}
                 >
                   <Form.Item
                     name={'fdIsInterview'}
@@ -571,7 +572,7 @@ const XForm = (props) => {
                   mobileContentAlign={'right'}
                   title={fmtMsg(':cmsProjectWritten.form.!{l5hzlb769gv64l5j7ke}', '面试官')}
                   layout={'horizontal'}
-                  hidden = {value.fdIsInterview==='0'}
+                  hidden={value.fdIsInterview === '0'}
                 >
                   <Form.Item name={'fdInterviewer'}>
                     <XformAddress
@@ -594,7 +595,7 @@ const XForm = (props) => {
                   mobileContentAlign={'right'}
                   title={fmtMsg(':cmsProjectWritten.form.!{l5hzkchugrzq1fyh4b}', '邮件通知供应商')}
                   layout={'horizontal'}
-                  hidden = {value.fdNoticeSupplier==='0' || value.fdIsInterview==='0'}
+                  hidden={value.fdNoticeSupplier === '0' || value.fdIsInterview === '0'}
                 >
                   <Form.Item
                     name={'fdNoticeSupplier'}
@@ -624,7 +625,7 @@ const XForm = (props) => {
               </GridItem>
               <GridItem column={2} row={6} columnSpan={1} rowSpan={1}>
                 <XformFieldset
-                  hidden={value.fdNoticeSupplier === '0' || value.fdIsInterview==='0'}
+                  hidden={value.fdNoticeSupplier === '0' || value.fdIsInterview === '0'}
                 >
                   <Form.Item name={'fdSupplierTotal'}>
                     <XformRelation
@@ -693,7 +694,7 @@ const XForm = (props) => {
                   mobileContentAlign={'right'}
                   title={fmtMsg(':cmsProjectWritten.form.!{l5hzkx122azhemlsism}', '邮件通知面试官')}
                   layout={'horizontal'}
-                  hidden={value.fdNoticeInterviewer === '0' || value.fdIsInterview==='0'}
+                  hidden={value.fdNoticeInterviewer === '0' || value.fdIsInterview === '0'}
                 >
                   <Form.Item
                     name={'fdNoticeInterviewer'}
