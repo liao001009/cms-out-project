@@ -36,6 +36,7 @@ const XForm = (props) => {
       for (let j = i + 1; j < val.length; j++) {
         if (val[i].value === val[j].value) {
           delete val[i]
+          i++
         }
       }
     }

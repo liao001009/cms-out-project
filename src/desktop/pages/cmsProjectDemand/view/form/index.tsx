@@ -458,7 +458,7 @@ const XForm = (props) => {
                       layout={'horizontal'}
                     >
                       <Form.Item name={'fdOrderAmount'}>
-                        <XformMoney
+                        {/* <XformMoney
                           {...sysProps}
                           placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hu3p9i1j80lnhffd}', '请输入')}
                           numberFormat={{
@@ -466,7 +466,8 @@ const XForm = (props) => {
                           }}
                           precision={2}
                           showStatus="view"
-                        ></XformMoney>
+                        ></XformMoney> */}
+                        <span>{value?.fdOrderAmount.toFixed(2)}万</span>
                       </Form.Item>
                     </XformFieldset>
                   </GridItem>
@@ -590,7 +591,7 @@ const XForm = (props) => {
                       >
                       </XformFieldset>
                     </GridItem>
-                    <GridItem column={27} row={15} rowSpan={1} columnSpan={6}>
+                    <GridItem column={27} row={15} rowSpan={1} columnSpan={5}>
                       <Form.Item
                         name={'fdLowPerson'}
                         rules={[
@@ -621,7 +622,7 @@ const XForm = (props) => {
                         </Form.Item>
                       </XformFieldset>
                     </GridItem>
-                    <GridItem column={33} row={15} rowSpan={1} columnSpan={7}>
+                    <GridItem column={33} row={15} rowSpan={1} columnSpan={5}>
                       <Form.Item
                         name={'fdUpPerson'}
                         rules={[
@@ -643,7 +644,7 @@ const XForm = (props) => {
                         ></XformNumber>
                       </Form.Item>
                     </GridItem>
-                    <GridItem column={39} row={15} rowSpan={1} columnSpan={1}>
+                    <GridItem column={38} row={15} rowSpan={1} columnSpan={1}>
                       <XformFieldset compose={true}>
                         <Form.Item name={'fdColSgzhna'}>
                           <XformDescription
