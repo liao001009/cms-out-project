@@ -18,7 +18,6 @@ import XformSelect from '@/desktop/components/form/XformSelect'
 import XformMoney from '@/desktop/components/form/XformMoney'
 import CMSXformModal from '@/desktop/components/cms/XformModal'
 import { projectColumns, supplierColumns } from '@/desktop/pages/common/common'
-
 import apiFrameInfo from '@/api/cmsFrameInfo'
 import apiProject from '@/api/cmsProjectInfo'
 import apiSupplier from '@/api/cmsSupplierInfo'
@@ -105,7 +104,7 @@ const XForm = (props) => {
           '$eq': fdId
         }
       },
-      'columns': ['fdId', 'fdPublishTime', 'fdSubject'],
+      'columns': ['fdId', 'fdPublishTime', 'fdSubject', 'fdSupplies'],
       'sorts': {
         'fdPublishTime': 'desc'
       }
@@ -126,6 +125,64 @@ const XForm = (props) => {
     })
     const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectDemandSupp').values
     valuesData.length && detailForms.current.cmsProjectDemandSupp.current.deleteAll()
+  }
+
+  const handleChangeSupplier = async (v) => {
+    // 给明细表默认加行数并赋值默认数据
+    const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectDemandSupp').values
+    const newSelectSupplierFdId = v.map(i => i.fdId)
+    const newSelectedSupplierFdId = valuesData.map(i => i.fdSupplier.fdId)
+    if (newSelectSupplierFdId.sort().toString() === newSelectedSupplierFdId.sort().toString()) return
+    valuesData.length && detailForms.current.cmsProjectDemandSupp.current.deleteAll()
+    // const arr = [] as any
+    // const newData = v.map(async (item) => {
+    //   const projectDemandData = await getProjectDemand(item.fdId)
+    //   // arr.push({
+    //   //   ...item,
+    //   //   fdPublishTime: projectDemandData?.fdPublishTime
+    //   // })
+    //   item.fdPublishTime = projectDemandData?.fdPublishTime
+    //   return item
+    // })
+    const requestArr = v.map(i => getProjectDemand(i.fdId))
+    const res = await Promise.all(requestArr)
+    const newData = v.map(item => {
+      res.forEach(k => {
+        //@ts-ignore
+        const newItem = k?.fdSupplies.filter(s => s.fdId === item.fdId) || []
+        if (newItem.length) {
+          //@ts-ignore
+          item.fdPublishTime = k.fdPublishTime
+        }
+      })
+      return item
+    })
+    console.log('res5559', newData)
+    setTimeout(() => {
+      newData.length && detailForms.current.cmsProjectDemandSupp.current.updateValues(newData.map(item => ({
+        fdFrame: item.fdFrame,
+        fdLastTime: item.fdPublishTime,
+        fdSupplier: { ...item }
+      })))
+    }, 0)
+  }
+
+  const handleProject = (v) => {
+    setIsFrameChild(v.fdFrame.fdName === '设计类')
+    setSelectedFrame(v.fdFrame.fdId)
+    form.setFieldsValue({
+      fdInnerLeader: v.fdInnerPrincipal,
+      fdProjectNum: v.fdCode,
+      fdBelongDept: v.fdBelongDept,
+      fdProjectLeader: v.fdProjectPrincipal,
+      fdBelongTeam: v.fdBelongTeam,
+      fdFrame: v.fdFrame,
+      fdSupplier: undefined,
+      fdProjectNature: v.fdProjectNature,
+      fdSupplies: []
+    })
+    detailForms.current.cmsProjectDemandSupp.current.deleteAll()
+    setAssignSupplier(undefined)
   }
   // 对外暴露接口
   useApi({
@@ -201,21 +258,7 @@ const XForm = (props) => {
                       criteriaKey='projectCriertia'
                       criteriaProps={['fdFrame.fdName', 'fdBelongTeam.fdName']}
                       showTableData={'fdName'}
-                      onChangeProps={(v) => {
-                        setIsFrameChild(v.fdFrame.fdName === '设计类')
-                        setSelectedFrame(v.fdFrame.fdId)
-                        form.setFieldsValue({
-                          fdInnerLeader: v.fdInnerPrincipal,
-                          fdProjectNum: v.fdCode,
-                          fdBelongDept: v.fdBelongDept,
-                          fdProjectLeader: v.fdProjectPrincipal,
-                          fdBelongTeam: v.fdBelongTeam,
-                          fdFrame: v.fdFrame,
-                          fdSupplier: undefined,
-                          fdProjectNature: v.fdProjectNature
-                        })
-                        setAssignSupplier(undefined)
-                      }}
+                      onChangeProps={(v) => handleProject(v)}
                     />
                   </Form.Item>
                 </XformFieldset>
@@ -581,7 +624,7 @@ const XForm = (props) => {
                                   }
                                 }}
                                 apiKey={apiSupplier}
-                                apiName={'listSupplierInfo'}
+                                apiName={'list'}
                                 criteriaKey='demandSupplier'
                                 showStatus='add'
                                 modalTitle='供应商选择'
@@ -1170,7 +1213,7 @@ const XForm = (props) => {
                       columnsProps={supplierColumns}
                       chooseFdName='fdName'
                       apiKey={apiSupplier}
-                      apiName={'listSupplierInfo'}
+                      apiName={'list'}
                       criteriaKey='demandSupplier'
                       showStatus='add'
                       criteriaProps={['fdOrgCode', 'fdFrame.fdName', 'fdName']}
@@ -1188,26 +1231,7 @@ const XForm = (props) => {
                           searchValue: selectedFrame || undefined
                         }
                       }}
-                      onChange={(v) => {
-                        // 给明细表默认加行数并赋值默认数据
-                        const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectDemandSupp').values
-                        valuesData.length && detailForms.current.cmsProjectDemandSupp.current.deleteAll()
-                        const arr = [] as any
-                        v.map(async (item) => {
-                          const projectDemandData = await getProjectDemand(item.fdId)
-                          arr.push({
-                            ...item,
-                            fdPublishTime: projectDemandData?.fdPublishTime
-                          })
-                        })
-                        setTimeout(() => {
-                          v.length && detailForms.current.cmsProjectDemandSupp.current.updateValues(arr.map(item => ({
-                            fdFrame: item.fdFrame,
-                            fdLastTime: item.fdPublishTime,
-                            fdSupplier: { ...item },
-                          })))
-                        }, 600)
-                      }}
+                      onChange={(v) => handleChangeSupplier(v)}
                     />
                   </Form.Item>
                 </XformFieldset>
@@ -1250,7 +1274,7 @@ const XForm = (props) => {
                           type: CMSXformModal,
                           controlProps: {
                             apiKey: apiSupplier,
-                            apiName: 'listSupplierInfo',
+                            apiName: 'list',
                             criteriaKey: 'supplierCriertia',
                             chooseFdName: 'fdName',
                             criteriaProps: ['fdOrgCode', 'fdFrame.fdName'],
