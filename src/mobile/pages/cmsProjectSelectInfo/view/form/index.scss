@@ -25,3 +25,10 @@
     }
   }
 }
+
+
+@import '../../../common/common.scss';
+
+$baseCls: project-form;
+
+@include form-page($baseCls)

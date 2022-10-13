@@ -6,7 +6,6 @@ import ItemRender from '@/mobile/components/item'
 import api from '@/api/cmsProjectWritten'
 import Sorter from '@/mobile/components/sorter'
 import { useAdd } from '@/mobile/shared/add'
-import AddComponent from '@/mobile/pages/cmsProjectWrittenTemplate/baseList'
 import './index.scss'
 
 const Content: React.FC<IContentViewProps> = (props) => {
@@ -148,7 +147,6 @@ const Content: React.FC<IContentViewProps> = (props) => {
       <div className={'mui-template-list-footer'}>
         <BottomContainer>
           <ToolBarButton data={toolbarButtons} />
-          <AddComponent visible={$addVisible} callback={$addClose}></AddComponent>
         </BottomContainer>
       </div>
     </div>

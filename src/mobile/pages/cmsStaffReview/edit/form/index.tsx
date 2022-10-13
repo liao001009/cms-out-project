@@ -58,7 +58,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsStaffReview.form.!{l5lt2wijkpj6veh7erc}', '主题')}
             layout={'horizontal'}
             required={true}
@@ -79,7 +79,7 @@ const XForm = (props) => {
             </Form.Item>
           </XformFieldset>
           <XformFieldset
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsStaffReview.form.!{l5j0g416fp0yxl0edsu}', '实际笔试时间')}
             layout={'horizontal'}
           >
@@ -95,7 +95,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsStaffReview.form.!{l5j0ghnmvqsssi3uhma}', '实际面试时间')}
             layout={'horizontal'}
           >
@@ -111,7 +111,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsStaffReview.form.!{l5j0h4l0nmxpcwpcr8g}', '面试官')}
             layout={'horizontal'}
           >
@@ -132,7 +132,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsStaffReview.form.!{l5j0hb5rh5lpzp1vrxr}', '项目负责人')}
             layout={'horizontal'}
           >
@@ -489,7 +489,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsStaffReview.form.!{l5kvp3zj3qq76tpcbpy}', '中选供应商')}
             layout={'horizontal'}
           >
@@ -607,7 +607,7 @@ const XForm = (props) => {
           </XformFieldset>
           <XformFieldset
             labelTextAlign={'left'}
-            mobileContentAlign={'right'}
+            mobileContentAlign={'left'}
             title={fmtMsg(':cmsStaffReview.form.!{l5kvs0rsymu0ee2wucj}', '项目需求')}
             layout={'horizontal'}
           >

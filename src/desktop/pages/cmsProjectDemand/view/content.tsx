@@ -1,6 +1,4 @@
 import api from '@/api/cmsProjectDemand'
-import { getFlowStatus } from '@/desktop/shared/util'
-import { EOperationType, ESysLbpmProcessStatus } from '@/utils/status'
 import { Auth, Module } from '@ekp-infra/common'
 import { IContentViewProps } from '@ekp-runtime/render-module'
 import { Button, Loading, Message, Modal, Tabs } from '@lui/core'
@@ -58,8 +56,6 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   const lbpmComponentRef = useRef<any>()
   const rightComponentRef = useRef<any>()
 
-  // 流程数据
-  const [flowData, setFlowData] = useState<any>({})
   // 资料上传节点是否显示
   const [materialVis, setMaterialVis] = useState<boolean>(true)
   /**外包人员评审模板 */
@@ -75,13 +71,15 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   const [exportDisabled, setExportDisabled] = useState<boolean>(false)
   /**需要导出的订单响应列表数据 */
   const exportOrderData = useRef<any>({})
-  // 发布供应商是否显示
+  // 是否为供应商管理员
   const [fdSuppliesVisible, setFdSuppliesVisible] = useState<boolean>(false)
   // 导出权限
   const [exportRole, setExportRole] = useState<boolean>(false)
-
+  // 订单响应是否更改
+  const [detailChange, setDetailChange] = useState<boolean>(false)
   // 当前登录人的id
   const userId = mk.getSysConfig().currentUser.fdId
+  const [isRequired, setIsRequired] = useState<boolean>(true)
 
   // 当前登录人是否是框架管理员
   const editFlag = useMemo(() => {
@@ -254,6 +252,11 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
 
   // 提交/暂存通用逻辑
   const handleSave = async (isDraft: boolean) => {
+    const res = lbpmComponentRef.current.getOperationType()
+    console.log('res5559', res)
+    if (res !== 'handler_pass') {
+      setIsRequired(false)
+    }
     // 校验文档
     if (await _validate(isDraft) === false) {
       return
@@ -268,9 +271,9 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     api.update({
       ...values,
       fdFrame: values.fdFrame,
-      cmsProjectDemandWork: values.cmsProjectDemandWork && values.cmsProjectDemandWork.values || undefined,
-      cmsProjectDemandDetail: values.cmsProjectDemandDetail && values.cmsProjectDemandDetail.values || undefined,
-      cmsProjectDemandSupp: values.cmsProjectDemandSupp && values.cmsProjectDemandSupp.values || undefined,
+      cmsProjectDemandWork: Array.isArray(values.cmsProjectDemandWork) ? values.cmsProjectDemandWork : values.cmsProjectDemandWork.values,
+      cmsProjectDemandDetail: Array.isArray(values.cmsProjectDemandDetail) ? values.cmsProjectDemandDetail : values.cmsProjectDemandDetail.values,
+      cmsProjectDemandSupp: Array.isArray(values.cmsProjectDemandSupp) ? values.cmsProjectDemandSupp : values.cmsProjectDemandSupp.values
     }).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
@@ -295,7 +298,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   // 订单响应按钮
   const handleOrder = useCallback(() => {
     if (!btnStatus) return null
-    if (data.fdProcessFlag && data.fdProcessFlag.includes('2')) return null
+    if (data.fdProcessFlag && (data.fdProcessFlag.includes('2') || data.fdProcessFlag.includes('3'))) return null
     return {
       name: '订单响应',
       action: () => { handleOrderAction() },
@@ -369,12 +372,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   }, [history, staffTemplateData, data?.fdProcessFlag, btnStatus])
 
   const handleEdit = () => {
-    if (Object.keys(flowData).length === 0) {
-      return null
-    }
-    const status = data.fdProcessStatus || getFlowStatus(flowData)
-    if (status === ESysLbpmProcessStatus.ABANDONED || status === ESysLbpmProcessStatus.COMPLETED) return null
-    if (status === ESysLbpmProcessStatus.DRAFT || status === ESysLbpmProcessStatus.REJECT || status === ESysLbpmProcessStatus.WITHDRAW || status === ESysLbpmProcessStatus.ACTIVATED) return null
+
     const authParams = {
       vo: { fdId: params['id'] }
     }
@@ -399,7 +397,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
             cmsHandleBack(history, '/cmsProjectDemand/listDemand')
           }
         }).catch(error => {
-          Message.error(error.resopnse.data.msg || '删除失败')
+          Message.error(error.response.data.msg || '删除失败')
         })
       },
       onCancel () {
@@ -408,13 +406,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     })
   }, [])
   const handleDel = () => {
-    if (Object.keys(flowData).length === 0) {
-      return null
-    }
-    const status = getFlowStatus(flowData)
-    if (status !== ESysLbpmProcessStatus.DRAFT && lbpmComponentRef.current?.checkOperationTypeExist(flowData.identity, EOperationType.handler_replyDraftCooperate)) {
-      return null
-    }
+
     const authParams = {
       vo: { fdId: params['id'] }
     }
@@ -473,9 +465,6 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
       getFormValue: () => formComponentRef?.current?.getValue?.(),
       moduleCode: 'cms-out-manage-demand',
       entityName,
-      onChange: (value) => {
-        setFlowData(value)
-      },
       processId: processId,
       onSubmit: () => { handleSave(false) },
       submitting: false,
@@ -507,7 +496,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         slot={{
           form: (
             <div>
-              <div className='form'><XForm formRef={formComponentRef} value={data || {}} materialVis={materialVis} editFlag={editFlag} fdSuppliesVisible={fdSuppliesVisible} /></div>
+              <div className='form'><XForm formRef={formComponentRef} value={data || {}} materialVis={materialVis} editFlag={editFlag} fdSuppliesVisible={fdSuppliesVisible} isRequired={isRequired} /></div>
               {data.fdProcessStatus === '30' ? renderTab() : null}
             </div>
           )
@@ -531,6 +520,9 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
 
   const handleChange = useCallback((e) => {
     orderDetailList.current = e
+    if (e.length) {
+      setDetailChange(true)
+    }
   }, [])
 
   // 从子组件获取需要导出的数据
@@ -549,6 +541,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
 
   // 保存订单响应数据
   const handleOrderDetailSave = async () => {
+    if (!orderDetailList.current.length) return
     const requestArr = orderDetailList.current.map(i => {
       const params = {
         fdId: i.fdMain.fdId,
@@ -576,7 +569,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     saveBtnVisible ? (
       <Fragment>
         {
-          editFlag ? <Button type='primary' style={{ marginRight: '16px' }} onClick={handleOrderDetailSave}>保存</Button> : null
+          editFlag ? <Button type='primary' style={{ marginRight: '16px' }} disabled={!detailChange} onClick={handleOrderDetailSave}>保存</Button> : null
         }
         {
           exportRole ? (
@@ -585,7 +578,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         }
       </Fragment>
     ) : null
-  ), [saveBtnVisible, exportDisabled, data.fdProcessStatus, editFlag])
+  ), [saveBtnVisible, exportDisabled, data.fdProcessStatus, editFlag, detailChange])
 
 
   const renderTab = () => {

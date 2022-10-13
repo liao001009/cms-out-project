@@ -1,10 +1,12 @@
-import React, { useState, useRef, useCallback } from 'react'
+import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { Module } from '@ekp-infra/common'
 import { IContentViewProps } from '@ekp-runtime/render-module'
 import { Loading, Anchor, Toast, Modal } from '@mui/core'
 import api from '@/api/cmsStaffReview'
 import XForm from './form'
 import './index.scss'
+import apiLbpm from '@/api/cmsLbpm'
+import Axios from 'axios'
 
 // 流程审批组件
 const LBPMFormFragment = Module.getComponent('sys-lbpm', 'AuditFormFragment', { loading: <Loading /> })
@@ -19,7 +21,33 @@ const Content: React.FC<IContentViewProps> = props => {
   const formComponentRef = useRef<any>()
   const lbpmComponentRef = useRef<any>()
   const [lbpmChartVisible, setlbpmChartVisible] = useState<boolean>(false)
-
+  const [materialVis, setMaterialVis] = useState<boolean>(true)
+  /** 定级 */
+  const getCurrentNode = async () => {
+    try {
+      const nodeInfosData = await apiLbpm.getCurrentNodeInfo({
+        processInstanceId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId
+      })
+      const url = mk.getSysConfig('apiUrlPrefix') + '/cms-out-manage/cmsStaffReview/loadNodeExtendPropertiesOnProcess'
+      const processData = await Axios.post(url, {
+        fdId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId
+      })
+      if (nodeInfosData.data.currentNodeCards.length || processData.data.length) {
+        const newArr = processData.data.filter(item => {
+          return nodeInfosData.data.currentNodeCards.find(item2 => item.nodeId === item2.fdNodeId && item2.fdCurrentHandlers.some(item3 => item3.id === mk.getSysConfig('currentUser').fdId))
+        })
+        setMaterialVis(newArr.length ? newArr[0].extendProperty.supplierApprove === 'false' ? false : true : false)
+      } else {
+        setMaterialVis(false)
+      }
+    } catch (error) {
+      console.error('errortest2', error)
+      setMaterialVis(false)
+    }
+  }
+  useEffect(() => {
+    getCurrentNode()
+  }, [])
   // 校验
   const _validate = async (isDraft: boolean) => {
     // 表单校验
@@ -149,7 +177,7 @@ const Content: React.FC<IContentViewProps> = props => {
             {/* 表单信息 */}
             <div className='title'>审批详情</div>
             <div className='inner'>
-              <XForm formRef={formComponentRef} value={data || {}} />
+              <XForm formRef={formComponentRef} value={data || {}} materialVis={materialVis} />
             </div>
           </Anchor.Panel>
           <Anchor.Panel index='approve' title='审批信息'>
@@ -174,7 +202,7 @@ const Content: React.FC<IContentViewProps> = props => {
           mechanism={data.mechanisms && data.mechanisms['lbpmProcess']}
           doOperation={handleSave}
           customizeOperations={[
-            { name: '编辑', action: handleEdit },
+            // { name: '编辑', action: handleEdit },
             { name: '删除', action: handleDel },
             { name: '流程图', icon: 'flow-chart', action: () => setlbpmChartVisible(true) }
           ]}

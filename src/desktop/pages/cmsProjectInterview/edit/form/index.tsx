@@ -34,12 +34,14 @@ const XForm = (props) => {
   const [defaultTableCriteria, setDefaultTableCriteria] = useState<any>({})
   useEffect(() => {
     init()
-    const paramId = props?.match?.params?.id
+    let paramId = props?.match?.params?.id
     if (props.mode === 'add') {
       // value.fdProjectDemand=paramId
       form.setFieldsValue({
         fdProjectDemand: paramId
       })
+    } else {
+      paramId = value?.fdProjectDemand?.fdId
     }
     if (paramId) {
       initData(paramId)
@@ -69,15 +71,13 @@ const XForm = (props) => {
       const ids = resOrder?.data?.content?.map(i => {
         return i.fdId
       })
-      if(ids.length>0){
-        const newParam = {
-          fdId: {
-            searchKey: '$in',
-            searchValue: ids
-          }
+      const newParam = {
+        fdId: {
+          searchKey: '$in',
+          searchValue: ids
         }
-        setDefaultTableCriteria(newParam)
       }
+      setDefaultTableCriteria(newParam)
     } catch (error) {
       console.error(error)
     }
@@ -97,8 +97,8 @@ const XForm = (props) => {
           }
         }
       })
-      const checkArr = arr.findIndex(item=>item.fdId===v.fdSupplier.fdId)
-      if (checkArr===-1 && fdInterviewPass === '1') {
+      const checkArr = arr.findIndex(item => item.fdId === v.fdSupplier.fdId)
+      if (checkArr === -1 && fdInterviewPass === '1') {
         arr.push(v.fdSupplier)
       }
     })
@@ -277,6 +277,7 @@ const XForm = (props) => {
               <XformFieldset>
                 <Form.Item
                   name={'cmsProjectInterDetail'}
+                  validateTrigger={false}
                   noStyle
                   rules={[
                     {

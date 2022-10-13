@@ -2,11 +2,8 @@ import api from '@/api/cmsProjectSelectInfo'
 import { Auth, Module } from '@ekp-infra/common'
 import { IContentViewProps } from '@ekp-runtime/render-module'
 import { Button, Message, Modal } from '@lui/core'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import XForm from './form'
-// import './index.scss'
-import { getFlowStatus } from '@/desktop/shared/util'
-import { EOperationType, ESysLbpmProcessStatus } from '@/utils/status'
 //@ts-ignore
 import Status, { EStatusType } from '@elements/status'
 import Icon from '@lui/icons'
@@ -16,12 +13,6 @@ import { cmsHandleBack } from '@/utils/routerUtil'
 
 Message.config({ maxCount: 1 })
 const LbpmFormWithLayout = Module.getComponent('sys-lbpm', 'LbpmFormWithLayout', { loading: <React.Fragment></React.Fragment> })
-// // 流程页签
-// const LBPMTabs = Module.getComponent('sys-lbpm', 'LBPMTabs', { loading: <Loading /> })
-// // 流程机制
-// const LBPMFormFragment = Module.getComponent('sys-lbpm', 'LBPMFormFragment', { loading: <Loading /> })
-// // 权限机制
-// const RightFragment = Module.getComponent('sys-right', 'RightFragment', { loading: <Loading /> })
 
 const { confirm } = Modal
 const baseCls = 'project-selectInfo-content'
@@ -39,13 +30,7 @@ const Content: React.FC<IContentViewProps> = props => {
   const lbpmComponentRef = useRef<any>()
   const rightComponentRef = useRef<any>()
 
-  const [flowData, setFlowData] = useState<any>({}) // 流程数据
-  // const [roleArr, setRoleArr] = useState<any>([])   // 流程角色
-  // useEffect(() => {
-  //   mk.on('SYS_LBPM_AUDIT_FORM_INIT_DATA', (val) => {
-  //     val?.roles && setRoleArr(val.roles)
-  //   })
-  // }, [])
+
   // 校验
   const _validate = async (isDraft: boolean) => {
     // 表单校验
@@ -196,12 +181,7 @@ const Content: React.FC<IContentViewProps> = props => {
 
 
   const handleEdit = () => {
-    if (Object.keys(flowData).length === 0) {
-      return null
-    }
-    const status = data.fdProcessStatus || getFlowStatus(flowData)
-    if (status === ESysLbpmProcessStatus.ABANDONED || status === ESysLbpmProcessStatus.COMPLETED) return null
-    if (status === ESysLbpmProcessStatus.DRAFT || status === ESysLbpmProcessStatus.REJECT || status === ESysLbpmProcessStatus.WITHDRAW || status === ESysLbpmProcessStatus.ACTIVATED) return null
+
     const authParams = {
       vo: { fdId: params['id'] }
     }
@@ -225,7 +205,7 @@ const Content: React.FC<IContentViewProps> = props => {
             cmsHandleBack(history, '/cmsProjectSelectInfo/listSelectInfo')
           }
         }).catch(error => {
-          Message.error(error.resopnse.data.msg || '删除失败')
+          Message.error(error.response.data.msg || '删除失败')
         })
       },
       onCancel () {
@@ -234,13 +214,7 @@ const Content: React.FC<IContentViewProps> = props => {
     })
   }, [])
   const handleDel = () => {
-    if (Object.keys(flowData).length === 0) {
-      return null
-    }
-    const status = getFlowStatus(flowData)
-    if (status !== ESysLbpmProcessStatus.DRAFT && lbpmComponentRef.current?.checkOperationTypeExist(flowData.identity, EOperationType.handler_replyDraftCooperate)) {
-      return null
-    }
+
     const authParams = {
       vo: { fdId: params['id'] }
     }
@@ -294,9 +268,6 @@ const Content: React.FC<IContentViewProps> = props => {
       getFormValue: () => formComponentRef?.current?.getValue?.(),
       moduleCode: 'cms-out-manage-selectInfo',
       entityName,
-      onChange: (value) => {
-        setFlowData(value)
-      },
       processId: processId,
       onSubmit: () => { handleSave(false) },
       submitting: false,

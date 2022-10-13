@@ -39,7 +39,7 @@ const Content: React.FC<IContentViewProps> = props => {
             cmsHandleBack(history, '/cmsProjectWritten/listWritten')
           }
         }).catch(error => {
-          Message.error(error.resopnse.data.msg || '删除失败')
+          Message.error(error.response.data.msg || '删除失败')
         })
       },
       onCancel () {

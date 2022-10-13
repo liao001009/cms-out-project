@@ -14,10 +14,11 @@ import XformAddress from '@/desktop/components/form/XformAddress'
 import XformDetailTable from '@/desktop/components/form/XformDetailTable'
 import XformNumber from '@/desktop/components/form/XformNumber'
 import XformSelect from '@/desktop/components/form/XformSelect'
-import apiSupplierInfo from '@/api/cmsSupplierInfo'
-import apiOutStaffInfo from '@/api/cmsOutStaffInfo'
+import XformGetDataSelect from '@/desktop/components/cms/XformGetDataSelect'
+// import apiSupplierInfo from '@/api/cmsSupplierInfo'
+// import apiOutStaffInfo from '@/api/cmsOutStaffInfo'
 import CMSXformModal, { EShowStatus } from '@/desktop/components/cms/XformModal'
-
+import apiLevel from '@/api/cmsLevelInfo'
 const MECHANISMNAMES = {}
 const baseCls = 'project-review-form'
 const XForm = (props) => {
@@ -28,25 +29,52 @@ const XForm = (props) => {
   const [form] = Form.useForm()
   const [supplierInfoList, setsupplierInfoList] = useState<any>([])
   const [outStaffInfoArr, setOutStaffInfoArr] = useState<any>([])
-  const getList = async (api, func) => {
-    try {
-      const res = await api
-      const newData = res.data.content.map(i => {
-        const item = {
-          value: i.fdId,
-          label: i.fdName
+  const [levelList, setLevelList] = useState<any>({})
+  // 数据去重
+  const removeSameData = (val) => {
+    for (let i = 0; i < val.length; i++) {
+      for (let j = i + 1; j < val.length; j++) {
+        if (val[i].value === val[j].value) {
+          delete val[i]
         }
-        return item
+      }
+    }
+    return val.filter(i => i)
+  }
+  const getList = (key, func) => {
+    const newData = value?.cmsStaffReviewDetail?.length && value.cmsStaffReviewDetail.map(i => {
+      const item = {
+        value: i[key].fdId,
+        label: i[key].fdName
+      }
+      return item
+    })
+    func(removeSameData(newData))
+  }
+
+  const getLevelList = async () => {
+    try {
+      const res = await apiLevel.list({})
+      let detailValue = form.getFieldValue('cmsStaffReviewDetail')
+      if (!Array.isArray(detailValue)) {
+        detailValue = detailValue.values
+      }
+      detailValue.forEach((i, index) => {
+        const levelArr = res.data.content.filter(k => k.fdFrame.fdId === i.fdFrame.fdId)
+        levelList[index] = levelArr
       })
-      func(newData)
+      setLevelList({ ...levelList })
     } catch (error) {
       console.log('error', error)
     }
   }
+
   useEffect(() => {
-    getList(apiOutStaffInfo.listStaffInfo({}), setOutStaffInfoArr)
-    getList(apiSupplierInfo.listSupplierInfo({}), setsupplierInfoList)
-  }, [])
+    getList('fdOutName', setOutStaffInfoArr)
+    getList('fdSupplier', setsupplierInfoList)
+    getLevelList()
+  }, [value])
+
   // 对外暴露接口
   useApi({
     form,
@@ -211,6 +239,7 @@ const XForm = (props) => {
                 <XformFieldset>
                   <Form.Item
                     name={'cmsStaffReviewDetail'}
+                    validateTrigger={false}
                     noStyle
                     rules={[
                       {
@@ -438,35 +467,19 @@ const XForm = (props) => {
                           label: fmtMsg(':cmsStaffReview.form.!{l5m8ahrw75gp6s7y6qi}', '评审结论')
                         },
                         {
-                          type: XformSelect,
+                          type: XformGetDataSelect,
                           controlProps: {
                             title: fmtMsg(':cmsStaffReview.form.!{l5j0obajl93mj68ky2f}', '定级'),
                             name: 'fdConfirmLevel',
+                            initData: levelList,
+                            showFdName: 'fdName',
                             placeholder: fmtMsg(':cmsStaffReview.form.!{l5j0oball6b84dapmal}', '请输入'),
-                            options: [
-                              {
-                                label: fmtMsg(':cmsStaffReview.form.!{l5j0obamvt9a487ivrk}', '选项1'),
-                                value: '1'
-                              },
-                              {
-                                label: fmtMsg(':cmsStaffReview.form.!{l5j0obao2673dij5ja1}', '选项2'),
-                                value: '2'
-                              },
-                              {
-                                label: fmtMsg(':cmsStaffReview.form.!{l5j0obapf66egvmgped}', '选项3'),
-                                value: '3'
-                              }
-                            ],
                             optionSource: 'custom',
                             desktop: {
-                              type: XformSelect
+                              type: XformGetDataSelect
                             },
-                            type: XformSelect,
+                            type: XformGetDataSelect,
                             renderMode: 'select',
-                            direction: 'column',
-                            rowCount: 3,
-                            modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
-                            isForwardView: 'no',
                             showStatus: materialVis ? 'edit' : 'view'
                           },
                           labelProps: {
@@ -478,7 +491,7 @@ const XForm = (props) => {
                           label: fmtMsg(':cmsStaffReview.form.!{l5j0obajl93mj68ky2f}', '定级')
                         }
                       ]}
-                      canExport={true}
+                      canExport={false}
                       showStatus="view"
                     ></XformDetailTable>
                   </Form.Item>
