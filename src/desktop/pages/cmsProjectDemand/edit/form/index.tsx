@@ -572,7 +572,7 @@ const XForm = (props) => {
                                 columnsProps={supplierColumns}
                                 chooseFdName='fdName'
                                 apiKey={apiSupplier}
-                                apiName={'listSupplierInfo'}
+                                apiName={'list'}
                                 criteriaKey='demandSupplier'
                                 showStatus='add'
                                 modalTitle='供应商选择'
@@ -1171,7 +1171,7 @@ const XForm = (props) => {
                       columnsProps={supplierColumns}
                       chooseFdName='fdName'
                       apiKey={apiSupplier}
-                      apiName={'listSupplierInfo'}
+                      apiName={'list'}
                       criteriaKey='demandSupplier'
                       showStatus='edit'
                       criteriaProps={['fdOrgCode', 'fdFrame.fdName', 'fdName']}
@@ -1251,7 +1251,7 @@ const XForm = (props) => {
                           type: CMSXformModal,
                           controlProps: {
                             apiKey: apiSupplier,
-                            apiName: 'listSupplierInfo',
+                            apiName: 'list',
                             criteriaKey: 'demandSupplier',
                             chooseFdName: 'fdName',
                             criteriaProps: ['fdOrgCode', 'fdFrame.fdName', 'fdName'],
