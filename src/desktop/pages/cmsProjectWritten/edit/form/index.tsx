@@ -528,7 +528,9 @@ const XForm = (props) => {
     const year = time.getFullYear()
     const month = time.getMonth() + 1
     const date = time.getDate()
-    return year + format + (month < 10 ? '0' + month : month) + format + (date < 10 ? '0' + date : date)
+    const hours = time.getHours()
+    const minutes = time.getMinutes()
+    return year + format + (month < 10 ? '0' + month : month) + format + (date < 10 ? '0' + date : date) + ' ' + hours +':'+ minutes
   }
 
   const setDetailTable = (data) => {
