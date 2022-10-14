@@ -73,7 +73,7 @@ const XForm = (props) => {
 
   const init = async () => {
     try {
-      const res = await apiSupplier.listSupplierInfo({})
+      const res = await apiSupplier.list({})
       const arr = res?.data?.content.map(i => {
         const item = {
           label: i.fdName,
