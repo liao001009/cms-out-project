@@ -150,15 +150,11 @@ const XformModal: React.FC<IProps> = (props) => {
 
   useEffect(() => {
     if (showStatus === EShowStatus.add || showStatus === EShowStatus.edit) {
-      if (showOther) return
-      getListData({
-        ...getDefaultTableColumns()
-      })
-    }
-  }, [JSON.stringify(defaultTableCriteria), JSON.stringify(otherData), showOther])
-
-  useEffect(() => {
-    if (showStatus === EShowStatus.add || showStatus === EShowStatus.edit) {
+      if (!showOther) {
+        getListData({
+          ...getDefaultTableColumns()
+        })
+      }
       if (showOther && visible) {
         const postData = props.$$form.current.getFieldsValue()[props.$$tableName].values.length && props.$$form.current.getFieldsValue()[props.$$tableName].values[rowIndex]
         if (!postData.fdPost) {
@@ -171,6 +167,8 @@ const XformModal: React.FC<IProps> = (props) => {
       }
     }
   }, [JSON.stringify(defaultTableCriteria), JSON.stringify(otherData), showOther, visible])
+
+  console.log('listData5559', listData)
 
   // 检验默认筛选项是否有值
   const checkFlag = () => {
@@ -197,8 +195,8 @@ const XformModal: React.FC<IProps> = (props) => {
       }
     }
     try {
-      if (Object.keys(defaultTableCriteria).length) {
-        if (!defaultSearch && !checkFlag()) {
+      if (Object.keys(defaultTableCriteria).length && !checkFlag()) {
+        if (!defaultSearch) {
           setListData([])
           return
         }

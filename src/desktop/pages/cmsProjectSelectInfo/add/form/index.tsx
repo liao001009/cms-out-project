@@ -197,7 +197,7 @@ const XForm = (props) => {
                       columnsProps={supplierColumns}
                       chooseFdName='fdName'
                       apiKey={apiSupplier}
-                      apiName={'listSupplierInfo'}
+                      apiName={'list'}
                       criteriaKey='supplierCriertia'
                       showStatus='readOnly'
                       modalTitle='供应商选择'
@@ -221,7 +221,7 @@ const XForm = (props) => {
                       columnsProps={supplierColumns}
                       chooseFdName='fdName'
                       apiKey={apiSupplier}
-                      apiName={'listSupplierInfo'}
+                      apiName={'list'}
                       criteriaKey='supplierCriertia'
                       showStatus='readOnly'
                       modalTitle='供应商选择'

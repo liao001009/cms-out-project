@@ -295,7 +295,6 @@ const XForm = (props) => {
                   ]}
                 >
                   <XformDetailTable
-                    key={defaultTableCriteria}
                     {...sysProps}
                     $$ref={detailForms.current.cmsProjectInterDetail}
                     $$tableType="detail"
