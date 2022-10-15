@@ -187,14 +187,14 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
             <Breadcrumb.Item>{mode === 'add' ? '新建' : '编辑'}</Breadcrumb.Item>
           </Breadcrumb>
           <div className='buttons'>
-            <Auth.Auth
+            {/* <Auth.Auth
               authURL='/cmsProjectWritten/save'
               authModuleName='cms-out-manage'
               unauthorizedPage={null}
             >
               <Button type='primary' onClick={() => handleSave(true, ESysLbpmProcessStatus.DRAFT)}>暂存</Button>
 
-            </Auth.Auth>
+            </Auth.Auth> */}
             <Auth.Auth
               authURL='/cmsProjectWritten/save'
               authModuleName='cms-out-manage'

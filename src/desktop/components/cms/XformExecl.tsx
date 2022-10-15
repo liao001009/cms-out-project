@@ -4,7 +4,7 @@ import React from 'react'
 import XLSX from 'xlsx'
 
 const XformExecl: React.FC<any> = (props) => {
-  const { onChange , handleCancel, visible} = props
+  const { onChange , handleCancel, visible, errMsgArr=[]} = props
   const footer = (
     <div>
       {/* <Button type="primary" htmlType="button">
@@ -70,12 +70,23 @@ const XformExecl: React.FC<any> = (props) => {
             <Icon name="iconCommon_line_16_upload" normalize />
           </span>
           选择文件
-          <div style={{ color: '#999999', fontSize: 12, paddingTop: 3 }}>
-            <Icon name="iconCommon_line_12_information" normalize />
-            <span style={{ paddingLeft: 4 }}>
-              支持execl格式，文件小于500M
-            </span>
-          </div>
+          {
+            errMsgArr.length >0 ? (
+              <div style={{ color: '#999999', fontSize: 12, paddingTop: 3 }}>
+                <Icon name='iconCommon_line_12_information' normalize style={{color: 'red'}} />
+                <span style={{ paddingLeft: 4, color: 'red' }}>
+                  无法导入： {errMsgArr.map(i =>{
+                    return i +';'
+                  })}
+                </span>
+              </div>
+            )
+              : null
+
+          }
+          {/* <Icon name="iconCommon_line_12_information" normalize /> */}
+          {/* <span style={{ paddingLeft: 4 }}>
+          </span> */}
         </Upload>
       </Modal>
     </div>
