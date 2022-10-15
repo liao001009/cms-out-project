@@ -127,7 +127,7 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
           <Breadcrumb>
             <Breadcrumb.Item>项目管理</Breadcrumb.Item>
             <Breadcrumb.Item>项目库</Breadcrumb.Item>
-            <Breadcrumb.Item>{mode === 'add' ? '添加' : '编辑'}</Breadcrumb.Item>
+            <Breadcrumb.Item>{mode === 'add' ? '新建' : '编辑'}</Breadcrumb.Item>
           </Breadcrumb>
           <div className='buttons'>
             {
@@ -140,7 +140,6 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
                   >
                     <Button type='primary' onClick={() => handleSave(false)}>提交</Button>
                   </Auth.Auth>
-                  <Button type='default' onClick={handleClose}>关闭</Button>
                 </Fragment>
               ) : (
                 <Fragment>
@@ -162,6 +161,7 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
                 </Fragment>
               )
             }
+            <Button type='default' onClick={handleClose}>关闭</Button>
           </div>
         </div>
         {/* 内容区 */}
