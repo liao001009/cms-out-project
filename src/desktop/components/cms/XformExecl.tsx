@@ -82,11 +82,7 @@ const XformExecl: React.FC<any> = (props) => {
               </div>
             )
               : null
-
           }
-          {/* <Icon name="iconCommon_line_12_information" normalize /> */}
-          {/* <span style={{ paddingLeft: 4 }}>
-          </span> */}
         </Upload>
       </Modal>
     </div>
