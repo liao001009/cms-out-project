@@ -38,6 +38,7 @@ const XForm = (props) => {
   const [supplierData, setSupplierData] = useState<any>([])
   const [defaultTableCriteria, setDefaultTableCriteria] = useState<any>({})
   const [staffInfo, setStaffInfo] = useState<any>([])
+  const [errMsgArr, setErrMsgArr] = useState<any>([])
   const getTag = () => {
     setTimeout(() => {
       const parentNode = document.querySelector('div[class="ele-xform-detail-table-toolbar-right-buttons"]')
@@ -48,7 +49,7 @@ const XForm = (props) => {
     }, 1000)
   }
   useEffect(() => {
-    init()
+    // init()
     let paramId = props?.match?.params?.id
     if (props.mode === 'add') {
       form.setFieldsValue({
@@ -67,35 +68,33 @@ const XForm = (props) => {
     if (paramId) {
       initData(paramId)
     }
-    getStaffInfo()
+    // getStaffInfo()
     getTag()
   }, [])
 
-  const init = async () => {
-    try {
-      const res = await apiSupplier.list({})
-      const arr = res?.data?.content.map(i => {
-        const item = {
-          label: i.fdName,
-          value: i.fdId,
-          ...i
-        }
-        return item
-      })
-      setSupplierData(arr)
+  // const init = async () => {
+  //   try {
+  //     const res = await apiSupplier.list({})
+  //     const arr = res?.data?.content.map(i => {
+  //       const item = {
+  //         label: i.fdName,
+  //         value: i.fdId,
+  //         ...i
+  //       }
+  //       return item
+  //     })
+  //     setSupplierData(arr)
 
-    } catch (error) {
-      console.log('error', error)
-    }
-  }
+  //   } catch (error) {
+  //     console.log('error', error)
+  //   }
+  // }
 
   const initData = async (params) => {
     try {
       const initParam = { conditions: { 'fdProjectDemand.fdId': { '$eq': params } } }
-      const resOrder = await apiOrderResponse.listStaff(initParam)
-      const ids = resOrder?.data?.content?.map(i => {
-        return i.fdId
-      })
+      const resStaff = await apiOrderResponse.listStaff(initParam)
+      const ids = resStaff?.data?.content?.map(i => { return i.fdId })
       if (ids && ids.length > 0) {
         const newParam = {
           fdId: {
@@ -105,6 +104,16 @@ const XForm = (props) => {
         }
         setDefaultTableCriteria(newParam)
       }
+
+      const rtnSupplier = resStaff?.data?.content?.map(item =>{
+        const sup = {
+          label: item?.fdSupplier.fdName,
+          value: item?.fdSupplier.fdId
+        }
+        return sup
+      })
+      setSupplierData(rtnSupplier)
+      setStaffInfo(resStaff?.data?.content)
     } catch (error) {
       console.error(error)
     }
@@ -497,21 +506,22 @@ const XForm = (props) => {
   const handlerChange = (data) => {
     const array = Object.values(data)
     setDetailTable(array)
+    checkDetailWS('')
   }
 
   const getField = (str: string) => {
     return str.substring(str.lastIndexOf('/') + 1)
   }
 
-  const getStaffInfo = async () => {
-    try {
-      // const conditions = { conditions: { 'fdName': { '$eq': keyVal } } }
-      const res = await apiStaffInfo.listStaffInfo({})
-      setStaffInfo(res?.data?.content)
-    } catch (error) {
-      console.log('error', error)
-    }
-  }
+  // const getStaffInfo = async () => {
+  //   try {
+  //     // const conditions = { conditions: { 'fdName': { '$eq': keyVal } } }
+  //     const res = await apiStaffInfo.list({})
+  //     setStaffInfo(res?.data?.content)
+  //   } catch (error) {
+  //     console.log('error', error)
+  //   }
+  // }
 
   const checkPersonInfo = (keyVal) => {
     if (!staffInfo) {
@@ -538,7 +548,9 @@ const XForm = (props) => {
     valuesData.length && detailForms.current.cmsProjectWrittenDe.current.deleteAll()
     const fdQualifiedMark = form.getFieldValue('fdQualifiedMark')
     if (data.length > 0) {
-      const newValue = data[0]?.map(i => {
+      const errMsg: any = []
+      const newValue: any = []
+      data[0]?.map(i => {
         let item: any = {}
         Object.keys(i).forEach(key => {
           const field = getField(key)
@@ -547,25 +559,24 @@ const XForm = (props) => {
             [field]: i[key],
           }
         })
-        const fdBeginTime = moment(formatDate(item['fdBeginTime'], '-'))
-        const fdEndTime = moment(formatDate(item['fdEndTime'], '-'))
-
-        const fdWrittenPass = Number(item['fdWrittenScores']) <= Number(fdQualifiedMark) ? '0' : '1'
         const personInfo = checkPersonInfo(item['fdInterviewName'])
-        item['fdInterviewName'] = personInfo
-        item = {
-          ...item,
-          ...personInfo,
-          fdWrittenPass,
-          fdBeginTime,
-          fdEndTime
+        if(personInfo){
+          item['fdInterviewName'] = personInfo
+          const fdBeginTime = moment(formatDate(item['fdBeginTime'], '-'))
+          const fdEndTime = moment(formatDate(item['fdEndTime'], '-'))
+          const fdWrittenPass = Number(item['fdWrittenScores']) <= Number(fdQualifiedMark) ? '0' : '1'
+          item = { ...item, ...personInfo, fdWrittenPass, fdBeginTime, fdEndTime }
+          newValue.push(item)
+        }else{
+          errMsg.push(item['fdInterviewName'])
         }
-        return item
       })
+      setErrMsgArr(errMsg)
       detailForms.current.cmsProjectWrittenDe.current.updateValues(newValue)
-      handleCancel()
+      if(errMsg.length<=0){
+        handleCancel()
+      }
     }
-
   }
 
 
@@ -687,7 +698,7 @@ const XForm = (props) => {
                 <Button onClick={() => { downloadExecl() }} type='default' label='下载模板' icon={<Icon type='vector' name='download' />} >
                 </Button>
               </Button.Group>
-              <XformExecl onChange={(info) => { handlerChange(info) }} handleCancel={() => { handleCancel() }} visible={visible} />
+              <XformExecl onChange={(info) => { handlerChange(info) }} handleCancel={() => { handleCancel() }} visible={visible} errMsgArr={errMsgArr} />
             </div>
             <GridItem column={1} row={4} columnSpan={2} rowSpan={1}>
               <XformFieldset>
