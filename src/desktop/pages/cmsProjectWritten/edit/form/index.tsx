@@ -23,6 +23,7 @@ import React, { createRef, useEffect, useRef, useState } from 'react'
 import Icon from '@lui/icons'
 import './index.scss'
 import moment from 'moment'
+import { formatDate } from '@/utils/util'
 
 const MECHANISMNAMES = {}
 
@@ -38,7 +39,10 @@ const XForm = (props) => {
   const [supplierData, setSupplierData] = useState<any>([])
   const [defaultTableCriteria, setDefaultTableCriteria] = useState<any>({})
   const [staffInfo, setStaffInfo] = useState<any>([])
+  const [visible, setVisible] = useState<boolean>(false)
   const [errMsgArr, setErrMsgArr] = useState<any>([])
+
+  
   const getTag = () => {
     setTimeout(() => {
       const parentNode = document.querySelector('div[class="ele-xform-detail-table-toolbar-right-buttons"]')
@@ -488,10 +492,14 @@ const XForm = (props) => {
   }
 
 
-  const [visible, setVisible] = useState<boolean>(false)
 
 
   const uploadExecl = () => {
+    const fdQualifiedMark = form.getFieldValue('fdQualifiedMark')
+    if (!fdQualifiedMark) {
+      Message.error('请输入合格分数线', 1)
+      return
+    }
     setVisible(true)
   }
   const handleCancel = () => {
@@ -530,18 +538,6 @@ const XForm = (props) => {
     return staffInfo.find(item => item.fdName === keyVal)
   }
 
-
-  const formatDate = (numb, format) => {
-    const old = numb - 1
-    const t = Math.round((old - Math.floor(old)) * 24 * 60 * 60)
-    const time = new Date(1900, 0, old, 0, 0, t)
-    const year = time.getFullYear()
-    const month = time.getMonth() + 1
-    const date = time.getDate()
-    const hours = time.getHours()
-    const minutes = time.getMinutes()
-    return year + format + (month < 10 ? '0' + month : month) + format + (date < 10 ? '0' + date : date) + ' ' + hours + ':' + minutes
-  }
 
   const setDetailTable = (data) => {
     const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectWrittenDe').values
