@@ -102,12 +102,17 @@ const XformModal: React.FC<IProps> = (props) => {
   // 多选时，选中的数据
   const [selectedRowsData, setSelectedRows] = useState<any>([])
   // 表单传过来的初始值，为了点击取消时，还原数据
-  const [initSelectedArr, setInitSelectArr] = useState<any>(value || [])
+  const [initSelectedArr, setInitSelectArr] = useState<any>([])
   // 用来判断是按了确认按钮还是取消按钮
   const [flag, setFlag] = useState<boolean>(false)
   // 已选中的筛选项
   const [newSelecteCon, setNewSelecteCon] = useState<any>({})
   /** 组装表格列头筛选项 */
+
+  useEffect(() => {
+    multiple && setSelectedRows(value && value.map(i => i.fdId) || [])
+    setInitSelectArr(value)
+  }, [value])
   const getDefaultTableColumns = () => {
     if (Object.keys(defaultTableCriteria).length <= 0) return {}
     const newConditions = {}
@@ -145,15 +150,11 @@ const XformModal: React.FC<IProps> = (props) => {
 
   useEffect(() => {
     if (showStatus === EShowStatus.add || showStatus === EShowStatus.edit) {
-      if (showOther) return
-      getListData({
-        ...getDefaultTableColumns()
-      })
-    }
-  }, [JSON.stringify(defaultTableCriteria), JSON.stringify(otherData), showOther])
-
-  useEffect(() => {
-    if (showStatus === EShowStatus.add || showStatus === EShowStatus.edit) {
+      if (!showOther) {
+        getListData({
+          ...getDefaultTableColumns()
+        })
+      }
       if (showOther && visible) {
         const postData = props.$$form.current.getFieldsValue()[props.$$tableName].values.length && props.$$form.current.getFieldsValue()[props.$$tableName].values[rowIndex]
         if (!postData.fdPost) {
@@ -166,6 +167,8 @@ const XformModal: React.FC<IProps> = (props) => {
       }
     }
   }, [JSON.stringify(defaultTableCriteria), JSON.stringify(otherData), showOther, visible])
+
+  console.log('listData5559', listData)
 
   // 检验默认筛选项是否有值
   const checkFlag = () => {
@@ -192,8 +195,8 @@ const XformModal: React.FC<IProps> = (props) => {
       }
     }
     try {
-      if (Object.keys(defaultTableCriteria).length) {
-        if (!defaultSearch && !checkFlag()) {
+      if (Object.keys(defaultTableCriteria).length && !checkFlag()) {
+        if (!defaultSearch) {
           setListData([])
           return
         }
@@ -224,9 +227,7 @@ const XformModal: React.FC<IProps> = (props) => {
   useEffect(() => {
     setSelectedRows([...selectedRows])
   }, [selectedRows])
-  useEffect(() => {
-    multiple && setSelectedRows(value && value.map(i => i.fdId) || [])
-  }, [])
+
   // 分页操作 
   const handlePage = useCallback(
     (pageNo: number, pageSize: number) => {

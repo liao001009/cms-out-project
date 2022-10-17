@@ -24,11 +24,6 @@ const XForm = (props) => {
 
   useEffect(() => {
     init()
-    // if (Object.keys(value).length && value.fdFrame) {
-    //   form.setFieldsValue({
-    //     fdFrame: value.fdFrame.fdId
-    //   })
-    // }
   }, [])
 
   const init = async () => {
@@ -111,6 +106,10 @@ const XForm = (props) => {
                     rules={[
                       {
                         validator: lengthValidator(100)
+                      },
+                      {
+                        required: true,
+                        message: '内容不能为空'
                       }
                     ]}
                   >
@@ -128,12 +127,17 @@ const XForm = (props) => {
                   mobileContentAlign={'right'}
                   title={fmtMsg(':cmsProjectInfo.form.!{l470lkjy8xm11z9ta7t}', '项目编号')}
                   layout={'horizontal'}
+                  required={true}
                 >
                   <Form.Item
                     name={'fdCode'}
                     rules={[
                       {
                         validator: lengthValidator(100)
+                      },
+                      {
+                        required: true,
+                        message: '内容不能为空'
                       }
                     ]}
                   >
@@ -151,8 +155,12 @@ const XForm = (props) => {
                   mobileContentAlign={'right'}
                   title={fmtMsg(':cmsProjectInfo.form.!{l47sjaxpzb906zmknn}', '所属部门')}
                   layout={'horizontal'}
+                  required={true}
                 >
-                  <Form.Item name={'fdBelongDept'}>
+                  <Form.Item name={'fdBelongDept'} rules={[{
+                    required: true,
+                    message: '内容不能为空'
+                  }]}>
                     <XformAddress
                       {...sysProps}
                       org={{
@@ -172,8 +180,12 @@ const XForm = (props) => {
                   mobileContentAlign={'right'}
                   title={fmtMsg(':cmsProjectInfo.form.!{l47sjboxx5zvzn3c1kg}', '所属组/团队')}
                   layout={'horizontal'}
+                  required={true}
                 >
-                  <Form.Item name={'fdBelongTeam'}>
+                  <Form.Item name={'fdBelongTeam'} rules={[{
+                    required: true,
+                    message: '内容不能为空'
+                  }]}>
                     <XformAddress
                       {...sysProps}
                       org={{
@@ -193,8 +205,12 @@ const XForm = (props) => {
                   mobileContentAlign={'right'}
                   title={fmtMsg(':cmsProjectInfo.form.!{l47sjd9hp4ye7ccl0b}', '项目负责人')}
                   layout={'horizontal'}
+                  required={true}
                 >
-                  <Form.Item name={'fdProjectPrincipal'}>
+                  <Form.Item name={'fdProjectPrincipal'} rules={[{
+                    required: true,
+                    message: '内容不能为空'
+                  }]}>
                     <XformAddress
                       {...sysProps}
                       org={{
@@ -214,8 +230,12 @@ const XForm = (props) => {
                   mobileContentAlign={'right'}
                   title={fmtMsg(':cmsProjectInfo.form.!{l47sjeg41qyf3n63q5g}', '内部责任人')}
                   layout={'horizontal'}
+                  required={true}
                 >
-                  <Form.Item name={'fdInnerPrincipal'}>
+                  <Form.Item name={'fdInnerPrincipal'} rules={[{
+                    required: true,
+                    message: '内容不能为空'
+                  }]}>
                     <XformAddress
                       {...sysProps}
                       org={{
@@ -235,8 +255,12 @@ const XForm = (props) => {
                   mobileContentAlign={'right'}
                   title={fmtMsg(':cmsProjectInfo.form.!{l47s8bsqziln6fgdbd}', '项目所属框架')}
                   layout={'horizontal'}
+                  required={true}
                 >
-                  <Form.Item name={'fdFrame'} >
+                  <Form.Item name={'fdFrame'} rules={[{
+                    required: true,
+                    message: '内容不能为空'
+                  }]}>
                     <XformSelect
                       {...sysProps}
                       placeholder={fmtMsg(':cmsProjectInfo.form.!{l47sfd3bplubk8x7ajm}', '请输入')}
@@ -258,12 +282,16 @@ const XForm = (props) => {
                   mobileContentAlign={'right'}
                   title={fmtMsg(':cmsProjectInfo.form.!{l47sfd36r349zf59xxg}', '项目性质')}
                   layout={'horizontal'}
+                  required={true}
                 >
                   <Form.Item
                     name={'fdProjectNature'}
                     rules={[
                       {
                         validator: lengthValidator(50)
+                      }, {
+                        required: true,
+                        message: '内容不能为空'
                       }
                     ]}
                   >

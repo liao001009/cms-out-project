@@ -167,14 +167,6 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
               authModuleName='cms-out-manage'
               unauthorizedPage={null}
             >
-              <Button type='primary' onClick={() => handleSave(true, ESysLbpmProcessStatus.DRAFT)}>暂存</Button>
-
-            </Auth.Auth>
-            <Auth.Auth
-              authURL='/cmsProjectInterview/save'
-              authModuleName='cms-out-manage'
-              unauthorizedPage={null}
-            >
               <Button type='primary' onClick={() => handleSave(false, ESysLbpmProcessStatus.COMPLETED)}>提交</Button>
 
             </Auth.Auth>
