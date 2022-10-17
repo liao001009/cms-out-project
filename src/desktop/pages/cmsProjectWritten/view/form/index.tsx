@@ -100,7 +100,7 @@ const XForm = (props) => {
       {
         type: XformGetDataSelect,
         controlProps: {
-          apiRequest: apiSupplier.listSupplierInfo,
+          apiRequest: apiSupplier.list,
           showFdName: 'fdName',
 
           title: fmtMsg(':cmsProjectWritten.form.!{l5i2e44y9gjv4vhmjr5}', '供应商名称'),
@@ -152,7 +152,7 @@ const XForm = (props) => {
         controlProps: {
           title: fmtMsg(':cmsProjectWritten.form.!{l5izeh8ya568lfqhw1}', '学历'),
           maxLength: 50,
-          name: 'fdHighestEducation',
+          name: 'fdMajor',
           placeholder: fmtMsg(':cmsProjectWritten.form.!{l5i2sy277m7ezhzujdi}', '请输入'),
           options: [
             {

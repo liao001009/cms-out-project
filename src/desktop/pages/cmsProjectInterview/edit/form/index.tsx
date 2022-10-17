@@ -1,7 +1,7 @@
 import React, { useRef, createRef, useEffect, useState } from 'react'
 import './index.scss'
 import { fmtMsg } from '@ekp-infra/respect'
-import { Form, Message } from '@lui/core'
+import { Button, Form, Message } from '@lui/core'
 import { useApi, useSystem } from '@/desktop/shared/formHooks'
 import XformAppearance from '@/desktop/components/form/XformAppearance'
 import LayoutGrid from '@/desktop/components/form/LayoutGrid'
@@ -20,6 +20,8 @@ import apiOrderResponse from '@/api/cmsOrderResponse'
 import apiStaffInfo from '@/api/cmsOutStaffInfo'
 import { outStaffInfoColumns } from '@/desktop/pages/common/common'
 import CMSXformModal from '@/desktop/components/cms/XformModal'
+import XformExecl from '@/desktop/components/cms/XformExecl'
+import Icon from '@lui/icons'
 
 const MECHANISMNAMES = {}
 
@@ -32,8 +34,22 @@ const XForm = (props) => {
   const [form] = Form.useForm()
   const [supplierData, setSupplierData] = useState<any>([])
   const [defaultTableCriteria, setDefaultTableCriteria] = useState<any>({})
+  const [staffInfo, setStaffInfo] = useState<any>([])
+  const [visible, setVisible] = useState<boolean>(false)
+  const [errMsgArr, setErrMsgArr] = useState<any>([])
+  
+  const getTag = () => {
+    setTimeout(() => {
+      const parentNode = document.querySelector('div[class="ele-xform-detail-table-toolbar-right-buttons"]')
+      const uploadDown = document.getElementById('uploadDown') || document.createElement('div')
+      const addRow = document.querySelector('button[title="添加行"]')
+      parentNode?.insertBefore(uploadDown, addRow)
+      uploadDown.style.display = 'block'
+    }, 1000)
+  }
+
   useEffect(() => {
-    init()
+    // init()
     let paramId = props?.match?.params?.id
     if (props.mode === 'add') {
       // value.fdProjectDemand=paramId
@@ -46,38 +62,49 @@ const XForm = (props) => {
     if (paramId) {
       initData(paramId)
     }
+    getTag()
   }, [])
-  const init = async () => {
-    try {
-      const res = await apiSupplier.listSupplierInfo({})
-      const arr = res.data.content.map(i => {
-        const item = {
-          value: i.fdId,
-          label: i.fdName,
-          ...i
-        }
-        return item
-      })
-      setSupplierData(arr)
-    } catch (error) {
-      console.log('error', error)
-    }
-  }
+  // const init = async () => {
+  //   try {
+  //     const res = await apiSupplier.list({})
+  //     const arr = res.data.content.map(i => {
+  //       const item = {
+  //         value: i.fdId,
+  //         label: i.fdName,
+  //         ...i
+  //       }
+  //       return item
+  //     })
+  //     setSupplierData(arr)
+  //   } catch (error) {
+  //     console.log('error', error)
+  //   }
+  // }
 
   const initData = async (params) => {
     try {
       const initParam = { conditions: { 'fdProjectDemand.fdId': { '$eq': params } } }
-      const resOrder = await apiOrderResponse.listStaff(initParam)
-      const ids = resOrder?.data?.content?.map(i => {
-        return i.fdId
-      })
-      const newParam = {
-        fdId: {
-          searchKey: '$in',
-          searchValue: ids
+      const resStaff = await apiOrderResponse.listStaff(initParam)
+      const ids = resStaff?.data?.content?.map(i => { return i.fdId })
+      if (ids && ids.length > 0) {
+        const newParam = {
+          fdId: {
+            searchKey: '$in',
+            searchValue: ids
+          }
         }
+        setDefaultTableCriteria(newParam)
       }
-      setDefaultTableCriteria(newParam)
+
+      const rtnSupplier = resStaff?.data?.content?.map(item =>{
+        const sup = {
+          label: item?.fdSupplier.fdName,
+          value: item?.fdSupplier.fdId
+        }
+        return sup
+      })
+      setSupplierData(rtnSupplier)
+      setStaffInfo(resStaff?.data?.content)
     } catch (error) {
       console.error(error)
     }
@@ -117,6 +144,78 @@ const XForm = (props) => {
     form,
     detailForms
   })
+
+
+  const uploadExecl = () => {
+    const fdQualifiedMark = form.getFieldValue('fdQualifiedMark')
+    if (!fdQualifiedMark) {
+      Message.error('请输入合格分数线', 1)
+      return
+    }
+    setVisible(true)
+  }
+  const handleCancel = () => {
+    setVisible(false)
+  }
+
+  const downloadExecl = () => {
+    window.open(mk.getResourcePath('@module:cms-out-project/desktop/static/attach/面试成绩模板.xlsx'), '_blank')
+  }
+
+  const handlerChange = (data) => {
+    const array = Object.values(data)
+    setDetailTable(array)
+    checkDetailWS('')
+  }
+
+  const getField = (str: string) => {
+    return str.substring(str.lastIndexOf('/') + 1)
+  }
+
+  const checkPersonInfo = (keyVal) => {
+    if (!staffInfo) {
+      return
+    }
+    return staffInfo.find(item => item.fdName === keyVal)
+  }
+
+  const setDetailTable = (data) => {
+    const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectInterDetail').values
+    valuesData.length && detailForms.current.cmsProjectInterDetail.current.deleteAll()
+    const fdQualifiedMark = form.getFieldValue('fdQualifiedMark')
+    if(data.length>0){
+      const errMsg: any = []
+      const newValue: any = []
+      data[0]?.map(i => {
+        let item: any = {}
+        Object.keys(i).forEach(key => {
+          const field = getField(key)
+          item = {
+            ...item,
+            [field]: i[key],
+          }
+        })
+        const personInfo = checkPersonInfo(item['fdInterviewName'])
+        if(personInfo){
+          item['fdInterviewName'] = personInfo
+          const fdInterviewPass = Number(item['fdInterviewScores']) <= Number(fdQualifiedMark) ? '0' : '1'
+          item = { ...item, ...personInfo, fdInterviewPass}
+          newValue.push(item)
+        }else{
+          errMsg.push(item['fdInterviewName'])
+        }
+      })
+      setErrMsgArr(errMsg)
+      detailForms.current.cmsProjectInterDetail.current.updateValues(newValue)
+      if(errMsg.length<=0){
+        handleCancel()
+      }
+    }
+  }
+
+
+
+
   return (
     <div className="lui-xform">
       <Form form={form} colPadding={false} onValuesChange={onValuesChange}>
@@ -273,6 +372,14 @@ const XForm = (props) => {
               rowSpan={1}
               columnSpan={1}
             ></GridItem>
+            <div id='uploadDown' style={{ display: 'none' }}>
+              <Button.Group amount={2} className='lui-test-btn-group' shape='link'>
+                <Button onClick={() => { uploadExecl() }} type='default' label='上传' icon={<Icon type='vector' name='upload' />} />
+                <Button onClick={() => { downloadExecl() }} type='default' label='下载模板' icon={<Icon type='vector' name='download' />} >
+                </Button>
+              </Button.Group>
+              <XformExecl onChange={(info) => { handlerChange(info) }} handleCancel={() => { handleCancel() }} visible={visible} errMsgArr={errMsgArr} />
+            </div>
             <GridItem column={1} row={4} columnSpan={2} rowSpan={1}>
               <XformFieldset>
                 <Form.Item
@@ -295,7 +402,6 @@ const XForm = (props) => {
                   ]}
                 >
                   <XformDetailTable
-                    key={defaultTableCriteria}
                     {...sysProps}
                     $$ref={detailForms.current.cmsProjectInterDetail}
                     $$tableType="detail"
