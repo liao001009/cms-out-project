@@ -181,7 +181,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
   )
 
   /** 搜索 */
-  const handleSearch = useCallback((keyword: string) => {
+  const handleSearch = (keyword: string) => {
     queryChange({
       ...query,
       conditions: {
@@ -189,7 +189,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
         fdSubject: { $contains: keyword.trim() }
       }
     })
-  }, [query])
+  }
 
   /** 筛选 */
   const handleCriteriaChange = useCallback(
