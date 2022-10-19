@@ -893,6 +893,9 @@ const XForm = (props) => {
                             numberFormat: {
                               formatType: 'base'
                             },
+                            range: {
+                              start: 0
+                            },
                             desktop: {
                               type: XformNumber
                             },
@@ -1103,6 +1106,9 @@ const XForm = (props) => {
                             placeholder: fmtMsg(':cmsProjectDemand.form.!{l5hvg167fimx9fukd5}', '请输入'),
                             numberFormat: {
                               formatType: 'base'
+                            },
+                            range: {
+                              start: 0
                             },
                             desktop: {
                               type: XformNumber
