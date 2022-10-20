@@ -123,6 +123,10 @@ const Content: React.FC<IContentViewProps> = props => {
     if (await _beforeSave(isDraft) === false) {
       return
     }
+    if (!values.fdSubject) {
+      Message.error('请填写主题')
+      return
+    }
     if (values.fdSelectedSupplier.length === 0 && values.fdFailSupplier.length === 0) {
       return Message.error('落选供应商或中选供应商必须要有数据哦', 1)
     }

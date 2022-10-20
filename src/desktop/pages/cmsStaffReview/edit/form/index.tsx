@@ -504,7 +504,8 @@ const XForm = (props) => {
                       canAddRow={false}
                       canDeleteRow={false}
                       canImport={false}
-                      showStatus="edit"
+                      canExport={false}
+                      showStatus="view"
                     ></XformDetailTable>
                   </Form.Item>
                 </XformFieldset>

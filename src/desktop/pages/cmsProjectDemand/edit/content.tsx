@@ -120,6 +120,10 @@ const Content: React.FC<IContentViewProps> = props => {
     if (await _beforeSave(isDraft) === false) {
       return
     }
+    if (!values.fdSubject) {
+      Message.error('请填写主题')
+      return
+    }
     const saveApi = isDraft ?
       api.save
       : (values.fdProcessStatus === ESysLbpmProcessStatus.WITHDRAW

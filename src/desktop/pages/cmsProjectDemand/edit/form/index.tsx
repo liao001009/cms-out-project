@@ -1283,7 +1283,7 @@ const XForm = (props) => {
                               refFieldName: '$fd_supplier_name$'
                             },
 
-                            showStatus: 'edit'
+                            showStatus: 'readOnly'
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称'),
@@ -1300,6 +1300,7 @@ const XForm = (props) => {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架'),
                             name: 'fdFrame',
                             renderMode: 'select',
+                            multi: true,
                             direction: 'column',
                             rowCount: 3,
                             modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
@@ -1353,7 +1354,7 @@ const XForm = (props) => {
                         {
                           type: XformInput,
                           controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额'),
+                            title: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额占比'),
                             maxLength: 100,
                             name: 'fdAnnualRatio',
                             placeholder: fmtMsg(':cmsProjectDemand.form.!{l5jg2w81dql7tlq4wp}', '请输入'),
@@ -1363,21 +1364,21 @@ const XForm = (props) => {
                             showStatus: 'edit'
                           },
                           labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额'),
+                            title: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额占比'),
                             desktop: {
                               layout: 'vertical'
                             },
                             labelTextAlign: 'left'
                           },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额')
+                          label: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额占比')
                         }
                       ]}
-                      canAddRow={true}
-                      canDeleteRow={true}
+                      canAddRow={false}
+                      canDeleteRow={false}
                       canImport={false}
                       canExport={false}
                       canExpand={false}
-                      showStatus="edit"
+                      showStatus="view"
                     ></XformDetailTable>
                   </Form.Item>
                 </XformFieldset>
