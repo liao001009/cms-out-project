@@ -588,7 +588,7 @@ const XForm = (props) => {
                         </Form.Item>
                       </XformFieldset>
                     </GridItem>
-                    <GridItem column={21} row={15} rowSpan={1} columnSpan={6} style={{ display: 'flex', alignItems: 'center' }}>
+                    <GridItem column={21} row={15} rowSpan={1} columnSpan={6} style={{ display: 'flex', alignItems: 'center', }}>
                       <XformFieldset
                         compose={true}
                         required={isRequired}
@@ -596,29 +596,31 @@ const XForm = (props) => {
                         title={fmtMsg(':cmsProjectDemand.form.!{l5hxh9fpx14ur0jgeue}', '人数区间')}
                       >
                       </XformFieldset>
+
                     </GridItem>
-                    <GridItem column={27} row={15} rowSpan={1} columnSpan={5}>
-                      <Form.Item
-                        name={'fdLowPerson'}
-                        rules={[
-                          {
-                            required: isRequired,
-                            message: fmtMsg(':required', '内容不能为空')
-                          }
-                        ]}
-                      >
-                        <XformNumber
-                          {...sysProps}
-                          placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hxk7elmfxiucq54kd}', '请输入')}
-                          numberFormat={{
-                            formatType: 'base'
-                          }}
-                          showStatus={materialVis ? 'edit' : 'view'}
-                        ></XformNumber>
-                      </Form.Item>
-                    </GridItem>
-                    <GridItem column={32} row={15} rowSpan={1} columnSpan={1}>
-                      <XformFieldset compose={true}>
+                    <GridItem column={27} row={15} rowSpan={1} columnSpan={12} style={{ padding: '6px 0' }}>
+                      <div className='flex'>
+                        <Form.Item
+                          name={'fdLowPerson'}
+                          rules={[
+                            {
+                              required: isRequired,
+                              message: fmtMsg(':required', '内容不能为空')
+                            }
+                          ]}
+                        >
+                          <XformNumber
+                            {...sysProps}
+                            placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hxk7elmfxiucq54kd}', '请输入')}
+                            numberFormat={{
+                              formatType: 'base'
+                            }}
+                            range={{
+                              start: 0
+                            }}
+                            showStatus={materialVis ? 'edit' : 'view'}
+                          ></XformNumber>
+                        </Form.Item>
                         <Form.Item name={'fdColUso4hd'}>
                           <XformDescription
                             {...sysProps}
@@ -626,32 +628,29 @@ const XForm = (props) => {
                             showStatus="view"
                           ></XformDescription>
                         </Form.Item>
-                      </XformFieldset>
-                    </GridItem>
-                    <GridItem column={33} row={15} rowSpan={1} columnSpan={5}>
-                      <Form.Item
-                        name={'fdUpPerson'}
-                        rules={[
-                          {
-                            required: isRequired,
-                            message: fmtMsg(':required', '内容不能为空')
-                          }
-                        ]}
-                      >
-                        <XformNumber
-                          {...sysProps}
-                          placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hxlsau5eqmbbchfv8}', '请输入')}
-                          numberFormat={{
-                            formatType: 'base'
-                          }}
-                          fdSysNumber={{}}
-                          label={fmtMsg(':cmsProjectDemand.form.!{l5hxlsauo7w98rlogbn}', '人数区间上限')}
-                          showStatus={materialVis ? 'edit' : 'view'}
-                        ></XformNumber>
-                      </Form.Item>
-                    </GridItem>
-                    <GridItem column={38} row={15} rowSpan={1} columnSpan={1}>
-                      <XformFieldset compose={true}>
+                        <Form.Item
+                          name={'fdUpPerson'}
+                          rules={[
+                            {
+                              required: isRequired,
+                              message: fmtMsg(':required', '内容不能为空')
+                            }
+                          ]}
+                        >
+                          <XformNumber
+                            {...sysProps}
+                            placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hxlsau5eqmbbchfv8}', '请输入')}
+                            numberFormat={{
+                              formatType: 'base'
+                            }}
+                            range={{
+                              start: 0
+                            }}
+                            fdSysNumber={{}}
+                            label={fmtMsg(':cmsProjectDemand.form.!{l5hxlsauo7w98rlogbn}', '人数区间上限')}
+                            showStatus={materialVis ? 'edit' : 'view'}
+                          ></XformNumber>
+                        </Form.Item>
                         <Form.Item name={'fdColSgzhna'}>
                           <XformDescription
                             {...sysProps}
@@ -659,8 +658,17 @@ const XForm = (props) => {
                             showStatus="view"
                           ></XformDescription>
                         </Form.Item>
-                      </XformFieldset>
+                      </div>
                     </GridItem>
+                    {/* <GridItem column={32} row={15} rowSpan={1} columnSpan={1}>
+
+                    </GridItem>
+                    <GridItem column={33} row={15} rowSpan={1} columnSpan={5}>
+
+                    </GridItem>
+                    <GridItem column={38} row={15} rowSpan={1} columnSpan={1}>
+
+                    </GridItem> */}
                   </Fragment>
                 ) : null
               }
