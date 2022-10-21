@@ -19,7 +19,7 @@ import XformSelect from '@/desktop/components/form/XformSelect'
 import XformInput from '@/desktop/components/form/XformInput'
 
 const MECHANISMNAMES = {}
-const baseCls = 'project-form'
+const baseCls = 'view-page'
 const XForm = (props) => {
   const detailForms = useRef({
     cmsProjectStaffList: createRef() as any

@@ -25,12 +25,7 @@ const XForm = (props) => {
   const detailForms = useRef({
     cmsProjectStaffList: createRef() as any
   })
-  const { formRef: formRef } = props
-  let { value: value } = props
-  value = {
-    ...value,
-    cmsProjectStaffList: value.fdSelectedSupplier.length ? value.cmsProjectStaffList : []
-  }
+  const { formRef: formRef, value: value } = props
   const [form] = Form.useForm()
   const [fdLevelData, setFdLevelData] = useState<any>([])
   const [fdSupplierData, setfdSupplierData] = useState<any>([])
@@ -424,15 +419,6 @@ const XForm = (props) => {
                               type: XformSelect
                             },
                             type: XformSelect,
-                            relationCfg: {
-                              appCode: '1g776q10pw10w5j2w27q4fgr1u02jiv194w0',
-                              xformName: '级别信息',
-                              modelId: '1g777241qw10w6osw2h8p1ig2rgc7nf192w0',
-                              tableType: 'main',
-                              tableName: 'mk_model_20220705zz96g',
-                              showFields: '$级别名称$',
-                              refFieldName: '$fd_level_name$'
-                            },
                             showStatus: 'view'
                           },
                           labelProps: {
@@ -444,7 +430,7 @@ const XForm = (props) => {
                           label: fmtMsg(':cmsProjectSelectInfo.form.!{l5lvz3us0mcivqan3zxi}', '级别')
                         }
                       ]}
-                      canExport={true}
+                      canExport={false}
                       showStatus="view"
                     ></XformDetailTable>
                   </Form.Item>

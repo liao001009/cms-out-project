@@ -17,7 +17,7 @@ import XformSelect from '@/mobile/components/form/XformSelect'
 import apiSupplierInfo from '@/api/cmsSupplierInfo'
 import apiOutStaffInfo from '@/api/cmsOutStaffInfo'
 const MECHANISMNAMES = {}
-const baseCls = 'project-form'
+const baseCls = 'view-page'
 const XForm = (props) => {
   const detailForms = useRef({
     cmsStaffReviewDetail: createRef() as any

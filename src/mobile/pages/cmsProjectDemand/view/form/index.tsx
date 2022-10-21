@@ -25,8 +25,7 @@ import apiLevelInfo from '@/api/cmsLevelInfo'
 const MECHANISMNAMES = {
   'cmsProjectDemandOrder.fdResumeAtt': 'attachmentDict'
 }
-
-const baseCls = 'project-form'
+const baseCls = 'view-page'
 const XForm = (props) => {
   const detailForms = useRef({
     cmsProjectDemandWork: createRef() as any,
