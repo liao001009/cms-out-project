@@ -7,7 +7,6 @@ import XformAppearance from '@/mobile/components/form/XformAppearance'
 import XformMDescription from '@/mobile/components/form/XformMDescription'
 import XformFieldset from '@/mobile/components/form/XformFieldset'
 import XformMInput from '@/mobile/components/form/XformMInput'
-import XformMRelation from '@/mobile/components/form/XformMRelation'
 import XformMAddress from '@/mobile/components/form/XformMAddress'
 import XformMRtf from '@/mobile/components/form/XformMRtf'
 import XformMDetailTable from '@/mobile/components/form/XformMDetailTable'
@@ -179,8 +178,9 @@ const XForm = (props) => {
               mobileContentAlign={'left'}
               title={fmtMsg(':cmsProjectSelectInfo.form.!{l5m0dspgq56rtvxth9}', '描述说明')}
               layout={'horizontal'}
+              className={'fdDesc'}
             >
-              <Form.Item name={'fdDesc'}>
+              <Form.Item name={'fdDesc'} >
                 <XformMRtf
                   {...sysProps}
                   height={400}

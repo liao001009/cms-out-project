@@ -1,7 +1,7 @@
 import React, { useRef, createRef, useState, useEffect, Fragment } from 'react'
 import './index.scss'
 import { fmtMsg } from '@ekp-infra/respect'
-import { Form } from '@lui/core'
+import { Form, Message } from '@lui/core'
 import { useApi, useSystem } from '@/desktop/shared/formHooks'
 import XformAppearance from '@/desktop/components/form/XformAppearance'
 import LayoutGrid from '@/desktop/components/form/LayoutGrid'
@@ -18,13 +18,14 @@ import XformSelect from '@/desktop/components/form/XformSelect'
 import XformMoney from '@/desktop/components/form/XformMoney'
 import CMSXformModal from '@/desktop/components/cms/XformModal'
 import { projectColumns, supplierColumns } from '@/desktop/pages/common/common'
-
+import apiProjectDemand from '@/api/cmsProjectDemand'
+import apiAmount from '@/api/cmsOutSupplierAmount'
 import apiFrameInfo from '@/api/cmsFrameInfo'
 import apiProject from '@/api/cmsProjectInfo'
 import apiSupplier from '@/api/cmsSupplierInfo'
 import apiPostInfo from '@/api/cmsPostInfo'
 import apiLevelInfo from '@/api/cmsLevelInfo'
-import apiProjectDemand from '@/api/cmsProjectDemand'
+import moment from 'moment'
 
 
 const MECHANISMNAMES = {}
@@ -58,14 +59,14 @@ const XForm = (props) => {
   // 指定供应商值
   const [assignSupplier, setAssignSupplier] = useState<string | undefined>(value?.fdSupplier?.fdName || '')
   // 选定的框架类型
-  const [selectedFrame, setSelectedFrame] = useState<string>(value?.fdFrame?.fdId || '')
+  const [selectedFrame, setSelectedFrame] = useState<any>(value?.fdFrame || {})
   useEffect(() => {
     init()
   }, [])
 
   useEffect(() => {
-    const newSelectPost = postData.filter(i => i.fdFrame.fdId === selectedFrame)
-    const newSelectLevel = levelData.filter(i => i.fdFrame.fdId === selectedFrame)
+    const newSelectPost = postData.filter(i => i.fdFrame.fdId === selectedFrame.fdId)
+    const newSelectLevel = levelData.filter(i => i.fdFrame.fdId === selectedFrame.fdId)
     setSelectedLevelData(newSelectLevel)
     setSelectedPostData(newSelectPost)
   }, [selectedFrame, postData, levelData])
@@ -120,6 +121,70 @@ const XForm = (props) => {
       }
     })
     return res.data.content[0]
+  }
+  // 获取本年度份额
+  const getSupplierAmount = async (param) => {
+    try {
+      const res = await apiAmount.getSupplierAmount(param)
+      return res.data?.fdSupplierAmount[0]
+    } catch (error) {
+      Message.error(error.response.data.msg || '请求失败')
+    }
+  }
+
+  // 发布供应商回调
+  const handleChangeSupplier = async (v) => {
+    // 给明细表默认加行数并赋值默认数据
+    const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectDemandSupp').values
+    const newSelectSupplierFdId = v.map(i => i.fdId)
+    const newSelectedSupplierFdId = valuesData.map(i => i.fdSupplier.fdId)
+    if (newSelectSupplierFdId.sort().toString() === newSelectedSupplierFdId.sort().toString()) return
+    valuesData.length && detailForms.current.cmsProjectDemandSupp.current.deleteAll()
+    const requestArr = v.map(i => getProjectDemand(i.fdId))
+    const res = await Promise.all(requestArr)
+    const newData = v.map(item => {
+      res.forEach(k => {
+        //@ts-ignore
+        const newItem = k?.fdSupplies.filter(s => s.fdId === item.fdId) || []
+        if (newItem.length) {
+          //@ts-ignore
+          item.fdPublishTime = k.fdPublishTime
+        }
+      })
+      return item
+    })
+    if (selectedFrame && newData?.length) {
+      const resquestAmountArr = v.map(i => {
+        const year = moment(new Date()).year()
+        const fdBeginDate = moment(`${year}-01-01`).valueOf()
+        const fdEndDate = moment(`${year}-12-31`).valueOf()
+        const param = {
+          fdBeginDate,
+          fdEndDate,
+          fdSupplier: [{ fdId: i.fdId }],
+          fdFrame: [{ fdId: selectedFrame }]
+        }
+        return getSupplierAmount(param)
+      })
+      const amountRes = await Promise.all(resquestAmountArr)
+      newData.forEach(i => {
+        amountRes.forEach(k => {
+          //@ts-ignore
+          if (k.fdSupplierId === i.fdId) {
+            //@ts-ignore
+            i.fdAnnualRatio = k.fdShare
+          }
+        })
+      })
+    }
+    setTimeout(() => {
+      newData.length && detailForms.current.cmsProjectDemandSupp.current.updateValues(newData.map(item => ({
+        fdFrame: item.fdFrame,
+        fdLastTime: item.fdPublishTime,
+        fdAnnualRatio: item.fdAnnualRatio,
+        fdSupplier: { ...item }
+      })))
+    }, 0)
   }
   // 对外暴露接口
   useApi({
@@ -197,7 +262,7 @@ const XForm = (props) => {
                       criteriaProps={['fdFrame.fdName']}
                       onChangeProps={(v) => {
                         setIsFrameChild(v.fdFrame.fdName === '设计类')
-                        setSelectedFrame(v.fdFrame.fdId)
+                        setSelectedFrame(v.fdFrame)
                         form.setFieldsValue({
                           fdInnerLeader: v.fdInnerPrincipal,
                           fdProjectNum: v.fdCode,
@@ -579,7 +644,7 @@ const XForm = (props) => {
                                 defaultTableCriteria={{
                                   'fdFrame.fdId': {
                                     searchKey: '$eq',
-                                    searchValue: selectedFrame || undefined
+                                    searchValue: selectedFrame.fdId.fdId || undefined
                                   }
                                 }}
                                 criteriaProps={['fdOrgCode', 'fdFrame.fdName', 'fdName']}
@@ -1192,29 +1257,10 @@ const XForm = (props) => {
                         },
                         'fdFrame.fdId': {
                           searchKey: '$eq',
-                          searchValue: selectedFrame || undefined
+                          searchValue: selectedFrame.fdId || undefined
                         }
                       }}
-                      onChange={(v) => {
-                        // 给明细表默认加行数并赋值默认数据
-                        const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectDemandSupp').values
-                        valuesData.length && detailForms.current.cmsProjectDemandSupp.current.deleteAll()
-                        const arr = [] as any
-                        v.map(async (item) => {
-                          const projectDemandData = await getProjectDemand(item.fdId)
-                          arr.push({
-                            ...item,
-                            fdPublishTime: projectDemandData?.fdPublishTime
-                          })
-                        })
-                        setTimeout(() => {
-                          v.length && detailForms.current.cmsProjectDemandSupp.current.updateValues(arr.map(item => ({
-                            fdFrame: item.fdFrame,
-                            fdLastTime: item.fdPublishTime,
-                            fdSupplier: { ...item },
-                          })))
-                        }, 600)
-                      }}
+                      onChange={(v) => handleChangeSupplier(v)}
                     />
                   </Form.Item>
                 </XformFieldset>

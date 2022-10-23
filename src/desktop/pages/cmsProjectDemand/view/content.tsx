@@ -254,7 +254,6 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   // 提交/暂存通用逻辑
   const handleSave = async (isDraft: boolean) => {
     const res = lbpmComponentRef.current.getOperationType()
-    console.log('res5559', res)
     if (res !== 'handler_pass') {
       setIsRequired(false)
     }

@@ -168,7 +168,6 @@ const XformModal: React.FC<IProps> = (props) => {
     }
   }, [JSON.stringify(defaultTableCriteria), JSON.stringify(otherData), showOther, visible])
 
-  console.log('listData5559', listData)
 
   // 检验默认筛选项是否有值
   const checkFlag = () => {

@@ -15,8 +15,6 @@ import XformDetailTable from '@/desktop/components/form/XformDetailTable'
 import XformNumber from '@/desktop/components/form/XformNumber'
 import XformSelect from '@/desktop/components/form/XformSelect'
 import XformGetDataSelect from '@/desktop/components/cms/XformGetDataSelect'
-// import apiSupplierInfo from '@/api/cmsSupplierInfo'
-// import apiOutStaffInfo from '@/api/cmsOutStaffInfo'
 import CMSXformModal, { EShowStatus } from '@/desktop/components/cms/XformModal'
 import apiLevel from '@/api/cmsLevelInfo'
 const MECHANISMNAMES = {}
@@ -475,7 +473,6 @@ const XForm = (props) => {
                             initData: levelList,
                             showFdName: 'fdName',
                             placeholder: fmtMsg(':cmsStaffReview.form.!{l5j0oball6b84dapmal}', '请输入'),
-                            optionSource: 'custom',
                             desktop: {
                               type: XformGetDataSelect
                             },

@@ -2,3 +2,12 @@
 $baseCls: view-page;
 
 @include view-page($baseCls);
+
+.fdSupplies {
+  .lui-form-item-control-input-content {
+    & > div span {
+      display: inline-block;
+      width: 200px;
+    }
+  }
+}

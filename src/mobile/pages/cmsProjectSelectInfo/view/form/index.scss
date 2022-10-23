@@ -2,3 +2,11 @@
 $baseCls: view-page;
 
 @include view-page($baseCls);
+
+.fdDesc {
+  overflow: hidden;
+
+  .ele-xform-fieldset-control-wrap {
+    width: 200px;
+  }
+}
