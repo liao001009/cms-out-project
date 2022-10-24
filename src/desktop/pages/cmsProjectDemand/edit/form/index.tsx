@@ -115,7 +115,7 @@ const XForm = (props) => {
           '$eq': fdId
         }
       },
-      'columns': ['fdId', 'fdPublishTime', 'fdSubject'],
+      'columns': ['fdId', 'fdPublishTime', 'fdSubject', 'fdSupplies'],
       'sorts': {
         'fdPublishTime': 'desc'
       }
@@ -162,7 +162,7 @@ const XForm = (props) => {
           fdBeginDate,
           fdEndDate,
           fdSupplier: [{ fdId: i.fdId }],
-          fdFrame: [{ fdId: selectedFrame }]
+          fdFrame: [{ ...selectedFrame }]
         }
         return getSupplierAmount(param)
       })
@@ -1407,7 +1407,7 @@ const XForm = (props) => {
                             desktop: {
                               type: XformInput
                             },
-                            showStatus: 'edit'
+                            showStatus: 'readOnly'
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额占比'),

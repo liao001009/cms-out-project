@@ -65,8 +65,22 @@ const Content: React.FC<IContentViewProps> = props => {
               <Breadcrumb.Item>查看</Breadcrumb.Item>
             </Breadcrumb>
             <div className='buttons'>
-              <Button type='primary' onClick={handleEdit}>编辑</Button>
-              <Button type='default' onClick={handleDel}>删除</Button>
+              <Auth.Auth
+                authURL='/cmsProjectInfo/edit'
+                params={{ vo: { fdId: params['id'] } }}
+                authModuleName='cms-out-manage'
+                unauthorizedPage={null}
+              >
+                <Button type='primary' onClick={handleEdit}>编辑</Button>
+              </Auth.Auth>
+              <Auth.Auth
+                authURL='/cmsProjectInfo/delete'
+                params={{ vo: { fdId: params['id'] } }}
+                authModuleName='cms-out-manage'
+                unauthorizedPage={null}
+              >
+                <Button type='default' onClick={handleDel}>删除</Button>
+              </Auth.Auth>
               <Button type='default' onClick={handleClose}>关闭</Button>
             </div>
           </div>

@@ -8,16 +8,10 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import XForm from './form'
 import Icon from '@lui/icons'
 import { cmsHandleBack } from '@/utils/routerUtil'
-// import './index.scss'
 
 Message.config({ maxCount: 1 })
 const LbpmFormWithLayout = Module.getComponent('sys-lbpm', 'LbpmFormWithLayout', { loading: <React.Fragment></React.Fragment> })
-// // 流程页签
-// const LBPMTabs = Module.getComponent('sys-lbpm', 'LBPMTabs', { loading: <Loading /> })
-// // 流程机制
-// const LBPMFormFragment = Module.getComponent('sys-lbpm', 'LBPMFormFragment', { loading: <Loading /> })
-// // 权限机制
-// const RightFragment = Module.getComponent('sys-right', 'RightFragment', { loading: <Loading /> })
+
 
 const baseCls = 'project-demand-content'
 
@@ -225,72 +219,6 @@ const Content: React.FC<IContentViewProps> = props => {
       {renderInnerContent()}
     </div>
   )
-
-
-  // return (
-  //   <div className={baseCls}>
-  //     <div className='lui-approve-template'>
-  //       {/* 操作区 */}
-  //       <div className='lui-approve-template-header'>
-  //         <Breadcrumb>
-  //           <Breadcrumb.Item>项目管理</Breadcrumb.Item>
-  //           <Breadcrumb.Item>新建</Breadcrumb.Item>
-  //         </Breadcrumb>
-  //         <div className='buttons'>
-  //           <Button type='primary' onClick={() => handleSave(false)}>提交</Button>
-  //           <Button type='default' onClick={() => handleSave(true)}>暂存</Button>
-  //           <Button type='default' onClick={handleClose}>关闭</Button>
-  //         </div>
-  //       </div>
-  //       {/* 内容区 */}
-  //       <div className='lui-approve-template-content'>
-  //         <div className='left'>
-  //           {/* 表单信息 */}
-  //           <div className='form'>
-  //             <XForm formRef={formComponentRef} value={data || {}} />
-  //           </div>
-  //           {/* 机制页签 */}
-  //           <div className='tabs'>
-  //             <LBPMTabs
-  //               fdId={templateId}
-  //               processId={data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId}
-  //               getFormValue={() => formComponentRef.current && formComponentRef.current.getValue()}
-  //               extra={[
-  //                 {
-  //                   key: 'right',
-  //                   name: '权限管理',
-  //                   children: (
-  //                     <RightFragment
-  //                       wrapperRef={rightComponentRef}
-  //                       hasFlow={true}
-  //                       mechanism={data?.mechanisms && data?.mechanisms['sys-right']}
-  //                       getFormValue={() => formComponentRef.current && formComponentRef.current.getValue()} />
-  //                   )
-  //                 }
-  //               ]} />
-  //           </div>
-  //         </div>
-  //         <div className='right'>
-  //           {/* 审批操作 */}
-  //           <div className='lui-approve-template-main'>
-  //             <LBPMFormFragment
-  //               auditType='audit'
-  //               mode='add'
-  //               approveLayout='rightButton'
-  //               wrappedComponentRef={lbpmComponentRef}
-  //               moduleCode='cms-out-manage-demand'
-  //               mechanism={{
-  //                 formId: templateId,
-  //                 processTemplateId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdTemplateId,
-  //                 processId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId
-  //               }}
-  //               getFormValue={() => formComponentRef.current && formComponentRef.current.getValue()} />
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   </div>
-  // )
 }
 
 export default Content

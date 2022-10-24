@@ -108,11 +108,12 @@ const XformModal: React.FC<IProps> = (props) => {
   // 已选中的筛选项
   const [newSelecteCon, setNewSelecteCon] = useState<any>({})
   /** 组装表格列头筛选项 */
-
   useEffect(() => {
-    multiple && setSelectedRows(value && value.map(i => i.fdId) || [])
+    if (multiple) {
+      setSelectedRows(value && value.map(i => i.fdId))
+    }
     setInitSelectArr(value)
-  }, [value])
+  }, [])
   const getDefaultTableColumns = () => {
     if (Object.keys(defaultTableCriteria).length <= 0) return {}
     const newConditions = {}
@@ -208,9 +209,11 @@ const XformModal: React.FC<IProps> = (props) => {
   }
   // 表格列定义
   const columns = useMemo(() => columnsProps, [])
-
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    setSelectedRows(newSelectedRowKeys)
+  }
   // 表格hook
-  const { tableProps, selectedRows } = useTable({
+  const { tableProps } = useTable({
     // 数据源
     data: listData?.content || [],
     // 列定义
@@ -220,12 +223,10 @@ const XformModal: React.FC<IProps> = (props) => {
     // 支持行选择
     rowSelection: multiple ? {
       selectedRowKeys: selectedRowsData,
+      onChange: onSelectChange,
       multiple
     } : false,
   })
-  useEffect(() => {
-    setSelectedRows([...selectedRows])
-  }, [selectedRows])
 
   // 分页操作 
   const handlePage = useCallback(
