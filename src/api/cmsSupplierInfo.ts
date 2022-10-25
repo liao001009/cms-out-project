@@ -7,6 +7,7 @@ const commonApi = Api.get<ICmsSupplierInfo>('cmsSupplierInfo', http)
 const api = {
   ...commonApi,
   save: Api.build('cmsSupplierInfo/save', http),
+  list: Api.build('cmsSupplierInfo/list', http),
   // 供应商信息(列表请求)
   listSupplierInfo: Api.build('cmsSupplierInfo/listSupplierInfo', http)
 }

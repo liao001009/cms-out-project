@@ -166,16 +166,22 @@ const XForm = (props) => {
         }
         return getSupplierAmount(param)
       })
-      const amountRes = await Promise.all(resquestAmountArr)
-      newData.forEach(i => {
-        amountRes.forEach(k => {
-          //@ts-ignore
-          if (k.fdSupplierId === i.fdId) {
+      let amountRes: any[] = await Promise.all(resquestAmountArr)
+      amountRes = amountRes.filter(i => i)
+      if (amountRes.length) {
+        newData.forEach((i: any) => {
+          amountRes.forEach(k => {
             //@ts-ignore
-            i.fdAnnualRatio = k.fdShare
-          }
+            if (k.fdShare) {
+              //@ts-ignore
+              if (k.fdSupplierId === i.fdId) {
+                //@ts-ignore
+                i.fdAnnualRatio = parseFloat(k.fdShare.split('%')[0]).toFixed(2) + '%'
+              }
+            }
+          })
         })
-      })
+      }
     }
     setTimeout(() => {
       newData.length && detailForms.current.cmsProjectDemandSupp.current.updateValues(newData.map(item => ({
@@ -1009,7 +1015,7 @@ const XForm = (props) => {
                       canDeleteRow={true}
                       canImport={false}
                       canExport={false}
-                      canExpand={false}
+                      canExpand={true}
                       showStatus="edit"
                     ></XformDetailTable>
                   </Form.Item>

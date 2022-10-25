@@ -57,7 +57,8 @@ const XForm = (props) => {
   const [assignSupplier, setAssignSupplier] = useState<string | undefined>('')
   // 选定的框架类型
   const [selectedFrame, setSelectedFrame] = useState<any>({})
-
+  // 选好的发布供应商
+  const [selectedFdSupplier, setSelectedFdSupplier] = useState<any>([])
   useEffect(() => {
     init()
   }, [])
@@ -134,14 +135,16 @@ const XForm = (props) => {
 
   const handleSetFdSupplier = (val) => {
     setAssignSupplier(val.fdName)
+    selectedFdSupplier([])
     form.setFieldsValue({
-      fdSupplies: []
+      fdSupplies: undefined
     })
     const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectDemandSupp').values
     valuesData.length && detailForms.current.cmsProjectDemandSupp.current.deleteAll()
   }
 
   const handleChangeSupplier = async (v) => {
+    setSelectedFdSupplier(v)
     // 给明细表默认加行数并赋值默认数据
     const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectDemandSupp').values
     const newSelectSupplierFdId = v.map(i => i.fdId)
@@ -174,16 +177,22 @@ const XForm = (props) => {
         }
         return getSupplierAmount(param)
       })
-      const amountRes = await Promise.all(resquestAmountArr)
-      newData.forEach(i => {
-        amountRes.forEach(k => {
-          //@ts-ignore
-          if (k.fdSupplierId === i.fdId) {
+      let amountRes: any[] = await Promise.all(resquestAmountArr)
+      amountRes = amountRes.filter(i => i)
+      if (amountRes.length) {
+        newData.forEach((i: any) => {
+          amountRes.forEach((k: any) => {
             //@ts-ignore
-            i.fdAnnualRatio = parseFloat(k.fdShare).toFixed(2) + '%'
-          }
+            if (k.fdShare) {
+              //@ts-ignore
+              if (k.fdSupplierId === i.fdId) {
+                //@ts-ignore
+                i.fdAnnualRatio = parseFloat(k.fdShare.split('%')[0]).toFixed(2) + '%'
+              }
+            }
+          })
         })
-      })
+      }
     }
     setTimeout(() => {
       newData.length && detailForms.current.cmsProjectDemandSupp.current.updateValues(newData.map(item => ({
@@ -198,6 +207,7 @@ const XForm = (props) => {
   const handleProject = (v) => {
     setIsFrameChild(v.fdFrame.fdName === '设计类')
     setSelectedFrame(v.fdFrame)
+    setSelectedFdSupplier([])
     form.setFieldsValue({
       fdInnerLeader: v.fdInnerPrincipal,
       fdProjectNum: v.fdCode,
@@ -207,7 +217,7 @@ const XForm = (props) => {
       fdFrame: v.fdFrame,
       fdSupplier: undefined,
       fdProjectNature: v.fdProjectNature,
-      fdSupplies: []
+      fdSupplies: undefined
     })
     detailForms.current.cmsProjectDemandSupp.current.deleteAll()
     setAssignSupplier(undefined)
@@ -1031,7 +1041,7 @@ const XForm = (props) => {
                       canDeleteRow={true}
                       canImport={false}
                       canExport={false}
-                      canExpand={false}
+                      canExpand={true}
                       showStatus="edit"
                     ></XformDetailTable>
                   </Form.Item>
@@ -1254,6 +1264,7 @@ const XForm = (props) => {
                       modalTitle='供应商选择'
                       showFooter={true}
                       multiple={true}
+                      initData={selectedFdSupplier}
                       defaultSearch={true}
                       defaultTableCriteria={{
                         'fdName': {

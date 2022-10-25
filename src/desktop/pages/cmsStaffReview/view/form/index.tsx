@@ -486,6 +486,12 @@ const XForm = (props) => {
                               layout: 'vertical'
                             }
                           },
+                          options: {
+                            validateRules: {
+                              required: materialVis,
+                              message: fmtMsg(':required', '内容不能为空')
+                            }
+                          },
                           label: fmtMsg(':cmsStaffReview.form.!{l5j0obajl93mj68ky2f}', '定级')
                         }
                       ]}

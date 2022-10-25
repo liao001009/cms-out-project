@@ -126,6 +126,10 @@ const Content: React.FC<IContentViewProps> = props => {
 
   // 提交/暂存通用逻辑
   const handleSave = async (isDraft: boolean) => {
+    const res = lbpmComponentRef.current.getOperationType()
+    if (res !== 'handler_pass') {
+      setMaterialVis(false)
+    }
     // 校验文档
     if (await _validate(isDraft) === false) {
       return
