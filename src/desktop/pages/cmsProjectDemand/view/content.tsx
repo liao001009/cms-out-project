@@ -298,7 +298,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   // 订单响应按钮
   const handleOrder = useCallback(() => {
     if (!btnStatus) return null
-    if (data.fdProcessFlag && (data.fdProcessFlag.includes('2') || data.fdProcessFlag.includes('3'))) return null
+    // if (data.fdProcessFlag && (data.fdProcessFlag.includes('2') || data.fdProcessFlag.includes('3'))) return null
     return {
       name: '订单响应',
       action: () => { handleOrderAction() },
@@ -307,11 +307,11 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         authURL: '/cmsOrderResponse/add',
       }
     }
-  }, [history, orderRouterStatus, data?.fdProcessFlag, btnStatus])
+  }, [history, orderRouterStatus, btnStatus])
 
   const handleEnterWritten = useCallback(() => {
-    if (!btnStatus || !data.fdProcessFlag) return null
-    if (data.fdProcessFlag && !(data.fdProcessFlag.includes('1') && !data.fdProcessFlag.includes('4'))) return null
+    if (!btnStatus) return null
+    // if (data.fdProcessFlag && !(data.fdProcessFlag.includes('1') && !data.fdProcessFlag.includes('4'))) return null
     return {
       name: fmtMsg(':cmsProjectWritten.form.!{l5hz6ugsxfxlg2nyfs7}', '录入笔试成绩'),
       action: () => { history.goto(`/cmsProjectWritten/add/${data.fdId}`) },
@@ -320,11 +320,11 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         authURL: '/cmsProjectWritten/add',
       }
     }
-  }, [history, data?.fdProcessFlag, btnStatus])
+  }, [history, btnStatus])
 
   const handleEnterInterview = useCallback(() => {
-    if (!btnStatus || !data.fdProcessFlag) return null
-    if (data.fdProcessFlag && !(data.fdProcessFlag.includes('1') && !data.fdProcessFlag.includes('4'))) return null
+    if (!btnStatus) return null
+    // if (data.fdProcessFlag && !(data.fdProcessFlag.includes('1') && !data.fdProcessFlag.includes('4'))) return null
     return {
       name: fmtMsg(':cmsProjectInterview.form.!{l5hz6ugsxfxlg2nyfs7}', '录入面试成绩'),
       action: () => { history.goto(`/cmsProjectInterview/add/${data.fdId}`) },
@@ -333,10 +333,10 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         authURL: '/cmsProjectInterview/add',
       }
     }
-  }, [history, data?.fdProcessFlag])
+  }, [history, btnStatus])
   const handleEnterSelectInfo = useCallback(() => {
-    if (!btnStatus || !data.fdProcessFlag) return null
-    if (data.fdProcessFlag && !(data.fdProcessFlag.includes('4') && !data.fdProcessFlag.includes('5'))) return null
+    if (!btnStatus) return null
+    // if (data.fdProcessFlag && !(data.fdProcessFlag.includes('4') && !data.fdProcessFlag.includes('5'))) return null
     return {
       name: fmtMsg(':menu.!{mctpwprd794p}', '发布中选信息'),
       action: () => {
@@ -351,10 +351,10 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         authURL: '/cmsProjectSelectInfo/add',
       }
     }
-  }, [history, projectTemplateData, data?.fdProcessFlag, btnStatus])
+  }, [history, projectTemplateData, btnStatus])
   const handleEnterStaffReview = useCallback(() => {
     if (!btnStatus || !data.fdProcessFlag) return null
-    if (data.fdProcessFlag && !(data.fdProcessFlag.includes('3') && !data.fdProcessFlag.includes('5'))) return null
+    // if (data.fdProcessFlag && !(data.fdProcessFlag.includes('3') && !data.fdProcessFlag.includes('5'))) return null
     return {
       name: fmtMsg(':cmsProjectInterview.form.!{l5j0eriwqaq645oi9c}', '外包人员评审'),
       action: () => {
@@ -369,7 +369,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         authURL: '/cmsStaffReview/add',
       }
     }
-  }, [history, staffTemplateData, data?.fdProcessFlag, btnStatus])
+  }, [history, staffTemplateData, btnStatus])
 
   const handleEdit = () => {
 
