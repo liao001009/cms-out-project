@@ -353,7 +353,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     }
   }, [history, projectTemplateData, btnStatus])
   const handleEnterStaffReview = useCallback(() => {
-    if (!btnStatus || !data.fdProcessFlag) return null
+    if (!btnStatus) return null
     // if (data.fdProcessFlag && !(data.fdProcessFlag.includes('3') && !data.fdProcessFlag.includes('5'))) return null
     return {
       name: fmtMsg(':cmsProjectInterview.form.!{l5j0eriwqaq645oi9c}', '外包人员评审'),
