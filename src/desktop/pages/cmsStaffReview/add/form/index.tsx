@@ -497,10 +497,11 @@ const XForm = (props) => {
                           label: fmtMsg(':cmsStaffReview.form.!{l5j0obajl93mj68ky2f}', '定级')
                         }
                       ]}
-                      canAddRow={true}
-                      canDeleteRow={true}
+                      canAddRow={false}
+                      canDeleteRow={false}
                       canImport={false}
-                      showStatus="edit"
+                      canExport={false}
+                      showStatus="view"
                     ></XformDetailTable>
                   </Form.Item>
                 </XformFieldset>

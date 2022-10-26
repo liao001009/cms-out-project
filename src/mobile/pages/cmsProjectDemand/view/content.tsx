@@ -30,6 +30,7 @@ const Content: React.FC<IContentViewProps> = props => {
   const [materialVis, setMaterialVis] = useState<boolean>(true)
   // 发布供应商是否显示
   const [fdSuppliesVisible, setFdSuppliesVisible] = useState<boolean>(false)
+  const [isRequired, setIsRequired] = useState<boolean>(true)
 
   // 判断当前登录人是不是供应商管理员
   const getSupplierStatus = async () => {
@@ -128,10 +129,6 @@ const Content: React.FC<IContentViewProps> = props => {
     return true
   }
 
-  const handleEdit = useCallback(() => {
-    history.goto(`/hrAudit/edit/${data.fdId}`)
-  }, [history])
-
   const handleDel = useCallback(() => {
     Modal.confirm({
       content: '确认删除此记录？',
@@ -152,6 +149,10 @@ const Content: React.FC<IContentViewProps> = props => {
 
   // 提交/暂存通用逻辑
   const handleSave = async ({ code }) => {
+    const res = lbpmComponentRef.current.getOperationType()
+    if (res !== 'handler_pass') {
+      setIsRequired(false)
+    }
     const isDraft = code === 'saveDraft'
     // 校验文档
     if (await _validate(isDraft) === false) {
@@ -196,7 +197,14 @@ const Content: React.FC<IContentViewProps> = props => {
             {/* 表单信息 */}
             <div className='title'>审批详情</div>
             <div className='inner'>
-              <XForm formRef={formComponentRef} value={data || {}} materialVis={materialVis} fdSuppliesVisible={fdSuppliesVisible} editFlag={editFlag} />
+              <XForm
+                formRef={formComponentRef}
+                value={data || {}}
+                materialVis={materialVis}
+                fdSuppliesVisible={fdSuppliesVisible}
+                editFlag={editFlag}
+                isRequired={isRequired}
+              />
             </div>
           </Anchor.Panel>
           <Anchor.Panel index='approve' title='审批信息'>
