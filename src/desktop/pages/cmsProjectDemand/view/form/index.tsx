@@ -15,7 +15,6 @@ import XformDatetime from '@/desktop/components/form/XformDatetime'
 import XformNumber from '@/desktop/components/form/XformNumber'
 import XformDetailTable from '@/desktop/components/form/XformDetailTable'
 import XformSelect from '@/desktop/components/form/XformSelect'
-import XformMoney from '@/desktop/components/form/XformMoney'
 import CMSXformModal from '@/desktop/components/cms/XformModal'
 import apiFrameInfo from '@/api/cmsFrameInfo'
 import apiPostInfo from '@/api/cmsPostInfo'
@@ -35,7 +34,7 @@ const XForm = (props) => {
     cmsProjectDemandSupp: createRef() as any,
     cmsProjectDemandOrder: createRef() as any
   })
-  const { formRef: formRef, value: value, materialVis, fdSuppliesVisible, isRequired } = props
+  const { formRef: formRef, value: value, materialVis, fdSuppliesVisible, isRequired, editFlag } = props
   const [form] = Form.useForm()
   // 框架数据
   const [frameData, setFrameData] = useState<any>([])
@@ -192,193 +191,163 @@ const XForm = (props) => {
                   </Form.Item>
                 </XformFieldset>
               </GridItem>
-              <GridItem column={1} row={5} rowSpan={1} columnSpan={20}>
-                <XformFieldset
-                  labelTextAlign={'left'}
-                  mobileContentAlign={'right'}
-                  title={fmtMsg(':cmsProjectDemand.form.!{l5htahiltc89au91i0d}', '所属部门')}
-                  layout={'horizontal'}
-                >
-                  <Form.Item name={'fdBelongDept'}>
-                    <XformAddress
-                      {...sysProps}
-                      range={'all'}
-                      preSelectType={'fixed'}
-                      org={{
-                        orgTypeArr: ['2'],
-                        defaultValueType: 'null'
-                      }}
-                      showStatus="view"
-                    ></XformAddress>
-                  </Form.Item>
-                </XformFieldset>
-              </GridItem>
-              <GridItem column={21} row={5} rowSpan={1} columnSpan={20}>
-                <XformFieldset
-                  labelTextAlign={'left'}
-                  mobileContentAlign={'right'}
-                  title={fmtMsg(':cmsProjectDemand.form.!{l5htan5uzruygvtzgnk}', '所属团队')}
-                  layout={'horizontal'}
-                >
-                  <Form.Item name={'fdBelongTeam'}>
-                    <XformAddress
-                      {...sysProps}
-                      org={{
-                        orgTypeArr: ['2'],
-                        defaultValueType: 'null'
-                      }}
-                      range={'all'}
-                      preSelectType={'fixed'}
-                      showStatus="view"
-                    ></XformAddress>
-                  </Form.Item>
-                </XformFieldset>
-              </GridItem>
-              <GridItem column={1} row={6} rowSpan={1} columnSpan={20}>
-                <XformFieldset
-                  labelTextAlign={'left'}
-                  mobileContentAlign={'right'}
-                  title={fmtMsg(':cmsProjectDemand.form.!{l5htati10ogp6u4pyr4n}', '项目负责人')}
-                  layout={'horizontal'}
-                >
-                  <Form.Item name={'fdProjectLeader'}>
-                    <XformAddress
-                      {...sysProps}
-                      org={{
-                        orgTypeArr: ['8'],
-                        defaultValueType: 'null'
-                      }}
-                      range={'all'}
-                      preSelectType={'fixed'}
-                      showStatus="view"
-                    ></XformAddress>
-                  </Form.Item>
-                </XformFieldset>
-              </GridItem>
-              <GridItem column={21} row={6} rowSpan={1} columnSpan={20}>
-                <XformFieldset
-                  labelTextAlign={'left'}
-                  mobileContentAlign={'right'}
-                  title={fmtMsg(':cmsProjectDemand.form.!{l5htbm1i443cb33w5p9}', '内部负责人')}
-                  layout={'horizontal'}
-                >
-                  <Form.Item name={'fdInnerLeader'}>
-                    <XformAddress
-                      {...sysProps}
-                      org={{
-                        orgTypeArr: ['8'],
-                        defaultValueType: 'null'
-                      }}
-                      range={'all'}
-                      preSelectType={'fixed'}
-                      showStatus="view"
-                    ></XformAddress>
-                  </Form.Item>
-                </XformFieldset>
-              </GridItem>
-              <GridItem column={1} row={7} rowSpan={1} columnSpan={40}>
-                <XformFieldset
-                  labelTextAlign={'left'}
-                  mobileContentAlign={'right'}
-                  title={fmtMsg(':cmsProjectDemand.form.!{l5htlddeosjl3v9jri}', '所属框架')}
-                  layout={'horizontal'}
-                >
-                  <Form.Item name={'fdFrame'}>
-                    <XformSelect
-                      {...sysProps}
-                      placeholder={fmtMsg(':cmsOutStaffInfo.form.!{l3mpxl7izzanc6s2rh}', '请输入')}
-                      options={frameData}
-                      optionSource={'custom'}
-                      showStatus="view"
-                    ></XformSelect>
-                  </Form.Item>
-                </XformFieldset>
-              </GridItem>
-              <GridItem column={1} row={8} rowSpan={1} columnSpan={40}>
-                <XformFieldset
-                  labelTextAlign={'left'}
-                  mobileContentAlign={'right'}
-                  title={fmtMsg(':cmsProjectDemand.form.!{l5hu16e6mscf4v6vz9}', '项目性质')}
-                  layout={'horizontal'}
-                >
-                  <Form.Item
-                    name={'fdProjectNature'}
-                  >
-                    <XformRadio
-                      {...sysProps}
-                      options={[
-                        {
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5hu16e8qahrwl5i8k}', '项目外包'),
-                          value: '1'
-                        },
-                        {
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5hu16eaq7orwzlc0f}', '厂商驻场实施'),
-                          value: '2'
-                        }
-                      ]}
-                      rowCount={3}
-                      direction={'column'}
-                      serialType={'empty'}
-                      optionSource={'custom'}
-                      showStatus="view"
-                    ></XformRadio>
-                  </Form.Item>
-                </XformFieldset>
-              </GridItem>
-              <GridItem column={1} row={9} rowSpan={1} columnSpan={40}>
-                <XformFieldset
-                  labelTextAlign={'left'}
-                  mobileContentAlign={'right'}
-                  title={fmtMsg(':cmsProjectDemand.form.!{l5hu1fkme7t0hcs6rzg}', '供应商范围')}
-                  layout={'horizontal'}
-                >
-                  <Form.Item
-                    name={'fdSupplierRange'}
-                  >
-                    <XformRadio
-                      {...sysProps}
-                      options={[
-                        {
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5hu1fkn2huctriykh3}', '框架内'),
-                          value: '1'
-                        },
-                        {
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5hu1fkpozpqjlnmoz}', '框架外'),
-                          value: '2'
-                        }
-                      ]}
-                      rowCount={3}
-                      direction={'column'}
-                      serialType={'empty'}
-                      optionSource={'custom'}
-                      showStatus="view"
-                    ></XformRadio>
-                  </Form.Item>
-                </XformFieldset>
-              </GridItem>
+
               {
-                value.fdSupplierRange === '1' && (
+                fdSuppliesVisible ? null : (
                   <Fragment>
-                    <GridItem column={1} row={10} rowSpan={1} columnSpan={20}>
+                    <GridItem column={1} row={5} rowSpan={1} columnSpan={20}>
                       <XformFieldset
                         labelTextAlign={'left'}
                         mobileContentAlign={'right'}
-                        title={fmtMsg(':cmsProjectDemand.form.!{l5hu1sgpxwx7n0fkx9}', '是否指定供应商')}
+                        title={fmtMsg(':cmsProjectDemand.form.!{l5htahiltc89au91i0d}', '所属部门')}
+                        layout={'horizontal'}
+                      >
+                        <Form.Item name={'fdBelongDept'}>
+                          <XformAddress
+                            {...sysProps}
+                            range={'all'}
+                            preSelectType={'fixed'}
+                            org={{
+                              orgTypeArr: ['2'],
+                              defaultValueType: 'null'
+                            }}
+                            showStatus="view"
+                          ></XformAddress>
+                        </Form.Item>
+                      </XformFieldset>
+                    </GridItem>
+                    <GridItem column={21} row={5} rowSpan={1} columnSpan={20}>
+                      <XformFieldset
+                        labelTextAlign={'left'}
+                        mobileContentAlign={'right'}
+                        title={fmtMsg(':cmsProjectDemand.form.!{l5htan5uzruygvtzgnk}', '所属团队')}
+                        layout={'horizontal'}
+                      >
+                        <Form.Item name={'fdBelongTeam'}>
+                          <XformAddress
+                            {...sysProps}
+                            org={{
+                              orgTypeArr: ['2'],
+                              defaultValueType: 'null'
+                            }}
+                            range={'all'}
+                            preSelectType={'fixed'}
+                            showStatus="view"
+                          ></XformAddress>
+                        </Form.Item>
+                      </XformFieldset>
+                    </GridItem>
+                    <GridItem column={1} row={6} rowSpan={1} columnSpan={20}>
+                      <XformFieldset
+                        labelTextAlign={'left'}
+                        mobileContentAlign={'right'}
+                        title={fmtMsg(':cmsProjectDemand.form.!{l5htati10ogp6u4pyr4n}', '项目负责人')}
+                        layout={'horizontal'}
+                      >
+                        <Form.Item name={'fdProjectLeader'}>
+                          <XformAddress
+                            {...sysProps}
+                            org={{
+                              orgTypeArr: ['8'],
+                              defaultValueType: 'null'
+                            }}
+                            range={'all'}
+                            preSelectType={'fixed'}
+                            showStatus="view"
+                          ></XformAddress>
+                        </Form.Item>
+                      </XformFieldset>
+                    </GridItem>
+                    <GridItem column={21} row={6} rowSpan={1} columnSpan={20}>
+                      <XformFieldset
+                        labelTextAlign={'left'}
+                        mobileContentAlign={'right'}
+                        title={fmtMsg(':cmsProjectDemand.form.!{l5htbm1i443cb33w5p9}', '内部负责人')}
+                        layout={'horizontal'}
+                      >
+                        <Form.Item name={'fdInnerLeader'}>
+                          <XformAddress
+                            {...sysProps}
+                            org={{
+                              orgTypeArr: ['8'],
+                              defaultValueType: 'null'
+                            }}
+                            range={'all'}
+                            preSelectType={'fixed'}
+                            showStatus="view"
+                          ></XformAddress>
+                        </Form.Item>
+                      </XformFieldset>
+                    </GridItem>
+                    <GridItem column={1} row={7} rowSpan={1} columnSpan={40}>
+                      <XformFieldset
+                        labelTextAlign={'left'}
+                        mobileContentAlign={'right'}
+                        title={fmtMsg(':cmsProjectDemand.form.!{l5htlddeosjl3v9jri}', '所属框架')}
+                        layout={'horizontal'}
+                      >
+                        <Form.Item name={'fdFrame'}>
+                          <XformSelect
+                            {...sysProps}
+                            placeholder={fmtMsg(':cmsOutStaffInfo.form.!{l3mpxl7izzanc6s2rh}', '请输入')}
+                            options={frameData}
+                            optionSource={'custom'}
+                            showStatus="view"
+                          ></XformSelect>
+                        </Form.Item>
+                      </XformFieldset>
+                    </GridItem>
+                    <GridItem column={1} row={8} rowSpan={1} columnSpan={40}>
+                      <XformFieldset
+                        labelTextAlign={'left'}
+                        mobileContentAlign={'right'}
+                        title={fmtMsg(':cmsProjectDemand.form.!{l5hu16e6mscf4v6vz9}', '项目性质')}
                         layout={'horizontal'}
                       >
                         <Form.Item
-                          name={'fdIsAppoint'}
+                          name={'fdProjectNature'}
                         >
                           <XformRadio
                             {...sysProps}
                             options={[
                               {
-                                label: fmtMsg(':cmsProjectDemand.form.!{l5hu1sgrsktb3s7wysj}', '是'),
+                                label: fmtMsg(':cmsProjectDemand.form.!{l5hu16e8qahrwl5i8k}', '项目外包'),
                                 value: '1'
                               },
                               {
-                                label: fmtMsg(':cmsProjectDemand.form.!{l5hu1sgsr7kztv0gx3l}', '否'),
-                                value: '0'
+                                label: fmtMsg(':cmsProjectDemand.form.!{l5hu16eaq7orwzlc0f}', '厂商驻场实施'),
+                                value: '2'
+                              }
+                            ]}
+                            rowCount={3}
+                            direction={'column'}
+                            serialType={'empty'}
+                            optionSource={'custom'}
+                            showStatus="view"
+                          ></XformRadio>
+                        </Form.Item>
+                      </XformFieldset>
+                    </GridItem>
+                    <GridItem column={1} row={9} rowSpan={1} columnSpan={40}>
+                      <XformFieldset
+                        labelTextAlign={'left'}
+                        mobileContentAlign={'right'}
+                        title={fmtMsg(':cmsProjectDemand.form.!{l5hu1fkme7t0hcs6rzg}', '供应商范围')}
+                        layout={'horizontal'}
+                      >
+                        <Form.Item
+                          name={'fdSupplierRange'}
+                        >
+                          <XformRadio
+                            {...sysProps}
+                            options={[
+                              {
+                                label: fmtMsg(':cmsProjectDemand.form.!{l5hu1fkn2huctriykh3}', '框架内'),
+                                value: '1'
+                              },
+                              {
+                                label: fmtMsg(':cmsProjectDemand.form.!{l5hu1fkpozpqjlnmoz}', '框架外'),
+                                value: '2'
                               }
                             ]}
                             rowCount={3}
@@ -391,74 +360,108 @@ const XForm = (props) => {
                       </XformFieldset>
                     </GridItem>
                     {
-                      value.fdIsAppoint === '1' && (
-                        <GridItem column={21} row={10} rowSpan={1} columnSpan={20}>
+                      value.fdSupplierRange === '1' && (
+                        <Fragment>
+                          <GridItem column={1} row={10} rowSpan={1} columnSpan={20}>
+                            <XformFieldset
+                              labelTextAlign={'left'}
+                              mobileContentAlign={'right'}
+                              title={fmtMsg(':cmsProjectDemand.form.!{l5hu1sgpxwx7n0fkx9}', '是否指定供应商')}
+                              layout={'horizontal'}
+                            >
+                              <Form.Item
+                                name={'fdIsAppoint'}
+                              >
+                                <XformRadio
+                                  {...sysProps}
+                                  options={[
+                                    {
+                                      label: fmtMsg(':cmsProjectDemand.form.!{l5hu1sgrsktb3s7wysj}', '是'),
+                                      value: '1'
+                                    },
+                                    {
+                                      label: fmtMsg(':cmsProjectDemand.form.!{l5hu1sgsr7kztv0gx3l}', '否'),
+                                      value: '0'
+                                    }
+                                  ]}
+                                  rowCount={3}
+                                  direction={'column'}
+                                  serialType={'empty'}
+                                  optionSource={'custom'}
+                                  showStatus="view"
+                                ></XformRadio>
+                              </Form.Item>
+                            </XformFieldset>
+                          </GridItem>
+                          {
+                            value.fdIsAppoint === '1' && (
+                              <GridItem column={21} row={10} rowSpan={1} columnSpan={20}>
+                                <XformFieldset
+                                  labelTextAlign={'left'}
+                                  mobileContentAlign={'right'}
+                                  title={fmtMsg(':cmsProjectDemand.form.!{l5hu2utft6lbporlys}', '指定供应商名称')}
+                                  layout={'horizontal'}
+                                >
+                                  <Form.Item name={'fdSupplier'}>
+                                    <CMSXformModal
+                                      {...props}
+                                      chooseFdName='fdName'
+                                      showStatus={EShowStatus.view}
+                                    />
+                                  </Form.Item>
+                                </XformFieldset>
+                              </GridItem>
+                            )
+                          }
+                        </Fragment>
+                      )
+                    }
+                    {
+                      value.fdFrame.fdName === '设计类' && (
+                        <GridItem column={1} row={11} rowSpan={1} columnSpan={40}>
                           <XformFieldset
                             labelTextAlign={'left'}
                             mobileContentAlign={'right'}
-                            title={fmtMsg(':cmsProjectDemand.form.!{l5hu2utft6lbporlys}', '指定供应商名称')}
+                            title={fmtMsg(':cmsProjectDemand.form.!{l5hu3cliu0idfkp0p3p}', '设计类需求子类')}
                             layout={'horizontal'}
                           >
-                            <Form.Item name={'fdSupplier'}>
-                              <CMSXformModal
-                                {...props}
-                                chooseFdName='fdName'
-                                showStatus={EShowStatus.view}
-                              />
+                            <Form.Item
+                              name={'fdDesignDemand'}
+                            >
+                              <XformRadio
+                                {...sysProps}
+                                options={[
+                                  {
+                                    label: fmtMsg(':cmsProjectDemand.form.!{l5hu3cljitk33gpmjdk}', '驻场设计类'),
+                                    value: '1'
+                                  },
+                                  {
+                                    label: fmtMsg(':cmsProjectDemand.form.!{l5hu3cllnpuwlev3vqm}', '外派设计类'),
+                                    value: '2'
+                                  }
+                                ]}
+                                rowCount={3}
+                                direction={'column'}
+                                serialType={'empty'}
+                                optionSource={'custom'}
+                                showStatus="view"
+                              ></XformRadio>
                             </Form.Item>
                           </XformFieldset>
                         </GridItem>
                       )
                     }
-                  </Fragment>
-                )
-              }
-              {
-                value.fdFrame.fdName === '设计类' && (
-                  <GridItem column={1} row={11} rowSpan={1} columnSpan={40}>
-                    <XformFieldset
-                      labelTextAlign={'left'}
-                      mobileContentAlign={'right'}
-                      title={fmtMsg(':cmsProjectDemand.form.!{l5hu3cliu0idfkp0p3p}', '设计类需求子类')}
-                      layout={'horizontal'}
-                    >
-                      <Form.Item
-                        name={'fdDesignDemand'}
-                      >
-                        <XformRadio
-                          {...sysProps}
-                          options={[
-                            {
-                              label: fmtMsg(':cmsProjectDemand.form.!{l5hu3cljitk33gpmjdk}', '驻场设计类'),
-                              value: '1'
-                            },
-                            {
-                              label: fmtMsg(':cmsProjectDemand.form.!{l5hu3cllnpuwlev3vqm}', '外派设计类'),
-                              value: '2'
-                            }
-                          ]}
-                          rowCount={3}
-                          direction={'column'}
-                          serialType={'empty'}
-                          optionSource={'custom'}
-                          showStatus="view"
-                        ></XformRadio>
-                      </Form.Item>
-                    </XformFieldset>
-                  </GridItem>
-                )
-              }
-              {
-                fdSuppliesVisible ? null : (
-                  <GridItem column={1} row={12} rowSpan={1} columnSpan={40}>
-                    <XformFieldset
-                      labelTextAlign={'left'}
-                      mobileContentAlign={'right'}
-                      title={fmtMsg(':cmsProjectDemand.form.!{l5hu3p9hgtqae2rfxr6}', '订单金额')}
-                      layout={'horizontal'}
-                    >
-                      <Form.Item name={'fdOrderAmount'}>
-                        {/* <XformMoney
+                    {
+                      fdSuppliesVisible ? null : (
+                        <GridItem column={1} row={12} rowSpan={1} columnSpan={40}>
+                          <XformFieldset
+                            labelTextAlign={'left'}
+                            mobileContentAlign={'right'}
+                            title={fmtMsg(':cmsProjectDemand.form.!{l5hu3p9hgtqae2rfxr6}', '订单金额')}
+                            layout={'horizontal'}
+                          >
+                            <Form.Item name={'fdOrderAmount'}>
+                              {/* <XformMoney
                           {...sysProps}
                           placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hu3p9i1j80lnhffd}', '请输入')}
                           numberFormat={{
@@ -467,37 +470,40 @@ const XForm = (props) => {
                           precision={2}
                           showStatus="view"
                         ></XformMoney> */}
-                        <span>{value?.fdOrderAmount.toFixed(2)}万</span>
-                      </Form.Item>
-                    </XformFieldset>
-                  </GridItem>
+                              <span>{value?.fdOrderAmount.toFixed(2)}万</span>
+                            </Form.Item>
+                          </XformFieldset>
+                        </GridItem>
+                      )
+                    }
+
+                    <GridItem column={1} row={13} rowSpan={1} columnSpan={20}>
+                      <XformFieldset
+                        labelTextAlign={'left'}
+                        mobileContentAlign={'right'}
+                        title={fmtMsg(':cmsProjectDemand.fdCreator', '创建者')}
+                        layout={'horizontal'}
+                      >
+                        <Form.Item
+                          name={'fdCreator'}
+                        >
+                          <XformAddress
+                            {...sysProps}
+                            org={{
+                              orgTypeArr: ['8'],
+                              defaultValueType: 'null'
+                            }}
+                            range={'all'}
+                            preSelectType={'fixed'}
+                            showStatus="view"
+                          ></XformAddress>
+                        </Form.Item>
+                      </XformFieldset>
+                    </GridItem>
+                  </Fragment>
                 )
               }
-
-              <GridItem column={1} row={13} rowSpan={1} columnSpan={20}>
-                <XformFieldset
-                  labelTextAlign={'left'}
-                  mobileContentAlign={'right'}
-                  title={fmtMsg(':cmsProjectDemand.fdCreator', '创建者')}
-                  layout={'horizontal'}
-                >
-                  <Form.Item
-                    name={'fdCreator'}
-                  >
-                    <XformAddress
-                      {...sysProps}
-                      org={{
-                        orgTypeArr: ['8'],
-                        defaultValueType: 'null'
-                      }}
-                      range={'all'}
-                      preSelectType={'fixed'}
-                      showStatus="view"
-                    ></XformAddress>
-                  </Form.Item>
-                </XformFieldset>
-              </GridItem>
-              <GridItem column={21} row={13} rowSpan={1} columnSpan={20}>
+              <GridItem column={fdSuppliesVisible ? 1 : 21} row={13} rowSpan={1} columnSpan={20}>
                 <XformFieldset
                   labelTextAlign={'left'}
                   mobileContentAlign={'right'}
@@ -582,7 +588,7 @@ const XForm = (props) => {
                         </Form.Item>
                       </XformFieldset>
                     </GridItem>
-                    <GridItem column={21} row={15} rowSpan={1} columnSpan={6} style={{ display: 'flex', alignItems: 'center' }}>
+                    <GridItem column={21} row={15} rowSpan={1} columnSpan={6} style={{ display: 'flex', alignItems: 'center', }}>
                       <XformFieldset
                         compose={true}
                         required={isRequired}
@@ -590,29 +596,31 @@ const XForm = (props) => {
                         title={fmtMsg(':cmsProjectDemand.form.!{l5hxh9fpx14ur0jgeue}', '人数区间')}
                       >
                       </XformFieldset>
+
                     </GridItem>
-                    <GridItem column={27} row={15} rowSpan={1} columnSpan={5}>
-                      <Form.Item
-                        name={'fdLowPerson'}
-                        rules={[
-                          {
-                            required: isRequired,
-                            message: fmtMsg(':required', '内容不能为空')
-                          }
-                        ]}
-                      >
-                        <XformNumber
-                          {...sysProps}
-                          placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hxk7elmfxiucq54kd}', '请输入')}
-                          numberFormat={{
-                            formatType: 'base'
-                          }}
-                          showStatus={materialVis ? 'edit' : 'view'}
-                        ></XformNumber>
-                      </Form.Item>
-                    </GridItem>
-                    <GridItem column={32} row={15} rowSpan={1} columnSpan={1}>
-                      <XformFieldset compose={true}>
+                    <GridItem column={27} row={15} rowSpan={1} columnSpan={12} style={{ padding: '6px 0' }}>
+                      <div className='flex'>
+                        <Form.Item
+                          name={'fdLowPerson'}
+                          rules={[
+                            {
+                              required: isRequired,
+                              message: fmtMsg(':required', '内容不能为空')
+                            }
+                          ]}
+                        >
+                          <XformNumber
+                            {...sysProps}
+                            placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hxk7elmfxiucq54kd}', '请输入')}
+                            numberFormat={{
+                              formatType: 'base'
+                            }}
+                            range={{
+                              start: 0
+                            }}
+                            showStatus={materialVis ? 'edit' : 'view'}
+                          ></XformNumber>
+                        </Form.Item>
                         <Form.Item name={'fdColUso4hd'}>
                           <XformDescription
                             {...sysProps}
@@ -620,32 +628,29 @@ const XForm = (props) => {
                             showStatus="view"
                           ></XformDescription>
                         </Form.Item>
-                      </XformFieldset>
-                    </GridItem>
-                    <GridItem column={33} row={15} rowSpan={1} columnSpan={5}>
-                      <Form.Item
-                        name={'fdUpPerson'}
-                        rules={[
-                          {
-                            required: isRequired,
-                            message: fmtMsg(':required', '内容不能为空')
-                          }
-                        ]}
-                      >
-                        <XformNumber
-                          {...sysProps}
-                          placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hxlsau5eqmbbchfv8}', '请输入')}
-                          numberFormat={{
-                            formatType: 'base'
-                          }}
-                          fdSysNumber={{}}
-                          label={fmtMsg(':cmsProjectDemand.form.!{l5hxlsauo7w98rlogbn}', '人数区间上限')}
-                          showStatus={materialVis ? 'edit' : 'view'}
-                        ></XformNumber>
-                      </Form.Item>
-                    </GridItem>
-                    <GridItem column={38} row={15} rowSpan={1} columnSpan={1}>
-                      <XformFieldset compose={true}>
+                        <Form.Item
+                          name={'fdUpPerson'}
+                          rules={[
+                            {
+                              required: isRequired,
+                              message: fmtMsg(':required', '内容不能为空')
+                            }
+                          ]}
+                        >
+                          <XformNumber
+                            {...sysProps}
+                            placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hxlsau5eqmbbchfv8}', '请输入')}
+                            numberFormat={{
+                              formatType: 'base'
+                            }}
+                            range={{
+                              start: 0
+                            }}
+                            fdSysNumber={{}}
+                            label={fmtMsg(':cmsProjectDemand.form.!{l5hxlsauo7w98rlogbn}', '人数区间上限')}
+                            showStatus={materialVis ? 'edit' : 'view'}
+                          ></XformNumber>
+                        </Form.Item>
                         <Form.Item name={'fdColSgzhna'}>
                           <XformDescription
                             {...sysProps}
@@ -653,8 +658,17 @@ const XForm = (props) => {
                             showStatus="view"
                           ></XformDescription>
                         </Form.Item>
-                      </XformFieldset>
+                      </div>
                     </GridItem>
+                    {/* <GridItem column={32} row={15} rowSpan={1} columnSpan={1}>
+
+                    </GridItem>
+                    <GridItem column={33} row={15} rowSpan={1} columnSpan={5}>
+
+                    </GridItem>
+                    <GridItem column={38} row={15} rowSpan={1} columnSpan={1}>
+
+                    </GridItem> */}
                   </Fragment>
                 ) : null
               }
@@ -1051,122 +1065,143 @@ const XForm = (props) => {
                             showNumber={true}
                             layout={'vertical'}
                             hiddenLabel={true}
-                            columns={[
-                              {
-                                type: CMSXformModal,
-                                controlProps: {
-                                  modalTitle: '供应商',
-                                  chooseFdName: 'fdName',
-                                  title: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称'),
-                                  name: 'fdSupplier',
-                                  renderMode: 'singlelist',
-                                  direction: 'column',
-                                  rowCount: 3,
-                                  modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
-                                  isForwardView: 'no',
-                                  desktop: {
-                                    type: CMSXformModal
-                                  },
+                            columns={editFlag ?
+                              [
+                                {
                                   type: CMSXformModal,
-                                  relationCfg: {
-                                    appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
-                                    xformName: '供应商信息',
-                                    modelId: '1g777qg92w10wcf2w1jiihhv3oqp4s6nr9w0',
-                                    tableType: 'main',
-                                    tableName: 'mk_model_20220705vk0ha',
-                                    showFields: '$供应商名称$',
-                                    refFieldName: '$fd_supplier_name$'
+                                  controlProps: {
+                                    modalTitle: '供应商',
+                                    chooseFdName: 'fdName',
+                                    title: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称'),
+                                    name: 'fdSupplier',
+                                    desktop: {
+                                      type: CMSXformModal
+                                    },
+                                    type: CMSXformModal,
+                                    showStatus: 'view'
                                   },
-                                  showStatus: 'view'
+                                  labelProps: {
+                                    title: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称'),
+                                    desktop: {
+                                      layout: 'vertical'
+                                    },
+                                    labelTextAlign: 'left'
+                                  },
+                                  label: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称')
                                 },
-                                labelProps: {
-                                  title: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称'),
-                                  desktop: {
-                                    layout: 'vertical'
-                                  },
-                                  labelTextAlign: 'left'
-                                },
-                                label: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称')
-                              },
-                              {
-                                type: XformSelect,
-                                controlProps: {
-                                  title: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架'),
-                                  name: 'fdFrame',
-                                  renderMode: 'select',
-                                  direction: 'column',
-                                  rowCount: 3,
-                                  modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
-                                  isForwardView: 'no',
-                                  options: frameData,
-                                  desktop: {
-                                    type: XformSelect
-                                  },
+                                {
                                   type: XformSelect,
-                                  relationCfg: {
-                                    appCode: '1g776q10pw10w5j2w27q4fgr1u02jiv194w0',
-                                    xformName: '框架信息',
-                                    modelId: '1g776skc9w10w5s5w1of8s041q6o7vv2liw0',
-                                    tableType: 'main',
-                                    tableName: 'mk_model_20220705d9xao',
-                                    showFields: '$框架名称$',
-                                    refFieldName: '$fd_name$'
+                                  controlProps: {
+                                    title: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架'),
+                                    name: 'fdFrame',
+                                    multi: true,
+                                    options: frameData,
+                                    desktop: {
+                                      type: XformSelect
+                                    },
+                                    type: XformSelect,
+                                    showStatus: 'view'
                                   },
-                                  showStatus: 'view'
-                                },
-                                labelProps: {
-                                  title: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架'),
-                                  desktop: {
-                                    layout: 'vertical'
+                                  labelProps: {
+                                    title: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架'),
+                                    desktop: {
+                                      layout: 'vertical'
+                                    },
+                                    labelTextAlign: 'left'
                                   },
-                                  labelTextAlign: 'left'
+                                  label: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架')
                                 },
-                                label: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架')
-                              },
-                              {
-                                type: XformDatetime,
-                                controlProps: {
-                                  title: fmtMsg(':cmsProjectDemand.form.!{l5jfsj2yyw86i6eb5z}', '上次发布需求时间'),
-                                  name: 'fdLastTime',
-                                  placeholder: fmtMsg(':cmsProjectDemand.form.!{l5jfsj2zv2npau0ak0g}', '请输入'),
-                                  dataPattern: 'yyyy-MM-dd HH:mm',
-                                  desktop: {
-                                    type: XformDatetime
+                                {
+                                  type: XformDatetime,
+                                  controlProps: {
+                                    title: fmtMsg(':cmsProjectDemand.form.!{l5jfsj2yyw86i6eb5z}', '上次发布需求时间'),
+                                    name: 'fdLastTime',
+                                    placeholder: fmtMsg(':cmsProjectDemand.form.!{l5jfsj2zv2npau0ak0g}', '请输入'),
+                                    dataPattern: 'yyyy-MM-dd HH:mm',
+                                    desktop: {
+                                      type: XformDatetime
+                                    },
+                                    showStatus: 'view'
                                   },
-                                  showStatus: 'view'
-                                },
-                                labelProps: {
-                                  title: fmtMsg(':cmsProjectDemand.form.!{l5jfsj2yyw86i6eb5z}', '上次发布需求时间'),
-                                  desktop: {
-                                    layout: 'vertical'
+                                  labelProps: {
+                                    title: fmtMsg(':cmsProjectDemand.form.!{l5jfsj2yyw86i6eb5z}', '上次发布需求时间'),
+                                    desktop: {
+                                      layout: 'vertical'
+                                    },
+                                    labelTextAlign: 'left'
                                   },
-                                  labelTextAlign: 'left'
+                                  label: fmtMsg(':cmsProjectDemand.form.!{l5jfsj2yyw86i6eb5z}', '上次发布需求时间')
                                 },
-                                label: fmtMsg(':cmsProjectDemand.form.!{l5jfsj2yyw86i6eb5z}', '上次发布需求时间')
-                              },
-                              {
-                                type: XformInput,
-                                controlProps: {
-                                  title: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额'),
-                                  maxLength: 100,
-                                  name: 'fdAnnualRatio',
-                                  placeholder: fmtMsg(':cmsProjectDemand.form.!{l5jg2w81dql7tlq4wp}', '请输入'),
-                                  desktop: {
-                                    type: XformInput
+                                {
+                                  type: XformInput,
+                                  controlProps: {
+                                    title: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额占比'),
+                                    maxLength: 100,
+                                    name: 'fdAnnualRatio',
+                                    placeholder: fmtMsg(':cmsProjectDemand.form.!{l5jg2w81dql7tlq4wp}', '请输入'),
+                                    desktop: {
+                                      type: XformInput
+                                    },
+                                    showStatus: 'view'
                                   },
-                                  showStatus: 'view'
-                                },
-                                labelProps: {
-                                  title: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额'),
-                                  desktop: {
-                                    layout: 'vertical'
+                                  labelProps: {
+                                    title: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额占比'),
+                                    desktop: {
+                                      layout: 'vertical'
+                                    },
+                                    labelTextAlign: 'left'
                                   },
-                                  labelTextAlign: 'left'
+                                  label: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额占比')
+                                }
+                              ] :
+                              [
+                                {
+                                  type: CMSXformModal,
+                                  controlProps: {
+                                    modalTitle: '供应商',
+                                    chooseFdName: 'fdName',
+                                    title: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称'),
+                                    name: 'fdSupplier',
+                                    desktop: {
+                                      type: CMSXformModal
+                                    },
+                                    type: CMSXformModal,
+                                    showStatus: 'view'
+                                  },
+                                  labelProps: {
+                                    title: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称'),
+                                    desktop: {
+                                      layout: 'vertical'
+                                    },
+                                    labelTextAlign: 'left'
+                                  },
+                                  label: fmtMsg(':cmsProjectDemand.form.!{l5hvu8nbwvva3eaj5zf}', '供应商名称')
                                 },
-                                label: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额')
-                              }
-                            ]}
-                            canExport={true}
+                                {
+                                  type: XformSelect,
+                                  controlProps: {
+                                    title: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架'),
+                                    name: 'fdFrame',
+                                    multi: true,
+                                    options: frameData,
+                                    desktop: {
+                                      type: XformSelect
+                                    },
+                                    type: XformSelect,
+                                    showStatus: 'view'
+                                  },
+                                  labelProps: {
+                                    title: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架'),
+                                    desktop: {
+                                      layout: 'vertical'
+                                    },
+                                    labelTextAlign: 'left'
+                                  },
+                                  label: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架')
+                                },
+                              ]
+                            }
+                            canExport={false}
                             showStatus="view"
                           ></XformDetailTable>
                         </Form.Item>

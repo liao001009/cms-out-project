@@ -223,6 +223,18 @@
       // .ele-xform-view {
       //   margin-top: 3px;
       // }
+      .flex {
+        display: flex;
+
+        .lui-form-item {
+          margin-right: 8px;
+
+          &:first-child, &:nth-child(3) {
+            width: 100px;
+          }
+        }
+      }
+
       .ele-xform-detail-table-toolbar-right-buttons {
         & > button[title=列设置] {
           display: none !important;

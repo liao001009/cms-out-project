@@ -1,7 +1,7 @@
 import React, { useRef, createRef, useState, useEffect, Fragment } from 'react'
 import './index.scss'
 import { fmtMsg } from '@ekp-infra/respect'
-import { Form } from '@lui/core'
+import { Form, Message } from '@lui/core'
 import { useApi, useSystem } from '@/desktop/shared/formHooks'
 import XformAppearance from '@/desktop/components/form/XformAppearance'
 import LayoutGrid from '@/desktop/components/form/LayoutGrid'
@@ -24,9 +24,9 @@ import apiSupplier from '@/api/cmsSupplierInfo'
 import apiPostInfo from '@/api/cmsPostInfo'
 import apiLevelInfo from '@/api/cmsLevelInfo'
 import apiProjectDemand from '@/api/cmsProjectDemand'
-
+import apiAmount from '@/api/cmsOutSupplierAmount'
 const MECHANISMNAMES = {}
-
+import moment from 'moment'
 const baseCls = 'project-demand-form'
 
 const XForm = (props) => {
@@ -56,7 +56,9 @@ const XForm = (props) => {
   // 指定供应商值
   const [assignSupplier, setAssignSupplier] = useState<string | undefined>('')
   // 选定的框架类型
-  const [selectedFrame, setSelectedFrame] = useState<string>('')
+  const [selectedFrame, setSelectedFrame] = useState<any>({})
+  // 选好的发布供应商
+  const [selectedFdSupplier, setSelectedFdSupplier] = useState<any>([])
   useEffect(() => {
     init()
   }, [])
@@ -98,52 +100,57 @@ const XForm = (props) => {
   }
 
   const getProjectDemand = async (fdId) => {
-    const res = await apiProjectDemand.listDemand({
-      'conditions': {
-        'cmsProjectDemandSupp.fdSupplier.fdId': {
-          '$eq': fdId
+    try {
+      const res = await apiProjectDemand.listDemand({
+        'conditions': {
+          'cmsProjectDemandSupp.fdSupplier.fdId': {
+            '$eq': fdId
+          }
+        },
+        'columns': ['fdId', 'fdPublishTime', 'fdSubject', 'fdSupplies'],
+        'sorts': {
+          'fdPublishTime': 'desc'
         }
-      },
-      'columns': ['fdId', 'fdPublishTime', 'fdSubject', 'fdSupplies'],
-      'sorts': {
-        'fdPublishTime': 'desc'
-      }
-    })
-    return res.data.content[0]
+      })
+      return res.data.content[0]
+    } catch (error) {
+      Message.error(error.response.data.msg || '请求失败')
+    }
+  }
+
+  const getSupplierAmount = async (param) => {
+    try {
+      const res = await apiAmount.getSupplierAmount(param)
+      return res.data?.fdSupplierAmount[0]
+    } catch (error) {
+      Message.error(error.response.data.msg || '请求失败')
+    }
   }
   useEffect(() => {
-    const newSelectPost = postData.filter(i => i.fdFrame.fdId === selectedFrame)
-    const newSelectLevel = levelData.filter(i => i.fdFrame.fdId === selectedFrame)
+    const newSelectPost = postData.filter(i => i.fdFrame.fdId === selectedFrame.fdId)
+    const newSelectLevel = levelData.filter(i => i.fdFrame.fdId === selectedFrame.fdId)
     setSelectedLevelData(newSelectLevel)
     setSelectedPostData(newSelectPost)
   }, [selectedFrame, postData, levelData])
 
   const handleSetFdSupplier = (val) => {
     setAssignSupplier(val.fdName)
+    selectedFdSupplier([])
     form.setFieldsValue({
-      fdSupplies: []
+      fdSupplies: undefined
     })
     const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectDemandSupp').values
     valuesData.length && detailForms.current.cmsProjectDemandSupp.current.deleteAll()
   }
 
   const handleChangeSupplier = async (v) => {
+    setSelectedFdSupplier(v)
     // 给明细表默认加行数并赋值默认数据
     const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectDemandSupp').values
     const newSelectSupplierFdId = v.map(i => i.fdId)
     const newSelectedSupplierFdId = valuesData.map(i => i.fdSupplier.fdId)
     if (newSelectSupplierFdId.sort().toString() === newSelectedSupplierFdId.sort().toString()) return
     valuesData.length && detailForms.current.cmsProjectDemandSupp.current.deleteAll()
-    // const arr = [] as any
-    // const newData = v.map(async (item) => {
-    //   const projectDemandData = await getProjectDemand(item.fdId)
-    //   // arr.push({
-    //   //   ...item,
-    //   //   fdPublishTime: projectDemandData?.fdPublishTime
-    //   // })
-    //   item.fdPublishTime = projectDemandData?.fdPublishTime
-    //   return item
-    // })
     const requestArr = v.map(i => getProjectDemand(i.fdId))
     const res = await Promise.all(requestArr)
     const newData = v.map(item => {
@@ -157,11 +164,41 @@ const XForm = (props) => {
       })
       return item
     })
-    console.log('res5559', newData)
+    if (selectedFrame && newData?.length) {
+      const resquestAmountArr = v.map(i => {
+        const year = moment(new Date()).year()
+        const fdBeginDate = moment(`${year}-01-01`).valueOf()
+        const fdEndDate = moment(`${year}-12-31`).valueOf()
+        const param = {
+          fdBeginDate,
+          fdEndDate,
+          fdSupplier: [{ fdId: i.fdId }],
+          fdFrame: [{ ...selectedFrame }]
+        }
+        return getSupplierAmount(param)
+      })
+      let amountRes: any[] = await Promise.all(resquestAmountArr)
+      amountRes = amountRes.filter(i => i)
+      if (amountRes.length) {
+        newData.forEach((i: any) => {
+          amountRes.forEach((k: any) => {
+            //@ts-ignore
+            if (k.fdShare) {
+              //@ts-ignore
+              if (k.fdSupplierId === i.fdId) {
+                //@ts-ignore
+                i.fdAnnualRatio = parseFloat(k.fdShare.split('%')[0]).toFixed(2) + '%'
+              }
+            }
+          })
+        })
+      }
+    }
     setTimeout(() => {
       newData.length && detailForms.current.cmsProjectDemandSupp.current.updateValues(newData.map(item => ({
         fdFrame: item.fdFrame,
         fdLastTime: item.fdPublishTime,
+        fdAnnualRatio: item?.fdAnnualRatio,
         fdSupplier: { ...item }
       })))
     }, 0)
@@ -169,7 +206,8 @@ const XForm = (props) => {
 
   const handleProject = (v) => {
     setIsFrameChild(v.fdFrame.fdName === '设计类')
-    setSelectedFrame(v.fdFrame.fdId)
+    setSelectedFrame(v.fdFrame)
+    setSelectedFdSupplier([])
     form.setFieldsValue({
       fdInnerLeader: v.fdInnerPrincipal,
       fdProjectNum: v.fdCode,
@@ -179,7 +217,7 @@ const XForm = (props) => {
       fdFrame: v.fdFrame,
       fdSupplier: undefined,
       fdProjectNature: v.fdProjectNature,
-      fdSupplies: []
+      fdSupplies: undefined
     })
     detailForms.current.cmsProjectDemandSupp.current.deleteAll()
     setAssignSupplier(undefined)
@@ -620,7 +658,7 @@ const XForm = (props) => {
                                 defaultTableCriteria={{
                                   'fdFrame.fdId': {
                                     searchKey: '$eq',
-                                    searchValue: selectedFrame || undefined
+                                    searchValue: selectedFrame.fdId.fdId || undefined
                                   }
                                 }}
                                 apiKey={apiSupplier}
@@ -939,6 +977,9 @@ const XForm = (props) => {
                             numberFormat: {
                               formatType: 'base'
                             },
+                            range: {
+                              start: 0
+                            },
                             desktop: {
                               type: XformNumber
                             },
@@ -1000,7 +1041,7 @@ const XForm = (props) => {
                       canDeleteRow={true}
                       canImport={false}
                       canExport={false}
-                      canExpand={false}
+                      canExpand={true}
                       showStatus="edit"
                     ></XformDetailTable>
                   </Form.Item>
@@ -1146,6 +1187,9 @@ const XForm = (props) => {
                             numberFormat: {
                               formatType: 'base'
                             },
+                            range: {
+                              start: 0
+                            },
                             desktop: {
                               type: XformNumber
                             },
@@ -1220,6 +1264,7 @@ const XForm = (props) => {
                       modalTitle='供应商选择'
                       showFooter={true}
                       multiple={true}
+                      initData={selectedFdSupplier}
                       defaultSearch={true}
                       defaultTableCriteria={{
                         'fdName': {
@@ -1228,7 +1273,7 @@ const XForm = (props) => {
                         },
                         'fdFrame.fdId': {
                           searchKey: '$eq',
-                          searchValue: selectedFrame || undefined
+                          searchValue: selectedFrame.fdId || undefined
                         }
                       }}
                       onChange={(v) => handleChangeSupplier(v)}
@@ -1317,25 +1362,12 @@ const XForm = (props) => {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5j8fap7kgcwzldwypj}', '所属框架'),
                             placeholder: fmtMsg(':cmsOutStaffInfo.form.!{l3mpxl7izzanc6s2rh}', '请输入'),
                             name: 'fdFrame',
-                            renderMode: 'select',
-                            direction: 'column',
-                            rowCount: 3,
-                            modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
-                            isForwardView: 'no',
+                            multi: true,
                             options: frameData,
                             desktop: {
                               type: XformSelect
                             },
                             type: XformSelect,
-                            relationCfg: {
-                              appCode: '1g776q10pw10w5j2w27q4fgr1u02jiv194w0',
-                              xformName: '框架信息',
-                              modelId: '1g776skc9w10w5s5w1of8s041q6o7vv2liw0',
-                              tableType: 'main',
-                              tableName: 'mk_model_20220705d9xao',
-                              showFields: '$框架名称$',
-                              refFieldName: '$fd_name$'
-                            },
                             showStatus: 'readOnly'
                           },
                           labelProps: {
@@ -1371,23 +1403,23 @@ const XForm = (props) => {
                         {
                           type: XformInput,
                           controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额'),
+                            title: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额占比'),
                             maxLength: 100,
                             name: 'fdAnnualRatio',
                             placeholder: fmtMsg(':cmsProjectDemand.form.!{l5jg2w81dql7tlq4wp}', '请输入'),
                             desktop: {
                               type: XformInput
                             },
-                            showStatus: 'edit'
+                            showStatus: 'readOnly'
                           },
                           labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额'),
+                            title: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额占比'),
                             desktop: {
                               layout: 'vertical'
                             },
                             labelTextAlign: 'left'
                           },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额')
+                          label: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额占比')
                         }
                       ]}
                       canAddRow={false}
@@ -1395,7 +1427,7 @@ const XForm = (props) => {
                       canImport={false}
                       canExport={false}
                       canExpand={true}
-                      showStatus="edit"
+                      showStatus="view"
                     ></XformDetailTable>
                   </Form.Item>
                 </XformFieldset>

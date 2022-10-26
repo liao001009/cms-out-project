@@ -7,6 +7,7 @@ const commonApi = Api.get<ICmsPostInfo>('cmsPostInfo', http)
 const api = {
   ...commonApi,
   save: Api.build('cmsPostInfo/save', http),
+  list: Api.build('cmsPostInfo/list', http),
   // 岗位信息(列表请求)
   listPostInfo: Api.build('cmsPostInfo/listPostInfo', http)
 }

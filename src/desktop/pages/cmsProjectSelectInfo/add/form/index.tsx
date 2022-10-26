@@ -37,13 +37,14 @@ const XForm = (props) => {
   }, [])
 
   const getInfo = async (key, func) => {
-    const newArr = value.cmsProjectStaffList.map(i => {
+    let newArr = value.cmsProjectStaffList.map(i => {
       const item = {
-        value: i[key].fdId,
-        label: i[key].fdName,
+        value: i?.[key]?.fdId,
+        label: i?.[key]?.fdName,
       }
       return item
     })
+    newArr = newArr.filter(i => i)
     func(newArr)
   }
   // 对外暴露接口
@@ -439,9 +440,10 @@ const XForm = (props) => {
                         }
                       ]}
                       canExport={false}
+                      canImport={false}
                       canAddRow={false}
                       canDeleteRow={false}
-                      showStatus="edit"
+                      showStatus="view"
                     ></XformDetailTable>
                   </Form.Item>
                 </XformFieldset>
