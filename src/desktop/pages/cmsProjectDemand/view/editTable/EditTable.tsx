@@ -105,19 +105,24 @@ const EditTable = (props: IProps) => {
                     <Upload
                       value={[text]}
                       multiple={false}
-                      itemType={'card'}
+                      itemType={'table'}
                       mode='file'
                       viewStatus={true}
                       showStatus={'view'}
                       operationDisplayConfig={{
+                        buttonType: 'text',
                         showDownload: true,
                         showRemove: false,
                         showChange: false,
                         showEdit: false
                       }}
-                      ItemDisplayConfig={{
+                      itemDisplayConfig={{
                         showOrder: false,
-                        showHeader: true
+                        showSize: false,
+                        showCreator: false,
+                        showCreated: false,
+                        showHeader: false,
+                        showBatch: false
                       }}
                     />
                   ) : null
