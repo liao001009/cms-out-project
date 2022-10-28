@@ -53,7 +53,7 @@ const XForm = (props) => {
 
   const getLevelList = async () => {
     try {
-      const res = await apiLevel.list({})
+      const res = await apiLevel.list({ pageSize: 1000 })
       let detailValue = form.getFieldValue('cmsStaffReviewDetail')
       if (!Array.isArray(detailValue)) {
         detailValue = detailValue.values

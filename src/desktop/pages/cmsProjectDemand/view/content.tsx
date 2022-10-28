@@ -162,7 +162,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
 
   // 判断当前登录人是不是供应商管理员
   const getSupplierStatus = async () => {
-    const res = await apiSupplier.list({ conditions: { 'fdAdminElement.fdId': { '$eq': userId } } })
+    const res = await apiSupplier.list({ conditions: { 'fdAdminElement.fdId': { '$eq': userId } }, pageSize: 1000 })
     setFdSuppliesVisible(!!res.data.content.length)
   }
   // 点击订单响应的跳转路由地址
