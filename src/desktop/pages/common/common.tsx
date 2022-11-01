@@ -2,19 +2,6 @@ import React from 'react'
 import Criteria from '@elem/criteria'
 import { Tooltip } from '@lui/core'
 
-const renderFdrame = (value) => {
-  return (
-    <React.Fragment>
-      {
-        value.map((i, index) => {
-          return (
-            <span key={i.fdId}>{i.fdName}{index === value.length - 1 ? '' : ','}</span>
-          )
-        })
-      }
-    </React.Fragment>
-  )
-}
 // 框架信息
 export const frameInfoColumns = [
   /*框架名称*/
@@ -84,7 +71,7 @@ export const supplierColumns = [
   {
     title: '所属框架',
     dataIndex: 'fdFrame',
-    render: (value) => value.length && renderFdrame(value)
+    render: (value) => value && value.map(i => i.fdName).join(',')
   },
   /*供应商合作状态*/
   {

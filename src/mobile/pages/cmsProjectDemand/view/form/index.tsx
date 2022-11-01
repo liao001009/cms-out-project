@@ -7,7 +7,6 @@ import XformAppearance from '@/mobile/components/form/XformAppearance'
 import XformMDescription from '@/mobile/components/form/XformMDescription'
 import XformFieldset from '@/mobile/components/form/XformFieldset'
 import XformMInput from '@/mobile/components/form/XformMInput'
-import XformMRelation from '@/mobile/components/form/XformMRelation'
 import XformMAddress from '@/mobile/components/form/XformMAddress'
 import XformMRadio from '@/mobile/components/form/XformMRadio'
 import XformMMoney from '@/mobile/components/form/XformMMoney'
@@ -43,6 +42,13 @@ const XForm = (props) => {
   // 级别数据
   const [levelData, setLevelData] = useState<any>([])
 
+  let minPerson = 0
+  value.cmsProjectDemandDetail.map(item => {
+    minPerson += item.fdPersonNum
+  })
+  form.setFieldsValue({
+    fdLowPerson: minPerson
+  })
   useEffect(() => {
     init()
   }, [])
@@ -494,6 +500,40 @@ const XForm = (props) => {
                 ></XformMDatetime>
               </Form.Item>
             </XformFieldset>
+            <XformFieldset
+              labelTextAlign={'left'}
+              mobileContentAlign={'right'}
+              title={fmtMsg(':cmsProjectDemand.form.!{l5jh2jka2sj0dsajqjh}', '预计入场时间')}
+              layout={'horizontal'}
+            >
+              <Form.Item
+                name={'fdAdmissionTime'}
+              >
+                <XformMDatetime
+                  {...sysProps}
+                  placeholder={'请输入'}
+                  dataPattern={'yyyy-MM-dd'}
+                  showStatus="view"
+                ></XformMDatetime>
+              </Form.Item>
+            </XformFieldset>
+            <XformFieldset
+              labelTextAlign={'left'}
+              mobileContentAlign={'right'}
+              title={fmtMsg(':cmsProjectDemand.form.!{l5jh2mex4elh46zftko}', '要求响应时间')}
+              layout={'horizontal'}
+            >
+              <Form.Item
+                name={'fdResponseTime'}
+              >
+                <XformMDatetime
+                  {...sysProps}
+                  placeholder={'请输入'}
+                  dataPattern={'yyyy-MM-dd HH/mm'}
+                  showStatus="view"
+                ></XformMDatetime>
+              </Form.Item>
+            </XformFieldset>
             {
               materialVis || value.fdApprovalTime ? (
                 <Fragment>
@@ -510,7 +550,7 @@ const XForm = (props) => {
                         dataPattern={'yyyy/MM/dd'}
                         layout={'horizontal'}
                         passValue={true}
-                        showStatus="view"
+                        showStatus={materialVis ? 'edit' : 'view'}
                       ></XformMDatetime>
                     </Form.Item>
                   </XformFieldset>
@@ -542,11 +582,11 @@ const XForm = (props) => {
                           start: 0
                         }}
                         layout={'vertical'}
-                        showStatus="edit"
+                        showStatus={materialVis ? 'edit' : 'view'}
                       ></XformMNumber>
                     </Form.Item>
                     <XformFieldset >
-                      <Form.Item name={'fdColUso4hd'}>
+                      <Form.Item name={'fdColUso4hd'} className='fdColUso4hd'>
                         <XformMDescription
                           {...sysProps}
                           defaultTextValue={fmtMsg(':cmsProjectDemand.form.!{l5hxjc3iktyguac1yn8}', '至')}
@@ -577,7 +617,7 @@ const XForm = (props) => {
                         showStatus={materialVis ? 'edit' : 'view'}
                       ></XformMNumber>
                     </Form.Item>
-                    <XformFieldset compose={true}>
+                    <XformFieldset >
                       <Form.Item name={'fdColSgzhna'}>
                         <XformMDescription
                           {...sysProps}
