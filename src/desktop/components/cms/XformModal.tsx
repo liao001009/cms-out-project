@@ -336,7 +336,6 @@ const XformModal: React.FC<IProps> = (props) => {
     } else {
       return <span style={{ color: '#c3c3c3' }}>请选择</span>
     }
-    // }
   }
   const handleCancel = () => {
     setVisible(false)
@@ -415,7 +414,7 @@ const XformModal: React.FC<IProps> = (props) => {
               position: ['bottomCenter'],
               total: page.total,
               pageSize: page.pageSize,
-              showSizeChanger: page.total > 50,
+              showSizeChanger: true,
               onChange: handlePage
             }}
           />
