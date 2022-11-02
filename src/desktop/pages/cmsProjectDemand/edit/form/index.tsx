@@ -176,7 +176,7 @@ const XForm = (props) => {
               //@ts-ignore
               if (k.fdSupplierId === i.fdId) {
                 //@ts-ignore
-                i.fdAnnualRatio = parseFloat(k.fdShare.split('%')[0]).toFixed(2) + '%'
+                i.fdAnnualRatio = parseFloat(k.fdShare).toFixed(2) + '%'
               }
             }
           })

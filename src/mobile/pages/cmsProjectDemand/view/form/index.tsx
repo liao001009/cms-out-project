@@ -542,8 +542,12 @@ const XForm = (props) => {
                     mobileContentAlign={'left'}
                     title={fmtMsg(':cmsProjectDemand.form.!{l5hx79yiywiixyt0gwo}', '评审时间')}
                     layout={'horizontal'}
+                    required={materialVis}
                   >
-                    <Form.Item name={'fdApprovalTime'}>
+                    <Form.Item
+                      name={'fdApprovalTime'}
+                      rules={[{ message: '内容不能为空', required: materialVis }]}
+                    >
                       <XformMDatetime
                         {...sysProps}
                         placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hx79yk16674uklzee}', '请输入')}
