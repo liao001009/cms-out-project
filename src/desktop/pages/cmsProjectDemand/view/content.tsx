@@ -162,7 +162,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
 
   // 判断当前登录人是不是供应商管理员
   const getSupplierStatus = async () => {
-    const res = await apiSupplier.list({ conditions: { 'fdAdminElement.fdId': { '$eq': userId } } })
+    const res = await apiSupplier.list({ conditions: { 'fdAdminElement.fdId': { '$eq': userId } }, pageSize: 1000 })
     setFdSuppliesVisible(!!res.data.content.length)
   }
   // 点击订单响应的跳转路由地址
@@ -298,6 +298,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   // 订单响应按钮
   const handleOrder = useCallback(() => {
     if (!btnStatus) return null
+    // 按钮存在条件为fdProcessFlag不包含2或不包含3
     if (data.fdProcessFlag && (data.fdProcessFlag.includes('2') || data.fdProcessFlag.includes('3'))) return null
     return {
       name: '订单响应',
@@ -311,6 +312,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
 
   const handleEnterWritten = useCallback(() => {
     if (!btnStatus || !data.fdProcessFlag) return null
+    // 按钮存在条件为fdProcessFlag包含1不包含4
     if (data.fdProcessFlag && !(data.fdProcessFlag.includes('1') && !data.fdProcessFlag.includes('4'))) return null
     return {
       name: fmtMsg(':cmsProjectWritten.form.!{l5hz6ugsxfxlg2nyfs7}', '录入笔试成绩'),
@@ -324,7 +326,8 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
 
   const handleEnterInterview = useCallback(() => {
     if (!btnStatus || !data.fdProcessFlag) return null
-    if (data.fdProcessFlag && !(data.fdProcessFlag.includes('1') && !data.fdProcessFlag.includes('4'))) return null
+    // 按钮存在条件为fdProcessFlag包含1不包含4，或者包含5
+    if (data.fdProcessFlag && (!((data.fdProcessFlag.includes('1') && !data.fdProcessFlag.includes('4'))) || data.fdProcessFlag.includes('5'))) return null
     return {
       name: fmtMsg(':cmsProjectInterview.form.!{l5hz6ugsxfxlg2nyfs7}', '录入面试成绩'),
       action: () => { history.goto(`/cmsProjectInterview/add/${data.fdId}`) },
@@ -336,6 +339,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   }, [history, data?.fdProcessFlag])
   const handleEnterSelectInfo = useCallback(() => {
     if (!btnStatus || !data.fdProcessFlag) return null
+    // 存在条件fdProcessFlag包含4并且不包含5
     if (data.fdProcessFlag && !(data.fdProcessFlag.includes('4') && !data.fdProcessFlag.includes('5'))) return null
     return {
       name: fmtMsg(':menu.!{mctpwprd794p}', '发布中选信息'),
@@ -354,7 +358,8 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   }, [history, projectTemplateData, data?.fdProcessFlag, btnStatus])
   const handleEnterStaffReview = useCallback(() => {
     if (!btnStatus || !data.fdProcessFlag) return null
-    if (data.fdProcessFlag && !(data.fdProcessFlag.includes('3') && !data.fdProcessFlag.includes('5'))) return null
+    // 按钮存在条件为fdProcessFlag包含3
+    if (data.fdProcessFlag && !data.fdProcessFlag.includes('3')) return null
     return {
       name: fmtMsg(':cmsProjectInterview.form.!{l5j0eriwqaq645oi9c}', '外包人员评审'),
       action: () => {

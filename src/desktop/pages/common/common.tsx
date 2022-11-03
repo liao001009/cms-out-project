@@ -15,6 +15,57 @@ const renderFdrame = (value) => {
     </React.Fragment>
   )
 }
+// 框架信息
+export const frameInfoColumns = [
+  /*框架名称*/
+  {
+    title: '框架名称',
+    dataIndex: 'fdName',
+    render: (value) => value
+  },
+  /*框架管理员*/
+  {
+    title: '框架管理员',
+    dataIndex: 'fdFrameAdmin',
+    render: (value) => value && value.fdName
+  },
+  /*排序号*/
+  {
+    title: '排序号',
+    dataIndex: 'fdOrder',
+    render: (value) => value
+  },
+  /*是否项目类*/
+  {
+    title: '是否项目类',
+    dataIndex: 'fdIsProject',
+    render: (value) => {
+      const options = [
+        {
+          value: '1',
+          label: '框架'
+        },
+        {
+          value: '2',
+          label: '项目'
+        }
+      ]
+      const option = options.find((option) => option.value === value)
+
+      if (!option) {
+        return value
+      }
+
+      return option.label
+    }
+  },
+  /*说明*/
+  {
+    title: '说明',
+    dataIndex: 'fdDesc',
+    render: (value) => value
+  }
+]
 // 供应商
 export const supplierColumns = [
   /*供应商名称*/
@@ -793,7 +844,30 @@ export const projectSelectInfoCriertia = () => {
     </React.Fragment>
   )
 }
-
+export const frameInfoCriertia = () => (
+  <React.Fragment>
+    <Criteria.Input name="fdName" title="框架名称"></Criteria.Input>
+    <Criteria.Criterion
+      canMulti={false}
+      options={[
+        {
+          text: '不限',
+          value: ''
+        },
+        {
+          text: '框架',
+          value: '1'
+        },
+        {
+          text: '项目',
+          value: '2'
+        }
+      ]}
+      name="fdIsProject"
+      title="是否项目类"
+    ></Criteria.Criterion>
+  </React.Fragment>
+)
 export const criertiaObj = {
   supplierCriertia: supplierCriertia(),
   projectCriertia: projectCriertia(),
@@ -801,4 +875,5 @@ export const criertiaObj = {
   projectSelectInfoCriertia: projectSelectInfoCriertia(),
   demandSupplier: demandSupplier(),
   staffReviewUpgrade: staffReviewUpgrade(),
+  frameInfoCriertia: frameInfoCriertia()
 }

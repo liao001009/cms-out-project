@@ -56,7 +56,7 @@ const XForm = (props) => {
 
   const init = async () => {
     try {
-      const res = await apiFrameInfo.list({})
+      const res = await apiFrameInfo.list({ pageSize: 1000 })
       const frameArr = res.data.content.map(i => {
         const item = {
           value: i.fdId,
@@ -66,7 +66,7 @@ const XForm = (props) => {
         return item
       })
       setFrameData(frameArr)
-      const resPost = await apiPostInfo.listPostInfo({})
+      const resPost = await apiPostInfo.list({ pageSize: 1000 })
       const postArr = resPost.data.content.map(i => {
         const item = {
           value: i.fdId,
@@ -76,7 +76,7 @@ const XForm = (props) => {
         return item
       })
       setPostData(postArr)
-      const resLevel = await apiLevelInfo.list({})
+      const resLevel = await apiLevelInfo.list({ pageSize: 1000 })
       const levelArr = resLevel.data.content.map(i => {
         const item = {
           value: i.fdId,
@@ -552,7 +552,7 @@ const XForm = (props) => {
                     <XformDatetime
                       {...sysProps}
                       placeholder={'请输入'}
-                      dataPattern={'yyyy-MM-dd'}
+                      dataPattern={'yyyy-MM-dd HH/mm'}
                       showStatus="view"
                     ></XformDatetime>
                   </Form.Item>

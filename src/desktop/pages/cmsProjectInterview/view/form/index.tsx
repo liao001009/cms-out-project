@@ -43,7 +43,7 @@ const XForm = (props) => {
   const [supplierData, setSupplierData] = useState<any>([])
   const init = async () => {
     try {
-      const res = await apiSupplier.list({})
+      const res = await apiSupplier.list({ pageSize: 1000 })
       const arr = res.data.content.map(i => {
         const item = {
           value: i.fdId,

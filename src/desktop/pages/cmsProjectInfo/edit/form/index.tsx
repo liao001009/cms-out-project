@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import './index.scss'
 import { fmtMsg } from '@ekp-infra/respect'
 import { Form } from '@lui/core'
@@ -13,34 +13,15 @@ import XformAddress from '@/desktop/components/form/XformAddress'
 import XformSelect from '@/desktop/components/form/XformSelect'
 import XformDatetime from '@/desktop/components/form/XformDatetime'
 import api from '@/api/cmsFrameInfo'
-
+import CMSXformModal from '@/desktop/components/cms/XformModal'
+import { frameInfoColumns } from '@/desktop/pages/common/common'
 const MECHANISMNAMES = {}
 const baseCls = 'projectInfo-form'
 const XForm = (props) => {
   const detailForms = useRef({})
   const { formRef: formRef, value: value } = props
   const [form] = Form.useForm()
-  const [frameArray, setFrameArray] = useState<any>([])
 
-  useEffect(() => {
-    init()
-  }, [])
-
-  const init = async () => {
-    try {
-      const res = await api.listFrameInfo({})
-      const newValue = res.data.content.map(i => {
-        const item = {
-          label: i.fdName,
-          value: i.fdId
-        }
-        return item
-      })
-      setFrameArray(newValue)
-    } catch (error) {
-      console.warn('框架类型出错', error)
-    }
-  }
   // 对外暴露接口
   useApi({
     form,
@@ -261,18 +242,16 @@ const XForm = (props) => {
                     required: true,
                     message: '内容不能为空'
                   }]}>
-                    <XformSelect
-                      {...sysProps}
-                      placeholder={fmtMsg(':cmsProjectInfo.form.!{l47sfd3bplubk8x7ajm}', '请输入')}
-                      options={frameArray}
-                      optionSource={'custom'}
-                      showStatus="edit"
-                      onChange={(v) => {
-                        form.setFieldsValue({
-                          fdFrame: { fdId: v }
-                        })
-                      }}
-                    ></XformSelect>
+                    <CMSXformModal
+                      {...props}
+                      columnsProps={frameInfoColumns}
+                      chooseFdName='fdName'
+                      apiKey={api}
+                      apiName={'list'}
+                      criteriaKey='frameInfoCriertia'
+                      modalTitle='供应商选择'
+                      showStatus={'edit'}
+                    />
                   </Form.Item>
                 </XformFieldset>
               </GridItem>

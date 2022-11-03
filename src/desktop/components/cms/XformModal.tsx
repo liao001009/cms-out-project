@@ -323,7 +323,7 @@ const XformModal: React.FC<IProps> = (props) => {
     setSelectedConditions({})
     setNewSelecteCon({})
     try {
-      const res = await apiKey[apiName]({ conditions: { fdId: { '$in': selectedRowsData } }, pageSize: 200 })
+      const res = await apiKey[apiName]({ conditions: { fdId: { '$in': selectedRowsData } }, pageSize: 1000 })
       if (res.data.content.length) {
         setInitSelectArr(res.data.content)
         onChange && onChange(res.data.content)
