@@ -1,8 +1,7 @@
 import { IContentViewProps } from '@ekp-runtime/module'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Input, Message, Modal, Pagination } from '@lui/core'
+import { Input, Message, Modal, Table } from '@lui/core'
 import Tag from '@antd/tag'
-import Table, { useTable } from '@elem/mk-table'
 import Criteria from '@elem/criteria'
 import { $reduceCriteria } from '@/desktop/shared/criteria'
 import './index.scss'
@@ -98,7 +97,9 @@ const XformModal: React.FC<IProps> = (props) => {
   } = props
 
   const [listData, setListData] = useState<any>([])
-  const [page, setPage] = useState<any>({})
+  // 所以的列表数据，不带筛选项的
+  const [allListData, setAllListData] = useState<any>([])
+  const [page, setPage] = useState<any>({ total: 0, pageSize: 20 })
   const [visible, setVisible] = useState<boolean>(false)
   const [fdName, setFdName] = useState<string>(initData?.fdName || '')
   // 选中的筛选项
@@ -107,8 +108,6 @@ const XformModal: React.FC<IProps> = (props) => {
   const [selectedRowsData, setSelectedRows] = useState<any>([])
   // 表单传过来的初始值，为了点击取消时，还原数据
   const [initSelectedArr, setInitSelectArr] = useState<any>([])
-  // 用来判断是按了确认按钮还是取消按钮
-  // const [flag, setFlag] = useState<boolean>(false)
   // 已选中的筛选项
   const [newSelecteCon, setNewSelecteCon] = useState<any>({})
   const initValue = useMemo(() => {
@@ -126,7 +125,18 @@ const XformModal: React.FC<IProps> = (props) => {
     }
     setInitSelectArr(initValue)
   }, [initValue])
+  useEffect(() => {
+    getAllData()
+  }, [])
 
+  const getAllData = async () => {
+    try {
+      const res = await apiKey[apiName]({ pageSize: 1000 })
+      setAllListData(res.data.content)
+    } catch (error) {
+      Message.error(error.response.data.msg || '请求失败')
+    }
+  }
   /** 组装表格列头筛选项 */
   const getDefaultTableColumns = () => {
     if (Object.keys(defaultTableCriteria).length <= 0) return {}
@@ -215,55 +225,42 @@ const XformModal: React.FC<IProps> = (props) => {
           return
         }
       }
-      const res = await apiKey[apiName](data)
+      const res = await apiKey[apiName]({ ...data, pageSize: 1000 })
       setPage({
         totalSize: res.data.totalSize,
-        pageSize: res.data.pageSize
       })
-      setListData(res.data.content)
+      const newData = res.data.content?.map((i, index) => {
+        const item = {
+          ...i,
+          index: index + 1,
+          key: i.fdId
+        }
+        return item
+      })
+      setListData(newData)
     } catch (error) {
       Message.error(error.response.data.msg || '请求失败')
     }
   }
   // 表格列定义
-  const columns = useMemo(() => columnsProps, [])
-  const onSelectChange = (key: React.Key[]) => {
-    let newKey: any = []
-    if (selectedRowsData?.length) {
-      newKey = new Set([...selectedRowsData.concat(key)])
-      newKey = [...newKey]
+  const columns = useMemo(() => {
+    const flag = columnsProps.findIndex(i => i.dataIndex === 'index')
+    if (flag !== -1) {
+      return columnsProps
     } else {
-      newKey = key
+      columnsProps.unshift({ title: '序号', dataIndex: 'index' })
+      return columnsProps
     }
-    setSelectedRows(newKey)
+  }, [])
+  const onSelectChange = (key: React.Key[]) => {
+    setSelectedRows(key)
   }
-  // 表格hook
-  const { tableProps } = useTable({
-    // 数据源
-    data: listData || [],
-    // 列定义
-    columns,
-    // 显示序号列
-    serial: true,
-    // 支持行选择
-    rowSelection: multiple ? {
-      selectedRowKeys: selectedRowsData,
-      onChange: onSelectChange,
-      multiple
-    } : false,
-  })
 
-  // 分页操作 
-  const handlePage = useCallback(
-    (pageNo: number, pageSize: number) => {
-      let conditions
-      if (Object.keys(newSelecteCon).length) {
-        conditions = newSelecteCon
-      }
-      getListData({ ...query, offset: (pageNo - 1) * pageSize, pageSize, conditions })
-    },
-    [query]
-  )
+  const handlePage = (pageNo: number, pageSize: number) => {
+    setPage({ ...page, pageSize })
+  }
+
+
   // 行点击
   const onRowClick = useCallback(
     (record) => {
@@ -319,32 +316,19 @@ const XformModal: React.FC<IProps> = (props) => {
   // 确定按钮
   const handleOk = useCallback(async () => {
     setVisible(false)
-    // setFlag(true)
     setSelectedConditions({})
     setNewSelecteCon({})
-    try {
-      const res = await apiKey[apiName]({ conditions: { fdId: { '$in': selectedRowsData } }, pageSize: 1000 })
-      if (res.data.content.length) {
-        setInitSelectArr(res.data.content)
-        onChange && onChange(res.data.content)
-      }
-    } catch (error) {
-      Message.error(error.response.data.msg || '请求失败')
+    if (selectedRowsData && selectedRowsData.length) {
+      const newData = allListData.length && allListData.filter(item => selectedRowsData.includes(item.fdId))
+      setInitSelectArr(newData)
+      onChange && onChange(newData)
+    } else {
+      setInitSelectArr([])
+      onChange && onChange([])
     }
-
   }, [selectedRowsData])
 
   const renderTag = () => {
-    // if (flag) {
-    //   if (selectedRowsData && selectedRowsData.length) {
-    //     const newData = listData.length && listData.filter(item => selectedRowsData.includes(item.fdId))
-    //     return newData.map(i => {
-    //       return <Tag key={i.fdId}>{i.fdName}</Tag>
-    //     })
-    //   } else {
-    //     return <span style={{ color: '#c3c3c3' }}>请选择</span>
-    //   }
-    // } else {
     if (initSelectedArr && initSelectedArr.length) {
       return initSelectedArr.map(i => {
         return <Tag key={i.fdId}>{i.fdName}</Tag>
@@ -352,10 +336,8 @@ const XformModal: React.FC<IProps> = (props) => {
     } else {
       return <span style={{ color: '#c3c3c3' }}>请选择</span>
     }
-    // }
   }
   const handleCancel = () => {
-    // setFlag(false)
     setVisible(false)
     setSelectedConditions({})
     setNewSelecteCon({})
@@ -364,6 +346,14 @@ const XformModal: React.FC<IProps> = (props) => {
       onChange && onChange(initSelectedArr)
     }
   }
+
+
+  const rowSelection: any = multiple ? {
+    fixed: 'left',
+    selectedRowKeys: selectedRowsData,
+    onChange: onSelectChange,
+    preserveSelectedRowKeys: true
+  } : false
 
   const readOnlyStyle = {
     'background': '#f5f5f5',
@@ -415,16 +405,19 @@ const XformModal: React.FC<IProps> = (props) => {
             ) : null
           }
 
-          <Table {...tableProps} onRow={onRowClick} />
-        </div>
-        <div className="lui-template-list-page">
-          {page.totalSize ? (
-            <Pagination
-              total={page.totalSize}
-              pageSize={page.pageSize}
-              onChange={handlePage}
-            />
-          ) : null}
+          <Table
+            dataSource={listData}
+            columns={columns}
+            onRow={onRowClick}
+            rowSelection={rowSelection}
+            pagination={{
+              position: ['bottomCenter'],
+              total: page.total,
+              pageSize: page.pageSize,
+              showSizeChanger: true,
+              onChange: handlePage
+            }}
+          />
         </div>
       </Modal>
     </React.Fragment >

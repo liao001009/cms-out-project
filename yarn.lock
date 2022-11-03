@@ -2328,29 +2328,41 @@
     solarlunar "~2.0.7"
     video-react "^0.15.0"
 
-"@lui/core@^5.1.0-beta.285":
-  version "5.1.0-rc.4"
-  resolved "http://npm.landray.com.cn/@lui%2fcore/-/core-5.1.0-rc.4.tgz#8c3dcfbbf451e8dfe126fd8f882d9f218f54c0eb"
-  integrity sha512-Q2KO6i+7a1DEpLxJmmJ+bS71bmLVOuFhRrOA7TnATvNxwjdEUhSSmUuZmLlOVensAilXuL6+QzsZH6Z5Anynqg==
+"@lui/core@^5.1.0-beta.316":
+  version "5.1.0-beta.316"
+  resolved "http://npm.landray.com.cn/@lui%2fcore/-/core-5.1.0-beta.316.tgz#58704842137a3b1645c643f4efbe8cb20848a8c6"
+  integrity sha512-iigKxWsKe4WfrB4X1UwWc4A2cH4S02DL+RhNFToy5fw2eBiUtlSMbXM2UnNCvOfHF1KoTr+qClBUBVPGL7f4NQ==
   dependencies:
     "@fullcalendar/daygrid" "~5.10.1"
     "@fullcalendar/interaction" "~5.10.1"
     "@fullcalendar/react" "~5.10.1"
-    "@lui/icons" "5.1.0-rc.4"
-    "@lui/theme" "5.1.0-rc.4"
+    "@lui/i18n" "5.1.0-beta.316"
+    "@lui/icons" "5.1.0-beta.316"
+    "@lui/theme" "5.1.0-beta.316"
+    "@react-spring/web" "^9.3.1"
     antd "~4.19.1"
     dom-scroll-into-view "^2.0.1"
     mini-store "^3.0.6"
+    prismjs "^1.28.0"
     rc-animate "^3.1.1"
     rc-dropdown "^3.2.0"
+    rc-field-form "~1.24.0"
+    rc-menu "9.3.2"
     rc-resize-observer "^1.0.1"
+    rc-table "~7.22.2"
     rc-tree "^5.4.3"
     rc-util "^5.19.3"
-    react-color "^2.17.3"
+    react-color "~2.19.3"
+    react-dnd "~16.0.1"
+    react-dnd-html5-backend "~16.0.1"
+    react-froala-wysiwyg "4.0.11"
     react-highlight-words "^0.17.0"
     react-router-dom "^5.2.0"
+    react-sortable-hoc "~2.0.0"
     reactcss "^1.2.0"
     solarlunar "~2.0.7"
+    tributejs "5.1.3"
+    video-react "^0.15.0"
 
 "@lui/i18n@5.1.0-beta.185":
   version "5.1.0-beta.185"
@@ -2362,6 +2374,11 @@
   resolved "http://npm.landray.com.cn/@lui%2fi18n/-/i18n-5.1.0-beta.253.tgz#df27ffbeb01338f58d6f97fb5008719cfeb35e59"
   integrity sha512-H0t8ND14SP1Jw/3Sb8Q1RqlmYH2GwRoiDY/fwN5pJJmhezaL8Ctq+PpZP41Uujmh3jrEHeBQmNAUHZdWcmSLyg==
 
+"@lui/i18n@5.1.0-beta.316":
+  version "5.1.0-beta.316"
+  resolved "http://npm.landray.com.cn/@lui%2fi18n/-/i18n-5.1.0-beta.316.tgz#1f5d51bf2a14ab9918beadd15f3b1fe2aaaf0211"
+  integrity sha512-arMzCBh7GhNIboPicWVmuFr4XJF5pq598Jd2OUUOCgQTMYYn1OT6VQis65FA1PytarRcOC+YE0un+RV1eCG/0Q==
+
 "@lui/icons@5.1.0-beta.185":
   version "5.1.0-beta.185"
   resolved "http://npm.landray.com.cn/@lui%2ficons/-/icons-5.1.0-beta.185.tgz#17dd5ff88e43e121301569498f312e1dbf5f3422"
@@ -2372,7 +2389,12 @@
   resolved "http://npm.landray.com.cn/@lui%2ficons/-/icons-5.1.0-beta.253.tgz#2360f473b1dd039343f0dd17a17607d2e979cfde"
   integrity sha512-7oTM6w4pkviBsQJCbs1U9XdysiPw3R2pqOxqf7NbheTOGwJkaTgXGgz4XrQ1gRyNU9ltAtrPF9Sa+xUdJpxnAg==
 
-"@lui/icons@5.1.0-rc.4", "@lui/icons@~5.1.0-beta.190":
+"@lui/icons@5.1.0-beta.316":
+  version "5.1.0-beta.316"
+  resolved "http://npm.landray.com.cn/@lui%2ficons/-/icons-5.1.0-beta.316.tgz#96b5c0e0403bb9694a976bd8ea2f91de79a49a71"
+  integrity sha512-g/+HncHUsqCe9rZrSn6PTUp+Yh9dM1zIKlvdBuUDzvImQaAHwi+Xh+9HN6aw/6boae86EntFlmTDAlB44gi9bg==
+
+"@lui/icons@~5.1.0-beta.190":
   version "5.1.0-rc.4"
   resolved "http://npm.landray.com.cn/@lui%2ficons/-/icons-5.1.0-rc.4.tgz#87f4cd91a13191682cd2f2582a39e2ab5618b7eb"
   integrity sha512-HLhqN3A4kkPjkDzE/2Nu9K+wSYR9Up6w+Qm6L4C8uHdmft/oYmYSwsNjNrvYQ/4mmSHSGag6t0VNwsHBtrBHiA==
@@ -2406,10 +2428,10 @@
   resolved "http://npm.landray.com.cn/@lui%2ftheme/-/theme-5.1.0-beta.253.tgz#360401527020877cc73773a88949c1eaa802801b"
   integrity sha512-YAP2BbYSc+7ukdZnTQVX7eNN2B1gsvhVL3b9Mb2KemEDHkP9ykex6NY7r006c5ZIYimqwmolT9RzYLs1O7T4wg==
 
-"@lui/theme@5.1.0-rc.4":
-  version "5.1.0-rc.4"
-  resolved "http://npm.landray.com.cn/@lui%2ftheme/-/theme-5.1.0-rc.4.tgz#74287d5fe93cbaf598639e699137218f0018d84f"
-  integrity sha512-1xNBR/c92mU/zbz4rsCLMBpl15t+BikUBPah6cBbScTBq1QgXEGd4K9oVVArNLvANwgJH8sjRAIBJK3Chr02AQ==
+"@lui/theme@5.1.0-beta.316":
+  version "5.1.0-beta.316"
+  resolved "http://npm.landray.com.cn/@lui%2ftheme/-/theme-5.1.0-beta.316.tgz#c40bdd69d0b1825f268be4db2ef3bc5da792c379"
+  integrity sha512-L5OBUVpId2spurvRQaRDeP98s6PCZng+8VyEutVDAZoV+DA+LslM6QikUUe1F/JT74FsGTH3nguqES2DeP0SSA==
 
 "@marionebl/sander@^0.6.0":
   version "0.6.1"
@@ -11788,7 +11810,7 @@ react-app-polyfill@^1.0.2:
     regenerator-runtime "^0.13.3"
     whatwg-fetch "^3.0.0"
 
-react-color@^2.17.3, react-color@~2.19.3:
+react-color@~2.19.3:
   version "2.19.3"
   resolved "https://registry.npmmirror.com/react-color/-/react-color-2.19.3.tgz#ec6c6b4568312a3c6a18420ab0472e146aa5683d"
   integrity sha512-LEeGE/ZzNLIsFWa1TMe8y5VYqr7bibneWmvJwm1pCn/eNmrabWDh659JSPn9BuaMpEfU83WTOJfnCcjDZwNQTA==
@@ -13984,6 +14006,11 @@ tr46@~0.0.3:
   version "0.3.9"
   resolved "https://registry.npmmirror.com/traverse/-/traverse-0.3.9.tgz#717b8f220cc0bb7b44e40514c22b2e8bbc70d8b9"
   integrity sha512-iawgk0hLP3SxGKDfnDJf8wTz4p2qImnyihM5Hh/sGvQ3K37dPi/w8sRhdNIxYA1TwFwc5mDhIJq+O0RsvXBKdQ==
+
+tributejs@5.1.3:
+  version "5.1.3"
+  resolved "https://registry.npmmirror.com/tributejs/-/tributejs-5.1.3.tgz#980600fc72865be5868893078b4bfde721129eae"
+  integrity sha512-B5CXihaVzXw+1UHhNFyAwUTMDk1EfoLP5Tj1VhD9yybZ1I8DZJEv8tZ1l0RJo0t0tk9ZhR8eG5tEsaCvRigmdQ==
 
 trim-newlines@^1.0.0:
   version "1.0.0"
