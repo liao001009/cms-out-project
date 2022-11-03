@@ -48,7 +48,7 @@ const XForm = (props) => {
   }
   const getSupplier = async () => {
     try {
-      const res = await apiSupplierInfo.listSupplierInfo({})
+      const res = await apiSupplierInfo.list({ pageSize: 1000 })
       const newData = res.data.content.map(i => {
         const item = {
           value: i.fdId,
@@ -73,8 +73,8 @@ const XForm = (props) => {
     setSupplierInfoArr(newArr)
   }
   useEffect(() => {
-    getList(apiOutStaffInfo.listStaffInfo({}), setOutStaffInfoArr)
-    getList(apiLevel.list({}), setLevelList)
+    getList(apiOutStaffInfo.list({ pageSize: 1000 }), setOutStaffInfoArr)
+    getList(apiLevel.list({ pageSize: 1000 }), setLevelList)
     getSupplier()
     getSupplierArr()
   }, [])

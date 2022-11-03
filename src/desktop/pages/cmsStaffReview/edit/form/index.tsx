@@ -48,7 +48,7 @@ const XForm = (props) => {
   }
   const getSupplier = async () => {
     try {
-      const res = await apiSupplierInfo.listSupplierInfo({})
+      const res = await apiSupplierInfo.list({ pageSize: 1000 })
       getSupplierArr(res.data.content)
       const newData = res.data.content.map(i => {
         const item = {
@@ -78,7 +78,7 @@ const XForm = (props) => {
   }
   useEffect(() => {
     getList(apiOutStaffInfo.listStaffInfo({}), setOutStaffInfoArr)
-    getList(apiLevel.list({}), setLevelList)
+    getList(apiLevel.list({ pageSize: 1000 }), setLevelList)
     getSupplier()
   }, [])
   // 对外暴露接口

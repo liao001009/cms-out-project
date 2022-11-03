@@ -105,19 +105,24 @@ const EditTable = (props: IProps) => {
                     <Upload
                       value={[text]}
                       multiple={false}
-                      itemType={'card'}
+                      itemType={'table'}
                       mode='file'
                       viewStatus={true}
                       showStatus={'view'}
                       operationDisplayConfig={{
+                        buttonType: 'text',
                         showDownload: true,
                         showRemove: false,
                         showChange: false,
                         showEdit: false
                       }}
-                      ItemDisplayConfig={{
+                      itemDisplayConfig={{
                         showOrder: false,
-                        showHeader: true
+                        showSize: false,
+                        showCreator: false,
+                        showCreated: false,
+                        showHeader: false,
+                        showBatch: false
                       }}
                     />
                   ) : null
@@ -139,7 +144,7 @@ const EditTable = (props: IProps) => {
                 <Select.Option value={'0'}>否</Select.Option>
                 <Select.Option value={'1'}>是</Select.Option>
               </Select>
-            ) : (<span>{text === '0' ? '否' : '是'}</span>)
+            ) : (<span>{!text || text === '0' ? '否' : '是'}</span>)
           }
         },
         {
@@ -147,16 +152,18 @@ const EditTable = (props: IProps) => {
           dataIndex: 'fdRemarks',
           key: 'fdRemarks',
           width: 200,
-          editable: !editFlag,
+          editable: false,
           saveEvent: 'blur',
           render: (text, record) => {
-            return <Input.TextArea defaultValue={text} placeholder='请输入' onChange={(text) => handleChangeValue(text, record, 'fdRemarks')} />
+            return editFlag ? (
+              <Input.TextArea defaultValue={text} placeholder='请输入' onChange={(text) => handleChangeValue(text, record, 'fdRemarks')} />
+            ) : (<span>{text}</span>)
           }
         }
       ]
     )
   }, [editFlag, orderDetailList])
-
+  console.log('editFlag5559', editFlag)
   const conactStaffInfo = async (list) => {
     const result = list.map(i => {
       return apiStaffInfo.get({ fdId: i.fdOutName.fdId, mechanisms: { load: '*' } })
