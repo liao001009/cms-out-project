@@ -188,7 +188,7 @@ const XForm = (props) => {
               //@ts-ignore
               if (k.fdSupplierId === i.fdId) {
                 //@ts-ignore
-                i.fdAnnualRatio = parseFloat(k.fdShare).toFixed(2) + '%'
+                i.fdAnnualRatio = k.fdShare
               }
             }
           })
@@ -1409,23 +1409,23 @@ const XForm = (props) => {
                         {
                           type: XformInput,
                           controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额占比'),
+                            title: '本年度份额占比%',
                             maxLength: 100,
                             name: 'fdAnnualRatio',
                             placeholder: fmtMsg(':cmsProjectDemand.form.!{l5jg2w81dql7tlq4wp}', '请输入'),
                             desktop: {
                               type: XformInput
                             },
-                            showStatus: 'readOnly'
+                            showStatus: 'edit'
                           },
                           labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额占比'),
+                            title: '本年度份额占比%',
                             desktop: {
                               layout: 'vertical'
                             },
                             labelTextAlign: 'left'
                           },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额占比')
+                          label: '本年度份额占比%'
                         }
                       ]}
                       canAddRow={false}
