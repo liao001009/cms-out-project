@@ -97,9 +97,7 @@ const XformModal: React.FC<IProps> = (props) => {
   } = props
 
   const [listData, setListData] = useState<any>([])
-  // 所以的列表数据，不带筛选项的
-  const [allListData, setAllListData] = useState<any>([])
-  const [page, setPage] = useState<any>({ total: 0, pageSize: 20 })
+  const [page, setPage] = useState<any>({ total: 0, pageSize: 10 })
   const [visible, setVisible] = useState<boolean>(false)
   const [fdName, setFdName] = useState<string>(initData?.fdName || '')
   // 选中的筛选项
@@ -125,18 +123,7 @@ const XformModal: React.FC<IProps> = (props) => {
     }
     setInitSelectArr(initValue)
   }, [initValue])
-  useEffect(() => {
-    getAllData()
-  }, [])
 
-  const getAllData = async () => {
-    try {
-      const res = await apiKey[apiName]({ pageSize: 1000 })
-      setAllListData(res.data.content)
-    } catch (error) {
-      Message.error(error.response.data.msg || '请求失败')
-    }
-  }
   /** 组装表格列头筛选项 */
   const getDefaultTableColumns = () => {
     if (Object.keys(defaultTableCriteria).length <= 0) return {}
@@ -225,9 +212,10 @@ const XformModal: React.FC<IProps> = (props) => {
           return
         }
       }
-      const res = await apiKey[apiName]({ ...data, pageSize: 1000 })
+      const res = await apiKey[apiName](data)
       setPage({
-        totalSize: res.data.totalSize,
+        ...page,
+        total: res.data.totalSize,
       })
       const newData = res.data.content?.map((i, index) => {
         const item = {
@@ -255,9 +243,12 @@ const XformModal: React.FC<IProps> = (props) => {
   const onSelectChange = (key: React.Key[]) => {
     setSelectedRows(key)
   }
-
   const handlePage = (pageNo: number, pageSize: number) => {
-    setPage({ ...page, pageSize })
+    let conditions = getDefaultTableColumns().conditions
+    if (Object.keys(newSelecteCon).length) {
+      conditions = { ...conditions, ...newSelecteCon }
+    }
+    getListData({ ...query, offset: (pageNo - 1) * pageSize, pageSize, conditions })
   }
 
 
@@ -319,9 +310,13 @@ const XformModal: React.FC<IProps> = (props) => {
     setSelectedConditions({})
     setNewSelecteCon({})
     if (selectedRowsData && selectedRowsData.length) {
-      const newData = allListData.length && allListData.filter(item => selectedRowsData.includes(item.fdId))
-      setInitSelectArr(newData)
-      onChange && onChange(newData)
+      try {
+        const res = await apiKey[apiName]({ conditions: { fdId: { '$in': selectedRowsData } } })
+        setInitSelectArr(res.data.content)
+        onChange && onChange(res.data.content)
+      } catch (error) {
+        Message.error(error.response?.data?.msg || '请求失败')
+      }
     } else {
       setInitSelectArr([])
       onChange && onChange([])
@@ -414,7 +409,7 @@ const XformModal: React.FC<IProps> = (props) => {
               position: ['bottomCenter'],
               total: page.total,
               pageSize: page.pageSize,
-              showSizeChanger: true,
+              showSizeChanger: false,
               onChange: handlePage
             }}
           />

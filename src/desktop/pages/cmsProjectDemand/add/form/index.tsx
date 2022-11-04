@@ -39,11 +39,11 @@ const XForm = (props) => {
   const [form] = Form.useForm()
   // 框架数据
   const [frameData, setFrameData] = useState<any>([])
-  // 框架数据
+  // 岗位数据
   const [postData, setPostData] = useState<any>([])
   // 选中岗位数据
   const [selectedPostData, setSelectedPostData] = useState<any>([])
-  // 框架数据
+  // 级别数据
   const [levelData, setLevelData] = useState<any>([])
   // 选中级别数据
   const [selectedLevelData, setSelectedLevelData] = useState<any>([])
@@ -107,6 +107,7 @@ const XForm = (props) => {
             '$eq': fdId
           }
         },
+        'pageSize': 1,
         'columns': ['fdId', 'fdPublishTime', 'fdSubject', 'fdSupplies'],
         'sorts': {
           'fdPublishTime': 'desc'
@@ -135,7 +136,7 @@ const XForm = (props) => {
 
   const handleSetFdSupplier = (val) => {
     setAssignSupplier(val.fdName)
-    selectedFdSupplier([])
+    setSelectedFdSupplier([])
     form.setFieldsValue({
       fdSupplies: undefined
     })
@@ -187,7 +188,7 @@ const XForm = (props) => {
               //@ts-ignore
               if (k.fdSupplierId === i.fdId) {
                 //@ts-ignore
-                i.fdAnnualRatio = parseFloat(k.fdShare).toFixed(2) + '%'
+                i.fdAnnualRatio = k.fdShare
               }
             }
           })
@@ -658,7 +659,7 @@ const XForm = (props) => {
                                 defaultTableCriteria={{
                                   'fdFrame.fdId': {
                                     searchKey: '$eq',
-                                    searchValue: selectedFrame.fdId.fdId || undefined
+                                    searchValue: selectedFrame.fdId || undefined
                                   }
                                 }}
                                 apiKey={apiSupplier}
@@ -1408,23 +1409,23 @@ const XForm = (props) => {
                         {
                           type: XformInput,
                           controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额占比'),
+                            title: '本年度份额占比%',
                             maxLength: 100,
                             name: 'fdAnnualRatio',
                             placeholder: fmtMsg(':cmsProjectDemand.form.!{l5jg2w81dql7tlq4wp}', '请输入'),
                             desktop: {
                               type: XformInput
                             },
-                            showStatus: 'readOnly'
+                            showStatus: 'edit'
                           },
                           labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额占比'),
+                            title: '本年度份额占比%',
                             desktop: {
                               layout: 'vertical'
                             },
                             labelTextAlign: 'left'
                           },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额占比')
+                          label: '本年度份额占比%'
                         }
                       ]}
                       canAddRow={false}
