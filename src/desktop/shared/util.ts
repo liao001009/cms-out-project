@@ -266,3 +266,29 @@ export const exportTable = (data, columns, fileName, hiddenKey) => {
   const name = `${fileName}${mk.getFormatTime(new Date(), 'YYYY-MM-DD')}.xlsx`
   saveWorkbook(workbook, name)
 }
+
+const removalData = (value) => {
+  const arr: any = []
+  value.forEach(i => {
+    if (arr.includes(i)) {
+      return
+    } else {
+      arr.push(i)
+    }
+  })
+  return arr
+}
+// 收集view页面的下拉框的options
+export const getData = (key, func, data) => {
+  const newData = data.map(i => i[key]).filter(i => i)
+  let newKeyArr = newData?.length && newData.map(i => {
+    const item = {
+      value: i.fdId,
+      label: i.fdName,
+      ...i
+    }
+    return item
+  })
+  newKeyArr = newKeyArr?.length && removalData(newKeyArr)
+  func(newKeyArr)
+}

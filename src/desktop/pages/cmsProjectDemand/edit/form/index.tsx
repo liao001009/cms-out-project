@@ -60,6 +60,8 @@ const XForm = (props) => {
   const [assignSupplier, setAssignSupplier] = useState<string | undefined>(value?.fdSupplier?.fdName || '')
   // 选定的框架类型
   const [selectedFrame, setSelectedFrame] = useState<any>(value?.fdFrame || {})
+  // 选好的发布供应商
+  const [selectedFdSupplier, setSelectedFdSupplier] = useState<any>(value?.fdSuppliers || [])
   useEffect(() => {
     init()
   }, [])
@@ -108,13 +110,13 @@ const XForm = (props) => {
     }
   }
   const getProjectDemand = async (fdId) => {
-
     const res = await apiProjectDemand.listDemand({
       'conditions': {
         'cmsProjectDemandSupp.fdSupplier.fdId': {
           '$eq': fdId
         }
       },
+      'pageSize': 1,
       'columns': ['fdId', 'fdPublishTime', 'fdSubject', 'fdSupplies'],
       'sorts': {
         'fdPublishTime': 'desc'
@@ -130,6 +132,16 @@ const XForm = (props) => {
     } catch (error) {
       Message.error(error.response.data.msg || '请求失败')
     }
+  }
+
+  const handleSetFdSupplier = (val) => {
+    setAssignSupplier(val.fdName)
+    setSelectedFdSupplier([])
+    form.setFieldsValue({
+      fdSupplies: undefined
+    })
+    const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectDemandSupp').values
+    valuesData.length && detailForms.current.cmsProjectDemandSupp.current.deleteAll()
   }
 
   // 发布供应商回调
@@ -176,7 +188,7 @@ const XForm = (props) => {
               //@ts-ignore
               if (k.fdSupplierId === i.fdId) {
                 //@ts-ignore
-                i.fdAnnualRatio = parseFloat(k.fdShare).toFixed(2) + '%'
+                i.fdAnnualRatio = k.fdShare
               }
             }
           })
@@ -191,6 +203,25 @@ const XForm = (props) => {
         fdSupplier: { ...item }
       })))
     }, 0)
+  }
+
+  const handleProject = (v) => {
+    setIsFrameChild(v.fdFrame.fdName === '设计类')
+    setSelectedFrame(v.fdFrame)
+    setSelectedFdSupplier([])
+    form.setFieldsValue({
+      fdInnerLeader: v.fdInnerPrincipal,
+      fdProjectNum: v.fdCode,
+      fdBelongDept: v.fdBelongDept,
+      fdProjectLeader: v.fdProjectPrincipal,
+      fdBelongTeam: v.fdBelongTeam,
+      fdFrame: v.fdFrame,
+      fdSupplier: undefined,
+      fdProjectNature: v.fdProjectNature,
+      fdSupplies: undefined
+    })
+    detailForms.current.cmsProjectDemandSupp.current.deleteAll()
+    setAssignSupplier(undefined)
   }
   // 对外暴露接口
   useApi({
@@ -266,21 +297,7 @@ const XForm = (props) => {
                       modalTitle='项目名称选择'
                       criteriaKey='projectCriertia'
                       criteriaProps={['fdFrame.fdName']}
-                      onChangeProps={(v) => {
-                        setIsFrameChild(v.fdFrame.fdName === '设计类')
-                        setSelectedFrame(v.fdFrame)
-                        form.setFieldsValue({
-                          fdInnerLeader: v.fdInnerPrincipal,
-                          fdProjectNum: v.fdCode,
-                          fdBelongDept: v.fdBelongDept,
-                          fdProjectLeader: v.fdProjectPrincipal,
-                          fdBelongTeam: v.fdBelongTeam,
-                          fdFrame: v.fdFrame,
-                          fdSupplier: undefined,
-                          fdProjectNature: v.fdProjectNature
-                        })
-                        setAssignSupplier(undefined)
-                      }}
+                      onChangeProps={(v) => handleProject(v)}
                     />
                   </Form.Item>
                 </XformFieldset>
@@ -650,11 +667,11 @@ const XForm = (props) => {
                                 defaultTableCriteria={{
                                   'fdFrame.fdId': {
                                     searchKey: '$eq',
-                                    searchValue: selectedFrame.fdId.fdId || undefined
+                                    searchValue: selectedFrame.fdId || undefined
                                   }
                                 }}
                                 criteriaProps={['fdOrgCode', 'fdFrame.fdName', 'fdName']}
-                                onChange={(v) => setAssignSupplier(v.fdName)}
+                                onChange={(v) => handleSetFdSupplier(v)}
                               />
                             </Form.Item>
                           </XformFieldset>
@@ -1260,6 +1277,7 @@ const XForm = (props) => {
                       modalTitle='供应商选择'
                       showFooter={true}
                       multiple={true}
+                      initData={selectedFdSupplier}
                       defaultSearch={true}
                       defaultTableCriteria={{
                         'fdName': {
@@ -1411,23 +1429,23 @@ const XForm = (props) => {
                         {
                           type: XformInput,
                           controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额占比'),
+                            title: '本年度份额占比%',
                             maxLength: 100,
                             name: 'fdAnnualRatio',
                             placeholder: fmtMsg(':cmsProjectDemand.form.!{l5jg2w81dql7tlq4wp}', '请输入'),
                             desktop: {
                               type: XformInput
                             },
-                            showStatus: 'readOnly'
+                            showStatus: 'edit'
                           },
                           labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额占比'),
+                            title: '本年度份额占比%',
                             desktop: {
                               layout: 'vertical'
                             },
                             labelTextAlign: 'left'
                           },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5jg2w7y6utzbx015rj}', '本年度份额占比')
+                          label: '本年度份额占比%'
                         }
                       ]}
                       canAddRow={false}

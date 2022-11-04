@@ -16,7 +16,7 @@ import XformDetailTable from '@/desktop/components/form/XformDetailTable'
 import XformTextarea from '@/desktop/components/form/XformTextarea'
 import XformSelect from '@/desktop/components/form/XformSelect'
 import XformModal from '@/desktop/components/cms/XformModal'
-
+import { getData } from '@/desktop/shared/util'
 const MECHANISMNAMES = {}
 const baseCls = 'project-selectInfo-form'
 
@@ -31,20 +31,10 @@ const XForm = (props) => {
   const [fdSupplierData, setfdSupplierData] = useState<any>([])
 
   useEffect(() => {
-    getInfo('fdConfirmLevel', setFdLevelData)
-    getInfo('fdSupplier', setfdSupplierData)
+    getData('fdConfirmLevel', setFdLevelData, value.cmsProjectStaffList)
+    getData('fdSupplier', setfdSupplierData, value.cmsProjectStaffList)
   }, [])
 
-  const getInfo = async (key, func) => {
-    const newArr = value.cmsProjectStaffList.map(i => {
-      const item = {
-        value: i[key].fdId,
-        label: i[key].fdName,
-      }
-      return item
-    })
-    func(newArr)
-  }
   // 对外暴露接口
   useApi({
     form,

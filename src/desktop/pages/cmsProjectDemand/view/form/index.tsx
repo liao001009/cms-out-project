@@ -581,7 +581,7 @@ const XForm = (props) => {
                           <XformDatetime
                             {...sysProps}
                             placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hx79yk16674uklzee}', '请输入')}
-                            dataPattern={'yyyy/MM/dd'}
+                            dataPattern={'yyyy-MM-dd'}
                             passValue={true}
                             showStatus={materialVis ? 'edit' : 'view'}
                           ></XformDatetime>

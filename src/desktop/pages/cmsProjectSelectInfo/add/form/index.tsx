@@ -19,6 +19,7 @@ import apiProject from '@/api/cmsProjectInfo'
 import apiSupplier from '@/api/cmsSupplierInfo'
 import apiStaffInfo from '@/api/cmsOutStaffInfo'
 import XformSelect from '@/desktop/components/form/XformSelect'
+import { getData } from '@/desktop/shared/util'
 
 const MECHANISMNAMES = {}
 const baseCls = 'project-selectInfo-form'
@@ -31,22 +32,12 @@ const XForm = (props) => {
   const [form] = Form.useForm()
   const [fdLevelData, setFdLevelData] = useState<any>([])
   const [fdSupplierData, setfdSupplierData] = useState<any>([])
+
   useEffect(() => {
-    getInfo('fdConfirmLevel', setFdLevelData)
-    getInfo('fdSupplier', setfdSupplierData)
+    getData('fdConfirmLevel', setFdLevelData, value.cmsProjectStaffList)
+    getData('fdSupplier', setfdSupplierData, value.cmsProjectStaffList)
   }, [])
 
-  const getInfo = async (key, func) => {
-    let newArr = value.cmsProjectStaffList.map(i => {
-      const item = {
-        value: i?.[key]?.fdId,
-        label: i?.[key]?.fdName,
-      }
-      return item
-    })
-    newArr = newArr.filter(i => i)
-    func(newArr)
-  }
   // 对外暴露接口
   useApi({
     form,
