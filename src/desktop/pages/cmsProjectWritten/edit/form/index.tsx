@@ -1,6 +1,5 @@
 import apiOrderResponse from '@/api/cmsOrderResponse'
 import apiStaffInfo from '@/api/cmsOutStaffInfo'
-import apiSupplier from '@/api/cmsSupplierInfo'
 import XformExecl from '@/desktop/components/cms/XformExecl'
 import CMSXformModal from '@/desktop/components/cms/XformModal'
 import GridItem from '@/desktop/components/form/GridItem'
@@ -42,7 +41,7 @@ const XForm = (props) => {
   const [visible, setVisible] = useState<boolean>(false)
   const [errMsgArr, setErrMsgArr] = useState<any>([])
 
-  
+
   const getTag = () => {
     setTimeout(() => {
       const parentNode = document.querySelector('div[class="ele-xform-detail-table-toolbar-right-buttons"]')
@@ -109,7 +108,7 @@ const XForm = (props) => {
         setDefaultTableCriteria(newParam)
       }
 
-      const rtnSupplier = resStaff?.data?.content?.map(item =>{
+      const rtnSupplier = resStaff?.data?.content?.map(item => {
         const sup = {
           label: item?.fdSupplier.fdName,
           value: item?.fdSupplier.fdId
@@ -350,6 +349,9 @@ const XForm = (props) => {
           numberFormat: {
             formatType: 'base'
           },
+          range: {
+            start: 0
+          },
           desktop: {
             type: XformNumber
           },
@@ -556,20 +558,20 @@ const XForm = (props) => {
           }
         })
         const personInfo = checkPersonInfo(item['fdInterviewName'])
-        if(personInfo){
+        if (personInfo) {
           item['fdInterviewName'] = personInfo
           const fdBeginTime = moment(formatDate(item['fdBeginTime'], '-'))
           const fdEndTime = moment(formatDate(item['fdEndTime'], '-'))
           const fdWrittenPass = Number(item['fdWrittenScores']) <= Number(fdQualifiedMark) ? '0' : '1'
           item = { ...item, ...personInfo, fdWrittenPass, fdBeginTime, fdEndTime }
           newValue.push(item)
-        }else{
+        } else {
           errMsg.push(item['fdInterviewName'])
         }
       })
       setErrMsgArr(errMsg)
       detailForms.current.cmsProjectWrittenDe.current.updateValues(newValue)
-      if(errMsg.length<=0){
+      if (errMsg.length <= 0) {
         handleCancel()
       }
     }
