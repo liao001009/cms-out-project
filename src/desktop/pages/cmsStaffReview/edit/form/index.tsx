@@ -16,9 +16,8 @@ import XformNumber from '@/desktop/components/form/XformNumber'
 import XformSelect from '@/desktop/components/form/XformSelect'
 import CMSXformModal, { EShowStatus } from '@/desktop/components/cms/XformModal'
 import apiSupplierInfo from '@/api/cmsSupplierInfo'
-import apiOutStaffInfo from '@/api/cmsOutStaffInfo'
-import apiLevel from '@/api/cmsLevelInfo'
 import { supplierColumns } from '@/desktop/pages/common/common'
+import { getData } from '@/desktop/shared/util'
 const MECHANISMNAMES = {}
 const baseCls = 'project-review-form'
 const XForm = (props) => {
@@ -31,37 +30,7 @@ const XForm = (props) => {
   const [supplierInfoList, setsupplierInfoList] = useState<any>([])
   const [outStaffInfoArr, setOutStaffInfoArr] = useState<any>([])
   const [levelList, setLevelList] = useState<any>([])
-  const getList = async (api, func) => {
-    try {
-      const res = await api
-      const newData = res.data.content.map(i => {
-        const item = {
-          value: i.fdId,
-          label: i.fdName
-        }
-        return item
-      })
-      func(newData)
-    } catch (error) {
-      console.log('error', error)
-    }
-  }
-  const getSupplier = async () => {
-    try {
-      const res = await apiSupplierInfo.list({ pageSize: 1000 })
-      getSupplierArr(res.data.content)
-      const newData = res.data.content.map(i => {
-        const item = {
-          value: i.fdId,
-          label: i.fdName
-        }
-        return item
-      })
-      setsupplierInfoList(newData)
-    } catch (error) {
-      console.log('error', error)
-    }
-  }
+
   const getSupplierArr = (data) => {
     const newData = value.cmsStaffReviewDetail.filter(i => {
       if (i.fdInterviewPass === '1') {
@@ -72,15 +41,18 @@ const XForm = (props) => {
     })
     const newArr = newData.map(i => {
       const item = data.find(value => value.fdId === i.fdSupplier.fdId)
-      return item.fdId
+      return item?.fdId
     })
     setSupplierInfoArr(newArr)
   }
   useEffect(() => {
-    getList(apiOutStaffInfo.listStaffInfo({}), setOutStaffInfoArr)
-    getList(apiLevel.list({ pageSize: 1000 }), setLevelList)
-    getSupplier()
+    getData('fdSupplier', setsupplierInfoList, value.cmsStaffReviewDetail)
+    getData('fdOutName', setOutStaffInfoArr, value.cmsStaffReviewDetail)
+    getData('fdConfirmLevel', setLevelList, value.cmsStaffReviewDetail)
   }, [])
+  useEffect(() => {
+    getSupplierArr(supplierInfoList)
+  }, [supplierInfoList])
   // 对外暴露接口
   useApi({
     form,
@@ -531,6 +503,7 @@ const XForm = (props) => {
                       chooseFdName='fdName'
                       multiple={true}
                       showFooter={true}
+                      isSupplier={true}
                       apiKey={apiSupplierInfo}
                       apiName={'listSupplierInfo'}
                       showStatus={EShowStatus.edit}

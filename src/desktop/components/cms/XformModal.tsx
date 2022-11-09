@@ -336,7 +336,7 @@ const XformModal: React.FC<IProps> = (props) => {
     setVisible(false)
     setSelectedParams({})
     if (multiple) {
-      setSelectedRows(initSelectedArr.length ? initSelectedArr.map(i => i.fdId) : [])
+      setSelectedRows(initSelectedArr?.length ? initSelectedArr.map(i => i.fdId) : [])
       onChange && onChange(initSelectedArr)
     }
   }

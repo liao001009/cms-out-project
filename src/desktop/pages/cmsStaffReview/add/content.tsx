@@ -3,24 +3,17 @@ import { useMkSendData } from '@/utils/mkHooks'
 import { Module } from '@ekp-infra/common'
 import { fmtMsg } from '@ekp-infra/respect'
 import { IContentViewProps } from '@ekp-runtime/render-module'
-import { Button, Message } from '@lui/core'
+import { Button, Message, Modal } from '@lui/core'
 import Icon from '@lui/icons'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import XForm from './form'
 import { cmsHandleBack } from '@/utils/routerUtil'
 
 // import './index.scss'
-
+const { confirm } = Modal
 Message.config({ maxCount: 1 })
 const LbpmFormWithLayout = Module.getComponent('sys-lbpm', 'LbpmFormWithLayout', { loading: <React.Fragment></React.Fragment> })
-// // 流程页签
-// const LBPMTabs = Module.getComponent('sys-lbpm', 'LBPMTabs', { loading: <Loading /> })
-// // 流程机制
-// const LBPMFormFragment = Module.getComponent('sys-lbpm', 'LBPMFormFragment', { loading: <Loading /> })
-// // 权限机制
-// const RightFragment = Module.getComponent('sys-right', 'RightFragment', { loading: <Loading /> })
-// 打印机制
-// const PrintRuntime = Module.getComponent('sys-mech-print', 'PrintRuntimeFRagment', { loading: <React.Fragment></React.Fragment> })
+
 const baseCls = 'project-review-content'
 const Content: React.FC<IContentViewProps> = props => {
   const { data, match, history } = props
@@ -120,18 +113,40 @@ const Content: React.FC<IContentViewProps> = props => {
       cmsStaffReviewDetail: values.cmsStaffReviewDetail.values || undefined,
       fdSupplies: values.fdSupplies || []
     }
-    // 提交
-    api.add(values as any).then(res => {
-      if (res.success) {
-        Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
-          cmsHandleBack(history, '/cmsStaffReview/listStaffReview')
-        })
-      } else {
+    if (!values.fdSupplies.length) {
+      confirm({
+        title: '未选择中选供应商，是否确认提交',
+        onOk () {
+          api.add(values as any).then(res => {
+            if (res.success) {
+              Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
+                cmsHandleBack(history, '/cmsStaffReview/listStaffReview')
+              })
+            } else {
+              Message.error(isDraft ? '暂存失败' : '提交失败', 1)
+            }
+          }).catch(() => {
+            Message.error(isDraft ? '暂存失败' : '提交失败', 1)
+          })
+        },
+        onCancel () {
+          console.log('Cancel')
+        }
+      })
+    } else {
+      // 提交
+      api.add(values as any).then(res => {
+        if (res.success) {
+          Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
+            cmsHandleBack(history, '/cmsStaffReview/listStaffReview')
+          })
+        } else {
+          Message.error(isDraft ? '暂存失败' : '提交失败', 1)
+        }
+      }).catch(() => {
         Message.error(isDraft ? '暂存失败' : '提交失败', 1)
-      }
-    }).catch(() => {
-      Message.error(isDraft ? '暂存失败' : '提交失败', 1)
-    })
+      })
+    }
   }
 
 

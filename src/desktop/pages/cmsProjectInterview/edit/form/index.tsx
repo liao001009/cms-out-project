@@ -38,12 +38,16 @@ const XForm = (props) => {
   const [errMsgArr, setErrMsgArr] = useState<any>([])
 
   const getTag = () => {
-    setTimeout(() => {
-      const parentNode = document.querySelector('div[class="ele-xform-detail-table-toolbar-right-buttons"]')
+    let parentNode, addRow
+    const timer = setInterval(() => {
+      parentNode = document.querySelector('div[class="ele-xform-detail-table-toolbar-right-buttons"]')
       const uploadDown = document.getElementById('uploadDown') || document.createElement('div')
-      const addRow = document.querySelector('button[title="添加行"]')
-      parentNode?.insertBefore(uploadDown, addRow)
-      uploadDown.style.display = 'block'
+      addRow = document.querySelector('button[title="添加行"]')
+      if (parentNode && parentNode.nodeType && addRow && addRow.nodeType) {
+        parentNode?.insertBefore(uploadDown, addRow)
+        uploadDown.style.display = 'block'
+        clearInterval(timer)
+      }
     }, 1000)
   }
 
@@ -185,7 +189,7 @@ const XForm = (props) => {
     if (data.length > 0) {
       const errMsg: any = []
       const newValue: any = []
-      data[0]?.map(i => {
+      data[0]?.forEach((i, index) => {
         let item: any = {}
         Object.keys(i).forEach(key => {
           const field = getField(key)
@@ -194,19 +198,27 @@ const XForm = (props) => {
             [field]: i[key],
           }
         })
+        if (!item['fdInterviewName']) {
+          errMsg.push(`第${index + 1}条的‘姓名’没有填写`)
+        }
+        console.log('staffInfo5559', staffInfo)
+        console.log('item5559', item['fdInterviewName'])
         const personInfo = checkPersonInfo(item['fdInterviewName'])
+        console.log('personInfo5559', personInfo)
         if (personInfo) {
           item['fdInterviewName'] = personInfo
           const fdInterviewPass = Number(item['fdInterviewScores']) <= Number(fdQualifiedMark) ? '0' : '1'
           item = { ...item, ...personInfo, fdInterviewPass }
           newValue.push(item)
         } else {
-          errMsg.push(item['fdInterviewName'])
+          errMsg.push(`第${index + 1}条的人员的姓名不在外包人员列表中`)
         }
       })
-      setErrMsgArr(errMsg)
-      detailForms.current.cmsProjectInterDetail.current.updateValues(newValue)
-      if (errMsg.length <= 0) {
+      if (errMsg.length) {
+        setErrMsgArr(errMsg)
+      } else {
+        detailForms.current.cmsProjectInterDetail.current.updateValues(newValue)
+        setErrMsgArr([])
         handleCancel()
       }
     }

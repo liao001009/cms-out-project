@@ -43,12 +43,16 @@ const XForm = (props) => {
 
 
   const getTag = () => {
-    setTimeout(() => {
-      const parentNode = document.querySelector('div[class="ele-xform-detail-table-toolbar-right-buttons"]')
+    let parentNode, addRow
+    const timer = setInterval(() => {
+      parentNode = document.querySelector('div[class="ele-xform-detail-table-toolbar-right-buttons"]')
       const uploadDown = document.getElementById('uploadDown') || document.createElement('div')
-      const addRow = document.querySelector('button[title="添加行"]')
-      parentNode?.insertBefore(uploadDown, addRow)
-      uploadDown.style.display = 'block'
+      addRow = document.querySelector('button[title="添加行"]')
+      if (parentNode && parentNode.nodeType && addRow && addRow.nodeType) {
+        parentNode?.insertBefore(uploadDown, addRow)
+        uploadDown.style.display = 'block'
+        clearInterval(timer)
+      }
     }, 1000)
   }
   useEffect(() => {
