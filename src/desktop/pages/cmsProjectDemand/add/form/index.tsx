@@ -1,7 +1,7 @@
 import React, { useRef, createRef, useState, useEffect, Fragment } from 'react'
 import './index.scss'
 import { fmtMsg } from '@ekp-infra/respect'
-import { Form, Message } from '@lui/core'
+import { Form, Message, Button } from '@lui/core'
 import { useApi, useSystem } from '@/desktop/shared/formHooks'
 import XformAppearance from '@/desktop/components/form/XformAppearance'
 import LayoutGrid from '@/desktop/components/form/LayoutGrid'
@@ -25,6 +25,9 @@ import apiPostInfo from '@/api/cmsPostInfo'
 import apiLevelInfo from '@/api/cmsLevelInfo'
 import apiProjectDemand from '@/api/cmsProjectDemand'
 import apiAmount from '@/api/cmsOutSupplierAmount'
+import XformExecl from '@/desktop/components/cms/XformExecl'
+import Icon from '@lui/icons'
+
 const MECHANISMNAMES = {}
 import moment from 'moment'
 const baseCls = 'project-demand-form'
@@ -59,9 +62,28 @@ const XForm = (props) => {
   const [selectedFrame, setSelectedFrame] = useState<any>({})
   // 选好的发布供应商
   const [selectedFdSupplier, setSelectedFdSupplier] = useState<any>([])
+
+  const [visible, setVisible] = useState<boolean>(false)
+  const [errMsgArr, setErrMsgArr] = useState<any>([])
   useEffect(() => {
     init()
+    getTag()
   }, [])
+
+  const getTag = () => {
+    let parentNode, addRow
+    const timer = setInterval(() => {
+      parentNode = document.querySelector('.cmsProjectDemandWork .ele-xform-detail-table-toolbar-right-buttons')
+      const uploadDown = document.getElementById('uploadDown') || document.createElement('div')
+      addRow = document.querySelector('button[title="添加行"]')
+      if (parentNode && parentNode.nodeType && addRow && addRow.nodeType) {
+        parentNode?.insertBefore(uploadDown, addRow)
+        uploadDown.style.display = 'block'
+        clearInterval(timer)
+      }
+    }, 1000)
+  }
+
   const init = async () => {
     try {
       const res = await apiFrameInfo.list({ pageSize: 1000 })
@@ -222,6 +244,56 @@ const XForm = (props) => {
     })
     detailForms.current.cmsProjectDemandSupp.current.deleteAll()
     setAssignSupplier(undefined)
+  }
+
+
+  const uploadExec = () => {
+    setVisible(true)
+  }
+
+  const downloadExecl = () => {
+    window.open(mk.getResourcePath('@module:cms-out-project/desktop/static/attach/工作分解模板.xlsx'), '_blank')
+  }
+
+  const handlerChange = (info) => {
+    //@ts-ignore
+    const array: any[] = Object.values(info).flat(Infinity)
+    setDetailData(array)
+  }
+  const setDetailData = (data) => {
+    const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectDemandWork').values
+    valuesData.length && detailForms.current.cmsProjectDemandWork.current.deleteAll()
+    const errMsg: any[] = []
+    if (data.length > 0) {
+      const newData = data.map(i => {
+        const item = {}
+        Object.keys(i).forEach(k => {
+          item[k.split('/')[1]] = i[k]
+        })
+        return item
+      })
+      newData.forEach((i, index) => {
+        if (!i.fdTaskName) {
+          errMsg.push(`第${index + 1}条数据的‘任务’没有填写`)
+        }
+        if (!i.fdCostApproval) {
+          errMsg.push(`第${index + 1}条数据的‘费用核定(万元)’没有填写`)
+        }
+        if (i.fdCostApproval < 0) {
+          errMsg.push(`第${index + 1}条数据的‘费用核定(万元)’的数字小于0`)
+        }
+      })
+      if (!errMsg.length) {
+        detailForms.current.cmsProjectDemandWork.current.updateValues(newData)
+        setErrMsgArr([])
+        handleCancel()
+      } else {
+        setErrMsgArr(errMsg)
+      }
+    }
+  }
+  const handleCancel = () => {
+    setVisible(false)
   }
   // 对外暴露接口
   useApi({
@@ -869,7 +941,14 @@ const XForm = (props) => {
                   </Form.Item>
                 </XformFieldset>
               </GridItem>
-              <GridItem column={1} row={15} rowSpan={1} columnSpan={40}>
+              <div id='uploadDown' style={{ display: 'none' }}>
+                <Button.Group amount={2} className='lui-test-btn-group' shape='link'>
+                  <Button onClick={uploadExec} shape='link' type='default' label='上传' icon={<Icon type='vector' name='upload' />} />
+                  <Button onClick={downloadExecl} shape='link' type='default' label='下载模板' icon={<Icon type='vector' name='download' />} />
+                </Button.Group>
+                <XformExecl onChange={(info) => { handlerChange(info) }} handleCancel={handleCancel} visible={visible} errMsgArr={errMsgArr} />
+              </div>
+              <GridItem column={1} row={15} rowSpan={1} columnSpan={40} className='cmsProjectDemandWork'>
                 <XformFieldset>
                   <Form.Item
                     name={'cmsProjectDemandWork'}
@@ -977,7 +1056,7 @@ const XForm = (props) => {
                         {
                           type: XformNumber,
                           controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5humco963yvy68le9m}', '费用核定（万元）'),
+                            title: fmtMsg(':cmsProjectDemand.form.!{l5humco963yvy68le9m}', '费用核定(万元)'),
                             name: 'fdCostApproval',
                             placeholder: fmtMsg(':cmsProjectDemand.form.!{l5humcoa14k6b3skr3h}', '请输入'),
                             numberFormat: {

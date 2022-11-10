@@ -14,7 +14,6 @@ import XformAddress from '@/desktop/components/form/XformAddress'
 import XformSelect from '@/desktop/components/form/XformSelect'
 import XformDetailTable from '@/desktop/components/form/XformDetailTable'
 import XformInput from '@/desktop/components/form/XformInput'
-import apiSupplier from '@/api/cmsSupplierInfo'
 import { EShowStatus } from '@/types/showStatus'
 import apiOrderResponse from '@/api/cmsOrderResponse'
 import apiStaffInfo from '@/api/cmsOutStaffInfo'
@@ -37,14 +36,18 @@ const XForm = (props) => {
   const [staffInfo, setStaffInfo] = useState<any>([])
   const [visible, setVisible] = useState<boolean>(false)
   const [errMsgArr, setErrMsgArr] = useState<any>([])
-  
+
   const getTag = () => {
-    setTimeout(() => {
-      const parentNode = document.querySelector('div[class="ele-xform-detail-table-toolbar-right-buttons"]')
+    let parentNode, addRow
+    const timer = setInterval(() => {
+      parentNode = document.querySelector('div[class="ele-xform-detail-table-toolbar-right-buttons"]')
       const uploadDown = document.getElementById('uploadDown') || document.createElement('div')
-      const addRow = document.querySelector('button[title="添加行"]')
-      parentNode?.insertBefore(uploadDown, addRow)
-      uploadDown.style.display = 'block'
+      addRow = document.querySelector('button[title="添加行"]')
+      if (parentNode && parentNode.nodeType && addRow && addRow.nodeType) {
+        parentNode?.insertBefore(uploadDown, addRow)
+        uploadDown.style.display = 'block'
+        clearInterval(timer)
+      }
     }, 1000)
   }
 
@@ -96,7 +99,7 @@ const XForm = (props) => {
         setDefaultTableCriteria(newParam)
       }
 
-      const rtnSupplier = resStaff?.data?.content?.map(item =>{
+      const rtnSupplier = resStaff?.data?.content?.map(item => {
         const sup = {
           label: item?.fdSupplier.fdName,
           value: item?.fdSupplier.fdId
@@ -183,10 +186,10 @@ const XForm = (props) => {
     const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectInterDetail').values
     valuesData.length && detailForms.current.cmsProjectInterDetail.current.deleteAll()
     const fdQualifiedMark = form.getFieldValue('fdQualifiedMark')
-    if(data.length>0){
+    if (data.length > 0) {
       const errMsg: any = []
       const newValue: any = []
-      data[0]?.map(i => {
+      data[0]?.forEach((i, index) => {
         let item: any = {}
         Object.keys(i).forEach(key => {
           const field = getField(key)
@@ -195,19 +198,27 @@ const XForm = (props) => {
             [field]: i[key],
           }
         })
+        if (!item['fdInterviewName']) {
+          errMsg.push(`第${index + 1}条的‘姓名’没有填写`)
+        }
+        console.log('staffInfo5559', staffInfo)
+        console.log('item5559', item['fdInterviewName'])
         const personInfo = checkPersonInfo(item['fdInterviewName'])
-        if(personInfo){
+        console.log('personInfo5559', personInfo)
+        if (personInfo) {
           item['fdInterviewName'] = personInfo
           const fdInterviewPass = Number(item['fdInterviewScores']) <= Number(fdQualifiedMark) ? '0' : '1'
-          item = { ...item, ...personInfo, fdInterviewPass}
+          item = { ...item, ...personInfo, fdInterviewPass }
           newValue.push(item)
-        }else{
-          errMsg.push(item['fdInterviewName'])
+        } else {
+          errMsg.push(`第${index + 1}条的人员的姓名不在外包人员列表中`)
         }
       })
-      setErrMsgArr(errMsg)
-      detailForms.current.cmsProjectInterDetail.current.updateValues(newValue)
-      if(errMsg.length<=0){
+      if (errMsg.length) {
+        setErrMsgArr(errMsg)
+      } else {
+        detailForms.current.cmsProjectInterDetail.current.updateValues(newValue)
+        setErrMsgArr([])
         handleCancel()
       }
     }
@@ -538,6 +549,9 @@ const XForm = (props) => {
                           placeholder: fmtMsg(':cmsProjectInterview.form.!{l5i2r9d5i4h8wdz6su}', '请输入'),
                           numberFormat: {
                             formatType: 'base'
+                          },
+                          range: {
+                            start: 0
                           },
                           desktop: {
                             type: XformNumber
