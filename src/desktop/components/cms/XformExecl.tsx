@@ -4,7 +4,7 @@ import React from 'react'
 import XLSX from 'xlsx'
 
 const XformExecl: React.FC<any> = (props) => {
-  const { onChange , handleCancel, visible, errMsgArr=[]} = props
+  const { onChange, handleCancel, visible, errMsgArr = [] } = props
   const footer = (
     <div>
       {/* <Button type="primary" htmlType="button">
@@ -28,7 +28,7 @@ const XformExecl: React.FC<any> = (props) => {
           // 遍历每张工作表进行读取（这里默认只读取第一张表）
           for (const sheet in workbook.Sheets) {
             if (workbook.Sheets.hasOwnProperty(sheet)) {
-              data[sheet] =  XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
+              data[sheet] = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
             }
           }
           resolve(data)//导出数据
@@ -57,12 +57,12 @@ const XformExecl: React.FC<any> = (props) => {
           maxCount={1}
           // action={'https://www.mocky.io/v2/5cc8019d300000980a055e76'}
           // action={mk.getSysConfig('modulesUrlPrefix') +'/#/desktop/pages/cmsProjectWritten/attach'}
-          customRequest={(request)=>{
-            importExecl(request).then((data)=>{
+          customRequest={(request) => {
+            importExecl(request).then((data) => {
               onChange(data)
             })
           }}
-          onChange={(info)=>{
+          onChange={(info) => {
             info.file.status = 'done'
           }}
         >
@@ -71,14 +71,21 @@ const XformExecl: React.FC<any> = (props) => {
           </span>
           选择文件
           {
-            errMsgArr.length >0 ? (
+            errMsgArr.length > 0 ? (
               <div style={{ color: '#999999', fontSize: 12, paddingTop: 3 }}>
-                <Icon name='iconCommon_line_12_information' normalize style={{color: 'red'}} />
-                <span style={{ paddingLeft: 4, color: 'red' }}>
-                  无法导入： {errMsgArr.map(i =>{
-                    return i +';'
-                  })}
-                </span>
+                {
+                  errMsgArr.map((i, index) => {
+                    return (
+                      <React.Fragment key={index}>
+                        <Icon name='iconCommon_line_12_information' normalize style={{ color: 'red' }} />
+                        <span style={{ paddingLeft: 4, color: 'red' }}>
+                          {i}
+                        </span>
+                        <br />
+                      </React.Fragment>
+                    )
+                  })
+                }
               </div>
             )
               : null

@@ -327,7 +327,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   const handleEnterInterview = useCallback(() => {
     if (!btnStatus || !data.fdProcessFlag) return null
     // 按钮存在条件为fdProcessFlag包含1不包含4，或者包含5
-    if (data.fdProcessFlag && (!((data.fdProcessFlag.includes('1') && !data.fdProcessFlag.includes('4'))) || data.fdProcessFlag.includes('5'))) return null
+    if (data.fdProcessFlag && !(((data.fdProcessFlag.includes('1') && !data.fdProcessFlag.includes('4'))) || data.fdProcessFlag.includes('5'))) return null
     return {
       name: fmtMsg(':cmsProjectInterview.form.!{l5hz6ugsxfxlg2nyfs7}', '录入面试成绩'),
       action: () => { history.goto(`/cmsProjectInterview/add/${data.fdId}`) },
@@ -336,7 +336,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
         authURL: '/cmsProjectInterview/add',
       }
     }
-  }, [history, data?.fdProcessFlag])
+  }, [history, data?.fdProcessFlag, btnStatus])
   const handleEnterSelectInfo = useCallback(() => {
     if (!btnStatus || !data.fdProcessFlag) return null
     // 存在条件fdProcessFlag包含4并且不包含5

@@ -12,40 +12,21 @@ import React, { createElement as h, useCallback, useEffect, useRef, useState } f
 import XForm from './form'
 import { cmsHandleBack } from '@/utils/routerUtil'
 // import './index.scss'
-
+const { confirm } = Modal
 Message.config({ maxCount: 1 })
 const LbpmFormWithLayout = Module.getComponent('sys-lbpm', 'LbpmFormWithLayout', { loading: <React.Fragment></React.Fragment> })
-// // 流程页签
-// const LBPMTabs = Module.getComponent('sys-lbpm', 'LBPMTabs', { loading: <Loading /> })
-// // 流程机制
-// const LBPMFormFragment = Module.getComponent('sys-lbpm', 'LBPMFormFragment', { loading: <Loading /> })
-// // 权限机制
-// const RightFragment = Module.getComponent('sys-right', 'RightFragment', { loading: <Loading /> })
-// 打印机制
-// const PrintRuntime = Module.getComponent('sys-mech-print', 'PrintRuntimeFRagment', { loading: <React.Fragment></React.Fragment> })
+
 const baseCls = 'project-review-content'
 const Content: React.FC<IContentViewProps> = props => {
   const { data, history, routerPrefix, match } = props
   const params = match?.params
-  // 文档id
-  // const id = match.params['id']
   // 机制组件引用
   const formComponentRef = useRef<any>()
   const lbpmComponentRef = useRef<any>()
   const rightComponentRef = useRef<any>()
   const [flowData, setFlowData] = useState<any>({}) // 流程数据
   const [submitting, setSubmitting] = useState<boolean>(true)
-  // const [roleArr, setRoleArr] = useState<any>([])   // 流程角色
-  // useEffect(() => {
-  //   mk.on('SYS_LBPM_AUDIT_FORM_INIT_DATA', (val) => {
-  //     val?.roles && setRoleArr(val.roles)
-  //   })
-  // }, [])
-  // const hasDraftBtn = useMemo(() => {
-  //   const status = data?.fdProcessStatus || getFlowStatus(flowData)
-  //   /* 新建文档和草稿有暂存按钮 */
-  //   return status === ESysLbpmProcessStatus.DRAFT || status === ESysLbpmProcessStatus.REJECT || status === ESysLbpmProcessStatus.WITHDRAW
-  // }, [data?.fdProcessStatus, flowData])
+
   // 校验
   const _validate = async (isDraft: boolean) => {
     // 表单校验
@@ -119,7 +100,7 @@ const Content: React.FC<IContentViewProps> = props => {
       return
     }
     // 拼装提交数据
-    const values = await _formatValue(isDraft)
+    let values = await _formatValue(isDraft)
     // 文档提交前事件
     if (await _beforeSave(isDraft) === false) {
       return
@@ -128,26 +109,51 @@ const Content: React.FC<IContentViewProps> = props => {
       Message.error('请填写主题')
       return
     }
+    values = {
+      ...values,
+      cmsStaffReviewDetail: Array.isArray(values.cmsStaffReviewDetail) ? values.cmsStaffReviewDetail : values.cmsStaffReviewDetail.values
+    }
     const saveApi = isDraft ?
       api.save
       : (values.fdProcessStatus === ESysLbpmProcessStatus.WITHDRAW
         || values.fdProcessStatus === ESysLbpmProcessStatus.DRAFT || values.fdProcessStatus === ESysLbpmProcessStatus.REJECT
         ? api.update : api.save)
-    // 编辑暂存
-    saveApi({
-      ...values,
-      cmsStaffReviewDetail: values?.cmsStaffReviewDetail?.values || undefined
-    }).then(res => {
-      if (res.success) {
-        Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
-          cmsHandleBack(history, '/cmsStaffReview/listStaffReview')
-        })
-      } else {
+
+    if (!values.fdSupplies.length && !isDraft) {
+      confirm({
+        title: '未选择中选供应商，是否确认提交',
+        onOk () {
+          // 编辑暂存
+          saveApi(values).then(res => {
+            if (res.success) {
+              Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
+                cmsHandleBack(history, '/cmsStaffReview/listStaffReview')
+              })
+            } else {
+              Message.error(isDraft ? '暂存失败' : '提交失败', 1)
+            }
+          }).catch(() => {
+            Message.error(isDraft ? '暂存失败' : '提交失败', 1)
+          })
+        },
+        onCancel () {
+          console.log('Cancel')
+        }
+      })
+    } else {
+      // 编辑暂存
+      saveApi(values).then(res => {
+        if (res.success) {
+          Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
+            cmsHandleBack(history, '/cmsStaffReview/listStaffReview')
+          })
+        } else {
+          Message.error(isDraft ? '暂存失败' : '提交失败', 1)
+        }
+      }).catch(() => {
         Message.error(isDraft ? '暂存失败' : '提交失败', 1)
-      }
-    }).catch(() => {
-      Message.error(isDraft ? '暂存失败' : '提交失败', 1)
-    })
+      })
+    }
   }
 
 

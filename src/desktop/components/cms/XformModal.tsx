@@ -63,6 +63,10 @@ export interface IProps extends IContentViewProps {
   [key: string]: any
   /**默认可以发起请求 */
   defaultSearch: boolean
+  /**是否是供应商类型 */
+  isSupplier?: boolean
+  /**是否是项目外包类型 */
+  isProjectNature?: boolean
   /**初始值 */
   initData?: any
 }
@@ -93,7 +97,9 @@ const XformModal: React.FC<IProps> = (props) => {
     showTableData = '',
     mark = false,
     defaultSearch = false,
-    initData = value
+    isSupplier = false,
+    isProjectNature = false,
+    initData = value,
   } = props
 
   const [listData, setListData] = useState<any>([])
@@ -101,13 +107,11 @@ const XformModal: React.FC<IProps> = (props) => {
   const [visible, setVisible] = useState<boolean>(false)
   const [fdName, setFdName] = useState<string>(initData?.fdName || '')
   // 选中的筛选项
-  const [selectedConditions, setSelectedConditions] = useState<any>({})
+  const [selectParams, setSelectedParams] = useState<any>({})
   // 多选时，选中的数据
   const [selectedRowsData, setSelectedRows] = useState<any>([])
   // 表单传过来的初始值，为了点击取消时，还原数据
   const [initSelectedArr, setInitSelectArr] = useState<any>([])
-  // 已选中的筛选项
-  const [newSelecteCon, setNewSelecteCon] = useState<any>({})
   const initValue = useMemo(() => {
     return initData
   }, [initData])
@@ -163,6 +167,7 @@ const XformModal: React.FC<IProps> = (props) => {
   useEffect(() => {
     if (showStatus === EShowStatus.add || showStatus === EShowStatus.edit) {
       if (!showOther) {
+        setSelectedParams({ ...selectParams, ...getDefaultTableColumns() })
         getListData({
           ...getDefaultTableColumns()
         })
@@ -173,6 +178,7 @@ const XformModal: React.FC<IProps> = (props) => {
           Message.warning('请选择姓名')
           return
         }
+        setSelectedParams({ ...selectParams, ...getOtherDefaultTableColumns() })
         getListData({
           ...getOtherDefaultTableColumns()
         })
@@ -206,10 +212,12 @@ const XformModal: React.FC<IProps> = (props) => {
       }
     }
     try {
-      if (Object.keys(defaultTableCriteria).length && !checkFlag()) {
-        if (!defaultSearch) {
-          setListData([])
-          return
+      if (!showOther) {
+        if (Object.keys(defaultTableCriteria).length && !checkFlag()) {
+          if (!defaultSearch) {
+            setListData([])
+            return
+          }
         }
       }
       const res = await apiKey[apiName](data)
@@ -243,12 +251,9 @@ const XformModal: React.FC<IProps> = (props) => {
   const onSelectChange = (key: React.Key[]) => {
     setSelectedRows(key)
   }
+
   const handlePage = (pageNo: number, pageSize: number) => {
-    let conditions = getDefaultTableColumns().conditions
-    if (Object.keys(newSelecteCon).length) {
-      conditions = { ...conditions, ...newSelecteCon }
-    }
-    getListData({ ...query, offset: (pageNo - 1) * pageSize, pageSize, conditions })
+    getListData({ ...query, offset: (pageNo - 1) * pageSize, pageSize, ...selectParams })
   }
 
 
@@ -259,8 +264,7 @@ const XformModal: React.FC<IProps> = (props) => {
         onClick: () => {
           onChange && onChange(record)
           setVisible(false)
-          setSelectedConditions({})
-          setNewSelecteCon({})
+          setSelectedParams({})
           setFdName(record[chooseFdName])
           // @ts-ignore
           onChangeProps && onChangeProps(record, rowIndex)
@@ -281,34 +285,30 @@ const XformModal: React.FC<IProps> = (props) => {
           defaultConditionsKey[defaultTableCriteria[key]['searchKey']] = defaultTableCriteria[key]['searchValue']
           defaultConditions[key] = defaultTableCriteria[key]['searchValue'] && defaultConditionsKey
         })
-        newConditions = renderConditions({ ...conditions, ...defaultConditions, ...selectedConditions }, values, criteriaProps)
+        newConditions = renderConditions({ ...conditions, ...defaultConditions, ...selectParams?.conditions }, values, criteriaProps)
       } else {
-        newConditions = renderConditions({ ...conditions, ...selectedConditions }, values, criteriaProps)
+        newConditions = renderConditions({ ...conditions, ...selectParams?.conditions }, values, criteriaProps)
       }
-      setNewSelecteCon(newConditions)
+      const newParams = { ...selectParams, conditions: { ...selectParams?.conditions, ...newConditions } }
+      setSelectedParams(newParams)
       getListData({
         ...query,
-        conditions: newConditions
+        ...newParams
       })
     },
-    [query, selectedConditions]
+    [query, selectParams]
   )
   const handleSearch = (value) => {
-    let conditions: any = {}
-    if (Object.keys(newSelecteCon).length) {
-      conditions = { ...newSelecteCon, 'fdName': { '$contains': value } }
-    } else {
-      conditions = { 'fdName': { '$contains': value.trim() } }
-    }
-    setSelectedConditions({ 'fdName': { '$contains': value.trim() } })
-    getListData({ ...query, conditions })
+
+    const newParams = { ...selectParams, conditions: { ...selectParams?.conditions, 'fdName': { '$contains': value.trim() } } }
+    setSelectedParams(newParams)
+    getListData({ ...query, ...newParams })
 
   }
   // 确定按钮
   const handleOk = useCallback(async () => {
     setVisible(false)
-    setSelectedConditions({})
-    setNewSelecteCon({})
+    setSelectedParams({})
     if (selectedRowsData && selectedRowsData.length) {
       try {
         const res = await apiKey[apiName]({ conditions: { fdId: { '$in': selectedRowsData } } })
@@ -334,14 +334,24 @@ const XformModal: React.FC<IProps> = (props) => {
   }
   const handleCancel = () => {
     setVisible(false)
-    setSelectedConditions({})
-    setNewSelecteCon({})
+    setSelectedParams({})
     if (multiple) {
-      setSelectedRows(initSelectedArr.length ? initSelectedArr.map(i => i.fdId) : [])
+      setSelectedRows(initSelectedArr?.length ? initSelectedArr.map(i => i.fdId) : [])
       onChange && onChange(initSelectedArr)
     }
   }
 
+  const handleStaffSearch = (value) => {
+    let conditions: any = {}
+    if (Object.keys(selectParams?.conditions).length) {
+      conditions = { ...selectParams?.conditions, 'fdName': { '$contains': value.trim() } }
+    } else {
+      conditions = { 'fdName': { '$contains': value.trim() } }
+    }
+    const newParams = { ...selectParams, conditions: { ...selectParams?.conditions, ...conditions } }
+    setSelectedParams(newParams)
+    getListData({ ...query, ...newParams })
+  }
 
   const rowSelection: any = multiple ? {
     fixed: 'left',
@@ -388,7 +398,10 @@ const XformModal: React.FC<IProps> = (props) => {
       >
         <div className="lui-template-list-table">
           {
-            mark ? (<div className='lui-template-list-table-search'><span className='lui-template-list-table-search-title'>项目名称:</span><Input.Search onSearch={handleSearch} allowClear /></div>) : null
+            mark || isSupplier ? (<div className='lui-template-list-table-search'><span className='lui-template-list-table-search-title'>{mark ? '项目名称' : isSupplier ? '供应商名称' : ''}:</span><Input.Search onSearch={handleSearch} allowClear /></div>) : null
+          }
+          {
+            isProjectNature ? (<div className='lui-template-list-table-search'><span className='lui-template-list-table-search-title'>姓名:</span><Input.Search onSearch={handleStaffSearch} allowClear /></div>) : null
           }
           {
             showCriteria ? (
