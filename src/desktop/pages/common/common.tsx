@@ -219,33 +219,6 @@ export const outStaffInfoColumns = [
   {
     title: '定级级别',
     dataIndex: 'fdConfirmLevel',
-    // render: (value) => {
-    //   const options = [
-    //     {
-    //       value: '1',
-    //       label: '资深'
-    //     },
-    //     {
-    //       value: '2',
-    //       label: '高级'
-    //     },
-    //     {
-    //       value: '3',
-    //       label: '中级'
-    //     },
-    //     {
-    //       value: '4',
-    //       label: '初级'
-    //     }
-    //   ]
-    //   const option = options.find((option) => option.value === value)
-
-    //   if (!option) {
-    //     return value
-    //   }
-
-    //   return option.label
-    // }
     render: (value) => value && value.fdName
   },
   /*状态信息*/
@@ -740,29 +713,7 @@ export const presonCriertia = () => {
   return (
     <React.Fragment>
       <Criteria.Input name="fdPost.fdName" title="岗位"></Criteria.Input>
-      <Criteria.Criterion
-        canMulti={false}
-        options={[
-          {
-            value: '4',
-            text: '初级'
-          },
-          {
-            value: '3',
-            text: '中级'
-          },
-          {
-            value: '2',
-            text: '高级'
-          },
-          {
-            value: '1',
-            text: '资深'
-          }
-        ]}
-        name="fdConfirmLevel"
-        title="定级级别"
-      ></Criteria.Criterion>
+      <Criteria.Input name="fdConfirmLevel.fdName" title="定级级别"></Criteria.Input>
       <Criteria.Input name="fdProject.fdName" title="当前项目"></Criteria.Input>
       <Criteria.Calendar
         options={Criteria.Calendar.buildOptions()}
