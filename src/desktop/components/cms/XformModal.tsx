@@ -255,7 +255,7 @@ const XformModal: React.FC<IProps> = (props) => {
   }
 
   const handlePage = (pageNo: number, pageSize: number) => {
-    getListData({ ...query, offset: (pageNo - 1) * pageSize, pageSize, ...selectParams })
+    getListData({ ...selectParams, ...query, offset: (pageNo - 1) * pageSize, pageSize })
   }
 
 
@@ -266,7 +266,6 @@ const XformModal: React.FC<IProps> = (props) => {
         onClick: () => {
           onChange && onChange(record)
           setVisible(false)
-          // setSelectedParams({})
           setFdName(record[chooseFdName])
           // @ts-ignore
           onChangeProps && onChangeProps(record, rowIndex)
@@ -296,7 +295,6 @@ const XformModal: React.FC<IProps> = (props) => {
   // 确定按钮
   const handleOk = useCallback(async () => {
     setVisible(false)
-    // setSelectedParams({})
     if (selectedRowsData && selectedRowsData.length) {
       try {
         const res = await apiKey[apiName]({ conditions: { fdId: { '$in': selectedRowsData } } })
@@ -311,18 +309,36 @@ const XformModal: React.FC<IProps> = (props) => {
     }
   }, [selectedRowsData])
 
+  // const renderTag = () => {
+  //   if (initSelectedArr && initSelectedArr.length) {
+  //     return initSelectedArr.map(i => {
+  //       return <Tag key={i.fdId}>{i.fdName}</Tag>
+  //     })
+  //   } else {
+  //     return <span style={{ color: '#c3c3c3' }}>请选择</span>
+  //   }
+  // }
+
+  const handleCloseTag = (e) => {
+    e.stopPropagation()
+    setFdName('')
+    onChange?.(undefined)
+  }
   const renderTag = () => {
     if (initSelectedArr && initSelectedArr.length) {
       return initSelectedArr.map(i => {
         return <Tag key={i.fdId}>{i.fdName}</Tag>
       })
     } else {
-      return <span style={{ color: '#c3c3c3' }}>请选择</span>
+      return (
+        <React.Fragment>
+          {fdName ? <Tag closable onClose={handleCloseTag}>{fdName}</Tag> : null}
+        </React.Fragment>
+      )
     }
   }
   const handleCancel = () => {
     setVisible(false)
-    // setSelectedParams({})
     if (multiple) {
       setSelectedRows(initSelectedArr?.length ? initSelectedArr.map(i => i.fdId) : [])
       // onChange && onChange(initSelectedArr)
@@ -350,13 +366,26 @@ const XformModal: React.FC<IProps> = (props) => {
   return (
     <React.Fragment>
       <div>
-        {
+        {/* {
           showStatus === 'edit' || showStatus === 'add' || showStatus === 'readOnly' ? (multiple && initValue?.length) ? (
             <div className='multiple-input' style={showStatus === 'readOnly' ? readOnlyStyle : {}} onClick={() => setVisible(true)}>
               {renderTag()}
             </div>
           ) : (
-            <Input placeholder='请输入' disabled={showStatus === 'readOnly'} onClick={() => setVisible(true)} value={fdName} />
+            <Input placeholder='请输入' readOnly disabled={showStatus === 'readOnly'} onClick={() => setVisible(true)} value={fdName} />
+          ) : (
+            <span>
+              {
+                Array.isArray(initValue) ? initValue.map(item => item.fdName).join(',') : initValue && initValue[chooseFdName]
+              }
+            </span>
+          )
+        } */}
+        {
+          showStatus === 'edit' || showStatus === 'add' || showStatus === 'readOnly' ? (
+            <div className='multiple-input' style={showStatus === 'readOnly' ? readOnlyStyle : {}} onClick={() => setVisible(true)}>
+              {renderTag()}
+            </div>
           ) : (
             <span>
               {
