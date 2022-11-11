@@ -33,7 +33,7 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
       const formValues = await formComponentRef.current.getValue() || {}
       const cmsProjectWrittenDe = formValues?.cmsProjectWrittenDe?.values || []
       const isRep = isReplace(cmsProjectWrittenDe)
-      if(isRep){
+      if (isRep) {
         Message.error('姓名不能重复！')
         return !isRep
       }
@@ -80,7 +80,7 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
       let fdInterviewer = formValues?.fdInterviewer
       let fdSupplierTotal = formValues?.fdSupplierTotal
       if (fdIsInterview === '0') {
-        fdInterviewer = [],
+        fdInterviewer = []
         fdSupplierTotal = []
       }
       if (fdSupplierTotal === '0') {
