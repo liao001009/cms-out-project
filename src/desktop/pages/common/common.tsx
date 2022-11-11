@@ -557,6 +557,10 @@ export const cmsProjectWrittenList = [
         {
           value: '1',
           label: '是'
+        },
+        {
+          value: '0',
+          label: '否'
         }
       ]
       const option = options.find((option) => option.value === value)
@@ -577,6 +581,10 @@ export const cmsProjectWrittenList = [
         {
           value: '1',
           label: '是'
+        },
+        {
+          value: '0',
+          label: '否'
         }
       ]
       const option = options.find((option) => option.value === value)
@@ -597,6 +605,10 @@ export const cmsProjectWrittenList = [
         {
           value: '1',
           label: '是'
+        },
+        {
+          value: '0',
+          label: '否'
         }
       ]
       const option = options.find((option) => option.value === value)

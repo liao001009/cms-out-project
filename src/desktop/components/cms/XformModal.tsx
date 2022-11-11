@@ -119,6 +119,9 @@ const XformModal: React.FC<IProps> = (props) => {
     if (!selectedRowsData?.length && showTableData) {
       setListData([])
     }
+    if (!visible) {
+      setSelectedParams({})
+    }
   }, [visible])
   useEffect(() => {
     setFdName(initValue?.fdName || '')
@@ -167,7 +170,6 @@ const XformModal: React.FC<IProps> = (props) => {
   useEffect(() => {
     if (showStatus === EShowStatus.add || showStatus === EShowStatus.edit) {
       if (!showOther) {
-        setSelectedParams({ ...selectParams, ...getDefaultTableColumns() })
         getListData({
           ...getDefaultTableColumns()
         })
@@ -178,7 +180,6 @@ const XformModal: React.FC<IProps> = (props) => {
           Message.warning('请选择姓名')
           return
         }
-        setSelectedParams({ ...selectParams, ...getOtherDefaultTableColumns() })
         getListData({
           ...getOtherDefaultTableColumns()
         })
@@ -220,6 +221,7 @@ const XformModal: React.FC<IProps> = (props) => {
           }
         }
       }
+      setSelectedParams(data)
       const res = await apiKey[apiName](data)
       setPage({
         ...page,
@@ -264,7 +266,7 @@ const XformModal: React.FC<IProps> = (props) => {
         onClick: () => {
           onChange && onChange(record)
           setVisible(false)
-          setSelectedParams({})
+          // setSelectedParams({})
           setFdName(record[chooseFdName])
           // @ts-ignore
           onChangeProps && onChangeProps(record, rowIndex)
@@ -276,21 +278,9 @@ const XformModal: React.FC<IProps> = (props) => {
   /** 筛选 */
   const handleCriteriaChange = useCallback(
     (value, values) => {
-      const conditions = $reduceCriteria(query, values)
-      let newConditions
-      if (Object.keys(defaultTableCriteria).length) {
-        const defaultConditions = {}
-        Object.keys(defaultTableCriteria).forEach(key => {
-          const defaultConditionsKey = {}
-          defaultConditionsKey[defaultTableCriteria[key]['searchKey']] = defaultTableCriteria[key]['searchValue']
-          defaultConditions[key] = defaultTableCriteria[key]['searchValue'] && defaultConditionsKey
-        })
-        newConditions = renderConditions({ ...conditions, ...defaultConditions, ...selectParams?.conditions }, values, criteriaProps)
-      } else {
-        newConditions = renderConditions({ ...conditions, ...selectParams?.conditions }, values, criteriaProps)
-      }
-      const newParams = { ...selectParams, conditions: { ...selectParams?.conditions, ...newConditions } }
-      setSelectedParams(newParams)
+      let conditions = $reduceCriteria(query, values)
+      conditions = renderConditions({ ...selectParams?.conditions, ...conditions }, values, criteriaProps)
+      const newParams = { ...selectParams, conditions }
       getListData({
         ...query,
         ...newParams
@@ -299,16 +289,14 @@ const XformModal: React.FC<IProps> = (props) => {
     [query, selectParams]
   )
   const handleSearch = (value) => {
-
     const newParams = { ...selectParams, conditions: { ...selectParams?.conditions, 'fdName': { '$contains': value.trim() } } }
-    setSelectedParams(newParams)
     getListData({ ...query, ...newParams })
 
   }
   // 确定按钮
   const handleOk = useCallback(async () => {
     setVisible(false)
-    setSelectedParams({})
+    // setSelectedParams({})
     if (selectedRowsData && selectedRowsData.length) {
       try {
         const res = await apiKey[apiName]({ conditions: { fdId: { '$in': selectedRowsData } } })
@@ -334,22 +322,15 @@ const XformModal: React.FC<IProps> = (props) => {
   }
   const handleCancel = () => {
     setVisible(false)
-    setSelectedParams({})
+    // setSelectedParams({})
     if (multiple) {
       setSelectedRows(initSelectedArr?.length ? initSelectedArr.map(i => i.fdId) : [])
-      onChange && onChange(initSelectedArr)
+      // onChange && onChange(initSelectedArr)
     }
   }
 
   const handleStaffSearch = (value) => {
-    let conditions: any = {}
-    if (Object.keys(selectParams?.conditions).length) {
-      conditions = { ...selectParams?.conditions, 'fdName': { '$contains': value.trim() } }
-    } else {
-      conditions = { 'fdName': { '$contains': value.trim() } }
-    }
-    const newParams = { ...selectParams, conditions: { ...selectParams?.conditions, ...conditions } }
-    setSelectedParams(newParams)
+    const newParams = { ...selectParams, conditions: { ...selectParams?.conditions, 'fdName': { '$contains': value.trim() } } }
     getListData({ ...query, ...newParams })
   }
 
