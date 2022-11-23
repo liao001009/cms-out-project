@@ -289,17 +289,24 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
 
   // 订单响应点击
   const handleOrderAction = () => {
-    if (data.fdResponseTime < new Date().getTime()) {
+    if (editFlag) {
+      history.goto(`/cmsOrderResponse/add/${data.fdId}/${data.fdFrameAdmin.fdId}`)
+    } else if (data.fdResponseTime < new Date().getTime()) {
       Message.error('已超过订单响应时间')
       return
+    } else {
+      orderRouterStatus ? history.goto(`/cmsOrderResponse/edit/${orderRouterStatus}`) : history.goto(`/cmsOrderResponse/add/${data.fdId}/${data.fdFrameAdmin.fdId}`)
     }
-    orderRouterStatus ? history.goto(`/cmsOrderResponse/edit/${orderRouterStatus}`) : history.goto(`/cmsOrderResponse/add/${data.fdId}`)
   }
   // 订单响应按钮
   const handleOrder = useCallback(() => {
     if (!btnStatus) return null
-    // 按钮存在条件为fdProcessFlag不包含2或不包含3
-    if (data.fdProcessFlag && (data.fdProcessFlag.includes('2') || data.fdProcessFlag.includes('3'))) return null
+
+    // 按钮存在条件为 不是框架管理员并且fdProcessFlag不包含2或不包含3
+    if (!editFlag) {
+      if (data.fdProcessFlag && (data.fdProcessFlag.includes('2') || data.fdProcessFlag.includes('3'))) return null
+    }
+
     return {
       name: '订单响应',
       action: () => { handleOrderAction() },

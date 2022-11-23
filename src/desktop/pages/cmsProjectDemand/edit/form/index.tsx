@@ -527,7 +527,7 @@ const XForm = (props) => {
                   </Form.Item>
                 </XformFieldset>
               </GridItem>
-              <GridItem column={21} row={6} rowSpan={1} columnSpan={20}>
+              {/* <GridItem column={21} row={6} rowSpan={1} columnSpan={20}>
                 <XformFieldset
                   labelTextAlign={'left'}
                   mobileContentAlign={'right'}
@@ -547,7 +547,7 @@ const XForm = (props) => {
                     ></XformAddress>
                   </Form.Item>
                 </XformFieldset>
-              </GridItem>
+              </GridItem> */}
               <GridItem column={1} row={7} rowSpan={1} columnSpan={40}>
                 <XformFieldset
                   labelTextAlign={'left'}
