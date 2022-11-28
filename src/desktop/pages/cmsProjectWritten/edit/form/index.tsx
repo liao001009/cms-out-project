@@ -56,7 +56,6 @@ const XForm = (props) => {
     }, 1000)
   }
   useEffect(() => {
-    // init()
     let paramId = props?.match?.params?.id
     if (props.mode === 'add') {
       form.setFieldsValue({
@@ -75,27 +74,8 @@ const XForm = (props) => {
     if (paramId) {
       initData(paramId)
     }
-    // getStaffInfo()
     getTag()
   }, [])
-
-  // const init = async () => {
-  //   try {
-  //     const res = await apiSupplier.list({})
-  //     const arr = res?.data?.content.map(i => {
-  //       const item = {
-  //         label: i.fdName,
-  //         value: i.fdId,
-  //         ...i
-  //       }
-  //       return item
-  //     })
-  //     setSupplierData(arr)
-
-  //   } catch (error) {
-  //     console.log('error', error)
-  //   }
-  // }
 
   const initData = async (params) => {
     try {
@@ -177,7 +157,7 @@ const XForm = (props) => {
         key: defaultTableCriteria,
         controlProps: {
           apiKey: apiStaffInfo,
-          apiName: 'listStaffInfo',
+          apiName: 'list',
           defaultTableCriteria: defaultTableCriteria,
           chooseFdName: 'fdName',
           columnsProps: outStaffInfoColumns,
@@ -185,35 +165,8 @@ const XForm = (props) => {
           criteriaProps: ['fdStaffName.fdName', 'fdName'],
           title: fmtMsg(':cmsProjectWritten.form.!{l5i2iuv598u3ufwarkj}', '姓名'),
           name: 'fdInterviewName',
-          renderMode: 'singlelist',
-          direction: 'column',
-          rowCount: 3,
-          modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
-          options: [
-            {
-              fdName: '选项1',
-              fdId: '1'
-            },
-            {
-              fdName: '选项2',
-              fdId: '2'
-            },
-            {
-              fdName: '选项3',
-              fdId: '3'
-            }
-          ],
           desktop: {
             type: CMSXformModal
-          },
-          relationCfg: {
-            appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
-            xformName: '外包人员信息',
-            modelId: '1g7tuuns0w13w13engw3a36caf238o0d15w0',
-            tableType: 'main',
-            tableName: 'mk_model_20220714k2uvx',
-            showFields: '$姓名$',
-            refFieldName: '$fd_name$'
           },
           type: CMSXformModal,
           onChangeProps: async (v, r) => {

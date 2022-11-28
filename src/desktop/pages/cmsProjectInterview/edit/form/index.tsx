@@ -21,6 +21,7 @@ import { outStaffInfoColumns } from '@/desktop/pages/common/common'
 import CMSXformModal from '@/desktop/components/cms/XformModal'
 import XformExecl from '@/desktop/components/cms/XformExecl'
 import Icon from '@lui/icons'
+import apiSelect from '@/api/cmsSelectConfirm'
 
 const MECHANISMNAMES = {}
 
@@ -37,6 +38,7 @@ const XForm = (props) => {
   const [visible, setVisible] = useState<boolean>(false)
   const [errMsgArr, setErrMsgArr] = useState<any>([])
 
+  // 通过js手动将模板和导入按钮放到明细表上面
   const getTag = () => {
     let parentNode, addRow
     const timer = setInterval(() => {
@@ -54,40 +56,32 @@ const XForm = (props) => {
   useEffect(() => {
     // init()
     let paramId = props?.match?.params?.id
+    let isSupplement = ''
     if (props.mode === 'add') {
-      // value.fdProjectDemand=paramId
       form.setFieldsValue({
         fdProjectDemand: paramId
       })
+      isSupplement = props?.match?.params?.isSupplement
     } else {
       paramId = value?.fdProjectDemand?.fdId
     }
     if (paramId) {
-      initData(paramId)
+      initData(paramId, isSupplement)
     }
     getTag()
   }, [])
-  // const init = async () => {
-  //   try {
-  //     const res = await apiSupplier.list({})
-  //     const arr = res.data.content.map(i => {
-  //       const item = {
-  //         value: i.fdId,
-  //         label: i.fdName,
-  //         ...i
-  //       }
-  //       return item
-  //     })
-  //     setSupplierData(arr)
-  //   } catch (error) {
-  //     console.log('error', error)
-  //   }
-  // }
 
-  const initData = async (params) => {
+
+  const initData = async (params, isSupplement = '') => {
     try {
-      const initParam = { conditions: { 'fdProjectDemand.fdId': { '$eq': params } } }
-      const resStaff = await apiOrderResponse.listStaff(initParam)
+      let initParam = {}
+      const api = isSupplement === '1' ? apiSelect.listSuppleDetail : apiOrderResponse.listStaff
+      if (isSupplement === '1') {
+        initParam = { fdId: params }
+      } else {
+        initParam = { conditions: { 'fdProjectDemand.fdId': { '$eq': params } } }
+      }
+      const resStaff = await api(initParam)
       const ids = resStaff?.data?.content?.map(i => { return i.fdId })
       if (ids && ids.length > 0) {
         const newParam = {
@@ -98,18 +92,28 @@ const XForm = (props) => {
         }
         setDefaultTableCriteria(newParam)
       }
-
-      const rtnSupplier = resStaff?.data?.content?.map(item => {
-        const sup = {
-          label: item?.fdSupplier.fdName,
-          value: item?.fdSupplier.fdId
-        }
-        return sup
-      })
-      setSupplierData(rtnSupplier)
+      let newSupplierData: any = []
+      if (isSupplement === '1') {
+        newSupplierData = resStaff?.data?.content.map(i => {
+          const item = {
+            label: i?.fdSupplierName,
+            value: i?.fdSupplierId
+          }
+          return item
+        })
+      } else {
+        newSupplierData = resStaff?.data?.content?.map(item => {
+          const sup = {
+            label: item?.fdSupplier.fdName,
+            value: item?.fdSupplier.fdId
+          }
+          return sup
+        })
+      }
+      setSupplierData(newSupplierData)
       setStaffInfo(resStaff?.data?.content)
     } catch (error) {
-      console.error(error)
+      Message.error(error.response?.data?.msg || '请求失败')
     }
   }
 
@@ -201,10 +205,7 @@ const XForm = (props) => {
         if (!item['fdInterviewName']) {
           errMsg.push(`第${index + 1}条的‘姓名’没有填写`)
         }
-        console.log('staffInfo5559', staffInfo)
-        console.log('item5559', item['fdInterviewName'])
         const personInfo = checkPersonInfo(item['fdInterviewName'])
-        console.log('personInfo5559', personInfo)
         if (personInfo) {
           item['fdInterviewName'] = personInfo
           const fdInterviewPass = Number(item['fdInterviewScores']) <= Number(fdQualifiedMark) ? '0' : '1'
@@ -429,30 +430,17 @@ const XForm = (props) => {
                         type: CMSXformModal,
                         controlProps: {
                           apiKey: apiStaffInfo,
-                          apiName: 'listStaffInfo',
+                          apiName: 'list',
                           defaultTableCriteria: defaultTableCriteria,
+                          modalTitle: '选择人员',
                           chooseFdName: 'fdName',
                           columnsProps: outStaffInfoColumns,
                           criteriaKey: 'staffReviewUpgrade',
                           criteriaProps: ['fdStaffName.fdName', 'fdName'],
                           title: fmtMsg(':cmsProjectInterview.form.!{l5i2iuv598u3ufwarkj}', '姓名'),
                           name: 'fdInterviewName',
-                          renderMode: 'singlelist',
-                          direction: 'column',
-                          rowCount: 3,
-                          modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
-                          isForwardView: 'no',
                           desktop: {
                             type: CMSXformModal
-                          },
-                          relationCfg: {
-                            appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
-                            xformName: '外包人员信息',
-                            modelId: '1g7tuuns0w13w13engw3a36caf238o0d15w0',
-                            tableType: 'main',
-                            tableName: 'mk_model_20220714k2uvx',
-                            showFields: '$姓名$',
-                            refFieldName: '$fd_name$'
                           },
                           type: CMSXformModal,
                           onChangeProps: async (v, r) => {

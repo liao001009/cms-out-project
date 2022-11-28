@@ -66,14 +66,14 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
         }
         return newItem
       })
+      if (typeof formValues.fdProjectDemand === 'string') {
+        formValues.fdProjectDemand = { fdId: formValues.fdProjectDemand }
+      }
       values = {
         ...values,
         ...formValues,
         fdStatus: fdStatus,
         cmsProjectInterDetail: newDetail,
-        fdProjectDemand: {
-          fdId: formValues.fdProjectDemand
-        }
       }
       if (formValues.mechanisms) {
         delete values.mechanisms
@@ -159,7 +159,7 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
           <Breadcrumb>
             <Breadcrumb.Item>项目管理</Breadcrumb.Item>
             <Breadcrumb.Item>录入面试成绩</Breadcrumb.Item>
-            <Breadcrumb.Item>编辑</Breadcrumb.Item>
+            <Breadcrumb.Item>{mode === 'add' ? '新增' : '编辑'}</Breadcrumb.Item>
           </Breadcrumb>
           <div className='buttons'>
             <Auth.Auth

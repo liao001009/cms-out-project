@@ -114,7 +114,13 @@ export const projectColumns = [
   {
     title: '项目名称',
     dataIndex: 'fdName',
-    render: (value) => value
+    width: 150,
+    ellipsis: true,
+    render: (value) => (
+      <Tooltip placement="topLeft" title={value}>
+        {value}
+      </Tooltip>
+    )
   },
   /*项目编号*/
   {
@@ -315,8 +321,14 @@ export const projectSelectInfocolumns = [
   /*项目名称*/
   {
     title: '项目名称',
-    dataIndex: 'fdProject',
-    render: (value) => value?.fdName
+    dataIndex: 'fdName',
+    width: 150,
+    ellipsis: true,
+    render: (value) => (
+      <Tooltip placement="topLeft" title={value}>
+        {value}
+      </Tooltip>
+    )
   },
   /*中选供应商*/
   {

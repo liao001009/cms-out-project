@@ -337,7 +337,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     if (data.fdProcessFlag && !(((data.fdProcessFlag.includes('1') && !data.fdProcessFlag.includes('4'))) || data.fdProcessFlag.includes('5'))) return null
     return {
       name: fmtMsg(':cmsProjectInterview.form.!{l5hz6ugsxfxlg2nyfs7}', '录入面试成绩'),
-      action: () => { history.goto(`/cmsProjectInterview/add/${data.fdId}`) },
+      action: () => { history.goto(`/cmsProjectInterview/add/${data.fdId}/${data.fdProcessFlag.includes('5') ? 1 : 0}`) },
       auth: {
         authModuleName: 'cms-out-manage',
         authURL: '/cmsProjectInterview/add',
