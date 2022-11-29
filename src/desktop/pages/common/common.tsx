@@ -321,12 +321,12 @@ export const projectSelectInfocolumns = [
   /*项目名称*/
   {
     title: '项目名称',
-    dataIndex: 'fdName',
+    dataIndex: 'fdProject',
     width: 150,
     ellipsis: true,
     render: (value) => (
-      <Tooltip placement="topLeft" title={value}>
-        {value}
+      <Tooltip placement="topLeft" title={value && value.fdName}>
+        {value && value.fdName}
       </Tooltip>
     )
   },
