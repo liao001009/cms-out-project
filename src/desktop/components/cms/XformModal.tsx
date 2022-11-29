@@ -402,6 +402,7 @@ const XformModal: React.FC<IProps> = (props) => {
         mask={true}
         width={'1100px'}
         className='record-modal'
+        cancelText='取消'
         onCancel={() => handleCancel()}
         onOk={() => handleOk()}
         footer={showFooter ? undefined : null}

@@ -4,7 +4,6 @@ import { IContentViewProps } from '@ekp-runtime/render-module'
 import { Button, Loading, Message, Modal, Tabs } from '@lui/core'
 import React, { Fragment, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import XForm from './form'
-import apiLbpm from '@/api/cmsLbpm'
 import apiOrder from '@/api/cmsOrderResponse'
 import apiProjectInterview from '@/api/cmsProjectInterview'
 import apiSelectInfo from '@/api/cmsProjectSelectInfo'
@@ -17,7 +16,6 @@ import { fmtMsg } from '@ekp-infra/respect'
 //@ts-ignore
 import Status, { EStatusType } from '@elements/status'
 import Icon from '@lui/icons'
-import Axios from 'axios'
 import {
   cmsProjectInterviewList,
   cmsProjectWrittenList,
@@ -25,7 +23,7 @@ import {
   staffReviewColumns
 } from '../../common/common'
 import EditTable from './editTable/EditTable'
-import { useMkSendData } from '@/utils/mkHooks'
+import { useMkSendData, useMater } from '@/utils/mkHooks'
 import { cmsHandleBack } from '@/utils/routerUtil'
 import { exportTable, roleAuthCheck } from '@/desktop/shared/util'
 import './index.scss'
@@ -57,8 +55,6 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   const lbpmComponentRef = useRef<any>()
   const rightComponentRef = useRef<any>()
 
-  // 资料上传节点是否显示
-  const [materialVis, setMaterialVis] = useState<boolean>(true)
   /**外包人员评审模板 */
   const [staffTemplateData, setStaffTemplateData] = useState<any>({})
   // 发布中选信息模板
@@ -82,6 +78,8 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   const userId = mk.getSysConfig().currentUser.fdId
   const [isRequired, setIsRequired] = useState<boolean>(true)
 
+  // 是否可以人员编辑
+  const { materialVis } = useMater(data)
   // 当前登录人是否是框架管理员
   const editFlag = useMemo(() => {
     return userId === data.fdFrameAdmin.fdId
@@ -130,30 +128,8 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
       Message.error(error.response.data.msg || '请求失败')
     }
   }
-  /** 获取资料上传节点 */
-  const getCurrentNode = async () => {
-    try {
-      const nodeInfosData = await apiLbpm.getCurrentNodeInfo({
-        processInstanceId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId
-      })
-      const url = mk.getSysConfig('apiUrlPrefix') + '/cms-out-manage/cmsOutManageCommon/loadNodeExtendPropertiesOnProcess'
-      const processData = await Axios.post(url, {
-        fdId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId
-      })
-      if (nodeInfosData.data.currentNodeCards.length || processData.data.length) {
-        const newArr = processData.data.filter(item => {
-          return nodeInfosData.data.currentNodeCards.find(item2 => item.nodeId === item2.fdNodeId && item2.fdCurrentHandlers.some(item3 => item3.id === mk.getSysConfig('currentUser').fdId))
-        })
-        setMaterialVis(newArr.length ? newArr[0].extendProperty.supplierApprove === 'false' ? false : true : false)
-      } else {
-        setMaterialVis(false)
-      }
-    } catch (error) {
-      setMaterialVis(false)
-    }
-  }
+
   useEffect(() => {
-    getCurrentNode()
     getOrderRouterStatus()
     getSupplierStatus()
     getExportRole()

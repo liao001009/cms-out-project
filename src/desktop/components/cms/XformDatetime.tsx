@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react'
 
 import { DatePicker } from '@lui/core'
-import moment from 'moment'
+import moment from 'dayjs'
 
 
 export enum EShowStatus {

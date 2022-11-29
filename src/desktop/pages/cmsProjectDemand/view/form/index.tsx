@@ -35,6 +35,7 @@ const XForm = (props) => {
     cmsProjectDemandOrder: createRef() as any
   })
   const { formRef: formRef, value: value, materialVis, fdSuppliesVisible, isRequired, editFlag } = props
+  console.log('materialVis555', materialVis)
   const [form] = Form.useForm()
   // 框架数据
   const [frameData, setFrameData] = useState<any>([])

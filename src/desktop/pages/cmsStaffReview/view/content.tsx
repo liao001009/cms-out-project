@@ -1,14 +1,12 @@
-import apiLbpm from '@/api/cmsLbpm'
 import api from '@/api/cmsStaffReview'
 import { Auth, Module } from '@ekp-infra/common'
 import { IContentViewProps } from '@ekp-runtime/render-module'
 import { Button, Message, Modal } from '@lui/core'
-import Axios from 'axios'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import XForm from './form'
 //@ts-ignore
 import Status, { EStatusType } from '@elements/status'
-import { useMkSendData } from '@/utils/mkHooks'
+import { useMkSendData, useMater } from '@/utils/mkHooks'
 import { fmtMsg } from '@ekp-infra/respect'
 import Icon from '@lui/icons'
 import { cmsHandleBack } from '@/utils/routerUtil'
@@ -20,40 +18,15 @@ const { confirm } = Modal
 const baseCls = 'project-review-content'
 const Content: React.FC<IContentViewProps> = props => {
   const { data, history, match } = props
-  const [materialVis, setMaterialVis] = useState<boolean>(true)
+  /** 定级 */
+  const { materialVis, setMaterialVis } = useMater(data)
   const { params } = match
   // 模板id
   const templateId = useMemo(() => {
     return data?.fdTemplate?.fdId
   }, [data])
 
-  /** 定级 */
-  const getCurrentNode = async () => {
-    try {
-      const nodeInfosData = await apiLbpm.getCurrentNodeInfo({
-        processInstanceId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId
-      })
-      const url = mk.getSysConfig('apiUrlPrefix') + '/cms-out-manage/cmsOutManageCommon/loadNodeExtendPropertiesOnProcess'
-      const processData = await Axios.post(url, {
-        fdId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId
-      })
-      if (nodeInfosData.data.currentNodeCards.length || processData.data.length) {
-        const newArr = processData.data.filter(item => {
-          return nodeInfosData.data.currentNodeCards.find(item2 => item.nodeId === item2.fdNodeId && item2.fdCurrentHandlers.some(item3 => item3.id === mk.getSysConfig('currentUser').fdId))
-        })
-        setMaterialVis(newArr.length ? newArr[0].extendProperty.supplierApprove === 'false' ? false : true : false)
-      } else {
-        setMaterialVis(false)
-      }
-    } catch (error) {
-      console.error('errortest2', error)
-      setMaterialVis(false)
-    }
-  }
 
-  useEffect(() => {
-    getCurrentNode()
-  }, [])
   // 机制组件引用
   const formComponentRef = useRef<any>()
   const lbpmComponentRef = useRef<any>()

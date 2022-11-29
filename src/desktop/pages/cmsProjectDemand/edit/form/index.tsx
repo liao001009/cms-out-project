@@ -1,7 +1,7 @@
 import React, { useRef, createRef, useState, useEffect, Fragment } from 'react'
 import './index.scss'
 import { fmtMsg } from '@ekp-infra/respect'
-import { Form, Message, Button } from '@lui/core'
+import { Form, Message, Button, ButtonGroup } from '@lui/core'
 import { useApi, useSystem } from '@/desktop/shared/formHooks'
 import XformAppearance from '@/desktop/components/form/XformAppearance'
 import LayoutGrid from '@/desktop/components/form/LayoutGrid'
@@ -943,10 +943,10 @@ const XForm = (props) => {
                 </XformFieldset>
               </GridItem>
               <div id='uploadDown' style={{ display: 'none' }}>
-                <Button.Group amount={2} className='lui-test-btn-group' shape='link'>
+                <ButtonGroup amount={2} className='lui-test-btn-group' shape='link'>
                   <Button onClick={uploadExec} shape='link' type='default' label='上传' icon={<Icon type='vector' name='upload' />} />
                   <Button onClick={downloadExecl} shape='link' type='default' label='下载模板' icon={<Icon type='vector' name='download' />} />
-                </Button.Group>
+                </ButtonGroup>
                 <XformExecl onChange={(info) => { handlerChange(info) }} handleCancel={handleCancel} visible={visible} errMsgArr={errMsgArr} />
               </div>
               <GridItem column={1} row={15} rowSpan={1} columnSpan={40}>

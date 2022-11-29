@@ -17,7 +17,7 @@ import { outStaffInfoColumns } from '@/desktop/pages/common/common'
 import { useApi, useSystem } from '@/desktop/shared/formHooks'
 import { EShowStatus } from '@/types/showStatus'
 import { fmtMsg } from '@ekp-infra/respect'
-import { Button, Form, Message } from '@lui/core'
+import { Button, Form, Message, ButtonGroup } from '@lui/core'
 import React, { createRef, useEffect, useRef, useState } from 'react'
 import Icon from '@lui/icons'
 import './index.scss'
@@ -648,11 +648,11 @@ const XForm = (props) => {
               </XformFieldset>
             </GridItem>
             <div id='uploadDown' style={{ display: 'none' }}>
-              <Button.Group amount={2} className='lui-test-btn-group' shape='link'>
+              <ButtonGroup amount={2} className='lui-test-btn-group' shape='link'>
                 <Button onClick={() => { uploadExecl() }} type='default' label='上传' icon={<Icon type='vector' name='upload' />} />
                 <Button onClick={() => { downloadExecl() }} type='default' label='下载模板' icon={<Icon type='vector' name='download' />} >
                 </Button>
-              </Button.Group>
+              </ButtonGroup>
               <XformExecl onChange={(info) => { handlerChange(info) }} handleCancel={() => { handleCancel() }} visible={visible} errMsgArr={errMsgArr} />
             </div>
             <GridItem column={1} row={4} columnSpan={2} rowSpan={1}>
