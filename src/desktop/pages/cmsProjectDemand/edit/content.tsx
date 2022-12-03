@@ -156,6 +156,7 @@ const Content: React.FC<IContentViewProps> = props => {
       icon: h(Icon, { name: 'delete', color: '#F25643' }),
       okType: 'danger' as EBtnType,
       okText: '删除',
+      cancelText: '取消',
       onOk: () => {
         api
           .delete({ fdId: data.fdId })

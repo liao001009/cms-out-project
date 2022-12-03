@@ -8,7 +8,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import XForm from './form'
 import Icon from '@lui/icons'
 import { cmsHandleBack } from '@/utils/routerUtil'
-
+const { confirm } = Modal
 // import './index.scss'
 Message.config({ maxCount: 1 })
 const LbpmFormWithLayout = Module.getComponent('sys-lbpm', 'LbpmFormWithLayout', { loading: <React.Fragment></React.Fragment> })
@@ -21,6 +21,8 @@ const Content: React.FC<IContentViewProps> = props => {
   const [modalVisible, setModalVisible] = useState<boolean>(false)
   // 表单数据
   const [formValue, setFormValue] = useState<any>()
+  // 是否禁止提交
+  const [disabled, setDisaabled] = useState<boolean>(false)
   // 机制组件引用
   const formComponentRef = useRef<any>()
   const lbpmComponentRef = useRef<any>()
@@ -95,6 +97,10 @@ const Content: React.FC<IContentViewProps> = props => {
   }
   // 提交/暂存通用逻辑
   const handleSave = async (isDraft: boolean) => {
+    if (disabled) {
+      Message.error('当前时间范围内匹配不到任何预算,暂时无法提交')
+      return
+    }
     // 校验文档
     if (await _validate(isDraft) === false) {
       return
@@ -129,7 +135,21 @@ const Content: React.FC<IContentViewProps> = props => {
       frameId: values.fdFrame.fdId
     })
     // 预算总额 冻结预算金额 占用预算金额
-    const { totalAmount, freezeAmount, occupyAmount } = res.data
+    const { totalAmount, freezeAmount, occupyAmount, amountFlag } = res.data
+    if (!amountFlag) {
+      confirm({
+        content: '当前时间范围内匹配不到任何预算',
+        okText: '确定',
+        cancelText: '取消',
+        onOk () {
+          setDisaabled(true)
+        },
+        onCancel () {
+          setDisaabled(true)
+        }
+      })
+      return
+    }
     const restAmout = totalAmount - freezeAmount - occupyAmount
     if (restAmout <= 0) {
       setModalVisible(true)
@@ -253,6 +273,7 @@ const Content: React.FC<IContentViewProps> = props => {
       <Modal
         visible={modalVisible}
         onOk={handleOk}
+        cancelText={'取消'}
         onCancel={() => {
           setModalVisible(false)
         }}
