@@ -322,6 +322,7 @@ const Content: React.FC<IContentViewProps> = props => {
       <Modal
         visible={modalVisible}
         cancelText={'取消'}
+        okText={'确定'}
         onOk={() => {
           setModalVisible(false)
           setHandleFlag(true)
