@@ -379,6 +379,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     confirm({
       content: '确认删除此记录？',
       cancelText: '取消',
+      okText: '确定',
       onOk () {
         api.delete({ fdId: data.fdId }).then(res => {
           if (res.success) {
