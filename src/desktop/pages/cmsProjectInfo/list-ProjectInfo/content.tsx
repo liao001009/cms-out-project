@@ -276,7 +276,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
                 ></Criteria.Criterion>
                 <Criteria.Org orgType={2} title="所属部门" name="fdBelongDept.fdId"></Criteria.Org>
                 <Criteria.Org orgType={2} title="所属组/团队" name="fdBelongTeam.fdId"></Criteria.Org>
-                <Criteria.Org orgType={8} title="项目负责人" name="fdProjectPrincipal.fdId"></Criteria.Org>
+                <Criteria.Org orgType={8} options={[]} placeholder='请输入姓名'title="项目负责人" name="fdProjectPrincipal.fdId"></Criteria.Org>
                 <Criteria.Calendar
                   options={Criteria.Calendar.buildOptions()}
                   name="fdProjectDate"

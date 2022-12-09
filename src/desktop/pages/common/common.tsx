@@ -700,8 +700,8 @@ export const projectCriertia = () => {
         title="项目性质"
       ></Criteria.Criterion>
       <Criteria.Org orgType={2} title="所属部门" name="fdBelongDept.fdId"></Criteria.Org>
-      <Criteria.Org orgType={8} title="项目负责人" name="fdProjectPrincipal.fdId"></Criteria.Org>
-      {/* <Criteria.Org orgType={8} title="内部责任人" name="fdInnerPrincipal.fdId"></Criteria.Org> */}
+      <Criteria.Org orgType={8} options={[]} placeholder='请输入姓名'title="项目负责人" name="fdProjectPrincipal.fdId"></Criteria.Org>
+      {/* <Criteria.Org orgType={8} options={[]} placeholder='请输入姓名'title="内部责任人" name="fdInnerPrincipal.fdId"></Criteria.Org> */}
       <Criteria.Calendar
         options={Criteria.Calendar.buildOptions()}
         name="fdProjectDate"
@@ -793,7 +793,7 @@ export const staffReviewUpgrade = () => (
 export const projectSelectInfoCriertia = () => {
   return (
     <React.Fragment>
-      <Criteria.Org orgType={8} title="创建人" name="fdCreator.fdId"></Criteria.Org>
+      <Criteria.Org orgType={8} options={[]} placeholder='请输入姓名'title="创建人" name="fdCreator.fdId"></Criteria.Org>
       <Criteria.Calendar
         options={Criteria.Calendar.buildOptions()}
         name="fdCreateTime"

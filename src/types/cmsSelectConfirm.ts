@@ -1,7 +1,7 @@
 import { IBaseType } from '@ekp-infra/common/dist/types'
 import { IOrgElement } from '@ekp-infra/common/dist/types'
 
-/*中选确认*/
+/*中选信息*/
 export interface ICmsSelectConfirm extends IBaseType {
   //创建人
   fdCreator: Partial<IOrgElement>
