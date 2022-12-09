@@ -46,6 +46,8 @@ const lpackConfig = {
       // artifact: 'http://127.0.0.1:8008'
     },
     // elementsUrlPrefix: 'http://127.0.0.1:8008',
+    enabledGlobalLui: true,
+    enabledGlobalMui: true,
     // 服务端域名
     apiUrlPrefix: 'http://192.168.50.145:8101/data',
     // apiUrlPrefix: 'http://10.10.10.253:9101/data',
