@@ -252,7 +252,7 @@ const XForm = (props) => {
   }
 
   const downloadExecl = () => {
-    window.open(mk.getResourcePath('@module:cms-out-project/desktop/static/attach/工作分解模板.xlsx'), '_blank')
+    window.open(mk.getResourcePath('@module:cms-out-project/desktop/static/attach/work.xlsx'), '_blank')
   }
 
   const handlerChange = (info) => {

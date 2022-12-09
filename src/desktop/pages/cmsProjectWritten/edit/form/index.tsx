@@ -466,7 +466,7 @@ const XForm = (props) => {
   }
 
   const downloadExecl = () => {
-    window.open(mk.getResourcePath('@module:cms-out-project/desktop/static/attach/笔试成绩模板.xlsx'), '_blank')
+    window.open(mk.getResourcePath('@module:cms-out-project/desktop/static/attach/written.xlsx'), '_blank')
   }
 
 
