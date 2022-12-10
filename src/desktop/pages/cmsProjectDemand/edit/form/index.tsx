@@ -1238,12 +1238,12 @@ const XForm = (props) => {
                             controlActions: {
                               'onChange': [{
                                 function: (v, r) => {
-                                  const levelItem = levelData.find(item => item.fdId === v)
+                                  // const levelItem = levelData.find(item => item.fdId === v)
                                   sysProps.$$form.current.updateFormItemProps('cmsProjectDemandDetail', {
                                     rowValue: {
                                       rowNum: r,
                                       value: {
-                                        fdSkillRemand: levelItem.fdRemark,
+                                        // fdSkillRemand: levelItem.fdRemark,
                                         fdSkillLevel: { fdId: v }
                                       }
                                     }
@@ -1312,7 +1312,7 @@ const XForm = (props) => {
                               type: XformInput
                             },
                             type: XformInput,
-                            showStatus: 'readOnly'
+                            showStatus: 'edit'
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5hvhi5ruejee5eeyv}', '经验和技能要求'),

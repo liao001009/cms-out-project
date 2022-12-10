@@ -82,7 +82,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   const { materialVis } = useMater(data)
   // 当前登录人是否是框架管理员
   const editFlag = useMemo(() => {
-    return userId === data.fdFrameAdmin.fdId
+    return userId === data?.fdFrameAdmin?.fdId
   }, [data?.fdFrameAdmin?.fdId])
 
   // 获取是否有导出订单响应列表的权限
@@ -601,6 +601,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
                     columns={cmsProjectWrittenList}
                     params={staffReviewParams}
                     onRowUrl={'/cmsProjectWritten/view/'}
+                    history={history}
                   />
                 </TabPane>
                 <TabPane tab="面试" key="3">
@@ -609,6 +610,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
                     columns={cmsProjectInterviewList}
                     params={staffReviewParams}
                     onRowUrl={'/cmsProjectInterview/view/'}
+                    history={history}
                   />
                 </TabPane>
                 <TabPane tab="外包人员评审" key="4" >
@@ -617,6 +619,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
                     columns={staffReviewColumns}
                     params={staffReviewParams}
                     onRowUrl={staffReviewRoute}
+                    history={history}
                   />
                 </TabPane>
                 <TabPane tab="中选信息" key="5">
