@@ -22,6 +22,7 @@ import CMSXformModal from '@/desktop/components/cms/XformModal'
 import XformExecl from '@/desktop/components/cms/XformExecl'
 import Icon from '@lui/icons'
 import apiSelect from '@/api/cmsSelectConfirm'
+import { removalData } from '@/utils/util'
 
 const MECHANISMNAMES = {}
 
@@ -110,6 +111,7 @@ const XForm = (props) => {
           return sup
         })
       }
+      newSupplierData = removalData(newSupplierData)
       setSupplierData(newSupplierData)
       setStaffInfo(resStaff?.data?.content)
     } catch (error) {

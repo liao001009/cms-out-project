@@ -22,7 +22,7 @@ import React, { createRef, useEffect, useRef, useState } from 'react'
 import Icon from '@lui/icons'
 import './index.scss'
 import moment from 'moment'
-import { formatDate } from '@/utils/util'
+import { formatDate, removalData } from '@/utils/util'
 
 const MECHANISMNAMES = {}
 
@@ -92,13 +92,15 @@ const XForm = (props) => {
         setDefaultTableCriteria(newParam)
       }
 
-      const rtnSupplier = resStaff?.data?.content?.map(item => {
+      let rtnSupplier = resStaff?.data?.content?.map(item => {
         const sup = {
+          ...item?.fdSupplier,
           label: item?.fdSupplier.fdName,
           value: item?.fdSupplier.fdId
         }
         return sup
       })
+      rtnSupplier = removalData(rtnSupplier)
       setSupplierData(rtnSupplier)
       setStaffInfo(resStaff?.data?.content)
     } catch (error) {

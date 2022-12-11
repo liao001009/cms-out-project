@@ -7,5 +7,19 @@ export const formatDate = (numb, format) => {
   const date = time.getDate()
   const hours = time.getHours()
   const minutes = time.getMinutes()
-  return year + format + (month < 10 ? '0' + month : month) + format + (date < 10 ? '0' + date : date) + ' ' + hours +':'+ minutes
+  return year + format + (month < 10 ? '0' + month : month) + format + (date < 10 ? '0' + date : date) + ' ' + hours + ':' + minutes
+}
+
+
+
+export const removalData = (data) => {
+  for (let i = 0; i < data.length; i++) {
+    for (let j = i + 1; j < data.length; j++) {
+      if (data[i].value === data[j].value) {
+        data.splice(j, 1)
+        j--
+      }
+    }
+  }
+  return data
 }

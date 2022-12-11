@@ -1304,8 +1304,8 @@ const XForm = (props) => {
                         {
                           type: XformInput,
                           controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5hvhi5ruejee5eeyv}', '经验和技能要求'),
-                            maxLength: 100,
+                            title: '具体要求',
+                            maxLength: 200,
                             name: 'fdSkillRemand',
                             placeholder: fmtMsg(':cmsProjectDemand.form.!{l5hvhi5shcphr934m3h}', '请输入'),
                             desktop: {
@@ -1315,13 +1315,13 @@ const XForm = (props) => {
                             showStatus: 'edit'
                           },
                           labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5hvhi5ruejee5eeyv}', '经验和技能要求'),
+                            title: '具体要求',
                             desktop: {
                               layout: 'vertical'
                             },
                             labelTextAlign: 'left'
                           },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5hvhi5ruejee5eeyv}', '经验和技能要求')
+                          label: '具体要求'
                         }
                       ]}
                       canAddRow={true}
