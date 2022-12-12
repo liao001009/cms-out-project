@@ -55,6 +55,7 @@ const XForm = (props) => {
   useEffect(() => {
     // init()
     let paramId = props?.match?.params?.id
+    // isSupplement 1表示增补人员 0 表示订单响应人员
     let isSupplement = ''
     if (props.mode === 'add') {
       form.setFieldsValue({
