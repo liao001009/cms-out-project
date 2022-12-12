@@ -38,7 +38,6 @@ const XForm = (props) => {
   const [staffInfo, setStaffInfo] = useState<any>([])
   const [visible, setVisible] = useState<boolean>(false)
   const [errMsgArr, setErrMsgArr] = useState<any>([])
-
   // 通过js手动将模板和导入按钮放到明细表上面
   const getTag = () => {
     let parentNode, addRow
@@ -53,7 +52,6 @@ const XForm = (props) => {
       }
     }, 1000)
   }
-
   useEffect(() => {
     // init()
     let paramId = props?.match?.params?.id
@@ -92,6 +90,8 @@ const XForm = (props) => {
           }
         }
         setDefaultTableCriteria(newParam)
+      } else {
+        setDefaultTableCriteria([''])
       }
       let newSupplierData: any = []
       if (isSupplement === '1') {
@@ -430,6 +430,7 @@ const XForm = (props) => {
                     columns={[
                       {
                         type: CMSXformModal,
+                        key: defaultTableCriteria,
                         controlProps: {
                           apiKey: apiStaffInfo,
                           apiName: 'list',
