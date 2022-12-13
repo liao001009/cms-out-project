@@ -99,7 +99,9 @@ export enum ESysLbpmProcessStatus {
   /** 驳回状态 */
   'REJECT' = '11',
   /** 撤回草稿 */
-  'WITHDRAW' = '12'
+  'WITHDRAW' = '12',
+  /**流程异常 */
+  'ABNORMAL' = '29'
 }
 
 /** 是否为流程相关处理人 */

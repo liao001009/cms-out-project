@@ -276,3 +276,15 @@
     }
   }
 }
+
+.ele-module-layout-default {
+  .ele-module-layout-default-content {
+    & > div {
+      overflow: unset !important;
+    }
+
+    .lbpm-approve-page-layout-content-fixed {
+      height: calc(100vh - 60px) !important;
+    }
+  }
+}
