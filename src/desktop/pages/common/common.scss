@@ -283,6 +283,11 @@
       overflow: unset !important;
     }
 
+    .normal {
+      height: 100%;
+      overflow: auto !important;
+    }
+
     .lbpm-approve-page-layout-content-fixed {
       height: calc(100vh - 60px) !important;
     }

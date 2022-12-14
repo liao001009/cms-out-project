@@ -462,16 +462,7 @@ const XForm = (props) => {
                             layout={'horizontal'}
                           >
                             <Form.Item name={'fdOrderAmount'}>
-                              {/* <XformMoney
-                          {...sysProps}
-                          placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hu3p9i1j80lnhffd}', '请输入')}
-                          numberFormat={{
-                            formatType: 'base'
-                          }}
-                          precision={2}
-                          showStatus="view"
-                        ></XformMoney> */}
-                              <span>{value?.fdOrderAmount.toFixed(2)}万</span>
+                              <span>{value?.fdOrderAmount?.toFixed(2)}万</span>
                             </Form.Item>
                           </XformFieldset>
                         </GridItem>

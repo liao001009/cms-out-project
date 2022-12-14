@@ -166,6 +166,7 @@ const XForm = (props) => {
     valuesData.length && detailForms.current.cmsProjectDemandSupp.current.deleteAll()
   }
 
+  // 切换供应商
   const handleChangeSupplier = async (v) => {
     setSelectedFdSupplier(v)
     // 给明细表默认加行数并赋值默认数据
@@ -227,6 +228,7 @@ const XForm = (props) => {
     }, 0)
   }
 
+  // 切换项目
   const handleProject = (v) => {
     setIsFrameChild(v.fdFrame.fdName === '设计类')
     setSelectedFrame(v.fdFrame)
@@ -246,11 +248,11 @@ const XForm = (props) => {
     setAssignSupplier(undefined)
   }
 
-
+  // 上传
   const uploadExec = () => {
     setVisible(true)
   }
-
+  // 下载模板
   const downloadExecl = () => {
     window.open(mk.getResourcePath('@module:cms-out-project/desktop/static/attach/work.xlsx'), '_blank')
   }
@@ -260,6 +262,8 @@ const XForm = (props) => {
     const array: any[] = Object.values(info).flat(Infinity)
     setDetailData(array)
   }
+
+  // 修改工作分解的明细表数据
   const setDetailData = (data) => {
     const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectDemandWork').values
     valuesData.length && detailForms.current.cmsProjectDemandWork.current.deleteAll()
@@ -285,6 +289,7 @@ const XForm = (props) => {
       })
       if (!errMsg.length) {
         detailForms.current.cmsProjectDemandWork.current.updateValues(newData)
+        renderPrice(newData)
         setErrMsgArr([])
         handleCancel()
       } else {
@@ -292,6 +297,16 @@ const XForm = (props) => {
       }
     }
   }
+  /**计算订单金额 */
+  const renderPrice = (values) => {
+    const newPrice = values.reduce((a, b) => {
+      return a + b.fdCostApproval
+    }, 0)
+    form.setFieldsValue({
+      fdOrderAmount: newPrice
+    })
+  }
+
   const handleCancel = () => {
     setVisible(false)
   }
@@ -1074,12 +1089,7 @@ const XForm = (props) => {
                               'onBlur': [{
                                 function: () => {
                                   const values = sysProps.$$form.current.getFieldsValue('cmsProjectDemandWork').values
-                                  const newPrice = values.reduce((a, b) => {
-                                    return a + b.fdCostApproval
-                                  }, 0)
-                                  form.setFieldsValue({
-                                    fdOrderAmount: newPrice
-                                  })
+                                  renderPrice(values)
                                 }
                               }]
                             }

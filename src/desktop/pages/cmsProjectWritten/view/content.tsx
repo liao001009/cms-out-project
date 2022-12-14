@@ -10,7 +10,7 @@ Message.config({ maxCount: 1 })
 
 const { confirm } = Modal
 
-const baseCls = 'cmsProjectWritten-content'
+const baseCls = 'cmsProjectWritten-content normal'
 
 const Content: React.FC<IContentViewProps> = props => {
   const { data, history, match } = props

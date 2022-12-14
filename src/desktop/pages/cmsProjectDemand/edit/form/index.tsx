@@ -283,12 +283,25 @@ const XForm = (props) => {
       if (!errMsg.length) {
         detailForms.current.cmsProjectDemandWork.current.updateValues(newData)
         setErrMsgArr([])
+        renderPrice(newData)
         handleCancel()
       } else {
         setErrMsgArr(errMsg)
       }
     }
   }
+
+  /**计算订单金额 */
+  const renderPrice = (values) => {
+    const newPrice = values.reduce((a, b) => {
+      return a + b.fdCostApproval
+    }, 0)
+    form.setFieldsValue({
+      fdOrderAmount: newPrice
+    })
+  }
+
+
   const handleCancel = () => {
     setVisible(false)
   }
@@ -1070,7 +1083,15 @@ const XForm = (props) => {
                               type: XformNumber
                             },
                             type: XformNumber,
-                            showStatus: 'edit'
+                            showStatus: 'edit',
+                            controlActions: {
+                              'onBlur': [{
+                                function: () => {
+                                  const values = sysProps.$$form.current.getFieldsValue('cmsProjectDemandWork').values
+                                  renderPrice(values)
+                                }
+                              }]
+                            }
                           },
                           labelProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5humco963yvy68le9m}', '费用核定（万元）'),

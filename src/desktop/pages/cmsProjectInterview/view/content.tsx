@@ -9,7 +9,7 @@ import { Auth } from '@ekp-infra/common'
 Message.config({ maxCount: 1 })
 
 const { confirm } = Modal
-const baseCls = 'cmsProjectInterview-content'
+const baseCls = 'cmsProjectInterview-content normal'
 
 const Content: React.FC<IContentViewProps> = props => {
   const { data, history, match } = props

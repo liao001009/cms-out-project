@@ -11,7 +11,7 @@ import { ESysLbpmProcessStatus } from '@/utils/status'
 import { cmsHandleBack } from '@/utils/routerUtil'
 import { Auth } from '@ekp-infra/common'
 Message.config({ maxCount: 1 })
-const bacls = 'cmsProjectInterview-content'
+const bacls = 'cmsProjectInterview-content normal'
 
 const Content: React.FC<IProps & IContentViewProps> = props => {
   const { data, history, routerPrefix, mode, match } = props

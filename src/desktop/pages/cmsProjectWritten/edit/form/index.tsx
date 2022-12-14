@@ -19,6 +19,8 @@ import { EShowStatus } from '@/types/showStatus'
 import { fmtMsg } from '@ekp-infra/respect'
 import { Button, Form, Message, ButtonGroup } from '@lui/core'
 import React, { createRef, useEffect, useRef, useState } from 'react'
+import XformDescription from '@/desktop/components/form/XformDescription'
+
 import Icon from '@lui/icons'
 import './index.scss'
 import moment from 'moment'
@@ -90,8 +92,9 @@ const XForm = (props) => {
           }
         }
         setDefaultTableCriteria(newParam)
+      } else {
+        setDefaultTableCriteria([''])
       }
-
       let rtnSupplier = resStaff?.data?.content?.map(item => {
         const sup = {
           ...item?.fdSupplier,
@@ -542,7 +545,30 @@ const XForm = (props) => {
       <Form form={form} colPadding={false} onValuesChange={onValuesChange}>
         <XformAppearance>
           <LayoutGrid columns={2} rows={9}>
-
+            <GridItem
+              column={1}
+              row={1}
+              columnSpan={2}
+              rowSpan={1}
+              style={{
+                textAlign: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <XformFieldset compose={true}>
+                <Form.Item name={'fdCol5hz0vs'}>
+                  <XformDescription
+                    {...sysProps}
+                    defaultTextValue={'录入笔试成绩'}
+                    controlValueStyle={{
+                      fontSize: 20,
+                      fontWeight: 'bold'
+                    }}
+                    showStatus="edit"
+                  ></XformDescription>
+                </Form.Item>
+              </XformFieldset>
+            </GridItem>
             <GridItem column={1} row={2} rowSpan={1} columnSpan={1}>
               <XformFieldset
                 mobileContentAlign={'right'}
