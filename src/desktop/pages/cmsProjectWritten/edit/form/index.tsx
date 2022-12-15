@@ -23,7 +23,7 @@ import XformDescription from '@/desktop/components/form/XformDescription'
 
 import Icon from '@lui/icons'
 import './index.scss'
-import moment from 'moment'
+import moment from 'dayjs'
 import { formatDate, removalData } from '@/utils/util'
 
 const MECHANISMNAMES = {}
@@ -522,8 +522,10 @@ const XForm = (props) => {
         const personInfo = checkPersonInfo(item['fdInterviewName'])
         if (personInfo) {
           item['fdInterviewName'] = personInfo
-          const fdBeginTime = moment(formatDate(item['fdBeginTime'], '-'))
-          const fdEndTime = moment(formatDate(item['fdEndTime'], '-'))
+          const fdBeginTime = moment(formatDate(item['fdBeginTime'], '-')).valueOf()
+          const fdEndTime = moment(formatDate(item['fdEndTime'], '-')).valueOf()
+          console.log('fdEndTime5559', fdEndTime)
+          console.log('fdBeginTime5559', fdBeginTime)
           const fdWrittenPass = Number(item['fdWrittenScores']) <= Number(fdQualifiedMark) ? '0' : '1'
           item = { ...item, ...personInfo, fdWrittenPass, fdBeginTime, fdEndTime }
           newValue.push(item)
@@ -669,8 +671,6 @@ const XForm = (props) => {
                     placeholder={'请输入'}
                     dataPattern={'yyyy-MM-dd'}
                     showStatus={EShowStatus.readOnly}
-                  // defaultValueType='now'
-                  // defaultValue={new Date().getTime()}
                   ></XformDatetime>
                 </Form.Item>
               </XformFieldset>
