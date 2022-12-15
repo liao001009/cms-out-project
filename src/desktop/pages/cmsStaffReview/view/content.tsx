@@ -113,6 +113,10 @@ const Content: React.FC<IContentViewProps> = props => {
     if (await _beforeSave(isDraft) === false) {
       return
     }
+    if (!values.fdSubject) {
+      Message.error('请填写主题')
+      return
+    }
     values = {
       ...values,
       cmsStaffReviewDetail: values.cmsStaffReviewDetail.values || undefined
