@@ -2292,17 +2292,17 @@
     solarlunar "~2.0.7"
     video-react "^0.15.0"
 
-"@lui/core@^5.1.0-beta.365":
-  version "5.1.0-beta.365"
-  resolved "http://npm.landray.com.cn/@lui%2fcore/-/core-5.1.0-beta.365.tgz#d82b1632a789feac00a9514f78c657f3640b6f7b"
-  integrity sha512-FnPq8BAih343L5nP+T+X3l0dLdrw88igPZRXG/KgSHZ7p1LoZJrypbfk7hQRvBOuIEM6pI6vMGZt5WebT0FR7g==
+"@lui/core@^5.1.0-beta.372":
+  version "5.1.0-beta.372"
+  resolved "http://npm.landray.com.cn/@lui%2fcore/-/core-5.1.0-beta.372.tgz#3e9c67c180671421ef508d6edd8a7be308ea0e90"
+  integrity sha512-+CYKDwRmkpTHXmcvHa47aHere0olDgtOGca7hYNMTduTKuCBcoBj7C2ZSFOm5bbaCMoFb/Ipisu81EALbkzycQ==
   dependencies:
     "@fullcalendar/daygrid" "~5.10.1"
     "@fullcalendar/interaction" "~5.10.1"
     "@fullcalendar/react" "~5.10.1"
-    "@lui/i18n" "5.1.0-beta.365"
-    "@lui/icons" "5.1.0-beta.365"
-    "@lui/theme" "5.1.0-beta.365"
+    "@lui/i18n" "5.1.0-beta.372"
+    "@lui/icons" "5.1.0-beta.372"
+    "@lui/theme" "5.1.0-beta.372"
     "@react-spring/web" "^9.3.1"
     antd "~4.19.1"
     dayjs "^1.10.6"
@@ -2333,20 +2333,20 @@
   resolved "http://npm.landray.com.cn/@lui%2fi18n/-/i18n-5.1.0-beta.253.tgz#df27ffbeb01338f58d6f97fb5008719cfeb35e59"
   integrity sha512-H0t8ND14SP1Jw/3Sb8Q1RqlmYH2GwRoiDY/fwN5pJJmhezaL8Ctq+PpZP41Uujmh3jrEHeBQmNAUHZdWcmSLyg==
 
-"@lui/i18n@5.1.0-beta.365":
-  version "5.1.0-beta.365"
-  resolved "http://npm.landray.com.cn/@lui%2fi18n/-/i18n-5.1.0-beta.365.tgz#498061defd0aeff68daf39915c8dbcbb38318bb5"
-  integrity sha512-7L/gg8X1a2+fiBJ9pVCStwVLiY4/7uPEMaVVUb84OVVT33lLq9dOwb+vUvQIOwgqY0M+XjFSJEkkfbKmQpnGLA==
+"@lui/i18n@5.1.0-beta.372":
+  version "5.1.0-beta.372"
+  resolved "http://npm.landray.com.cn/@lui%2fi18n/-/i18n-5.1.0-beta.372.tgz#3efdd3ef470ab60eb510440411e651dad9f35b7c"
+  integrity sha512-er+Cw3FeGjuSjqFv5WX5B/vjrfB9H03lwGMRzE6RK2x2DWI165Drl9n13EHyn1L90rpZjsFNv78esLCDGzd6SA==
 
 "@lui/icons@5.1.0-beta.253":
   version "5.1.0-beta.253"
   resolved "http://npm.landray.com.cn/@lui%2ficons/-/icons-5.1.0-beta.253.tgz#2360f473b1dd039343f0dd17a17607d2e979cfde"
   integrity sha512-7oTM6w4pkviBsQJCbs1U9XdysiPw3R2pqOxqf7NbheTOGwJkaTgXGgz4XrQ1gRyNU9ltAtrPF9Sa+xUdJpxnAg==
 
-"@lui/icons@5.1.0-beta.365":
-  version "5.1.0-beta.365"
-  resolved "http://npm.landray.com.cn/@lui%2ficons/-/icons-5.1.0-beta.365.tgz#e0e7a31fc9818770a4865d866f79cf26d27408d0"
-  integrity sha512-8OER7p4Zbr+Lhrs1VF3NNhbH+daBDXbn7RWwS38YpKdiAnnbsuAvZbmgmdc8yDsE5yQOHGxGRp0hrhTg1CCWnw==
+"@lui/icons@5.1.0-beta.372":
+  version "5.1.0-beta.372"
+  resolved "http://npm.landray.com.cn/@lui%2ficons/-/icons-5.1.0-beta.372.tgz#a0f88b241ce649d9ed57e911469d273ef86e9865"
+  integrity sha512-Iaf1hcGanjHo2/y5ntPur6GSvHNkQ0sAW/cdxuTOUdBRKpJ3dFn6/q3KaMUH9M/x1OZ03Oizr8cC/zPjgT7jnQ==
 
 "@lui/icons@~5.1.0-beta.190":
   version "5.1.0-rc.4"
@@ -2377,10 +2377,10 @@
   resolved "http://npm.landray.com.cn/@lui%2ftheme/-/theme-5.1.0-beta.253.tgz#360401527020877cc73773a88949c1eaa802801b"
   integrity sha512-YAP2BbYSc+7ukdZnTQVX7eNN2B1gsvhVL3b9Mb2KemEDHkP9ykex6NY7r006c5ZIYimqwmolT9RzYLs1O7T4wg==
 
-"@lui/theme@5.1.0-beta.365":
-  version "5.1.0-beta.365"
-  resolved "http://npm.landray.com.cn/@lui%2ftheme/-/theme-5.1.0-beta.365.tgz#75a94b2229808f784f8801d4505a926cd8407195"
-  integrity sha512-c09NadMQNFhso6gcNzGQVWilVp4TrJUEOxQ+dODFoIAJGNjpS8nOcppU4oIXLLz6vUsc7WSC7Zv7IvoBzY+IFQ==
+"@lui/theme@5.1.0-beta.372":
+  version "5.1.0-beta.372"
+  resolved "http://npm.landray.com.cn/@lui%2ftheme/-/theme-5.1.0-beta.372.tgz#7b89e77f0ab58668646d2780b53e7f62dfeb4045"
+  integrity sha512-nMDUl4bHPaCbbvM6yfOTPawX5XADyhisAZYngLea/vqG5+OgZKXnmDCKVHpAHQ+Z3zsNIFJcK/wCzTmpDZTMZw==
 
 "@marionebl/sander@^0.6.0":
   version "0.6.1"

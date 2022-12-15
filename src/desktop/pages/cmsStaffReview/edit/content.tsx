@@ -8,7 +8,7 @@ import { IContentViewProps } from '@ekp-runtime/render-module'
 import { Button, Message, Modal } from '@lui/core'
 import { EBtnType } from '@lui/core/es/components/Button'
 import Icon from '@lui/icons'
-import React, { createElement as h, useCallback, useEffect, useRef, useState } from 'react'
+import React, { createElement as h, useCallback, useEffect, useRef, useState, useMemo } from 'react'
 import XForm from './form'
 import { cmsHandleBack } from '@/utils/routerUtil'
 // import './index.scss'
@@ -241,24 +241,23 @@ const Content: React.FC<IContentViewProps> = props => {
       }
     }
   }
-
+  const hasDraftBtn = useMemo(() => {
+    const status = data?.fdProcessStatus || getFlowStatus(flowData)
+    /* 新建文档和草稿有暂存按钮 */
+    return status === ESysLbpmProcessStatus.DRAFT || status === ESysLbpmProcessStatus.REJECT || status === ESysLbpmProcessStatus.WITHDRAW
+  }, [data?.fdProcessStatus, flowData])
   //暂存
   const handleDraft = () => {
     if (
       !flowData ||
-      lbpmComponentRef.current?.checkOperationTypeExist?.(flowData?.identity, EOperationType.drafter_cancelDraftCooperate)
+      lbpmComponentRef.current?.checkOperationTypeExist?.(flowData?.identity, EOperationType.drafter_cancelDraftCooperate) ||
+      !hasDraftBtn
     ) return null
-
-    const status = data?.fdProcessStatus || getFlowStatus(flowData)
-    /* 新建文档和草稿有暂存按钮 */
-    if (status !== ESysLbpmProcessStatus.DRAFT || status !== ESysLbpmProcessStatus.REJECT || status !== ESysLbpmProcessStatus.WITHDRAW) return
-
     return {
       name: '暂存',
       action: () => { handleSave(true) }
     }
   }
-
   // 关闭
   const handleClose = () => {
     return {
