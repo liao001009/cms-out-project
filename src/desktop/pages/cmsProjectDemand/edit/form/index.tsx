@@ -273,7 +273,7 @@ const XForm = (props) => {
         if (!i.fdTaskName) {
           errMsg.push(`第${index + 1}条数据的‘任务’没有填写`)
         }
-        if (!i.fdCostApproval) {
+        if (!i.fdCostApproval && i.fdCostApproval !== 0) {
           errMsg.push(`第${index + 1}条数据的‘费用核定(万元)’没有填写`)
         }
         if (i.fdCostApproval < 0) {

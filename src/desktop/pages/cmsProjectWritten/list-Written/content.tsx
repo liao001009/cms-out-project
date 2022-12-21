@@ -164,6 +164,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
   const handleSearch = (keyword: string) => {
     queryChange({
       ...query,
+      offset: 0,
       conditions: {
         ...query.conditions,
         fdSubject: { $contains: keyword.trim() }
@@ -178,6 +179,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
       queryChange &&
         queryChange({
           ...query,
+          offset: 0,
           conditions
         })
     },
@@ -243,7 +245,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
           <div className="right">
             {/* 筛选器 */}
             <Criteria key="criteria" onChange={handleCriteriaChange}>
-              <Criteria.Org orgType={8} options={[]} placeholder='请输入姓名'title="创建人" name="fdCreator.fdId"></Criteria.Org>
+              <Criteria.Org orgType={8} options={[]} placeholder='请输入姓名' title="创建人" name="fdCreator.fdId"></Criteria.Org>
               <Criteria.Calendar
                 options={Criteria.Calendar.buildOptions()}
                 name="fdCreateTime"

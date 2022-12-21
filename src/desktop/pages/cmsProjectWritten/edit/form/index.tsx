@@ -524,8 +524,6 @@ const XForm = (props) => {
           item['fdInterviewName'] = personInfo
           const fdBeginTime = moment(formatDate(item['fdBeginTime'], '-')).valueOf()
           const fdEndTime = moment(formatDate(item['fdEndTime'], '-')).valueOf()
-          console.log('fdEndTime5559', fdEndTime)
-          console.log('fdBeginTime5559', fdBeginTime)
           const fdWrittenPass = Number(item['fdWrittenScores']) <= Number(fdQualifiedMark) ? '0' : '1'
           item = { ...item, ...personInfo, fdWrittenPass, fdBeginTime, fdEndTime }
           newValue.push(item)
