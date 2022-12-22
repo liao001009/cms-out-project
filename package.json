@@ -21,7 +21,6 @@
     "lint": "npx eslint ./**/*.{ts,tsx}",
     "fix": "npx eslint ./**/*.{ts,tsx} --fix"
   },
-  "proxy": "http://192.168.50.145:7101",
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"

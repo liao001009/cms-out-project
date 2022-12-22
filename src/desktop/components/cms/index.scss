@@ -55,3 +55,19 @@
     width: 100px;
   }
 }
+
+.modal-tag {
+  position: relative;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-right: 15px;
+
+  .anticon {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+  }
+}

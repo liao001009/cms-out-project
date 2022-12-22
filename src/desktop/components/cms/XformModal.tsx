@@ -327,12 +327,12 @@ const XformModal: React.FC<IProps> = (props) => {
   const renderTag = () => {
     if (initSelectedArr && initSelectedArr.length) {
       return initSelectedArr.map(i => {
-        return <Tag key={i.fdId}>{i.fdName}</Tag>
+        return <Tag key={i.fdId} className={'modal-tag'}>{i.fdName}</Tag>
       })
     } else {
       return (
         <React.Fragment>
-          {fdName ? <Tag closable onClose={handleCloseTag}>{fdName}</Tag> : null}
+          {fdName ? <Tag closable onClose={handleCloseTag} className={'modal-tag'}>{fdName}</Tag> : null}
         </React.Fragment>
       )
     }

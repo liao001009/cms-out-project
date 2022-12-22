@@ -121,28 +121,13 @@ const Content: React.FC<IContentViewProps> = props => {
       ...values,
       cmsStaffReviewDetail: values.cmsStaffReviewDetail.values || undefined
     }
-    // if (!values.fdSupplies.length && !isDraft) {
-    //   confirm({
-    //     title: '未选择中选供应商，是否确认提交',
-    //     onOk () {
-    //       // 编辑暂存
-    //       api.update(values).then(res => {
-    //         if (res.success) {
-    //           Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
-    //             cmsHandleBack(history, '/cmsStaffReview/listStaffReview')
-    //           })
-    //         } else {
-    //           Message.error(isDraft ? '暂存失败' : '提交失败', 1)
-    //         }
-    //       }).catch(() => {
-    //         Message.error(isDraft ? '暂存失败' : '提交失败', 1)
-    //       })
-    //     },
-    //     onCancel () {
-    //       console.log('Cancel')
-    //     }
-    //   })
-    // } else {
+    // 将前面赋值为{}的定级给为undefined
+    values.cmsStaffReviewDetail = values.cmsStaffReviewDetail.map(i => {
+      if (i.fdConclusion !== '1') {
+        i.fdConfirmLevel = undefined
+      }
+      return i
+    })
     // 编辑暂存
     api.update(values).then(res => {
       if (res.success) {
