@@ -1050,7 +1050,7 @@ const XForm = (props) => {
                           type: XformInput,
                           controlProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5hum4xpfoabugxs41n}', '子任务'),
-                            maxLength: 100,
+                            maxLength: 1000,
                             name: 'fdSubtask',
                             placeholder: fmtMsg(':cmsProjectDemand.form.!{l5hum4xqafagoyvy9f5}', '请输入'),
                             desktop: {
