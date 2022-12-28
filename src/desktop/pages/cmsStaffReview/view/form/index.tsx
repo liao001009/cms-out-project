@@ -72,8 +72,22 @@ const XForm = (props) => {
     getList('fdOutName', setOutStaffInfoArr)
     getList('fdSupplier', setsupplierInfoList)
     getLevelList()
+    assignDetailData()
   }, [value])
 
+  // 明细表中，如果评审结论值不为1，则自动将定级设为undefined
+  const assignDetailData = () => {
+
+    const newData = value.cmsStaffReviewDetail.map(i => {
+      if (i.fdConclusion !== '1') {
+        i.fdConfirmLevel = {}
+      }
+      return i
+    })
+    form.setFieldsValue({
+      cmsStaffReviewDetail: newData
+    })
+  }
   // 对外暴露接口
   useApi({
     form,
@@ -472,6 +486,8 @@ const XForm = (props) => {
                             name: 'fdConfirmLevel',
                             initData: levelList,
                             showFdName: 'fdName',
+                            isStaffReview: true,
+                            detailData: value,
                             placeholder: fmtMsg(':cmsStaffReview.form.!{l5j0oball6b84dapmal}', '请输入'),
                             desktop: {
                               type: XformGetDataSelect

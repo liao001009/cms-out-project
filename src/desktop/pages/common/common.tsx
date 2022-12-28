@@ -114,7 +114,13 @@ export const projectColumns = [
   {
     title: '项目名称',
     dataIndex: 'fdName',
-    render: (value) => value
+    width: 150,
+    ellipsis: true,
+    render: (value) => (
+      <Tooltip placement="topLeft" title={value}>
+        {value}
+      </Tooltip>
+    )
   },
   /*项目编号*/
   {
@@ -170,12 +176,12 @@ export const projectColumns = [
     dataIndex: 'fdProjectPrincipal',
     render: (value) => value && value.fdName
   },
-  /*内部责任人*/
-  {
-    title: '内部责任人',
-    dataIndex: 'fdInnerPrincipal',
-    render: (value) => value && value.fdName
-  },
+  // /*内部责任人*/
+  // {
+  //   title: '内部责任人',
+  //   dataIndex: 'fdInnerPrincipal',
+  //   render: (value) => value && value.fdName
+  // },
   /*项目立项时间*/
   {
     title: '项目立项时间',
@@ -316,7 +322,13 @@ export const projectSelectInfocolumns = [
   {
     title: '项目名称',
     dataIndex: 'fdProject',
-    render: (value) => value?.fdName
+    width: 150,
+    ellipsis: true,
+    render: (value) => (
+      <Tooltip placement="topLeft" title={value && value.fdName}>
+        {value && value.fdName}
+      </Tooltip>
+    )
   },
   /*中选供应商*/
   {
@@ -688,8 +700,8 @@ export const projectCriertia = () => {
         title="项目性质"
       ></Criteria.Criterion>
       <Criteria.Org orgType={2} title="所属部门" name="fdBelongDept.fdId"></Criteria.Org>
-      <Criteria.Org orgType={8} title="项目负责人" name="fdProjectPrincipal.fdId"></Criteria.Org>
-      <Criteria.Org orgType={8} title="内部责任人" name="fdInnerPrincipal.fdId"></Criteria.Org>
+      <Criteria.Org orgType={8} options={[]} placeholder='请输入姓名'title="项目负责人" name="fdProjectPrincipal.fdId"></Criteria.Org>
+      {/* <Criteria.Org orgType={8} options={[]} placeholder='请输入姓名'title="内部责任人" name="fdInnerPrincipal.fdId"></Criteria.Org> */}
       <Criteria.Calendar
         options={Criteria.Calendar.buildOptions()}
         name="fdProjectDate"
@@ -781,7 +793,7 @@ export const staffReviewUpgrade = () => (
 export const projectSelectInfoCriertia = () => {
   return (
     <React.Fragment>
-      <Criteria.Org orgType={8} title="创建人" name="fdCreator.fdId"></Criteria.Org>
+      <Criteria.Org orgType={8} options={[]} placeholder='请输入姓名'title="创建人" name="fdCreator.fdId"></Criteria.Org>
       <Criteria.Calendar
         options={Criteria.Calendar.buildOptions()}
         name="fdCreateTime"

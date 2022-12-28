@@ -86,7 +86,7 @@ const XForm = (props) => {
                     name={'fdName'}
                     rules={[
                       {
-                        validator: lengthValidator(100)
+                        validator: lengthValidator(300)
                       },
                       {
                         required: true,
@@ -205,7 +205,7 @@ const XForm = (props) => {
                   </Form.Item>
                 </XformFieldset>
               </GridItem>
-              <GridItem column={2} row={4}>
+              {/* <GridItem column={2} row={4}>
                 <XformFieldset
                   labelTextAlign={'left'}
                   mobileContentAlign={'right'}
@@ -229,7 +229,7 @@ const XForm = (props) => {
                     ></XformAddress>
                   </Form.Item>
                 </XformFieldset>
-              </GridItem>
+              </GridItem> */}
               <GridItem column={1} row={5}>
                 <XformFieldset
                   labelTextAlign={'left'}

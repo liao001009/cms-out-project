@@ -12,7 +12,7 @@ import { useMkSendData } from '@/utils/mkHooks'
 import { EOperationType } from '@/utils/status'
 import { fmtMsg } from '@ekp-infra/respect'
 import { cmsHandleBack } from '@/utils/routerUtil'
-
+const { confirm } = Modal
 
 Message.config({ maxCount: 1 })
 
@@ -33,6 +33,8 @@ const Content: React.FC<IContentViewProps> = props => {
   const [modalVisible, setModalVisible] = useState<boolean>(false)
   // 是否发起提交请求
   const [handleFlag, setHandleFlag] = useState<boolean>(true)
+  // 是否禁止提交
+  const [disabled, setDisaabled] = useState<boolean>(false)
   // const [roleArr, setRoleArr] = useState<any>([])   // 流程角色
   // useEffect(() => {
   //   mk.on('SYS_LBPM_AUDIT_FORM_INIT_DATA', (val) => {
@@ -113,6 +115,10 @@ const Content: React.FC<IContentViewProps> = props => {
 
   // 提交/暂存通用逻辑
   const handleSave = async (isDraft: boolean) => {
+    if (disabled) {
+      Message.error('当前时间范围内匹配不到任何预算,暂时无法提交')
+      return
+    }
     // 校验文档
     if (await _validate(isDraft) === false) {
       return
@@ -137,7 +143,21 @@ const Content: React.FC<IContentViewProps> = props => {
     })
 
     // 预算总额 冻结预算金额 占用预算金额
-    const { totalAmount, freezeAmount, occupyAmount } = res.data
+    const { totalAmount, freezeAmount, occupyAmount, amountFlag } = res.data
+    if (!amountFlag) {
+      confirm({
+        content: '当前时间范围内匹配不到任何预算',
+        okText: '确定',
+        cancelText: '取消',
+        onOk () {
+          setDisaabled(true)
+        },
+        onCancel () {
+          setDisaabled(true)
+        }
+      })
+      return
+    }
     if ((totalAmount - freezeAmount - occupyAmount) <= 0) {
       setModalVisible(true)
     } else {
@@ -168,6 +188,7 @@ const Content: React.FC<IContentViewProps> = props => {
       icon: h(Icon, { name: 'delete', color: '#F25643' }),
       okType: 'danger' as EBtnType,
       okText: '删除',
+      cancelText: '取消',
       onOk: () => {
         api
           .delete({ fdId: data.fdId })
@@ -226,8 +247,17 @@ const Content: React.FC<IContentViewProps> = props => {
     cmsHandleBack(history, '/cmsProjectSelectInfo/listSelectInfo')
   }, [])
 
+  // 流程异常时的保存
+  const handleErrSave = () => {
+    if (data?.fdProcessStatus !== ESysLbpmProcessStatus.ABNORMAL) return null
+    return {
+      name: '保存',
+      action: () => handleSave(false)
+    }
+  }
   const getCustomizeOperations = () => {
     const customizeOperations = [
+      handleErrSave(),
       handleDraft(),
       handleDel(),
       handleClose()
@@ -300,6 +330,8 @@ const Content: React.FC<IContentViewProps> = props => {
       {renderInnerContent()}
       <Modal
         visible={modalVisible}
+        cancelText={'取消'}
+        okText={'确定'}
         onOk={() => {
           setModalVisible(false)
           setHandleFlag(true)

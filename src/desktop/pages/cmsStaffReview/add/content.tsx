@@ -116,6 +116,8 @@ const Content: React.FC<IContentViewProps> = props => {
     if (!values.fdSupplies.length) {
       confirm({
         title: '未选择中选供应商，是否确认提交',
+        cancelText: '取消',
+        okText: '确定',
         onOk () {
           api.add(values as any).then(res => {
             if (res.success) {

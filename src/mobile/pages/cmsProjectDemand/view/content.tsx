@@ -132,6 +132,7 @@ const Content: React.FC<IContentViewProps> = props => {
   const handleDel = useCallback(() => {
     Modal.confirm({
       content: '确认删除此记录？',
+      cancelText: '取消',
       onAction: (action, index) => {
         if (index > 0) { return }
         api.delete({ fdId: data.fdId }).then(res => {

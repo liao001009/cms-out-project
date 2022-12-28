@@ -1,6 +1,7 @@
 
 import { useEffect, useRef, useState } from 'react'
-
+import Axios from 'axios'
+import apiLbpm from '@/api/cmsLbpm'
 
 const GRAB = '_GRAB'
 /**
@@ -51,4 +52,36 @@ export const useMkSendData = (key: string, dependecies?: any[]) => {
     }
   }, [key, ...(dependecies || [])])
   return { emitValue }
+}
+
+
+
+export const useMater = (data) => {
+  const [materialVis, setMaterialVis] = useState<boolean>(true)
+  /** 获取资料上传节点 */
+  const getCurrentNode = async () => {
+    try {
+      const nodeInfosData = await apiLbpm.getCurrentNodeInfo({
+        processInstanceId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId
+      })
+      const url = mk.getSysConfig('apiUrlPrefix') + '/cms-out-manage/cmsOutManageCommon/loadNodeExtendPropertiesOnProcess'
+      const processData = await Axios.post(url, {
+        fdId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId
+      })
+      if (nodeInfosData.data.currentNodeCards.length && processData.data.length) {
+        const newArr = processData.data.filter(item => {
+          return nodeInfosData.data.currentNodeCards.find(item2 => item.nodeId === item2.fdNodeId && item2.fdCurrentHandlers.some(item3 => item3.id === mk.getSysConfig('currentUser').fdId))
+        })
+        setMaterialVis(newArr.length ? newArr[0].extendProperty.supplierApprove === 'false' ? false : true : false)
+      } else {
+        setMaterialVis(false)
+      }
+    } catch (error) {
+      setMaterialVis(false)
+    }
+  }
+  useEffect(() => {
+    getCurrentNode()
+  }, [])
+  return { materialVis, setMaterialVis }
 }

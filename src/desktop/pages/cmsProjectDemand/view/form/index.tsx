@@ -35,6 +35,7 @@ const XForm = (props) => {
     cmsProjectDemandOrder: createRef() as any
   })
   const { formRef: formRef, value: value, materialVis, fdSuppliesVisible, isRequired, editFlag } = props
+  console.log('materialVis555', materialVis)
   const [form] = Form.useForm()
   // 框架数据
   const [frameData, setFrameData] = useState<any>([])
@@ -258,7 +259,7 @@ const XForm = (props) => {
                         </Form.Item>
                       </XformFieldset>
                     </GridItem>
-                    <GridItem column={21} row={6} rowSpan={1} columnSpan={20}>
+                    {/* <GridItem column={21} row={6} rowSpan={1} columnSpan={20}>
                       <XformFieldset
                         labelTextAlign={'left'}
                         mobileContentAlign={'right'}
@@ -278,7 +279,7 @@ const XForm = (props) => {
                           ></XformAddress>
                         </Form.Item>
                       </XformFieldset>
-                    </GridItem>
+                    </GridItem> */}
                     <GridItem column={1} row={7} rowSpan={1} columnSpan={40}>
                       <XformFieldset
                         labelTextAlign={'left'}
@@ -461,16 +462,7 @@ const XForm = (props) => {
                             layout={'horizontal'}
                           >
                             <Form.Item name={'fdOrderAmount'}>
-                              {/* <XformMoney
-                          {...sysProps}
-                          placeholder={fmtMsg(':cmsProjectDemand.form.!{l5hu3p9i1j80lnhffd}', '请输入')}
-                          numberFormat={{
-                            formatType: 'base'
-                          }}
-                          precision={2}
-                          showStatus="view"
-                        ></XformMoney> */}
-                              <span>{value?.fdOrderAmount.toFixed(2)}万</span>
+                              <span>{value?.fdOrderAmount?.toFixed(2)}万</span>
                             </Form.Item>
                           </XformFieldset>
                         </GridItem>
@@ -986,7 +978,7 @@ const XForm = (props) => {
                         {
                           type: XformInput,
                           controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5hvhi5ruejee5eeyv}', '经验和技能要求'),
+                            title: '具体要求',
                             maxLength: 100,
                             name: 'fdSkillRemand',
                             placeholder: fmtMsg(':cmsProjectDemand.form.!{l5hvhi5shcphr934m3h}', '请输入'),
@@ -997,13 +989,13 @@ const XForm = (props) => {
                             showStatus: 'view'
                           },
                           labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5hvhi5ruejee5eeyv}', '经验和技能要求'),
+                            title: '具体要求',
                             desktop: {
                               layout: 'vertical'
                             },
                             labelTextAlign: 'left'
                           },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5hvhi5ruejee5eeyv}', '经验和技能要求')
+                          label: '具体要求'
                         }
                       ]}
                       canExport={false}

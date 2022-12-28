@@ -10,7 +10,7 @@ Message.config({ maxCount: 1 })
 
 const { confirm } = Modal
 
-const baseCls = 'cmsProjectWritten-content'
+const baseCls = 'cmsProjectWritten-content normal'
 
 const Content: React.FC<IContentViewProps> = props => {
   const { data, history, match } = props
@@ -32,6 +32,8 @@ const Content: React.FC<IContentViewProps> = props => {
   const handleDel = useCallback(() => {
     confirm({
       content: '确认删除此记录？',
+      cancelText: '取消',
+      okText: '确定',
       onOk () {
         api.delete({ fdId: data.fdId }).then(res => {
           if (res.success) {

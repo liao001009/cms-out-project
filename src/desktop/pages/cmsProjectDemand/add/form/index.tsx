@@ -1,7 +1,7 @@
 import React, { useRef, createRef, useState, useEffect, Fragment } from 'react'
 import './index.scss'
 import { fmtMsg } from '@ekp-infra/respect'
-import { Form, Message, Button } from '@lui/core'
+import { Form, Message, Button, ButtonGroup } from '@lui/core'
 import { useApi, useSystem } from '@/desktop/shared/formHooks'
 import XformAppearance from '@/desktop/components/form/XformAppearance'
 import LayoutGrid from '@/desktop/components/form/LayoutGrid'
@@ -166,6 +166,7 @@ const XForm = (props) => {
     valuesData.length && detailForms.current.cmsProjectDemandSupp.current.deleteAll()
   }
 
+  // 切换供应商
   const handleChangeSupplier = async (v) => {
     setSelectedFdSupplier(v)
     // 给明细表默认加行数并赋值默认数据
@@ -227,6 +228,7 @@ const XForm = (props) => {
     }, 0)
   }
 
+  // 切换项目
   const handleProject = (v) => {
     setIsFrameChild(v.fdFrame.fdName === '设计类')
     setSelectedFrame(v.fdFrame)
@@ -246,13 +248,13 @@ const XForm = (props) => {
     setAssignSupplier(undefined)
   }
 
-
+  // 上传
   const uploadExec = () => {
     setVisible(true)
   }
-
+  // 下载模板
   const downloadExecl = () => {
-    window.open(mk.getResourcePath('@module:cms-out-project/desktop/static/attach/工作分解模板.xlsx'), '_blank')
+    window.open(mk.getResourcePath('@module:cms-out-project/desktop/static/attach/work.xlsx'), '_blank')
   }
 
   const handlerChange = (info) => {
@@ -260,6 +262,8 @@ const XForm = (props) => {
     const array: any[] = Object.values(info).flat(Infinity)
     setDetailData(array)
   }
+
+  // 修改工作分解的明细表数据
   const setDetailData = (data) => {
     const valuesData = sysProps.$$form.current.getFieldsValue('cmsProjectDemandWork').values
     valuesData.length && detailForms.current.cmsProjectDemandWork.current.deleteAll()
@@ -276,7 +280,7 @@ const XForm = (props) => {
         if (!i.fdTaskName) {
           errMsg.push(`第${index + 1}条数据的‘任务’没有填写`)
         }
-        if (!i.fdCostApproval) {
+        if (!i.fdCostApproval && i.fdCostApproval !== 0) {
           errMsg.push(`第${index + 1}条数据的‘费用核定(万元)’没有填写`)
         }
         if (i.fdCostApproval < 0) {
@@ -285,6 +289,7 @@ const XForm = (props) => {
       })
       if (!errMsg.length) {
         detailForms.current.cmsProjectDemandWork.current.updateValues(newData)
+        renderPrice(newData)
         setErrMsgArr([])
         handleCancel()
       } else {
@@ -292,6 +297,16 @@ const XForm = (props) => {
       }
     }
   }
+  /**计算订单金额 */
+  const renderPrice = (values) => {
+    const newPrice = values.reduce((a, b) => {
+      return a + b.fdCostApproval
+    }, 0)
+    form.setFieldsValue({
+      fdOrderAmount: newPrice
+    })
+  }
+
   const handleCancel = () => {
     setVisible(false)
   }
@@ -529,7 +544,7 @@ const XForm = (props) => {
                   </Form.Item>
                 </XformFieldset>
               </GridItem>
-              <GridItem column={21} row={6} rowSpan={1} columnSpan={20}>
+              {/* <GridItem column={21} row={6} rowSpan={1} columnSpan={20}>
                 <XformFieldset
                   labelTextAlign={'left'}
                   mobileContentAlign={'right'}
@@ -549,7 +564,7 @@ const XForm = (props) => {
                     ></XformAddress>
                   </Form.Item>
                 </XformFieldset>
-              </GridItem>
+              </GridItem> */}
               <GridItem column={1} row={7} rowSpan={1} columnSpan={40}>
                 <XformFieldset
                   labelTextAlign={'left'}
@@ -942,10 +957,10 @@ const XForm = (props) => {
                 </XformFieldset>
               </GridItem>
               <div id='uploadDown' style={{ display: 'none' }}>
-                <Button.Group amount={2} className='lui-test-btn-group' shape='link'>
+                <ButtonGroup amount={2} className='lui-test-btn-group' shape='link'>
                   <Button onClick={uploadExec} shape='link' type='default' label='上传' icon={<Icon type='vector' name='upload' />} />
                   <Button onClick={downloadExecl} shape='link' type='default' label='下载模板' icon={<Icon type='vector' name='download' />} />
-                </Button.Group>
+                </ButtonGroup>
                 <XformExecl onChange={(info) => { handlerChange(info) }} handleCancel={handleCancel} visible={visible} errMsgArr={errMsgArr} />
               </div>
               <GridItem column={1} row={15} rowSpan={1} columnSpan={40} className='cmsProjectDemandWork'>
@@ -1035,7 +1050,7 @@ const XForm = (props) => {
                           type: XformInput,
                           controlProps: {
                             title: fmtMsg(':cmsProjectDemand.form.!{l5hum4xpfoabugxs41n}', '子任务'),
-                            maxLength: 100,
+                            maxLength: 1000,
                             name: 'fdSubtask',
                             placeholder: fmtMsg(':cmsProjectDemand.form.!{l5hum4xqafagoyvy9f5}', '请输入'),
                             desktop: {
@@ -1074,12 +1089,7 @@ const XForm = (props) => {
                               'onBlur': [{
                                 function: () => {
                                   const values = sysProps.$$form.current.getFieldsValue('cmsProjectDemandWork').values
-                                  const newPrice = values.reduce((a, b) => {
-                                    return a + b.fdCostApproval
-                                  }, 0)
-                                  form.setFieldsValue({
-                                    fdOrderAmount: newPrice
-                                  })
+                                  renderPrice(values)
                                 }
                               }]
                             }
@@ -1233,12 +1243,12 @@ const XForm = (props) => {
                             controlActions: {
                               'onChange': [{
                                 function: (v, r) => {
-                                  const levelItem = levelData.find(item => item.fdId === v)
+                                  // const levelItem = levelData.find(item => item.fdId === v)
                                   sysProps.$$form.current.updateFormItemProps('cmsProjectDemandDetail', {
                                     rowValue: {
                                       rowNum: r,
                                       value: {
-                                        fdSkillRemand: levelItem.fdRemark,
+                                        // fdSkillRemand: levelItem.fdRemark,
                                         fdSkillLevel: { fdId: v }
                                       }
                                     }
@@ -1299,24 +1309,24 @@ const XForm = (props) => {
                         {
                           type: XformInput,
                           controlProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5hvhi5ruejee5eeyv}', '经验和技能要求'),
-                            maxLength: 100,
+                            title: '具体要求',
+                            maxLength: 200,
                             name: 'fdSkillRemand',
                             placeholder: fmtMsg(':cmsProjectDemand.form.!{l5hvhi5shcphr934m3h}', '请输入'),
                             desktop: {
                               type: XformInput
                             },
                             type: XformInput,
-                            showStatus: 'readOnly'
+                            showStatus: 'edit'
                           },
                           labelProps: {
-                            title: fmtMsg(':cmsProjectDemand.form.!{l5hvhi5ruejee5eeyv}', '经验和技能要求'),
+                            title: '具体要求',
                             desktop: {
                               layout: 'vertical'
                             },
                             labelTextAlign: 'left'
                           },
-                          label: fmtMsg(':cmsProjectDemand.form.!{l5hvhi5ruejee5eeyv}', '经验和技能要求')
+                          label: '具体要求'
                         }
                       ]}
                       canAddRow={true}

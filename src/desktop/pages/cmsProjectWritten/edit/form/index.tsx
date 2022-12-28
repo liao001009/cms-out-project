@@ -17,12 +17,14 @@ import { outStaffInfoColumns } from '@/desktop/pages/common/common'
 import { useApi, useSystem } from '@/desktop/shared/formHooks'
 import { EShowStatus } from '@/types/showStatus'
 import { fmtMsg } from '@ekp-infra/respect'
-import { Button, Form, Message } from '@lui/core'
+import { Button, Form, Message, ButtonGroup } from '@lui/core'
 import React, { createRef, useEffect, useRef, useState } from 'react'
+import XformDescription from '@/desktop/components/form/XformDescription'
+
 import Icon from '@lui/icons'
 import './index.scss'
-import moment from 'moment'
-import { formatDate } from '@/utils/util'
+import moment from 'dayjs'
+import { formatDate, removalData } from '@/utils/util'
 
 const MECHANISMNAMES = {}
 
@@ -56,7 +58,6 @@ const XForm = (props) => {
     }, 1000)
   }
   useEffect(() => {
-    // init()
     let paramId = props?.match?.params?.id
     if (props.mode === 'add') {
       form.setFieldsValue({
@@ -75,27 +76,8 @@ const XForm = (props) => {
     if (paramId) {
       initData(paramId)
     }
-    // getStaffInfo()
     getTag()
   }, [])
-
-  // const init = async () => {
-  //   try {
-  //     const res = await apiSupplier.list({})
-  //     const arr = res?.data?.content.map(i => {
-  //       const item = {
-  //         label: i.fdName,
-  //         value: i.fdId,
-  //         ...i
-  //       }
-  //       return item
-  //     })
-  //     setSupplierData(arr)
-
-  //   } catch (error) {
-  //     console.log('error', error)
-  //   }
-  // }
 
   const initData = async (params) => {
     try {
@@ -110,15 +92,18 @@ const XForm = (props) => {
           }
         }
         setDefaultTableCriteria(newParam)
+      } else {
+        setDefaultTableCriteria([''])
       }
-
-      const rtnSupplier = resStaff?.data?.content?.map(item => {
+      let rtnSupplier = resStaff?.data?.content?.map(item => {
         const sup = {
+          ...item?.fdSupplier,
           label: item?.fdSupplier.fdName,
           value: item?.fdSupplier.fdId
         }
         return sup
       })
+      rtnSupplier = removalData(rtnSupplier)
       setSupplierData(rtnSupplier)
       setStaffInfo(resStaff?.data?.content)
     } catch (error) {
@@ -177,7 +162,7 @@ const XForm = (props) => {
         key: defaultTableCriteria,
         controlProps: {
           apiKey: apiStaffInfo,
-          apiName: 'listStaffInfo',
+          apiName: 'list',
           defaultTableCriteria: defaultTableCriteria,
           chooseFdName: 'fdName',
           columnsProps: outStaffInfoColumns,
@@ -185,35 +170,8 @@ const XForm = (props) => {
           criteriaProps: ['fdStaffName.fdName', 'fdName'],
           title: fmtMsg(':cmsProjectWritten.form.!{l5i2iuv598u3ufwarkj}', '姓名'),
           name: 'fdInterviewName',
-          renderMode: 'singlelist',
-          direction: 'column',
-          rowCount: 3,
-          modelName: 'com.landray.sys.xform.core.entity.design.SysXFormDesign',
-          options: [
-            {
-              fdName: '选项1',
-              fdId: '1'
-            },
-            {
-              fdName: '选项2',
-              fdId: '2'
-            },
-            {
-              fdName: '选项3',
-              fdId: '3'
-            }
-          ],
           desktop: {
             type: CMSXformModal
-          },
-          relationCfg: {
-            appCode: '1g777p56rw10wcc6w21bs85ovbte761sncw0',
-            xformName: '外包人员信息',
-            modelId: '1g7tuuns0w13w13engw3a36caf238o0d15w0',
-            tableType: 'main',
-            tableName: 'mk_model_20220714k2uvx',
-            showFields: '$姓名$',
-            refFieldName: '$fd_name$'
           },
           type: CMSXformModal,
           onChangeProps: async (v, r) => {
@@ -513,7 +471,7 @@ const XForm = (props) => {
   }
 
   const downloadExecl = () => {
-    window.open(mk.getResourcePath('@module:cms-out-project/desktop/static/attach/笔试成绩模板.xlsx'), '_blank')
+    window.open(mk.getResourcePath('@module:cms-out-project/desktop/static/attach/written.xlsx'), '_blank')
   }
 
 
@@ -564,8 +522,8 @@ const XForm = (props) => {
         const personInfo = checkPersonInfo(item['fdInterviewName'])
         if (personInfo) {
           item['fdInterviewName'] = personInfo
-          const fdBeginTime = moment(formatDate(item['fdBeginTime'], '-'))
-          const fdEndTime = moment(formatDate(item['fdEndTime'], '-'))
+          const fdBeginTime = moment(formatDate(item['fdBeginTime'], '-')).valueOf()
+          const fdEndTime = moment(formatDate(item['fdEndTime'], '-')).valueOf()
           const fdWrittenPass = Number(item['fdWrittenScores']) <= Number(fdQualifiedMark) ? '0' : '1'
           item = { ...item, ...personInfo, fdWrittenPass, fdBeginTime, fdEndTime }
           newValue.push(item)
@@ -587,7 +545,30 @@ const XForm = (props) => {
       <Form form={form} colPadding={false} onValuesChange={onValuesChange}>
         <XformAppearance>
           <LayoutGrid columns={2} rows={9}>
-
+            <GridItem
+              column={1}
+              row={1}
+              columnSpan={2}
+              rowSpan={1}
+              style={{
+                textAlign: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <XformFieldset compose={true}>
+                <Form.Item name={'fdCol5hz0vs'}>
+                  <XformDescription
+                    {...sysProps}
+                    defaultTextValue={'录入笔试成绩'}
+                    controlValueStyle={{
+                      fontSize: 20,
+                      fontWeight: 'bold'
+                    }}
+                    showStatus="edit"
+                  ></XformDescription>
+                </Form.Item>
+              </XformFieldset>
+            </GridItem>
             <GridItem column={1} row={2} rowSpan={1} columnSpan={1}>
               <XformFieldset
                 mobileContentAlign={'right'}
@@ -688,18 +669,16 @@ const XForm = (props) => {
                     placeholder={'请输入'}
                     dataPattern={'yyyy-MM-dd'}
                     showStatus={EShowStatus.readOnly}
-                  // defaultValueType='now'
-                  // defaultValue={new Date().getTime()}
                   ></XformDatetime>
                 </Form.Item>
               </XformFieldset>
             </GridItem>
             <div id='uploadDown' style={{ display: 'none' }}>
-              <Button.Group amount={2} className='lui-test-btn-group' shape='link'>
+              <ButtonGroup amount={2} className='lui-test-btn-group' shape='link'>
                 <Button onClick={() => { uploadExecl() }} type='default' label='上传' icon={<Icon type='vector' name='upload' />} />
                 <Button onClick={() => { downloadExecl() }} type='default' label='下载模板' icon={<Icon type='vector' name='download' />} >
                 </Button>
-              </Button.Group>
+              </ButtonGroup>
               <XformExecl onChange={(info) => { handlerChange(info) }} handleCancel={() => { handleCancel() }} visible={visible} errMsgArr={errMsgArr} />
             </div>
             <GridItem column={1} row={4} columnSpan={2} rowSpan={1}>

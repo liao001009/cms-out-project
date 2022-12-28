@@ -8,7 +8,7 @@ import { IContentViewProps } from '@ekp-runtime/render-module'
 import { Button, Message, Modal } from '@lui/core'
 import { EBtnType } from '@lui/core/es/components/Button'
 import Icon from '@lui/icons'
-import React, { createElement as h, useCallback, useEffect, useRef, useState } from 'react'
+import React, { createElement as h, useCallback, useEffect, useRef, useState, useMemo } from 'react'
 import XForm from './form'
 import { cmsHandleBack } from '@/utils/routerUtil'
 // import './index.scss'
@@ -122,6 +122,8 @@ const Content: React.FC<IContentViewProps> = props => {
     if (!values.fdSupplies.length && !isDraft) {
       confirm({
         title: '未选择中选供应商，是否确认提交',
+        cancelText: '取消',
+        okText: '确定',
         onOk () {
           // 编辑暂存
           saveApi(values).then(res => {
@@ -206,6 +208,7 @@ const Content: React.FC<IContentViewProps> = props => {
       icon: h(Icon, { name: 'delete', color: '#F25643' }),
       okType: 'danger' as EBtnType,
       okText: '删除',
+      cancelText: '取消',
       onOk: () => {
         api
           .delete({ fdId: data.fdId })
@@ -238,24 +241,23 @@ const Content: React.FC<IContentViewProps> = props => {
       }
     }
   }
-
+  const hasDraftBtn = useMemo(() => {
+    const status = data?.fdProcessStatus || getFlowStatus(flowData)
+    /* 新建文档和草稿有暂存按钮 */
+    return status === ESysLbpmProcessStatus.DRAFT || status === ESysLbpmProcessStatus.REJECT || status === ESysLbpmProcessStatus.WITHDRAW
+  }, [data?.fdProcessStatus, flowData])
   //暂存
   const handleDraft = () => {
     if (
       !flowData ||
-      lbpmComponentRef.current?.checkOperationTypeExist?.(flowData?.identity, EOperationType.drafter_cancelDraftCooperate)
+      lbpmComponentRef.current?.checkOperationTypeExist?.(flowData?.identity, EOperationType.drafter_cancelDraftCooperate) ||
+      !hasDraftBtn
     ) return null
-
-    const status = data?.fdProcessStatus || getFlowStatus(flowData)
-    /* 新建文档和草稿有暂存按钮 */
-    if (status !== ESysLbpmProcessStatus.DRAFT || status !== ESysLbpmProcessStatus.REJECT || status !== ESysLbpmProcessStatus.WITHDRAW) return
-
     return {
       name: '暂存',
       action: () => { handleSave(true) }
     }
   }
-
   // 关闭
   const handleClose = () => {
     return {
@@ -268,8 +270,18 @@ const Content: React.FC<IContentViewProps> = props => {
     cmsHandleBack(history, '/cmsStaffReview/listStaffReview')
   }, [])
 
+  // 流程异常时的保存
+  const handleErrSave = () => {
+    if (data?.fdProcessStatus !== ESysLbpmProcessStatus.ABNORMAL) return null
+    return {
+      name: '保存',
+      action: () => handleSave(false)
+    }
+  }
+
   const getCustomizeOperations = () => {
     const customizeOperations = [
+      handleErrSave(),
       handleDraft(),
       handleDel(),
       handleClose()
