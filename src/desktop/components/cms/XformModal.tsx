@@ -324,10 +324,18 @@ const XformModal: React.FC<IProps> = (props) => {
     setFdName('')
     onChange?.(undefined)
   }
+
+  const handleCloseMutilTag = (e, val) => {
+    e.stopPropagation()
+    const newData = initSelectedArr.filter(i => i.fdId !== val.fdId)
+    setInitSelectArr(newData)
+    onChange?.(newData)
+  }
+
   const renderTag = () => {
     if (initSelectedArr && initSelectedArr.length) {
       return initSelectedArr.map(i => {
-        return <Tag key={i.fdId} className={'modal-tag'}>{i.fdName}</Tag>
+        return <Tag key={i.fdId} closable onClose={(e) => handleCloseMutilTag(e, i)} className={'modal-tag'}>{i.fdName}</Tag>
       })
     } else {
       return (
