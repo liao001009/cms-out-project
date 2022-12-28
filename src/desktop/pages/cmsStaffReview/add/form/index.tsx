@@ -16,8 +16,8 @@ import XformNumber from '@/desktop/components/form/XformNumber'
 import XformSelect from '@/desktop/components/form/XformSelect'
 import CMSXformModal, { EShowStatus } from '@/desktop/components/cms/XformModal'
 import apiSupplierInfo from '@/api/cmsSupplierInfo'
-import apiOutStaffInfo from '@/api/cmsOutStaffInfo'
 import apiLevel from '@/api/cmsLevelInfo'
+import { removalData } from '@/utils/util'
 import { supplierColumns } from '@/desktop/pages/common/common'
 const MECHANISMNAMES = {}
 const baseCls = 'project-review-form'
@@ -73,12 +73,25 @@ const XForm = (props) => {
     setSupplierInfoArr(newArr)
   }
   useEffect(() => {
-    getList(apiOutStaffInfo.list({ pageSize: 1000 }), setOutStaffInfoArr)
     getList(apiLevel.list({ pageSize: 1000 }), setLevelList)
     getSupplier()
     getSupplierArr()
   }, [])
 
+  const getStaffList = () => {
+    let newData = value.cmsStaffReviewDetail.map(i => {
+      const item = {
+        value: i.fdOutName.fdId,
+        label: i.fdOutName.fdName
+      }
+      return item
+    })
+    newData = removalData(newData)
+    setOutStaffInfoArr(newData)
+  }
+  useEffect(() => {
+    getStaffList()
+  }, [value.cmsStaffReviewDetail])
   // 对外暴露接口
   useApi({
     form,
