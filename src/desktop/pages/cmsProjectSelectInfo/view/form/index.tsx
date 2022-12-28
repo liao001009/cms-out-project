@@ -29,7 +29,6 @@ const XForm = (props) => {
   const [form] = Form.useForm()
   const [fdLevelData, setFdLevelData] = useState<any>([])
   const [fdSupplierData, setfdSupplierData] = useState<any>([])
-
   useEffect(() => {
     getData('fdConfirmLevel', setFdLevelData, value.cmsProjectStaffList)
     getData('fdSupplier', setfdSupplierData, value.cmsProjectStaffList)

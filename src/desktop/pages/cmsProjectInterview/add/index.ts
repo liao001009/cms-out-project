@@ -7,7 +7,7 @@ export default {
   // 页面标题
   title: '新建',
   // 路由
-  router: '/add/:id',
+  router: '/add/:id/:isSupplement',
   // 页面是否全屏，默认false
   fullscreen: true,
   // 临时解决方案，等runtime完善fullscreen逻辑后移除
@@ -29,12 +29,6 @@ export default {
     type: 'content-list',
     // 内容渲染组件
     render: Content,
-    // 请求
-    // dataUrl: ({ param }) =>
-    //   api.init({
-    //     fdTemplate: { fdId: param.templateId },
-    //     mechanisms: { load: '*' }
-    //   })
     props: {
       // 编辑模式：新建
       mode: 'add'

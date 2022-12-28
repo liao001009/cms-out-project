@@ -12,7 +12,7 @@ import { cmsHandleBack } from '@/utils/routerUtil'
 import { Auth } from '@ekp-infra/common'
 Message.config({ maxCount: 1 })
 
-const bacls = 'cmsProjectWritten-content'
+const bacls = 'cmsProjectWritten-content normal'
 
 const Content: React.FC<IProps & IContentViewProps> = props => {
   const { data, history, routerPrefix, mode, match } = props
@@ -152,6 +152,7 @@ const Content: React.FC<IProps & IContentViewProps> = props => {
       icon: h(Icon, { name: 'delete', color: '#F25643' }),
       okType: 'danger' as EBtnType,
       okText: '删除',
+      cancelText: '取消',
       onOk: () => {
         api
           .delete({ fdId: data.fdId })

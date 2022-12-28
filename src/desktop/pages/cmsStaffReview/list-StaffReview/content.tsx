@@ -230,7 +230,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
             <div className="right">
               {/* 筛选器 */}
               {/* <Criteria key="criteria" onChange={handleCriteriaChange}>
-                <Criteria.Org orgType={8} title="创建人" name="fdCreator.fdId"></Criteria.Org>
+                <Criteria.Org orgType={8} options={[]} placeholder='请输入姓名'title="创建人" name="fdCreator.fdId"></Criteria.Org>
                 <Criteria.Calendar
                   options={Criteria.Calendar.buildOptions()}
                   name="fdCreateTime"
@@ -246,7 +246,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
                   name="fdRealViewTime"
                   title="实际面试时间"
                 ></Criteria.Calendar>
-                <Criteria.Org orgType={8} title="项目负责人" name="fdProjectLeader.fdId"></Criteria.Org>
+                <Criteria.Org orgType={8} options={[]} placeholder='请输入姓名'title="项目负责人" name="fdProjectLeader.fdId"></Criteria.Org>
                 <Criteria.Input name="fdSupplies" title="中选供应商"></Criteria.Input>
                 <Criteria.Criterion
                   canMulti={false}

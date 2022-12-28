@@ -156,6 +156,7 @@ const Content: React.FC<IContentViewProps> = props => {
       icon: h(Icon, { name: 'delete', color: '#F25643' }),
       okType: 'danger' as EBtnType,
       okText: '删除',
+      cancelText: '取消',
       onOk: () => {
         api
           .delete({ fdId: data.fdId })
@@ -214,8 +215,17 @@ const Content: React.FC<IContentViewProps> = props => {
     cmsHandleBack(history, '/cmsProjectDemand/listDemand')
   }, [])
 
+  // 流程异常时的保存
+  const handleErrSave = () => {
+    if (data?.fdProcessStatus !== ESysLbpmProcessStatus.ABNORMAL) return null
+    return {
+      name: '保存',
+      action: () => handleSave(false)
+    }
+  }
   const getCustomizeOperations = () => {
     const customizeOperations = [
+      handleErrSave(),
       handleDraft(),
       handleDel(),
       handleClose()

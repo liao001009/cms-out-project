@@ -20,6 +20,7 @@ export const $deleteAll = ({ api, selectedRows, refresh }) => {
     icon: h(Icon, { name: 'delete', color: '#F25643' }),
     okType: 'danger' as EBtnType,
     okText: '删除',
+    cancelText: '取消',
     onOk: () => {
       api
         .deleteAll({ fdIds: selectedRows.map((selectedRow) => (selectedRow.fdId ? selectedRow.fdId : selectedRow)) })

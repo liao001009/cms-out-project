@@ -99,7 +99,9 @@ export enum ESysLbpmProcessStatus {
   /** 驳回状态 */
   'REJECT' = '11',
   /** 撤回草稿 */
-  'WITHDRAW' = '12'
+  'WITHDRAW' = '12',
+  /**流程异常 */
+  'ABNORMAL' = '29'
 }
 
 /** 是否为流程相关处理人 */
@@ -267,16 +269,16 @@ export const exportTable = (data, columns, fileName, hiddenKey) => {
   saveWorkbook(workbook, name)
 }
 
-const removalData = (value) => {
-  const arr: any = []
-  value.forEach(i => {
-    if (arr.includes(i)) {
-      return
-    } else {
-      arr.push(i)
+const removalData = (data) => {
+  for (let i = 0; i < data.length; i++) {
+    for (let j = i + 1; j < data.length; j++) {
+      if (data[i].value === data[j].value) {
+        data.splice(j, 1)
+        j--
+      }
     }
-  })
-  return arr
+  }
+  return data.filter(i => i)
 }
 // 收集view页面的下拉框的options
 export const getData = (key, func, data) => {
@@ -290,5 +292,6 @@ export const getData = (key, func, data) => {
     return item
   })
   newKeyArr = newKeyArr?.length && removalData(newKeyArr)
+  console.log('newKeyArr555', newKeyArr)
   func(newKeyArr)
 }

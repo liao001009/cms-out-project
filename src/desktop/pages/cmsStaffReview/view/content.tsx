@@ -1,14 +1,12 @@
-import apiLbpm from '@/api/cmsLbpm'
 import api from '@/api/cmsStaffReview'
 import { Auth, Module } from '@ekp-infra/common'
 import { IContentViewProps } from '@ekp-runtime/render-module'
 import { Button, Message, Modal } from '@lui/core'
-import Axios from 'axios'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import XForm from './form'
 //@ts-ignore
 import Status, { EStatusType } from '@elements/status'
-import { useMkSendData } from '@/utils/mkHooks'
+import { useMkSendData, useMater } from '@/utils/mkHooks'
 import { fmtMsg } from '@ekp-infra/respect'
 import Icon from '@lui/icons'
 import { cmsHandleBack } from '@/utils/routerUtil'
@@ -20,40 +18,15 @@ const { confirm } = Modal
 const baseCls = 'project-review-content'
 const Content: React.FC<IContentViewProps> = props => {
   const { data, history, match } = props
-  const [materialVis, setMaterialVis] = useState<boolean>(true)
+  /** 定级 */
+  const { materialVis, setMaterialVis } = useMater(data)
   const { params } = match
   // 模板id
   const templateId = useMemo(() => {
     return data?.fdTemplate?.fdId
   }, [data])
 
-  /** 定级 */
-  const getCurrentNode = async () => {
-    try {
-      const nodeInfosData = await apiLbpm.getCurrentNodeInfo({
-        processInstanceId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId
-      })
-      const url = mk.getSysConfig('apiUrlPrefix') + '/cms-out-manage/cmsOutManageCommon/loadNodeExtendPropertiesOnProcess'
-      const processData = await Axios.post(url, {
-        fdId: data?.mechanisms && data.mechanisms['lbpmProcess']?.fdProcessId
-      })
-      if (nodeInfosData.data.currentNodeCards.length || processData.data.length) {
-        const newArr = processData.data.filter(item => {
-          return nodeInfosData.data.currentNodeCards.find(item2 => item.nodeId === item2.fdNodeId && item2.fdCurrentHandlers.some(item3 => item3.id === mk.getSysConfig('currentUser').fdId))
-        })
-        setMaterialVis(newArr.length ? newArr[0].extendProperty.supplierApprove === 'false' ? false : true : false)
-      } else {
-        setMaterialVis(false)
-      }
-    } catch (error) {
-      console.error('errortest2', error)
-      setMaterialVis(false)
-    }
-  }
 
-  useEffect(() => {
-    getCurrentNode()
-  }, [])
   // 机制组件引用
   const formComponentRef = useRef<any>()
   const lbpmComponentRef = useRef<any>()
@@ -140,45 +113,34 @@ const Content: React.FC<IContentViewProps> = props => {
     if (await _beforeSave(isDraft) === false) {
       return
     }
+    if (!values.fdSubject) {
+      Message.error('请填写主题')
+      return
+    }
     values = {
       ...values,
       cmsStaffReviewDetail: values.cmsStaffReviewDetail.values || undefined
     }
-    if (!values.fdSupplies.length && !isDraft) {
-      confirm({
-        title: '未选择中选供应商，是否确认提交',
-        onOk () {
-          // 编辑暂存
-          api.update(values).then(res => {
-            if (res.success) {
-              Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
-                cmsHandleBack(history, '/cmsStaffReview/listStaffReview')
-              })
-            } else {
-              Message.error(isDraft ? '暂存失败' : '提交失败', 1)
-            }
-          }).catch(() => {
-            Message.error(isDraft ? '暂存失败' : '提交失败', 1)
-          })
-        },
-        onCancel () {
-          console.log('Cancel')
-        }
-      })
-    } else {
-      // 编辑暂存
-      api.update(values).then(res => {
-        if (res.success) {
-          Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
-            cmsHandleBack(history, '/cmsStaffReview/listStaffReview')
-          })
-        } else {
-          Message.error(isDraft ? '暂存失败' : '提交失败', 1)
-        }
-      }).catch(() => {
+    // 将前面赋值为{}的定级给为undefined
+    values.cmsStaffReviewDetail = values.cmsStaffReviewDetail.map(i => {
+      if (i.fdConclusion !== '1') {
+        i.fdConfirmLevel = undefined
+      }
+      return i
+    })
+    // 编辑暂存
+    api.update(values).then(res => {
+      if (res.success) {
+        Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
+          cmsHandleBack(history, '/cmsStaffReview/listStaffReview')
+        })
+      } else {
         Message.error(isDraft ? '暂存失败' : '提交失败', 1)
-      })
-    }
+      }
+    }).catch(() => {
+      Message.error(isDraft ? '暂存失败' : '提交失败', 1)
+    })
+    // }
   }
 
 
@@ -200,6 +162,8 @@ const Content: React.FC<IContentViewProps> = props => {
   const handleDelete = useCallback(() => {
     confirm({
       content: '确认删除此记录？',
+      cancelText: '取消',
+      okText: '确定',
       onOk () {
         api.delete({ fdId: data.fdId }).then(res => {
           if (res.success) {

@@ -324,15 +324,23 @@ const XformModal: React.FC<IProps> = (props) => {
     setFdName('')
     onChange?.(undefined)
   }
+
+  const handleCloseMutilTag = (e, val) => {
+    e.stopPropagation()
+    const newData = initSelectedArr.filter(i => i.fdId !== val.fdId)
+    setInitSelectArr(newData)
+    onChange?.(newData)
+  }
+
   const renderTag = () => {
     if (initSelectedArr && initSelectedArr.length) {
       return initSelectedArr.map(i => {
-        return <Tag key={i.fdId}>{i.fdName}</Tag>
+        return <Tag key={i.fdId} closable onClose={(e) => handleCloseMutilTag(e, i)} className={'modal-tag'}>{i.fdName}</Tag>
       })
     } else {
       return (
         <React.Fragment>
-          {fdName ? <Tag closable onClose={handleCloseTag}>{fdName}</Tag> : null}
+          {fdName ? <Tag closable onClose={handleCloseTag} className={'modal-tag'}>{fdName}</Tag> : null}
         </React.Fragment>
       )
     }
@@ -402,6 +410,7 @@ const XformModal: React.FC<IProps> = (props) => {
         mask={true}
         width={'1100px'}
         className='record-modal'
+        cancelText='取消'
         onCancel={() => handleCancel()}
         onOk={() => handleOk()}
         footer={showFooter ? undefined : null}

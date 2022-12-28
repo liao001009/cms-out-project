@@ -163,23 +163,8 @@ const EditTable = (props: IProps) => {
       ]
     )
   }, [editFlag, orderDetailList])
-  const conactStaffInfo = async (list) => {
-    const result = list.map(i => {
-      return apiStaffInfo.get({ fdId: i.fdOutName.fdId, mechanisms: { load: '*' } })
-    })
-    const newData = await Promise.all(result)
-    if (newData.length) {
-      const newList = JSON.parse(JSON.stringify(list))
-      const res = newList.map((k, v) => {
-        //@ts-ignore
-        k.fdAtt = newData[v].data.mechanisms.attachment.find(i => i.fdEntityKey === 'fdResumeAtt')
-        return k
-      })
-      setOrderDetailList(res)
-    } else {
-      setOrderDetailList(list)
-    }
-  }
+
+  // 获取人员数据
   const getOrderDetail = async (pageParms = {}) => {
     try {
       const res = await apiOrder.listOrderDetail({
@@ -190,7 +175,31 @@ const EditTable = (props: IProps) => {
         },
         ...pageParms
       })
-      conactStaffInfo(res.data.content)
+      const staffListData = res?.data?.content
+      const ids = staffListData.map(i => i.fdOutName.fdId)
+      // 获取人员简历信息
+      const staffInfo = await apiStaffInfo.list({
+        conditions: {
+          fdId: { '$in': ids }
+        },
+        columns: ['attachment', 'fdId']
+      })
+      if (staffInfo?.data?.content?.length) {
+        const newData = staffListData.map(i => {
+          staffInfo.data.content.forEach(k => {
+            if (i.fdOutName.fdId === k.fdId) {
+              const fdAtt = k.mechanisms.attachment.find(i => i.fdEntityKey === 'fdResumeAtt')
+              if (fdAtt) {
+                i.fdAtt = fdAtt
+              }
+            }
+          })
+          return i
+        })
+        setOrderDetailList(newData)
+      } else {
+        setOrderDetailList(staffListData)
+      }
     } catch (error) {
       console.log('error', error)
     }

@@ -94,12 +94,6 @@ const Content: React.FC<IContentViewProps> = (props) => {
         dataIndex: 'fdProjectPrincipal',
         render: (value) => value && value.fdName
       },
-      /*内部责任人*/
-      {
-        title: '内部责任人',
-        dataIndex: 'fdInnerPrincipal',
-        render: (value) => value && value.fdName
-      },
       /*项目立项时间*/
       {
         title: '项目立项时间',
@@ -186,6 +180,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
   const handleSearch = (keyword: string) => {
     queryChange({
       ...query,
+      offset: 0,
       conditions: {
         ...query.conditions,
         fdName: { $contains: keyword.trim() }
@@ -200,6 +195,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
       queryChange &&
         queryChange({
           ...query,
+          offset: 0,
           conditions
         })
     },
@@ -282,8 +278,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
                 ></Criteria.Criterion>
                 <Criteria.Org orgType={2} title="所属部门" name="fdBelongDept.fdId"></Criteria.Org>
                 <Criteria.Org orgType={2} title="所属组/团队" name="fdBelongTeam.fdId"></Criteria.Org>
-                <Criteria.Org orgType={8} title="项目负责人" name="fdProjectPrincipal.fdId"></Criteria.Org>
-                <Criteria.Org orgType={8} title="内部责任人" name="fdInnerPrincipal.fdId"></Criteria.Org>
+                <Criteria.Org orgType={8} options={[]} placeholder='请输入姓名' title="项目负责人" name="fdProjectPrincipal.fdId"></Criteria.Org>
                 <Criteria.Calendar
                   options={Criteria.Calendar.buildOptions()}
                   name="fdProjectDate"

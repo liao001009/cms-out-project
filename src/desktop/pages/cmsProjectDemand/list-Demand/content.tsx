@@ -184,6 +184,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
   const handleSearch = (keyword: string) => {
     queryChange({
       ...query,
+      offset: 0,
       conditions: {
         ...query.conditions,
         fdSubject: { $contains: keyword.trim() }
@@ -203,6 +204,7 @@ const Content: React.FC<IContentViewProps> = (props) => {
       queryChange &&
         queryChange({
           ...query,
+          offset: 0,
           conditions
         })
     },

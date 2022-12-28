@@ -50,6 +50,7 @@ const XformExecl: React.FC<any> = (props) => {
         footer={footer}
         modalType={'small'}
         onCancel={handleCancel}
+        cancelText={'取消'}
       >
         <Upload
           name='file'

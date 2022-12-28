@@ -36,21 +36,23 @@ const lpackConfig = {
     // 平台，desktop、manage、mobile
     platform: entryName,
     // 模块代理
-    modulesUrlPrefix: 'http://192.168.50.145:8088/web',
+    modulesUrlPrefix: 'http://192.168.50.145:7088/web',
     // 租户资源域名前缀
-    tenantUrlPrefix: 'http://192.168.50.145:8088/web',
+    tenantUrlPrefix: 'http://192.168.50.145:7088/web',
     // 组件库域名
     elementsUrlPrefix: {
-      manufact: 'http://192.168.50.145:8088/web',
-      artifact: 'http://192.168.50.145:8088/web'
+      manufact: 'http://192.168.50.145:7088/web',
+      artifact: 'http://192.168.50.145:7088/web'
       // artifact: 'http://127.0.0.1:8008'
     },
     // elementsUrlPrefix: 'http://127.0.0.1:8008',
+    enabledGlobalLui: true,
+    enabledGlobalMui: true,
     // 服务端域名
-    // apiUrlPrefix: 'http://192.168.50.145:8101/data',
-    apiUrlPrefix: 'http://10.10.10.253:9101/data',
+    apiUrlPrefix: 'http://192.168.50.145:7101/data',
+    // apiUrlPrefix: 'http://10.10.10.253:9101/data',
     //多语言服务
-    langUrlPrefix: 'http://192.168.50.145:8088/data/sys-lang'
+    langUrlPrefix: 'http://192.168.50.145:7088/data/sys-lang'
   },
   webpack: {
     resolve: {
