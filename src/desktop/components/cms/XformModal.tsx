@@ -365,7 +365,7 @@ const XformModal: React.FC<IProps> = (props) => {
   }
 
   const handleStaffSearch = (value) => {
-    const newParams = { ...selectParams, conditions: { ...selectParams?.conditions, 'fdName': { '$contains': value.trim() } } }
+    const newParams = { ...selectParams, conditions: { ...selectParams?.conditions, 'fdName': { '$contains': value.trim() } }, offset:0  }
     getListData({ ...query, ...newParams })
   }
 
