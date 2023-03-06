@@ -33,7 +33,7 @@ const EditTable = (props: IProps) => {
   }, [orderDetailList])
 
   useEffect(() => {
-    getOrderDetail({ pageSize: 1000 })
+    getOrderDetail({})
   }, [])
 
   const hasChangedData = () => {

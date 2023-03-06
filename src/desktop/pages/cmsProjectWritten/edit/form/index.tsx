@@ -499,7 +499,7 @@ const XForm = (props) => {
     if (!staffInfo) {
       return
     }
-    return staffInfo.find(item => item.fdName === keyVal)
+    return staffInfo.find(item => item.fdCardNo === keyVal)
   }
 
 
@@ -519,7 +519,7 @@ const XForm = (props) => {
             [field]: i[key],
           }
         })
-        const personInfo = checkPersonInfo(item['fdInterviewName'])
+        const personInfo = checkPersonInfo(item['fdCardNo'])
         if (personInfo) {
           item['fdInterviewName'] = personInfo
           const fdBeginTime = moment(formatDate(item['fdBeginTime'], '-')).valueOf()

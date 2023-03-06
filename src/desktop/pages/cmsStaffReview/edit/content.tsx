@@ -129,7 +129,7 @@ const Content: React.FC<IContentViewProps> = props => {
           saveApi(values).then(res => {
             if (res.success) {
               Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
-                cmsHandleBack(history, '/cmsStaffReview/listStaffReview')
+                cmsHandleBack(history, '/cmsProjectDemand/listDemand')
               })
             } else {
               Message.error(isDraft ? '暂存失败' : '提交失败', 1)
@@ -147,7 +147,7 @@ const Content: React.FC<IContentViewProps> = props => {
       saveApi(values).then(res => {
         if (res.success) {
           Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
-            cmsHandleBack(history, '/cmsStaffReview/listStaffReview')
+            cmsHandleBack(history, '/cmsProjectDemand/listDemand')
           })
         } else {
           Message.error(isDraft ? '暂存失败' : '提交失败', 1)
@@ -267,7 +267,7 @@ const Content: React.FC<IContentViewProps> = props => {
   }
   // 返回
   const handleBack = useCallback(() => {
-    cmsHandleBack(history, '/cmsStaffReview/listStaffReview')
+    cmsHandleBack(history, '/cmsProjectDemand/listDemand')
   }, [])
 
   // 流程异常时的保存

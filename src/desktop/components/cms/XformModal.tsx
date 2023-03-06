@@ -325,11 +325,22 @@ const XformModal: React.FC<IProps> = (props) => {
     onChange?.(undefined)
   }
 
-  const handleCloseMutilTag = (e, val) => {
+  const handleCloseMutilTag = async (e, val) => {
     e.stopPropagation()
     const newData = initSelectedArr.filter(i => i.fdId !== val.fdId)
-    setInitSelectArr(newData)
-    onChange?.(newData)
+    const fdIds = newData.map(i => i.fdId)
+    if (fdIds.length) {
+      try {
+        const res = await apiKey[apiName]({ ...getDefaultTableColumns(), conditions: { fdId: { '$in': fdIds } } })
+        setInitSelectArr(res.data.content)
+        onChange && onChange(res.data.content)
+      } catch (error) {
+        Message.error(error.response?.data?.msg || '请求失败')
+      }
+    } else {
+      setInitSelectArr([])
+      onChange && onChange([])
+    }
   }
 
   const renderTag = () => {
@@ -354,7 +365,7 @@ const XformModal: React.FC<IProps> = (props) => {
   }
 
   const handleStaffSearch = (value) => {
-    const newParams = { ...selectParams, conditions: { ...selectParams?.conditions, 'fdName': { '$contains': value.trim() } } }
+    const newParams = { ...selectParams, conditions: { ...selectParams?.conditions, 'fdName': { '$contains': value.trim() } }, offset:0  }
     getListData({ ...query, ...newParams })
   }
 

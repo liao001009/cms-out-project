@@ -18,6 +18,7 @@ import CMSXformModal, { EShowStatus } from '@/desktop/components/cms/XformModal'
 import apiSupplierInfo from '@/api/cmsSupplierInfo'
 import { supplierColumns } from '@/desktop/pages/common/common'
 import { getData } from '@/desktop/shared/util'
+import { removalData } from '@/utils/util'
 const MECHANISMNAMES = {}
 const baseCls = 'project-review-form'
 const XForm = (props) => {
@@ -45,9 +46,22 @@ const XForm = (props) => {
     })
     setSupplierInfoArr(newArr)
   }
+  const getStaffList = () => {
+    let newData = value.cmsStaffReviewDetail.map(i => {
+      const item = {
+        value: i.fdOutName.fdId,
+        label: i.fdOutName.fdName
+      }
+      return item
+    })
+    newData = removalData(newData)
+    setOutStaffInfoArr(newData)
+  }
+  useEffect(() => {
+    getStaffList()
+  }, [value.cmsStaffReviewDetail])
   useEffect(() => {
     getData('fdSupplier', setsupplierInfoList, value.cmsStaffReviewDetail)
-    getData('fdOutName', setOutStaffInfoArr, value.cmsStaffReviewDetail)
     getData('fdConfirmLevel', setLevelList, value.cmsStaffReviewDetail)
   }, [])
   useEffect(() => {

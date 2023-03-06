@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import './index.scss'
 import { fmtMsg } from '@ekp-infra/respect'
-import { Form } from '@lui/core'
+import { Form, Message } from '@lui/core'
 import { useApi, useSystem } from '@/desktop/shared/formHooks'
 import XformAppearance from '@/desktop/components/form/XformAppearance'
 import LayoutGrid from '@/desktop/components/form/LayoutGrid'
@@ -13,14 +13,28 @@ import XformAddress from '@/desktop/components/form/XformAddress'
 import XformSelect from '@/desktop/components/form/XformSelect'
 import XformDatetime from '@/desktop/components/form/XformDatetime'
 import api from '@/api/cmsFrameInfo'
+import apiProject from '@/api/cmsProjectInfo'
 import CMSXformModal from '@/desktop/components/cms/XformModal'
 import { frameInfoColumns } from '@/desktop/pages/common/common'
+
 const MECHANISMNAMES = {}
 const baseCls = 'projectInfo-form'
 const XForm = (props) => {
   const detailForms = useRef({})
   const { formRef: formRef, value: value } = props
   const [form] = Form.useForm()
+
+
+  
+  const checkFdCode = async (_rule, value) => {
+    if (value) {
+      const res = await apiProject.list({ conditions: { fdCode: { '$eq': value } } })
+      if (res.data.content.length) {
+        return Promise.reject(new Error('项目编号重复了'))
+      }
+      return Promise.resolve()
+    }
+  }
 
   // 对外暴露接口
   useApi({
@@ -119,6 +133,9 @@ const XForm = (props) => {
                       {
                         required: true,
                         message: '内容不能为空'
+                      },
+                      {
+                        validator: (_rule, value) => checkFdCode(_rule, value)
                       }
                     ]}
                   >
