@@ -132,7 +132,7 @@ const Content: React.FC<IContentViewProps> = props => {
     api.update(values).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
-          cmsHandleBack(history, '/cmsStaffReview/listStaffReview')
+          cmsHandleBack(history, '/cmsProjectDemand/listDemand')
         })
       } else {
         Message.error(isDraft ? '暂存失败' : '提交失败', 1)
@@ -168,7 +168,7 @@ const Content: React.FC<IContentViewProps> = props => {
         api.delete({ fdId: data.fdId }).then(res => {
           if (res.success) {
             Message.success('删除成功')
-            cmsHandleBack(history, '/cmsStaffReview/listStaffReview')
+            cmsHandleBack(history, '/cmsProjectDemand/listDemand')
           }
         }).catch(error => {
           Message.error(error.response.data.msg || '删除失败')
@@ -204,7 +204,7 @@ const Content: React.FC<IContentViewProps> = props => {
   }
   // 返回
   const handleBack = useCallback(() => {
-    cmsHandleBack(history, '/cmsStaffReview/listStaffReview')
+    cmsHandleBack(history, '/cmsProjectDemand/listDemand')
   }, [])
 
 

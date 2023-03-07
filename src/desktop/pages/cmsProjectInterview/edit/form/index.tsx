@@ -186,7 +186,7 @@ const XForm = (props) => {
     if (!staffInfo) {
       return
     }
-    return staffInfo.find(item => item.fdName === keyVal)
+    return staffInfo.find(item => item.fdCardNo === keyVal)
   }
 
   const setDetailTable = (data) => {
@@ -208,7 +208,7 @@ const XForm = (props) => {
         if (!item['fdInterviewName']) {
           errMsg.push(`第${index + 1}条的‘姓名’没有填写`)
         }
-        const personInfo = checkPersonInfo(item['fdInterviewName'])
+        const personInfo = checkPersonInfo(item['fdCardNo'])
         if (personInfo) {
           item['fdInterviewName'] = personInfo
           const fdInterviewPass = Number(item['fdInterviewScores']) <= Number(fdQualifiedMark) ? '0' : '1'
