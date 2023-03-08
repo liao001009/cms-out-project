@@ -182,7 +182,8 @@ const EditTable = (props: IProps) => {
         conditions: {
           fdId: { '$in': ids }
         },
-        columns: ['attachment', 'fdId']
+        columns: ['attachment', 'fdId'],
+        pageSize: ids.length
       })
       if (staffInfo?.data?.content?.length) {
         const newData = staffListData.map(i => {

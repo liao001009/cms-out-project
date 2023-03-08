@@ -42,7 +42,7 @@ const XForm = (props) => {
   const [staffInfo, setStaffInfo] = useState<any>([])
   const [visible, setVisible] = useState<boolean>(false)
   const [errMsgArr, setErrMsgArr] = useState<any>([])
-
+  const [isRequired, setIsRequired] = useState<boolean>(true)
 
   const getTag = () => {
     let parentNode, addRow
@@ -117,19 +117,13 @@ const XForm = (props) => {
     cmsProjectWrittenDe?.values?.forEach((v, r) => {
       if (!v.fdWrittenScores) return
       const fdWrittenPass = val <= v.fdWrittenScores ? '1' : '0'
-      sysProps.$$form.current.updateFormItemProps('cmsProjectWrittenDe', {
-        rowValue: {
-          rowNum: r,
-          value: {
-            fdWrittenPass: fdWrittenPass,
-          }
-        }
-      })
+      v.fdWrittenPass = fdWrittenPass
       const checkArr = arr.findIndex(item => item.fdId === v.fdSupplier.fdId)
       if (checkArr === -1 && fdWrittenPass === '1') {
         arr.push(v.fdSupplier)
       }
     })
+    detailForms.current.cmsProjectWrittenDe.current.updateValues(cmsProjectWrittenDe.values)
     form.setFieldsValue({
       fdSupplierTotal: arr
     })
@@ -478,7 +472,8 @@ const XForm = (props) => {
   const handlerChange = (data) => {
     const array = Object.values(data)
     setDetailTable(array)
-    checkDetailWS('')
+    const fdQualifiedMark = form.getFieldValue('fdQualifiedMark')
+    checkDetailWS(fdQualifiedMark)
   }
 
   const getField = (str: string) => {
@@ -528,7 +523,7 @@ const XForm = (props) => {
           item = { ...item, ...personInfo, fdWrittenPass, fdBeginTime, fdEndTime }
           newValue.push(item)
         } else {
-          errMsg.push(item['fdInterviewName'])
+          errMsg.push(`${item['fdInterviewName']}不在订单响应人员名单里`)
         }
       })
       setErrMsgArr(errMsg)
@@ -777,8 +772,14 @@ const XForm = (props) => {
                 title={fmtMsg(':cmsProjectWritten.form.!{l5hzlb769gv64l5j7ke}', '面试官')}
                 layout={'horizontal'}
                 hidden={ivVisible !== '1'}
+                required={isRequired}
               >
-                <Form.Item name={'fdInterviewer'}>
+                <Form.Item name={'fdInterviewer'} rules={[
+                  {
+                    required: isRequired,
+                    message: '请选择面试官'
+                  }
+                ]}>
                   <XformAddress
                     {...sysProps}
                     multi={true}
@@ -883,6 +884,7 @@ const XForm = (props) => {
                         value: '1'
                       }
                     ]}
+                    onChange={(e) => { setIsRequired(!!e.length) }}
                     rowCount={3}
                     direction={'column'}
                     serialType={'empty'}
@@ -892,7 +894,6 @@ const XForm = (props) => {
                 </Form.Item>
               </XformFieldset>
             </GridItem>
-
             <GridItem column={2} row={7} columnSpan={1} rowSpan={1}
               style={{
                 display: 'none'
@@ -913,12 +914,10 @@ const XForm = (props) => {
                 </Form.Item>
               </XformFieldset>
             </GridItem>
-
-
           </LayoutGrid>
         </XformAppearance>
       </Form>
-    </div>
+    </div >
   )
 }
 
