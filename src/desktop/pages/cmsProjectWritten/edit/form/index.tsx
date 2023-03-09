@@ -83,6 +83,11 @@ const XForm = (props) => {
     try {
       const initParam = { conditions: { 'fdProjectDemand.fdId': { '$eq': params } } }
       const resStaff = await apiOrderResponse.listStaff(initParam)
+      Object.keys(resStaff).forEach(key => {
+        if (key === 'fdHighestEducation') {
+          resStaff.fdMajor = resStaff.fdHighestEducation
+        }
+      })
       const ids = resStaff?.data?.content?.map(i => { return i.fdId })
       if (ids && ids.length > 0) {
         const newParam = {
@@ -495,6 +500,7 @@ const XForm = (props) => {
       return
     }
     return staffInfo.find(item => item.fdCardNo === keyVal)
+
   }
 
 
@@ -511,7 +517,7 @@ const XForm = (props) => {
           const field = getField(key)
           item = {
             ...item,
-            [field]: i[key],
+            [field.split('*')[0]]: i[key],
           }
         })
         const personInfo = checkPersonInfo(item['fdCardNo'])

@@ -3,6 +3,8 @@ import { Auth, Module } from '@ekp-infra/common'
 import { IContentViewProps } from '@ekp-runtime/render-module'
 import { Button, Message, Modal } from '@lui/core'
 import React, { useCallback, useEffect, useMemo, useRef } from 'react'
+import { ESysLbpmProcessStatus } from '@/utils/status'
+
 import XForm from './form'
 //@ts-ignore
 import Status, { EStatusType } from '@elements/status'
@@ -112,8 +114,10 @@ const Content: React.FC<IContentViewProps> = props => {
       ...values,
       cmsProjectStaffList: Array.isArray(values.cmsProjectStaffList) ? values.cmsProjectStaffList : values.cmsProjectStaffList.values
     }
+    const saveApi = isDraft ? api.save : api.update
+
     // 提交
-    api.update(values as any).then(res => {
+    saveApi(values as any).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
           cmsHandleBack(history, '/cmsProjectSelectInfo/listSelectInfo')
@@ -190,10 +194,26 @@ const Content: React.FC<IContentViewProps> = props => {
   }, [])
 
 
+  //暂存
+  const handleDraft = () => {
+    if (data.fdProcessStatus === ESysLbpmProcessStatus.COMPLETED) return
+
+    return {
+      name: '暂存',
+      action: () => {
+        handleSave(true)
+      },
+      auth: {
+        authModuleName: 'cms-out-manage',
+        authURL: '/cmsProjectSelectInfo/save',
+      }
+    }
+  }
   const getCustomizeOperations = () => {
     const customizeOperations = [
       handleEdit(),
       handleDel(),
+      handleDraft(),
       handleClose()
     ].filter(t => !!t)
     return customizeOperations

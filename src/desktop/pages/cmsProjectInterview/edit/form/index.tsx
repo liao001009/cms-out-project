@@ -126,19 +126,13 @@ const XForm = (props) => {
     cmsProjectInterDetail?.values?.forEach((v, r) => {
       if (!v.fdInterviewScores) return
       const fdInterviewPass = val <= v.fdInterviewScores ? '1' : '0'
-      sysProps.$$form.current.updateFormItemProps('cmsProjectInterDetail', {
-        rowValue: {
-          rowNum: r,
-          value: {
-            fdInterviewPass: fdInterviewPass,
-          }
-        }
-      })
+      v.fdInterviewPass = fdInterviewPass
       const checkArr = arr.findIndex(item => item.fdId === v.fdSupplier.fdId)
       if (checkArr === -1 && fdInterviewPass === '1') {
         arr.push(v.fdSupplier)
       }
     })
+    detailForms.current.cmsProjectInterDetail.current.updateValues(cmsProjectInterDetail.values)
   }
 
   // 对外暴露接口
@@ -175,7 +169,8 @@ const XForm = (props) => {
   const handlerChange = (data) => {
     const array = Object.values(data)
     setDetailTable(array)
-    checkDetailWS('')
+    const fdQualifiedMark = form.getFieldValue('fdQualifiedMark')
+    checkDetailWS(fdQualifiedMark)
   }
 
   const getField = (str: string) => {
@@ -202,7 +197,7 @@ const XForm = (props) => {
           const field = getField(key)
           item = {
             ...item,
-            [field]: i[key],
+            [field.split('*')[0]]: i[key],
           }
         })
         if (!item['fdInterviewName']) {

@@ -11,6 +11,7 @@ import apiProjectWritten from '@/api/cmsProjectWritten'
 import apiStaffReviewList from '@/api/cmsStaffReview'
 import apiTemplate from '@/api/cmsStaffReviewTemplate'
 import apiAuth from '@/api/sysAuth'
+import { ESysLbpmProcessStatus } from '@/utils/status'
 import apiProjectTemplate from '@/api/cmsProjectSelectInfoTemplate'
 import { fmtMsg } from '@ekp-infra/respect'
 //@ts-ignore
@@ -243,8 +244,9 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     if (await _beforeSave(isDraft) === false) {
       return
     }
+    const saveApi = isDraft ? api.save : api.update
     // 提交
-    api.update({
+    saveApi({
       ...values,
       fdFrame: values.fdFrame,
       cmsProjectDemandWork: Array.isArray(values.cmsProjectDemandWork) ? values.cmsProjectDemandWork : values.cmsProjectDemandWork.values,
@@ -424,6 +426,20 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   }, [])
 
 
+  //暂存
+  const handleDraft = () => {
+    if (data.fdProcessStatus === ESysLbpmProcessStatus.COMPLETED) return
+    return {
+      name: '暂存',
+      action: () => {
+        handleSave(true)
+      },
+      auth: {
+        authModuleName: 'cms-out-manage',
+        authURL: '/cmsProjectDemand/save',
+      }
+    }
+  }
   const getCustomizeOperations = () => {
     const customizeOperations = [
       handleOrder(),
@@ -432,6 +448,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
       handleEnterStaffReview(),
       handleEnterSelectInfo(),
       handleEdit(),
+      handleDraft(),
       handleDel(),
       handleClose()
     ].filter(t => !!t)
