@@ -83,11 +83,15 @@ const XForm = (props) => {
     try {
       const initParam = { conditions: { 'fdProjectDemand.fdId': { '$eq': params } } }
       const resStaff = await apiOrderResponse.listStaff(initParam)
-      Object.keys(resStaff).forEach(key => {
-        if (key === 'fdHighestEducation') {
-          resStaff.fdMajor = resStaff.fdHighestEducation
-        }
+      // Object.keys(resStaff?.data?.content).forEach(key => {
+      //   if (key === 'fdHighestEducation') {
+      //     resStaff.fdMajor = resStaff.fdHighestEducation
+      //   }
+      // })
+      resStaff.data.content.forEach(i => {
+        i.fdMajor = i.fdHighestEducation
       })
+      console.log('555resStaff', resStaff)
       const ids = resStaff?.data?.content?.map(i => { return i.fdId })
       if (ids && ids.length > 0) {
         const newParam = {
@@ -521,6 +525,7 @@ const XForm = (props) => {
           }
         })
         const personInfo = checkPersonInfo(item['fdCardNo'])
+        console.log('555personInfo', personInfo)
         if (personInfo) {
           item['fdInterviewName'] = personInfo
           const fdBeginTime = moment(formatDate(item['fdBeginTime'], '-')).valueOf()

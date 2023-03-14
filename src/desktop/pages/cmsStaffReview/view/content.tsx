@@ -4,6 +4,8 @@ import { IContentViewProps } from '@ekp-runtime/render-module'
 import { Button, Message, Modal } from '@lui/core'
 import React, { useCallback, useEffect, useMemo, useRef } from 'react'
 import XForm from './form'
+import { useEditBtn, useDraftBtn } from '@/desktop/shared/mkHooks'
+
 import { ESysLbpmProcessStatus } from '@/utils/status'
 //@ts-ignore
 import Status, { EStatusType } from '@elements/status'
@@ -148,6 +150,7 @@ const Content: React.FC<IContentViewProps> = props => {
 
 
   const handleEdit = () => {
+    if (!materialVis) return
 
     const authParams = {
       vo: { fdId: params['id'] }
@@ -213,6 +216,8 @@ const Content: React.FC<IContentViewProps> = props => {
   //暂存
   const handleDraft = () => {
     if (data.fdProcessStatus === ESysLbpmProcessStatus.COMPLETED) return
+    if (!materialVis) return
+
     return {
       name: '暂存',
       action: () => {
@@ -225,11 +230,15 @@ const Content: React.FC<IContentViewProps> = props => {
     }
   }
 
+  const drft = useDraftBtn(data, 'cmsStaffReview', handleSave)
+  const edit = useEditBtn(data, 'cmsStaffReview', params, history)
   const getCustomizeOperations = () => {
     const customizeOperations = [
-      handleEdit(),
+      // handleEdit(),
+      drft,
       handleDel(),
-      handleDraft(),
+      // handleDraft(),
+      edit,
       handleClose()
     ].filter(t => !!t)
     return customizeOperations

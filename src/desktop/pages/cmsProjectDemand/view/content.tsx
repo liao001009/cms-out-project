@@ -14,6 +14,8 @@ import apiAuth from '@/api/sysAuth'
 import { ESysLbpmProcessStatus } from '@/utils/status'
 import apiProjectTemplate from '@/api/cmsProjectSelectInfoTemplate'
 import { fmtMsg } from '@ekp-infra/respect'
+import { useEditBtn, useDraftBtn } from '@/desktop/shared/mkHooks'
+
 //@ts-ignore
 import Status, { EStatusType } from '@elements/status'
 import Icon from '@lui/icons'
@@ -362,7 +364,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   }, [history, staffTemplateData, data?.fdProcessFlag, btnStatus])
 
   const handleEdit = () => {
-
+    if (!materialVis) return
     const authParams = {
       vo: { fdId: params['id'] }
     }
@@ -429,6 +431,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
   //暂存
   const handleDraft = () => {
     if (data.fdProcessStatus === ESysLbpmProcessStatus.COMPLETED) return
+    if (!materialVis) return
     return {
       name: '暂存',
       action: () => {
@@ -440,6 +443,8 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
       }
     }
   }
+  const drft = useDraftBtn(data, 'cmsProjectDemand', handleSave)
+  const edit = useEditBtn(data, 'cmsProjectDemand', params, history)
   const getCustomizeOperations = () => {
     const customizeOperations = [
       handleOrder(),
@@ -447,9 +452,11 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
       handleEnterInterview(),
       handleEnterStaffReview(),
       handleEnterSelectInfo(),
-      handleEdit(),
-      handleDraft(),
+      drft,
+      // handleEdit(),
+      // handleDraft(),
       handleDel(),
+      edit,
       handleClose()
     ].filter(t => !!t)
     return customizeOperations
