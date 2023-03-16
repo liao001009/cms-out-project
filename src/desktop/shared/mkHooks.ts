@@ -109,16 +109,17 @@ export const useDraftBtn = (data, router, handleSave) => {
 
   if (!visible) return
   if (data.fdProcessStatus === ESysLbpmProcessStatus.COMPLETED) return
+  console.log('router', router)
 
   return {
     name: '暂存',
     action: () => {
       handleSave(true)
     },
-    auth: {
-      authModuleName: 'cms-out-manage',
-      authURL: `/${router}/save`,
-    }
+    // auth: {
+    //   authModuleName: 'cms-out-manage',
+    //   authURL: `/${router}/save`,
+    // }
   }
 }
 
