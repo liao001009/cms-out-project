@@ -3,7 +3,11 @@ import { Auth, Module } from '@ekp-infra/common'
 import { IContentViewProps } from '@ekp-runtime/render-module'
 import { Button, Message, Modal } from '@lui/core'
 import React, { useCallback, useEffect, useMemo, useRef } from 'react'
+import { ESysLbpmProcessStatus } from '@/utils/status'
+import { useMater } from '@/utils/mkHooks'
 import XForm from './form'
+import { useEditBtn, useDraftBtn } from '@/desktop/shared/mkHooks'
+
 //@ts-ignore
 import Status, { EStatusType } from '@elements/status'
 import Icon from '@lui/icons'
@@ -29,7 +33,7 @@ const Content: React.FC<IContentViewProps> = props => {
   const formComponentRef = useRef<any>()
   const lbpmComponentRef = useRef<any>()
   const rightComponentRef = useRef<any>()
-
+  const { materialVis } = useMater(data)
 
   // 校验
   const _validate = async (isDraft: boolean) => {
@@ -112,8 +116,10 @@ const Content: React.FC<IContentViewProps> = props => {
       ...values,
       cmsProjectStaffList: Array.isArray(values.cmsProjectStaffList) ? values.cmsProjectStaffList : values.cmsProjectStaffList.values
     }
+    const saveApi = isDraft ? api.save : api.update
+
     // 提交
-    api.update(values as any).then(res => {
+    saveApi(values as any).then(res => {
       if (res.success) {
         Message.success(isDraft ? '暂存成功' : '提交成功', 1, () => {
           cmsHandleBack(history, '/cmsProjectSelectInfo/listSelectInfo')
@@ -127,6 +133,7 @@ const Content: React.FC<IContentViewProps> = props => {
   }
 
   const handleEdit = () => {
+    if (!materialVis) return
 
     const authParams = {
       vo: { fdId: params['id'] }
@@ -190,10 +197,31 @@ const Content: React.FC<IContentViewProps> = props => {
   }, [])
 
 
+  //暂存
+  const handleDraft = () => {
+    if (data.fdProcessStatus === ESysLbpmProcessStatus.COMPLETED) return
+    if (!materialVis) return
+
+    return {
+      name: '暂存',
+      action: () => {
+        handleSave(true)
+      },
+      auth: {
+        authModuleName: 'cms-out-manage',
+        authURL: '/cmsProjectSelectInfo/save',
+      }
+    }
+  }
+  const drft = useDraftBtn(data, 'cmsProjectSelectInfo', handleSave)
+  const edit = useEditBtn(data, 'cmsProjectSelectInfo', params, history)
   const getCustomizeOperations = () => {
     const customizeOperations = [
-      handleEdit(),
+      // handleEdit(),
+      drft,
       handleDel(),
+      // handleDraft(),
+      edit,
       handleClose()
     ].filter(t => !!t)
     return customizeOperations
