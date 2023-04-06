@@ -42,126 +42,140 @@ const EditTable = (props: IProps) => {
   }
 
   const columns = useMemo(() => {
-    return (
-      [
-        {
-          /**供应商名称 */
-          title: '供应商名称',
-          dataIndex: 'fdSupplier',
-          width: 120,
-          render: (text) => <span title={text && text.fdName}>{text && text.fdName}</span>
+    return [
+      {
+        /**供应商名称 */
+        title: '供应商名称',
+        dataIndex: 'fdSupplier',
+        width: 120,
+        render: (text) => <span title={text && text.fdName}>{text && text.fdName}</span>,
+      },
+      {
+        title: '姓名',
+        dataIndex: 'fdOutName',
+        width: 120,
+        render: (text) => <span title={text && text.fdName}>{text && text.fdName}</span>,
+      },
+      {
+        title: '岗位',
+        dataIndex: 'fdPost',
+        width: 120,
+        render: (text) => <span title={text && text.fdName}>{text && text.fdName}</span>,
+      },
+      {
+        title: '所属框架',
+        dataIndex: 'fdFrame',
+        width: 120,
+        render: (text) => <span title={text && text.fdName}>{text && text.fdName}</span>,
+      },
+      {
+        title: '自评级别',
+        dataIndex: 'fdSkillLevel',
+        width: 120,
+        render: (text) => <span title={text}>{text}</span>,
+      },
+      {
+        title: '评定级别',
+        dataIndex: 'fdConfirmLevel',
+        width: 120,
+        render: (text) => <span title={text && text.fdName}>{text && text.fdName}</span>,
+      },
+      {
+        title: '邮箱',
+        dataIndex: 'fdEmail',
+        width: 120,
+        render: (text) => <span title={text}>{text}</span>,
+      },
+      {
+        title: '电话',
+        dataIndex: 'fdPhone',
+        width: 120,
+        render: (text) => <span title={text}>{text}</span>,
+      },
+      {
+        title: '外包人员身份证号',
+        dataIndex: 'fdCardNo',
+        width: 130,
+        render: (text) => <span title={text}>{text}</span>,
+      },
+      {
+        title: '简历',
+        dataIndex: 'fdAtt',
+        width: 200,
+        render: (text: any) => {
+          return (
+            <Fragment>
+              {text ? (
+                <Upload
+                  value={[text]}
+                  multiple={false}
+                  itemType={'table'}
+                  mode="file"
+                  viewStatus={true}
+                  showStatus={'view'}
+                  operationDisplayConfig={{
+                    buttonType: 'text',
+                    showDownload: true,
+                    showRemove: false,
+                    showChange: false,
+                    showEdit: false,
+                  }}
+                  itemDisplayConfig={{
+                    showOrder: false,
+                    showSize: false,
+                    showCreator: false,
+                    showCreated: false,
+                    showHeader: false,
+                    showBatch: false,
+                  }}
+                />
+              ) : null}
+            </Fragment>
+          )
         },
-        {
-          title: '姓名',
-          dataIndex: 'fdOutName',
-          width: 120,
-          render: (text) => <span title={text && text.fdName}>{text && text.fdName}</span>
+      },
+      {
+        title: '是否合格',
+        width: 120,
+        dataIndex: 'fdIsQualified',
+        key: 'fdIsQualified',
+        editable: false,
+        saveEvent: 'change',
+        render: (text, record) => {
+          return editFlag ? (
+            <Select
+              onSelect={(val) => handleChangeValue(val, record, 'fdIsQualified')}
+              defaultValue={text}
+              style={{ width: '100px' }}
+            >
+              <Select.Option value={'0'}>否</Select.Option>
+              <Select.Option value={'1'}>是</Select.Option>
+            </Select>
+          ) : (
+            <span>{!text ? '' : text === '0' ? '否' : '是'}</span>
+          )
         },
-        {
-          title: '岗位',
-          dataIndex: 'fdPost',
-          width: 120,
-          render: (text) => <span title={text && text.fdName}>{text && text.fdName}</span>
+      },
+      {
+        title: '备注',
+        dataIndex: 'fdRemarks',
+        key: 'fdRemarks',
+        width: 200,
+        editable: false,
+        saveEvent: 'blur',
+        render: (text, record) => {
+          return editFlag ? (
+            <Input.TextArea
+              defaultValue={text}
+              placeholder="请输入"
+              onChange={(text) => handleChangeValue(text, record, 'fdRemarks')}
+            />
+          ) : (
+            <span>{text}</span>
+          )
         },
-        {
-          title: '所属框架',
-          dataIndex: 'fdFrame',
-          width: 120,
-          render: (text) => <span title={text && text.fdName}>{text && text.fdName}</span>
-        },
-        {
-          title: '自评级别',
-          dataIndex: 'fdSkillLevel',
-          width: 120,
-          render: (text) => <span title={text}>{text}</span>
-        },
-        {
-          title: '评定级别',
-          dataIndex: 'fdConfirmLevel',
-          width: 120,
-          render: (text) => <span title={text && text.fdName}>{text && text.fdName}</span>
-        },
-        {
-          title: '邮箱',
-          dataIndex: 'fdEmail',
-          width: 120,
-          render: (text) => <span title={text}>{text}</span>
-        },
-        {
-          title: '电话',
-          dataIndex: 'fdPhone',
-          width: 120,
-          render: (text) => <span title={text}>{text}</span>
-        },
-        {
-          title: '简历',
-          dataIndex: 'fdAtt',
-          width: 200,
-          render: (text: any) => {
-            return (
-              <Fragment>
-                {
-                  text ? (
-                    <Upload
-                      value={[text]}
-                      multiple={false}
-                      itemType={'table'}
-                      mode='file'
-                      viewStatus={true}
-                      showStatus={'view'}
-                      operationDisplayConfig={{
-                        buttonType: 'text',
-                        showDownload: true,
-                        showRemove: false,
-                        showChange: false,
-                        showEdit: false
-                      }}
-                      itemDisplayConfig={{
-                        showOrder: false,
-                        showSize: false,
-                        showCreator: false,
-                        showCreated: false,
-                        showHeader: false,
-                        showBatch: false
-                      }}
-                    />
-                  ) : null
-                }
-              </Fragment>
-            )
-          }
-        },
-        {
-          title: '是否合格',
-          width: 120,
-          dataIndex: 'fdIsQualified',
-          key: 'fdIsQualified',
-          editable: false,
-          saveEvent: 'change',
-          render: (text, record) => {
-            return editFlag ? (
-              <Select onSelect={(val) => handleChangeValue(val, record, 'fdIsQualified')} defaultValue={text} style={{ width: '100px' }}>
-                <Select.Option value={'0'}>否</Select.Option>
-                <Select.Option value={'1'}>是</Select.Option>
-              </Select>
-            ) : (<span>{!text ? '' : text === '0' ? '否' : '是'}</span>)
-          }
-        },
-        {
-          title: '备注',
-          dataIndex: 'fdRemarks',
-          key: 'fdRemarks',
-          width: 200,
-          editable: false,
-          saveEvent: 'blur',
-          render: (text, record) => {
-            return editFlag ? (
-              <Input.TextArea defaultValue={text} placeholder='请输入' onChange={(text) => handleChangeValue(text, record, 'fdRemarks')} />
-            ) : (<span>{text}</span>)
-          }
-        }
-      ]
-    )
+      },
+    ]
   }, [editFlag, orderDetailList])
 
   // 获取人员数据
@@ -182,7 +196,7 @@ const EditTable = (props: IProps) => {
         conditions: {
           fdId: { '$in': ids }
         },
-        columns: ['attachment', 'fdId'],
+        columns: ['attachment', 'fdId', 'fdCardNo'],
         pageSize: ids.length
       })
       if (staffInfo?.data?.content?.length) {
@@ -193,6 +207,7 @@ const EditTable = (props: IProps) => {
               if (fdAtt) {
                 i.fdAtt = fdAtt
               }
+              i.fdCardNo = k?.fdCardNo
             }
           })
           return i
