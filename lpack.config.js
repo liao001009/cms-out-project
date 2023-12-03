@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path')
 const { MkPlugin } = require('@lpack/boilerplate-generator-mk/lib/webpack/plugin')
 

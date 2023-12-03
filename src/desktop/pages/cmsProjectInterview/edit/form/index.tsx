@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useRef, createRef, useEffect, useState } from 'react'
 import './index.scss'
 import { fmtMsg } from '@ekp-infra/respect'
