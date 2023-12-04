@@ -1,3 +1,4 @@
+/* eslint-disable */
 import api from '@/api/cmsProjectDemand'
 import { Auth, Module } from '@ekp-infra/common'
 import { IContentViewProps } from '@ekp-runtime/render-module'
@@ -97,7 +98,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     },])
     setExportRole(role)
   }
-  // 获取是否有外包人员评审和发布中选信息的权限
+  // 获取是否有和发布中选信息的权限
   const getAuth = async () => {
     try {
       const res = await apiAuth.roleCheck([
@@ -348,7 +349,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     // 按钮存在条件为fdProcessFlag包含3
     if (data.fdProcessFlag && !data.fdProcessFlag.includes('3')) return null
     return {
-      name: fmtMsg(':cmsProjectInterview.form.!{l5j0eriwqaq645oi9c}', '外包人员评审'),
+      name: fmtMsg(':cmsProjectInterview.form.!{l5j0eriwqaq645oi9c}', ''),
       action: () => {
         if (!staffTemplateData) {
           Message.error('请先配置模板', 1)
@@ -637,7 +638,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
                     history={history}
                   />
                 </TabPane>
-                <TabPane tab="外包人员评审" key="4" >
+                <TabPane tab="" key="4" >
                   <CmsListView
                     apiRequest={apiStaffReviewList.listStaffReview}
                     columns={staffReviewColumns}

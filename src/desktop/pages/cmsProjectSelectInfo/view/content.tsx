@@ -1,3 +1,4 @@
+/* eslint-disable */
 import api from '@/api/cmsProjectSelectInfo'
 import { Auth, Module } from '@ekp-infra/common'
 import { IContentViewProps } from '@ekp-runtime/render-module'

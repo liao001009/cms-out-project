@@ -28,6 +28,8 @@ import CmsProjectWrittenEdit from '@/desktop/pages/cmsProjectWritten/edit/conten
 import CmsProjectWrittenList from '@/desktop/pages/cmsProjectWritten/list-Written/content'
 import CmsProjectWrittenView from '@/desktop/pages/cmsProjectWritten/view/content'
 
+import CmsInterviewWorkbenchView from '@/desktop/pages/cmsInterviewWorkbench/view/content'
+
 
 export {
   CmsProjectInfoAdd,
@@ -53,5 +55,6 @@ export {
   CmsProjectWrittenAdd,
   CmsProjectWrittenEdit,
   CmsProjectWrittenList,
-  CmsProjectWrittenView
+  CmsProjectWrittenView,
+  CmsInterviewWorkbenchView
 }

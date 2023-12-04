@@ -1,3 +1,4 @@
+
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { IContentViewProps } from '@ekp-runtime/render-module'
 import Icon from '@lui/icons'
@@ -155,6 +156,15 @@ const Content: React.FC<IContentViewProps> = (props) => {
   })
 
 
+  const handleInterview = () => {
+    debugger
+    // history.replaceTo('/cmsInterviewWorkbench/view')
+    mk.openLink({
+      url:  'http://127.0.0.1:3136/cms-out-manage/desktop/#/cmsInterviewWorkbench/view',
+      target:'_blank'
+    })
+  }
+
   // 新建
   const handleAdd = useCallback(
     (event) => {
@@ -292,6 +302,15 @@ const Content: React.FC<IContentViewProps> = (props) => {
               </Button>
               {/* 操作栏 */}
               <React.Fragment>
+                {/* <Auth.Auth
+                  authURL='/cmsProjectDemand/add'
+                  authModuleName='cms-out-manage'
+                  unauthorizedPage={null}
+                > */}
+                <Button type="primary" onClick={()=>handleInterview()}>
+                面试工作台
+                </Button>
+                {/* </Auth.Auth> */}
                 <Auth.Auth
                   authURL='/cmsProjectDemand/add'
                   authModuleName='cms-out-manage'
