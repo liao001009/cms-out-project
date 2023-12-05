@@ -4,10 +4,10 @@ import { Message, Upload } from '@lui/core'
 import pdfUpload from '../img/pdfUpload.png'
 
 
-const uploadPDF: React.FC = () => {
+const UploadPDF: React.FC = () => {
   const props = {
     name: 'file',
-    action: 'https://yunsucoding.landray.com.cn/data/sys-attach/upload',
+    action: 'https://mkzszq.ywork.me/data/sys-attach/upload',
     headers: {
       authorization: 'authorization-text',
     },
@@ -42,4 +42,4 @@ const uploadPDF: React.FC = () => {
   )
 }
 
-export default uploadPDF
+export default UploadPDF
