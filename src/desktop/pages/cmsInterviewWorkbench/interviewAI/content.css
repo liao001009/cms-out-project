@@ -1,0 +1,402 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+  background-image: url("../img/background1.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  padding: 24px 24px;
+}
+
+/* .header {
+  box-sizing: border-box;
+  padding: 0 24px;
+  display: flex;
+  height: 62px;
+  background: #fff;
+  border-radius: 24px;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 24px;
+  margin-bottom: 16px;
+} */
+
+.content {
+  box-sizing: border-box;
+  display: flex;
+}
+
+.content-left {
+  width: 50%;
+  height: calc(100vh - 126px);
+  background: #fff;
+  border-radius: 24px;
+}
+
+.content-left {
+  margin-right: 16px;
+  padding: 24px;
+}
+
+.content-left-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 48px;
+
+  .info-left {
+    margin-right: 24px;
+  }
+  
+  .info-main {
+    width: 100%;
+    height: 100px;
+  
+    .info-main-title {
+      margin-bottom: 16px;
+  
+      .main-title {
+        font-weight: 600;
+        font-size: 20px;
+        line-height: 30px;
+        color: #05073B;
+        margin-right: 24px;
+      }
+  
+      .sub-title {
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 24px;
+        color: #05073B;
+        margin-right: 24px;
+      }
+    }
+  
+    .info-main-detail {
+      display: flex;
+      flex-wrap: wrap;
+  
+      .detail-item {
+        min-width: 150px;
+        margin-right: 36px;
+        margin-bottom: 12px;
+  
+        .info-label {
+          font-size: 14px;
+          font-weight: 400;
+          line-height: 21px;
+          color: #9B9CB1;
+        }
+  
+        .info-value {
+          font-size: 14px;
+          font-weight: 400;
+          line-height: 21px;
+          color: #05073B;
+        }
+      }
+    }
+  }
+  
+  .info-btn {
+    .btn {
+      border: 1px solid;
+      border-radius: 8px; /* 调整圆角的大小 */
+    }
+  
+    /* 渐变边框 */
+    &::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      z-index: -1;
+      border: 2px solid;
+      border-image: linear-gradient(to right, #4955F5, #9587FF);
+      border-image-slice: 1;
+      border-radius: 8px; /* 圆角大小要和主元素一致 */
+    }
+  }
+}
+
+.content-left-skills {
+  margin-bottom: 24px;
+
+  .content-title {
+    display: flex;
+    margin-bottom: 24px;
+  
+    .title-icon {
+      font-size: 24px;
+      line-height: 24px;
+      width: 24px;
+      height: 24px;
+      margin-right: 16px;
+    }
+  
+    .title-content {
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 24px;
+      color: #05073B;
+    }
+  }
+  
+  .skills-content {
+    display: flex;
+    margin-bottom: 48px;
+  
+    .skill-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100px;
+      height: 36px;
+      border-radius: 100px;
+      background: #F4F5FE;
+      color: #05073B;
+      margin-right: 12px;
+    }
+  }  
+}
+
+.content-left-history {
+  .content-title {
+    display: flex;
+    margin-bottom: 24px;
+  
+    .title-icon {
+      font-size: 24px;
+      line-height: 24px;
+      width: 24px;
+      height: 24px;
+      margin-right: 16px;
+    }
+  
+    .title-content {
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 24px;
+      color: #05073B;
+    }
+  }
+
+  .history-content {
+    .history-item {
+      .item-title {
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 21px;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+
+      .item-content {
+        .content-item {
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 21px;
+        }
+      }
+    }
+  }
+}
+
+.content-right {
+  width: 50%;
+  height: calc(100vh - 104px);
+}
+
+.content-right-questions {
+  background: #fff;
+  border-radius: 24px;
+  height: calc(100vh - 342px);
+  margin-bottom: 16px;
+  padding: 24px;
+
+  .content-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+    position: relative;
+  
+    .header-icon {
+      font-size: 26px;
+      margin-right: 20px;
+    }
+    .header-title {
+      font-weight: 600px;
+      font-size: 22px;
+      line-height: 24px;
+      margin-right: 24px;
+    }
+    .header-sub {
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 21px;
+      /* margin-right: 556px; */
+    }
+    .header-open {
+      position: absolute;
+      top: 0;
+      right: 24px;
+      cursor: pointer;
+    }
+  }
+
+  .content-tabs {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+
+    .skill-item-actvie {
+      width: 100px;
+      height: 36px;
+      border: 1px;
+      background: linear-gradient(to right, #4955F5, #9587FF);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      margin-right: 12px;
+      color: #fff;
+      cursor: pointer;
+      
+      span {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 21px;
+      }
+    }
+
+    .skill-item {
+      position: relative;
+      width: 100px;
+      height: 36px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      margin-right: 12px;
+      color: #4955F5;
+      cursor: pointer;
+      overflow: hidden; /* 确保内容不会突破边框 */
+    
+      span {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 21px;
+      }
+    }
+
+    .skill-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+  
+    .skill-item::before {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 36' fill='none' stroke='%234955F5' stroke-width='1'%3E%3Crect x='0.5' y='0.5' width='99' height='35' rx='7.5' stroke-opacity='1'/%3E%3C/svg%3E");
+      background-size: 100% 100%;
+    }
+    
+    .skill-item-other {
+      position: relative;
+      width: 100px;
+      height: 36px;
+      border: 1px;
+      background: #F8F8FA;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      color: #05073B;
+      cursor: pointer;
+    
+      span {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 21px;
+      }
+    }
+  }
+
+  .content-list {
+    height: 434px;
+    overflow: auto;
+
+    .qs-item-active {
+      margin-bottom: 16px;
+
+      .qs-item-question {
+        padding: 14px 16px;
+        background: #F4F5FE;
+        margin-bottom: 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-bottom: 16px;
+        color: #4955F5;
+        position: relative;
+
+        div {
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 21px;
+        }
+      }
+
+      .qs-item-answer {
+        padding: 0 16px 0 36px;
+        color: #05073B;
+
+        div {
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 21px;
+        }
+      }
+    }
+
+    .qs-item {
+      margin-bottom: 16px;
+
+      .qs-item-question {
+        padding: 14px 16px;
+        background: #F8F8FA;
+        margin-bottom: 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-bottom: 16px;
+
+        div {
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 21px;
+        }
+      }
+
+      .qs-item-answer {
+        padding: 0 16px 0 36px;
+        color: #05073B;
+        display: none;
+
+        div {
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 21px;
+        }
+      }
+    }
+  }
+}
+
+.content-right-chatBot {
+  background: #fff;
+  border-radius: 24px;
+  height: 200px;
+}

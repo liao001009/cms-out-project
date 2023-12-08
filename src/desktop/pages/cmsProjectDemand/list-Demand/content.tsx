@@ -155,12 +155,11 @@ const Content: React.FC<IContentViewProps> = (props) => {
     }
   })
 
-
+  // 面试工作台
   const handleInterview = () => {
-    debugger
-    // history.replaceTo('/cmsInterviewWorkbench/view')
+    history.replaceTo('/cmsInterviewWorkbench/uploadAI')
     mk.openLink({
-      url:  'http://127.0.0.1:3136/cms-out-manage/desktop/#/cmsInterviewWorkbench/view',
+      url:  'http://127.0.0.1:3136/cms-out-manage/desktop/#/cmsInterviewWorkbench/uploadAI',
       target:'_blank'
     })
   }

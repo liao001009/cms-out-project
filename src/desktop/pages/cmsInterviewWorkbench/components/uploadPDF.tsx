@@ -28,14 +28,17 @@ const UploadPDF: React.FC = () => {
         {...props}
         accept={'.txt,.pdf'}
         sortableZone={'default'}
-        maxCount = {1}
+        maxCount={1}
       >
         <div>
-          <span className="addimg">
-            <img src={pdfUpload}/>
-          </span>
-          <br />
-        *仅支持PDF文件格式
+          <div style={{ clear: 'both' }}>
+            <span className="addimg" >
+              <img src={pdfUpload} />
+            </span>
+          </div>
+          <div className='uploadH1'>点击</div>
+          <div className='uploadH2'>或拖拽添加文件</div>
+          <div className='uploadH3'>*仅支持PDF文件格式</div>
         </div>
       </Upload>
     </div>

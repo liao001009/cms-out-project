@@ -7,7 +7,7 @@ export default {
   // 页面标题
   title: 'cms-out-project:cmsProjectDemand.list.Demand',
   // 路由
-  router: '/view',
+  router: '/uploadAI',
   // 模块内容区
   children: {
     // 内容类型: 列表
