@@ -1,6 +1,6 @@
 // src/components/Home.tsx
 import React from 'react'
-import './content.css'
+import './content.scss'
 import '../uploadAI/content.scss'
 import Icon from '@lui/icons'
 import ContentLeft from '../components/left'

@@ -8,8 +8,9 @@ const { Step } = Steps
 
 const Content = () => {
   //页面初始化
-  // eslint-disable-next-line @typescript-eslint/no-empty-function  
   useEffect(() => {
+    const element = document.querySelector('.ele-page-layout-default') as unknown as HTMLElement
+    element.style.padding='0px'
   }, [])
   const steps = [
     {
@@ -37,18 +38,6 @@ const Content = () => {
       content: (
         <div className='finish'>
           <div>
-            {/* <div className='lui-steps-item-icon'>
-              <span className="lui-steps-icon">
-                <i className="lui-icon lui-icon-iconCommon_line_16_signTick lui-steps-finish-icon lui-icon-16">
-                  <span role="img" className="lui-action">
-                    <svg className="icon vector-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" href="http://www.w3.org/1999/xlink">
-                      <use href="#iconCommon_line_16_signTick" id="svgUse-#iconCommon_line_16_signTick">
-                      </use>
-                    </svg>
-                  </span>
-                </i>
-              </span>
-            </div> */}
             <div className='finishImage'></div>
             <div className='finishH1'>处理完成，即将开始辅助面试</div>
             <div className='finishH2'>王小军-高级Java开发工程师-2023简历.pdf</div>

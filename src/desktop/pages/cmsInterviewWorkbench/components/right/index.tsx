@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { OrderedListOutlined, CaretUpOutlined, CaretDownOutlined } from '@ant-design/icons'
-import '../../interviewAI/content.css'
+import '../../interviewAI/content.scss'
+import Refresh from '../../img/Refresh.png'
 
 const ContentRight = () => {
   const [open, setOpen] = useState(true)
@@ -64,7 +65,7 @@ const ContentRight = () => {
     },
   ]
 
-  const onChangeOpen= () => {
+  const onChangeOpen = () => {
     const curOpen = open
     setOpen(!curOpen)
   }
@@ -73,43 +74,48 @@ const ContentRight = () => {
     setActiveSkill(key)
   }
 
-  const onChangeQs= (key: number) => {
+  const onChangeQs = (key: number) => {
     setActiveQs(key)
+  }
+
+  const oclRefresh = () => {
+    console.log('刷新')
   }
 
   return (
 
     <div className='content-right'>
-      <div className='content-right-questions' 
-        style={{ 
-          height: open ? 'calc(100vh - 342px)' : '20px',
-          overflow: open ? 'auto' : 'hidden' 
+      <div className='content-right-questions'
+        style={{
+          height: open ? 'calc(100vh - 342px)' : '72px',
+          overflow: open ? 'hidden' : 'hidden'
         }}>
         <div className='content-header'>
           <div className='header-icon'>
-            <OrderedListOutlined />
           </div>
           <div className='header-title'>
-              智能题库
+            智能题库
           </div>
           <div className='header-sub'>
-              个性化推荐面试题
+            个性化推荐面试题
           </div>
           <div className='header-open' onClick={onChangeOpen}>
-            <span>收起</span>
-            { open ? <CaretDownOutlined /> : <CaretUpOutlined /> }
+            {
+              open ? <div><span>收起</span><CaretDownOutlined/></div> : 
+                <div><span>展开</span><CaretUpOutlined/></div>
+            }
           </div>
         </div>
         <div className='content-tabs'>
           {
             skillMap.map((skill: any) => {
               return (
-                <div 
-                  className={ 
-                    activeSkill === skill.key 
-                      ? 'skill-item-actvie' 
-                      : 'skill-item' 
-                  } 
+                <div
+                  className={
+                    activeSkill === skill.key
+                      ? 'skill-item-actvie'
+                      : 'skill-item'
+                  }
                   key={skill.key}
                   onClick={() => onChangeSkill(skill.key)}
                 >
@@ -125,11 +131,11 @@ const ContentRight = () => {
         <div className='content-list'>
           {questionsMap.map((qs: any, index: number) => {
             return (
-            // @ts-ignore
-            // eslint-disable-next-line react/jsx-key
-              <div 
-                className={ 
-                  index + 1 === activeQs ? 'qs-item-active' : 'qs-item' 
+              // @ts-ignore
+              // eslint-disable-next-line react/jsx-key
+              <div
+                className={
+                  index + 1 === activeQs ? 'qs-item-active' : 'qs-item'
                 }
                 onClick={() => onChangeQs(index + 1)}
               >
@@ -143,13 +149,17 @@ const ContentRight = () => {
             )
           })}
         </div>
+        <div className='refresh' onClick={oclRefresh}>
+          <img src={Refresh} className='refreshImage' />
+          换一批
+        </div>
       </div>
       <div className='content-right-chatBot'>
         <div className='content-icon'></div>
         <div className='content-title'>chatBot</div>
       </div>
     </div>
-    
+
   )
 }
 

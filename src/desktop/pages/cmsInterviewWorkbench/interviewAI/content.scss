@@ -43,16 +43,22 @@
   margin-bottom: 48px;
 
   .info-left {
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
     margin-right: 24px;
+    background-image: url("../img/photo.png"), url("../img/photoBg.png");
+    background-repeat: no-repeat;
+    background-position: center center;
   }
-  
+
   .info-main {
     width: 100%;
     height: 100px;
-  
+
     .info-main-title {
       margin-bottom: 16px;
-  
+
       .main-title {
         font-weight: 600;
         font-size: 20px;
@@ -60,7 +66,7 @@
         color: #05073B;
         margin-right: 24px;
       }
-  
+
       .sub-title {
         font-weight: 400;
         font-size: 16px;
@@ -69,23 +75,23 @@
         margin-right: 24px;
       }
     }
-  
+
     .info-main-detail {
       display: flex;
       flex-wrap: wrap;
-  
+
       .detail-item {
         min-width: 150px;
         margin-right: 36px;
         margin-bottom: 12px;
-  
+
         .info-label {
           font-size: 14px;
           font-weight: 400;
           line-height: 21px;
           color: #9B9CB1;
         }
-  
+
         .info-value {
           font-size: 14px;
           font-weight: 400;
@@ -95,13 +101,27 @@
       }
     }
   }
-  
+
   .info-btn {
+
     .btn {
       border: 1px solid;
-      border-radius: 8px; /* 调整圆角的大小 */
+      border-radius: 8px;
+      /* 调整圆角的大小 */
+      width: 110px;
+      height: 36px;
+      flex-shrink: 0;
+      border-radius: 8px;
+      border: 1px solid var(---, #4955F5);
+      background: rgba(255, 255, 255, 0.00);
+      color: #4955F5;
+      font-family: PingFang SC;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 21px;
     }
-  
+
     /* 渐变边框 */
     &::before {
       content: '';
@@ -114,7 +134,8 @@
       border: 2px solid;
       border-image: linear-gradient(to right, #4955F5, #9587FF);
       border-image-slice: 1;
-      border-radius: 8px; /* 圆角大小要和主元素一致 */
+      border-radius: 8px;
+      /* 圆角大小要和主元素一致 */
     }
   }
 }
@@ -125,15 +146,20 @@
   .content-title {
     display: flex;
     margin-bottom: 24px;
-  
+
     .title-icon {
+      background-image: url("../img/PersonalTechnologyStack.png");
+      background-repeat: no-repeat;
+      background-position: center center;
+
       font-size: 24px;
       line-height: 24px;
       width: 24px;
       height: 24px;
+      flex-shrink: 0;
       margin-right: 16px;
     }
-  
+
     .title-content {
       font-weight: 500;
       font-size: 16px;
@@ -141,11 +167,11 @@
       color: #05073B;
     }
   }
-  
+
   .skills-content {
     display: flex;
     margin-bottom: 48px;
-  
+
     .skill-item {
       display: flex;
       align-items: center;
@@ -157,22 +183,27 @@
       color: #05073B;
       margin-right: 12px;
     }
-  }  
+  }
 }
 
 .content-left-history {
   .content-title {
     display: flex;
     margin-bottom: 24px;
-  
+
     .title-icon {
+      background-image: url("../img/JobResume.png");
+      background-repeat: no-repeat;
+      background-position: center center;
+
       font-size: 24px;
       line-height: 24px;
       width: 24px;
       height: 24px;
+      flex-shrink: 0;
       margin-right: 16px;
     }
-  
+
     .title-content {
       font-weight: 500;
       font-size: 16px;
@@ -220,23 +251,32 @@
     align-items: center;
     margin-bottom: 24px;
     position: relative;
-  
+
     .header-icon {
-      font-size: 26px;
+      background-image: url("../img/IntelligentQuestionBank.png");
+      background-repeat: no-repeat;
+      background-position: center center;
+      width: 26px;
+      height: 26px;
+      flex-shrink: 0;
+      // font-size: 26px;
       margin-right: 20px;
     }
+
     .header-title {
       font-weight: 600px;
       font-size: 22px;
       line-height: 24px;
       margin-right: 24px;
     }
+
     .header-sub {
       font-weight: 400;
       font-size: 14px;
       line-height: 21px;
       /* margin-right: 556px; */
     }
+
     .header-open {
       position: absolute;
       top: 0;
@@ -262,7 +302,7 @@
       margin-right: 12px;
       color: #fff;
       cursor: pointer;
-      
+
       span {
         font-weight: 400;
         font-size: 14px;
@@ -282,8 +322,9 @@
       margin-right: 12px;
       color: #4955F5;
       cursor: pointer;
-      overflow: hidden; /* 确保内容不会突破边框 */
-    
+      overflow: hidden;
+      /* 确保内容不会突破边框 */
+
       span {
         font-weight: 400;
         font-size: 14px;
@@ -299,12 +340,12 @@
       right: 0;
       bottom: 0;
     }
-  
+
     .skill-item::before {
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 36' fill='none' stroke='%234955F5' stroke-width='1'%3E%3Crect x='0.5' y='0.5' width='99' height='35' rx='7.5' stroke-opacity='1'/%3E%3C/svg%3E");
       background-size: 100% 100%;
     }
-    
+
     .skill-item-other {
       position: relative;
       width: 100px;
@@ -317,7 +358,7 @@
       border-radius: 8px;
       color: #05073B;
       cursor: pointer;
-    
+
       span {
         font-weight: 400;
         font-size: 14px;
@@ -327,7 +368,7 @@
   }
 
   .content-list {
-    height: 434px;
+    height: 400px;
     overflow: auto;
 
     .qs-item-active {
@@ -392,6 +433,22 @@
         }
       }
     }
+  }
+
+  .refresh {
+    .refreshImage {
+      padding: 0px 6px 2.5px 0px;
+    }
+
+    text-align: center;
+    padding-top: 10px;
+    color:#05073B;
+    font-family: PingFang SC;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    cursor: pointer;
   }
 }
 

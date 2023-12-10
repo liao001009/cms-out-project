@@ -1,8 +1,10 @@
-import React from 'react'
-import { UserOutlined, ScheduleFilled } from '@ant-design/icons'
+//import { UserOutlined, ScheduleFilled } from '@ant-design/icons'
 import { Button, Avatar } from 'antd'
-import '../../interviewAI/content.css'
+import '../../interviewAI/content.scss'
 import TimelineDemo from './timeline'
+import React from 'react'
+// import Icon from '@lui/icons'
+import OnlineResume from '../../img/OnlineResume.png'
 
 const ContentLeft = () => {
   const infoMap = [
@@ -56,7 +58,7 @@ const ContentLeft = () => {
     <div className='content-left'>
       <div className='content-left-info'>
         <section className='info-left'>
-          <Avatar shape="square" size={100} icon={<UserOutlined />} />
+          {/* <Avatar shape="square" size={100} icon={<UserOutlined />} /> */}
         </section>
         <section className='info-main'>
           <div className='info-main-title'>
@@ -69,7 +71,7 @@ const ContentLeft = () => {
                 return (
                   <div className='detail-item' key={info.key}>
                     <span className='info-label'>{info.label + '：'}</span>
-                    <span className='info-value'>{info.value + '：'}</span>
+                    <span className='info-value'>{info.value + ''}</span>
                   </div>
                 )
               })
@@ -77,13 +79,15 @@ const ContentLeft = () => {
           </div>
         </section>
         <div className='info-btn'>
-          <Button className='btn'>在线简历</Button>
+          <Button className='btn'>
+            <img src={OnlineResume} style={{padding:'0px 6px 1px 0px'}}/>            
+            在线简历
+          </Button>
         </div>
       </div>
       <div className='content-left-skills'>
         <section className='content-title'>
           <div className='title-icon'>
-            <ScheduleFilled />
           </div>
           <div className='title-content'>
             <span>个人技术栈</span>
@@ -104,7 +108,6 @@ const ContentLeft = () => {
       <div className='content-left-history'>
         <section className='content-title'>
           <div className='title-icon'>
-            <ScheduleFilled />
           </div>
           <div className='title-content'>
             <span>工作经历</span>

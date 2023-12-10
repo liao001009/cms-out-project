@@ -158,10 +158,10 @@ const Content: React.FC<IContentViewProps> = (props) => {
   // 面试工作台
   const handleInterview = () => {
     history.replaceTo('/cmsInterviewWorkbench/uploadAI')
-    mk.openLink({
-      url:  'http://127.0.0.1:3136/cms-out-manage/desktop/#/cmsInterviewWorkbench/uploadAI',
-      target:'_blank'
-    })
+    // mk.openLink({
+    //   url:  'http://127.0.0.1:3136/cms-out-manage/desktop/#/cmsInterviewWorkbench/uploadAI',
+    //   target:'_blank'
+    // })
   }
 
   // 新建
