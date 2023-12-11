@@ -3,10 +3,13 @@ import { Message, Button, Steps } from '@lui/core'
 import Icon from '@lui/icons'
 import './content.scss'
 import UploadPDF from '../components/uploadPDF'
+import { IContentViewProps } from '@ekp-runtime/render-module'
 // import UploadLoading from '../img/loading.gif'
 const { Step } = Steps
 
-const Content = () => {
+const Content : React.FC<IContentViewProps> = (props) => {
+  const { history } = props
+
   //页面初始化
   useEffect(() => {
     const element = document.querySelector('.ele-page-layout-default') as unknown as HTMLElement
@@ -60,7 +63,7 @@ const Content = () => {
   // AI面试工作台
   const handleInterview = () => {
     Message.success('Processing complete!')
-    window.location.href = 'http://127.0.0.1:3136/cms-out-manage/desktop/#/cmsInterviewWorkbench/interviewAI'
+    window.location.href = '/cms-out-manage/desktop/#/cmsInterviewWorkbench/interviewAI'
     // history.replaceTo('/cmsInterviewWorkbench/uploadAI')
     // mk.openLink({
     //   url: 'http://127.0.0.1:3136/cms-out-manage/desktop/#/cmsInterviewWorkbench/interviewAI',

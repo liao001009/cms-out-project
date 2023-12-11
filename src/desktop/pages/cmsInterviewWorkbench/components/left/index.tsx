@@ -1,13 +1,53 @@
 //import { UserOutlined, ScheduleFilled } from '@ant-design/icons'
 import { Button, Avatar } from 'antd'
+
 import '../../interviewAI/content.scss'
 import TimelineDemo from './timeline'
-import React from 'react'
+import React, { useState } from 'react'
+
 // import Icon from '@lui/icons'
 import OnlineResume from '../../img/OnlineResume.png'
+import data from './getDatas'
 
 const ContentLeft = () => {
-  const infoMap = [
+
+  const keyLists = Object.keys(data.personMessage)
+  const valueLists = Object.values(data.personMessage)
+  let name
+  let post
+  // const [name, setName] = useState('')
+  // const [post, setPost] = useState('')
+
+  const infoMap = keyLists.map((key, i) => {
+    return {
+      key: i,
+      label: key,
+      value: ''
+    }
+  })
+  valueLists.map((value, i) => {
+    infoMap.forEach((obj) => {
+      if (i === obj.key) {
+        obj!.value = value
+      }
+    })
+  })
+
+  for (let i = 0; i < infoMap.length; i++) {
+    if(infoMap[i].label === '名字'){
+      name = infoMap[i].value
+      infoMap.splice(i,1)
+    }
+    if (infoMap[i].label === '岗位') {
+      post = infoMap[i].value
+      infoMap.splice(i,1)
+    }
+  }
+  console.log('个人信息======', infoMap)
+
+  // const skillMap = data.skillPoint.map((a)=>{})
+
+  const infoMaps = [
     {
       key: 'age',
       label: '年龄',
@@ -35,7 +75,7 @@ const ContentLeft = () => {
     },
   ]
 
-  const skillMap = [
+  const skillMaps = [
     {
       key: 'java',
       label: 'Java'
@@ -62,8 +102,8 @@ const ContentLeft = () => {
         </section>
         <section className='info-main'>
           <div className='info-main-title'>
-            <span className='main-title'>王小军</span>
-            <span className='sub-title'>高级JAVA开发工程师</span>
+            <span className='main-title'>{name}</span>
+            <span className='sub-title'>{post}</span>
           </div>
           <div className='info-main-detail'>
             {
@@ -80,7 +120,7 @@ const ContentLeft = () => {
         </section>
         <div className='info-btn'>
           <Button className='btn'>
-            <img src={OnlineResume} style={{padding:'0px 6px 1px 0px'}}/>            
+            <img src={OnlineResume} style={{ padding: '0px 6px 1px 0px' }} />
             在线简历
           </Button>
         </div>
@@ -95,7 +135,7 @@ const ContentLeft = () => {
         </section>
         <section className='skills-content'>
           {
-            skillMap.map((skill: any) => {
+            skillMaps.map((skill: any) => {
               return (
                 <div className='skill-item' key={skill.key}>
                   <span className='skill-label'>{skill.label}</span>

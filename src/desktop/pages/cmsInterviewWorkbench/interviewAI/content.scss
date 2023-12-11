@@ -161,10 +161,12 @@
     }
 
     .title-content {
-      font-weight: 500;
-      font-size: 16px;
-      line-height: 24px;
       color: #05073B;
+      font-family: PingFang SC;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 24px;
     }
   }
 
@@ -205,10 +207,12 @@
     }
 
     .title-content {
-      font-weight: 500;
-      font-size: 16px;
-      line-height: 24px;
       color: #05073B;
+      font-family: PingFang SC;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 24px;
     }
   }
 
@@ -265,22 +269,28 @@
 
     .header-title {
       font-weight: 600px;
-      font-size: 22px;
-      line-height: 24px;
       margin-right: 24px;
+      color:#05073B;
+      font-family: PingFang SC;
+      font-size: 22px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 24px;
     }
 
     .header-sub {
-      font-weight: 400;
+      color:#9B9CB1;
+      font-family: PingFang SC;
       font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
       line-height: 21px;
-      /* margin-right: 556px; */
     }
 
     .header-open {
       position: absolute;
       top: 0;
-      right: 24px;
+      right: 0px;
       cursor: pointer;
     }
   }
@@ -456,4 +466,51 @@
   background: #fff;
   border-radius: 24px;
   height: 200px;
+  padding: 24px;
+  .chatBot-header {
+    display: flex;
+    margin-bottom: 24px;
+  }
+
+  .chatBot-icon {
+    background-image: url("../img/chatBotLogo.png");
+    // background-repeat: no-repeat;
+    display: flex;
+    width: 34px;
+    height: 24px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    margin-right: 16px;
+  }
+
+  .chatBot-title {
+    color: #05073B;
+    font-family: PingFang SC;
+    font-size: 22px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 24px;
+    padding-right: 24px;
+  }
+
+  .chatBot-sub {
+    color: #9B9CB1;
+    font-family: PingFang SC;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 21px;
+  }
+
+  .chatBot-open {
+    position: absolute;
+    right: 48px;
+    cursor: pointer;
+  }
+
+  .chatBotIframe {
+    width: 100%;
+    border-radius: 24px;
+  }
 }

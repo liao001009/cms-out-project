@@ -1,5 +1,5 @@
 // src/components/Home.tsx
-import React from 'react'
+import React, { useEffect } from 'react'
 import './content.scss'
 import '../uploadAI/content.scss'
 import Icon from '@lui/icons'
@@ -7,6 +7,11 @@ import ContentLeft from '../components/left'
 import ContentRight from '../components/right'
 
 const Home: React.FC = () => {
+  //页面初始化
+  useEffect(() => {
+    const element = document.querySelector('.ele-page-layout-default') as unknown as HTMLElement
+    element.style.padding='0px'
+  }, [])
   return (
     <div className='container'>
       <div className="header">

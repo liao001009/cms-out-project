@@ -5,6 +5,7 @@ import Refresh from '../../img/Refresh.png'
 
 const ContentRight = () => {
   const [open, setOpen] = useState(true)
+  const [chatOpen, setChatOpen] = useState(false)
   const [activeSkill, setActiveSkill] = useState('java')
   const [activeQs, setActiveQs] = useState(1)
 
@@ -67,7 +68,14 @@ const ContentRight = () => {
 
   const onChangeOpen = () => {
     const curOpen = open
+    setChatOpen(false)
     setOpen(!curOpen)
+  }
+
+  const onChangeChatOpen = () => {
+    const curOpen = chatOpen
+    setOpen(false)
+    setChatOpen(!curOpen)
   }
 
   const onChangeSkill = (key: string) => {
@@ -91,18 +99,13 @@ const ContentRight = () => {
           overflow: open ? 'hidden' : 'hidden'
         }}>
         <div className='content-header'>
-          <div className='header-icon'>
-          </div>
-          <div className='header-title'>
-            智能题库
-          </div>
-          <div className='header-sub'>
-            个性化推荐面试题
-          </div>
+          <div className='header-icon'></div>
+          <div className='header-title'>智能题库</div>
+          <div className='header-sub'>个性化推荐面试题</div>
           <div className='header-open' onClick={onChangeOpen}>
             {
-              open ? <div><span>收起</span><CaretDownOutlined/></div> : 
-                <div><span>展开</span><CaretUpOutlined/></div>
+              open ? <div><span>收起&nbsp;</span><CaretDownOutlined /></div> :
+                <div><span>展开&nbsp;</span><CaretUpOutlined /></div>
             }
           </div>
         </div>
@@ -149,14 +152,41 @@ const ContentRight = () => {
             )
           })}
         </div>
-        <div className='refresh' onClick={oclRefresh}>
-          <img src={Refresh} className='refreshImage' />
-          换一批
+        <div>
+          <div className='refresh' onClick={oclRefresh}>
+            <img src={Refresh} className='refreshImage' />
+            换一批
+          </div>
         </div>
+
       </div>
-      <div className='content-right-chatBot'>
-        <div className='content-icon'></div>
-        <div className='content-title'>chatBot</div>
+      <div className='content-right-chatBot'
+        style={{
+          height: chatOpen ? 'calc(114vh - 342px)' : '200px',
+          overflow: chatOpen ? 'hidden' : 'hidden'
+        }}
+      >
+        <div className='chatBot-header'>
+          <div className='chatBot-icon'></div>
+          <div className='chatBot-title'>ChatBot</div>
+          <div className='chatBot-sub'>与AI交流面试问题</div>
+          <div className='chatBot-open' onClick={onChangeChatOpen}>
+            {
+              chatOpen ? <div><span>收起&nbsp;</span><CaretDownOutlined /></div> :
+                <div><span>展开&nbsp;</span><CaretUpOutlined /></div>
+            }
+          </div>
+        </div>
+        <div>
+          <iframe className='chatBotIframe' src="https://www.runoob.com" frameBorder="0"
+            style={{
+              height: chatOpen ? 'calc(104vh - 347px)' : '106px',
+              overflow: chatOpen ? 'hidden' : 'hidden'
+            }}
+          >
+          </iframe>
+        </div>
+
       </div>
     </div>
 
