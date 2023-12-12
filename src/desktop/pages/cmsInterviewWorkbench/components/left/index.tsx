@@ -1,10 +1,8 @@
 //import { UserOutlined, ScheduleFilled } from '@ant-design/icons'
 import { Button, Avatar } from 'antd'
-
 import '../../interviewAI/content.scss'
 import TimelineDemo from './timeline'
 import React, { useState } from 'react'
-
 // import Icon from '@lui/icons'
 import OnlineResume from '../../img/OnlineResume.png'
 import data from './getDatas'
@@ -34,18 +32,23 @@ const ContentLeft = () => {
   })
 
   for (let i = 0; i < infoMap.length; i++) {
-    if(infoMap[i].label === '名字'){
+    if (infoMap[i].label === '名字') {
       name = infoMap[i].value
-      infoMap.splice(i,1)
+      infoMap.splice(i, 1)
     }
     if (infoMap[i].label === '岗位') {
       post = infoMap[i].value
-      infoMap.splice(i,1)
+      infoMap.splice(i, 1)
     }
   }
   console.log('个人信息======', infoMap)
 
-  // const skillMap = data.skillPoint.map((a)=>{})
+  const skillMap = data.skillPoint.map((str,i) => {
+    return {
+      key:i,
+      label:str
+    }
+  })
 
   const infoMaps = [
     {
@@ -135,7 +138,7 @@ const ContentLeft = () => {
         </section>
         <section className='skills-content'>
           {
-            skillMaps.map((skill: any) => {
+            skillMap.map((skill: any) => {
               return (
                 <div className='skill-item' key={skill.key}>
                   <span className='skill-label'>{skill.label}</span>

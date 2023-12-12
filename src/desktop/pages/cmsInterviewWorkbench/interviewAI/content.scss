@@ -145,7 +145,7 @@
 
   .content-title {
     display: flex;
-    margin-bottom: 24px;
+    margin-bottom: 14px;
 
     .title-icon {
       background-image: url("../img/PersonalTechnologyStack.png");
@@ -171,8 +171,12 @@
   }
 
   .skills-content {
+    margin-bottom: 24px;
     display: flex;
-    margin-bottom: 48px;
+    flex-wrap: wrap;
+    flex-direction: row;
+    height: 80px;
+    overflow: auto;
 
     .skill-item {
       display: flex;
@@ -184,14 +188,76 @@
       background: #F4F5FE;
       color: #05073B;
       margin-right: 12px;
+      margin-bottom: 6px;
+      flex-basis: 12%;
     }
   }
 }
 
 .content-left-history {
+  .demo-timeline {
+    height: 425px;
+    overflow: auto;
+
+    .history-title-h1 {
+      color: #05073B;
+      text-align: right;
+      font-family: PingFang SC;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 21px;
+      padding-right: 12px;
+    }
+
+    .history-title-h2 {
+      color: #05073B;
+      font-family: PingFang SC;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 21px;
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+
+    .history-title-h3 {
+      color: #05073B;
+      font-family: PingFang SC;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 21px;
+      padding-left: 12px;
+      padding-right: 12px;
+    }
+
+    .lui-timeline-item-head-gray {
+      border-color: #4955F5;
+    }
+
+    .lui-timeline-item-tail {
+      border-left: 2px solid var(--line-light-color);
+    }
+
+    .lui-timeline-item-content {
+      margin: 0 0 0 23px
+    }
+
+    .history-content {
+      color: #05073B;
+      text-align: justify;
+      font-family: PingFang SC;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 21px;
+    }
+  }
+
   .content-title {
     display: flex;
-    margin-bottom: 24px;
+    margin-bottom: 14px;
 
     .title-icon {
       background-image: url("../img/JobResume.png");
@@ -236,6 +302,7 @@
       }
     }
   }
+
 }
 
 .content-right {
@@ -270,7 +337,7 @@
     .header-title {
       font-weight: 600px;
       margin-right: 24px;
-      color:#05073B;
+      color: #05073B;
       font-family: PingFang SC;
       font-size: 22px;
       font-style: normal;
@@ -279,7 +346,7 @@
     }
 
     .header-sub {
-      color:#9B9CB1;
+      color: #9B9CB1;
       font-family: PingFang SC;
       font-size: 14px;
       font-style: normal;
@@ -467,6 +534,7 @@
   border-radius: 24px;
   height: 200px;
   padding: 24px;
+
   .chatBot-header {
     display: flex;
     margin-bottom: 24px;

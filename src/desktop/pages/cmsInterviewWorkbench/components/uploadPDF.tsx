@@ -7,9 +7,14 @@ import pdfUpload from '../img/pdfUpload.png'
 const UploadPDF: React.FC = () => {
   const props = {
     name: 'file',
-    action: 'https://mkzszq.ywork.me/data/sys-attach/upload',
+    action: 'http://mksmoke.ywork.me/data/sys-attach/upload',
+    // action: '/data/sys-attach/upload',
     headers: {
       authorization: 'authorization-text',
+    },
+    body: {
+      fdEntityKey: 'SysOrgImGroupNotify',
+      fdEntityName: 'com.landray.sys.org.core.entity.group.SysOrgImGroupNotify'
     },
     onChange (info) {
       if (info.file.status !== 'uploading') {
@@ -29,6 +34,8 @@ const UploadPDF: React.FC = () => {
         accept={'.txt,.pdf'}
         sortableZone={'default'}
         maxCount={1}
+        //fdEntityKey="SysOrgImGroupNotify"
+
       >
         <div>
           <div style={{ clear: 'both' }}>
