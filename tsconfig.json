@@ -6,6 +6,8 @@
       "@/*": ["./src/*"]
     },
     "noUnusedLocals": false,
-    "noUnusedParameters": false
-  }
+    "noUnusedParameters": false,
+    "lib": ["dom", "es2019"]
+  },
+  
 }

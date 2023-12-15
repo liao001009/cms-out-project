@@ -1,55 +1,95 @@
-// src/components/Home.tsx
-import React from 'react'
-import { Message, Upload } from '@lui/core'
+import React, { useEffect, useState } from 'react'
+import { Module } from '@ekp-infra/common'
+const Attachment = Module.getComponent('sys-attach', 'Attachment')
 import pdfUpload from '../img/pdfUpload.png'
+import '../uploadAI/content.scss'
+import { Message } from '@lui/core'
 
+const getUploadValue = (values: any, type?: string) => {
+  /** 过滤掉替换或者删除的附件 */
+  // values = (values || []).filter((v) => v?.fdBindType !== 'DELETE')
 
-const UploadPDF: React.FC = () => {
-  const props = {
-    name: 'file',
-    action: 'http://mksmoke.ywork.me/data/sys-attach/upload',
-    // action: '/data/sys-attach/upload',
-    headers: {
-      authorization: 'authorization-text',
-    },
-    body: {
-      fdEntityKey: 'SysOrgImGroupNotify',
-      fdEntityName: 'com.landray.sys.org.core.entity.group.SysOrgImGroupNotify'
-    },
-    onChange (info) {
-      if (info.file.status !== 'uploading') {
+  let newValue
+  let isSuccess
+  if (values) {
+    newValue = (values || []).map((v: any) => {
+      const extendInfo = v?.fdExtendInfo ? JSON.parse(v.fdExtendInfo) : {}
+      extendInfo.type = type
+      return {
+        ...v,
+        type: type ?? 'attachment',
+        fdExtendInfo: JSON.stringify(extendInfo)
       }
-      if (info.file.status === 'done') {
-        Message.success(`${info.file.name} file uploaded successfully`)
-      } else if (info.file.status === 'error') {
-        Message.error(`${info.file.name} file upload failed.`)
-      }
-    },
+    })
   }
-  return (
-    <div className="body-upload">
-      <Upload
-        listType={'picture-card'}
-        {...props}
-        accept={'.txt,.pdf'}
-        sortableZone={'default'}
-        maxCount={1}
-        //fdEntityKey="SysOrgImGroupNotify"
+  return newValue
+}
+interface Iprops {
+  labelName: string
+  mode?: string
+  configs?: {
+    accept?: string
+    description?: string
+    maxSize?: number
+  }
+  onChange?: (value: any[]) => void
+  value?: any[]
+  onSuccessDocument?: (value: any) => void
+}
 
-      >
-        <div>
-          <div style={{ clear: 'both' }}>
-            <span className="addimg" >
-              <img src={pdfUpload} />
-            </span>
-          </div>
-          <div className='uploadH1'>点击</div>
-          <div className='uploadH2'>或拖拽添加文件</div>
-          <div className='uploadH3'>*仅支持PDF文件格式</div>
-        </div>
-      </Upload>
+/** 相关文件 */
+const UploadPDF: React.FC<Iprops> = (props) => {
+  const { mode = 'file', configs = {}, value = [], labelName, onChange } = props
+  const [uploadData, setUploadData] = useState<any[]>([])
+
+  useEffect(() => {
+    if (value?.length) setUploadData(value)
+  }, [value])
+
+  const handleChange = (data: any[]) => {
+    const uploadValue = getUploadValue(data, labelName)
+    setUploadData(uploadValue)
+    onChange?.(uploadValue)
+  }
+
+  return (
+    <div>
+      <Attachment
+        key={labelName}
+        mode={mode}
+        {...configs}
+        value={uploadData}
+        fdAnonymous={true}
+        onChange={(v) => {
+          handleChange(v)
+        }}
+        showUploadList={false}
+        fdEntityName='com.landray.sys.lbpa.core.entity.SysLbpaProcessTemplate'
+        fdEntityKey='sysLbpaProcessTemplate'
+        multiple={false}
+        maxCount={1}
+        type={'.pdf'}
+        buttonRender={
+          (<div className="body-upload">
+            <div>
+              <div style={{ clear: 'both' }}>
+                <span className="addimg" >
+                  <img src={pdfUpload} />
+                </span>
+              </div>
+              <div className='uploadH1'>点击</div>
+              <div className='uploadH2'>添加文件</div>
+              <div className='uploadH3'>*仅支持PDF文件格式</div>
+            </div>
+          </div>)
+        }
+        onSuccessDocument={(v) => {
+          Message.success('简历上传成功')
+        }}
+      />
     </div>
   )
 }
 
 export default UploadPDF
+

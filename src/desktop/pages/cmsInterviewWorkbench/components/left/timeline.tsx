@@ -2,7 +2,7 @@
 import { Timeline, Radio } from '@lui/core'
 import React, { useState } from 'react'
 // import './demo.scss'
-import data from './getDatas'
+import {demo} from '../getDatas'
 
 const TimelineDemo = () => {
   const [mode, setMode] = useState<'left' | 'alternate' | 'right'>('left')
@@ -10,12 +10,12 @@ const TimelineDemo = () => {
     setMode(e.target.value)
   }
   const renderItem = () => {
-    data.workExperience.forEach((item) => {
+    demo.workExperience.forEach((item) => {
       item.工作内容.splice(0, 0, '【工作内容】')
     })
-    console.log('data.workExperience=====',data.workExperience)
+    console.log('demo.workExperience=====',demo.workExperience)
 
-    const timeArray = data.workExperience.map((arr, i) => {
+    const timeArray = demo.workExperience.map((arr, i) => {
       return {
         key: i,
         company: arr.公司名字,
@@ -37,31 +37,6 @@ const TimelineDemo = () => {
       }
     })
     console.log('timeArray=====',timeArray)
-
-    const timeArrays = [
-      {
-        key: '1',
-        content: (
-          <div>
-            【工作内容】 1、在软件项目经理的领导下，配合完成程序设计和开发 2、按产品需求进行软件设计和编码实现，确保安全、质量和性能 3、参与内部测试、部署、实施等工作 4、分析并解决软件开发过程中的问题
-          </div>
-        ),
-        title: (
-          <div>华为技术有限公司</div>
-        )
-      },
-      {
-        key: '2',
-        content: (
-          <div>
-            【工作内容】 1、在软件项目经理的领导下，配合完成程序设计和开发 2、按产品需求进行软件设计和编码实现，确保安全、质量和性能 3、参与内部测试、部署、实施等工作 4、分析并解决软件开发过程中的问题
-          </div>
-        ),
-        title: (
-          <div>深圳市腾讯计算机系统有限公司</div>
-        )
-      },
-    ]
 
     return timeArray.map((item) => {
       return (

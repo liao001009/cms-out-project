@@ -156,13 +156,13 @@ const Content: React.FC<IContentViewProps> = (props) => {
   })
 
   // 面试工作台
-  const handleInterview = () => {
-    history.replaceTo('/cmsInterviewWorkbench/uploadAI')
-    // mk.openLink({
-    //   url:  'http://127.0.0.1:3136/cms-out-manage/desktop/#/cmsInterviewWorkbench/uploadAI',
-    //   target:'_blank'
-    // })
-  }
+  // const handleInterview = () => {
+  //   history.replaceTo('/cmsInterviewWorkbench/uploadAI')
+  //   // mk.openLink({
+  //   //   url:  'http://127.0.0.1:3136/cms-out-manage/desktop/#/cmsInterviewWorkbench/uploadAI',
+  //   //   target:'_blank'
+  //   // })
+  // }
 
   // 新建
   const handleAdd = useCallback(
@@ -301,14 +301,9 @@ const Content: React.FC<IContentViewProps> = (props) => {
               </Button>
               {/* 操作栏 */}
               <React.Fragment>
-                {/* <Auth.Auth
-                  authURL='/cmsProjectDemand/add'
-                  authModuleName='cms-out-manage'
-                  unauthorizedPage={null}
-                > */}
-                <Button type="primary" onClick={()=>handleInterview()}>
+                {/* <Button type="primary" onClick={()=>handleInterview()}>
                 面试工作台
-                </Button>
+                </Button> */}
                 {/* </Auth.Auth> */}
                 <Auth.Auth
                   authURL='/cmsProjectDemand/add'

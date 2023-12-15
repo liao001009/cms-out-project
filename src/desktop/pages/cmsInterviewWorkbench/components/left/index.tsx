@@ -5,12 +5,12 @@ import TimelineDemo from './timeline'
 import React, { useState } from 'react'
 // import Icon from '@lui/icons'
 import OnlineResume from '../../img/OnlineResume.png'
-import data from './getDatas'
+import {demo} from '../getDatas'
 
 const ContentLeft = () => {
 
-  const keyLists = Object.keys(data.personMessage)
-  const valueLists = Object.values(data.personMessage)
+  const keyLists = Object.keys(demo.personMessage)
+  const valueLists = Object.values(demo.personMessage)
   let name
   let post
   // const [name, setName] = useState('')
@@ -43,59 +43,12 @@ const ContentLeft = () => {
   }
   console.log('个人信息======', infoMap)
 
-  const skillMap = data.skillPoint.map((str,i) => {
+  const skillMap = demo.skillPoint.map((str,i) => {
     return {
       key:i,
       label:str
     }
   })
-
-  const infoMaps = [
-    {
-      key: 'age',
-      label: '年龄',
-      value: '31岁'
-    },
-    {
-      key: 'workYears',
-      label: '工龄',
-      value: '8年'
-    },
-    {
-      key: 'education',
-      label: '学历',
-      value: '本科'
-    },
-    {
-      key: 'phone',
-      label: '电话',
-      value: '18612345678'
-    },
-    {
-      key: 'email',
-      label: '邮箱',
-      value: '18612345678@qq.com'
-    },
-  ]
-
-  const skillMaps = [
-    {
-      key: 'java',
-      label: 'Java'
-    },
-    {
-      key: 'spring',
-      label: 'Spring'
-    },
-    {
-      key: 'sql',
-      label: 'SQL'
-    },
-    {
-      key: 'batis',
-      label: 'My Batis'
-    },
-  ]
 
   return (
     <div className='content-left'>
