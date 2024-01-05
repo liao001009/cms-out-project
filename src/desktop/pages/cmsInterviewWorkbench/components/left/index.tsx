@@ -2,19 +2,37 @@
 import { Button, Avatar } from 'antd'
 import '../../interviewAI/content.scss'
 import TimelineDemo from './timeline'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 // import Icon from '@lui/icons'
-import OnlineResume from '../../img/OnlineResume.png'
-import {demo} from '../getDatas'
+import OnlineResume from '/static/cms-out-images/OnlineResume.png'
+// import {demo} from '../getDatas'
+import _ from 'lodash'
 
-const ContentLeft = () => {
+const ContentLeft = (data) => {
+  const [keyLists, setKeyLists] = useState<any[]>([])
+  const [valueLists, setValueLists] = useState<any[]>([])
+  const [skillMap, setSkillMap] = useState<any[]>([])
+  const [workExperience, setWorkExperience] = useState<any>()
 
-  const keyLists = Object.keys(demo.personMessage)
-  const valueLists = Object.values(demo.personMessage)
+  const getInitData = async () => {
+    console.log('左边数据personMessage======', data.data.personMessage)
+    setKeyLists(Object.keys(data.data.personMessage))
+    setValueLists(Object.values(data.data.personMessage))
+
+    console.log('左边数据skillPoint======', data.data.skillPoint)
+    const skill = data.data.skillPoint.map((str, i) => {
+      return {
+        key: i,
+        label: str
+      }
+    })
+    setSkillMap(skill)
+
+    console.log('左边数据workExperience======', data.data.workExperience)
+    setWorkExperience(data.data.workExperience)
+  }
   let name
   let post
-  // const [name, setName] = useState('')
-  // const [post, setPost] = useState('')
 
   const infoMap = keyLists.map((key, i) => {
     return {
@@ -23,7 +41,7 @@ const ContentLeft = () => {
       value: ''
     }
   })
-  valueLists.map((value, i) => {
+  valueLists.map((value: any, i) => {
     infoMap.forEach((obj) => {
       if (i === obj.key) {
         obj!.value = value
@@ -43,12 +61,12 @@ const ContentLeft = () => {
   }
   console.log('个人信息======', infoMap)
 
-  const skillMap = demo.skillPoint.map((str,i) => {
-    return {
-      key:i,
-      label:str
+  useEffect(() => {
+    if (data.data) {
+      console.log('左边数据======', data.data)
+      getInitData()
     }
-  })
+  }, [data.data])
 
   return (
     <div className='content-left'>
@@ -74,10 +92,12 @@ const ContentLeft = () => {
             }
           </div>
         </section>
-        <div className='info-btn'>
+        <div className='info-btn' style={{display: 'none'}}>
           <Button className='btn'>
-            <img src={OnlineResume} style={{ padding: '0px 6px 1px 0px' }} />
-            在线简历
+            <div>
+              <img src={OnlineResume} style={{ float: 'left', padding: '3px 6px 0px 14px' }} />
+            </div>
+            <span style={{float: 'left'}}>在线简历</span>
           </Button>
         </div>
       </div>
@@ -110,7 +130,7 @@ const ContentLeft = () => {
           </div>
         </section>
         <section className='history-content'>
-          <TimelineDemo />
+          <TimelineDemo data={workExperience} />
         </section>
       </div>
     </div>

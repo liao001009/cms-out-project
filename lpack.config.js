@@ -20,13 +20,13 @@ const lpackConfig = {
     // 模块入口，供全局runtime调用的入口
     index: {
       entry: path.join(__dirname, `./src/${entryName}/index.ts`),
-      html: false
+      html: false,
     },
     // 独立运行的入口
     app: {
       entry: path.join(__dirname, `./src/${entryName}/app.ts`),
-      filename: 'index.html'
-    }
+      filename: 'index.html',
+    },
   },
   // 变量，业务模块可通过process.env.xxx获取相关值
   variables: {
@@ -43,7 +43,7 @@ const lpackConfig = {
     // 组件库域名
     elementsUrlPrefix: {
       manufact: 'http://192.168.50.145:7088/web',
-      artifact: 'http://192.168.50.145:7088/web'
+      artifact: 'http://192.168.50.145:7088/web',
       // artifact: 'http://127.0.0.1:8008'
     },
     // elementsUrlPrefix: 'http://127.0.0.1:8008',
@@ -53,23 +53,37 @@ const lpackConfig = {
     apiUrlPrefix: 'http://192.168.50.145:7101/data',
     // apiUrlPrefix: 'http://10.10.10.253:9101/data',
     //多语言服务
-    langUrlPrefix: 'http://192.168.50.145:7088/data/sys-lang'
+    langUrlPrefix: 'http://192.168.50.145:7088/data/sys-lang',
   },
   webpack: {
     resolve: {
       alias: {
-        '@': path.join(__dirname, './src')
-      }
+        '@': path.join(__dirname, './src'),
+      },
     },
-    plugins: [new MkPlugin()]
-  }
+    plugins: [new MkPlugin({ chunk: { apiChunk: true } })]
+
+    // //该选项可以控制 webpack 如何通知「资源(asset)和入口起点超过指定文件限制」
+    // performance: {
+    //   hints: 'warning', // 枚举
+    //   hints: 'error', // 性能提示中抛出错误
+    //   hints: false, // 关闭性能提示
+    //   maxAssetSize: 200000, // 整数类型（以字节为单位）
+    //   maxEntrypointSize: 400000, // 整数类型（以字节为单位）
+    //   assetFilter: function (assetFilename) {
+    //     // 提供资源文件名的断言函数
+    //     return assetFilename.endsWith('.css') || assetFilename.endsWith('.js')
+    //   },
+    // },
+
+  },
 }
 
 // desktop端和mobile端提供api.ts供其它模块调用
 if (entryName === 'desktop' || entryName === 'mobile') {
   lpackConfig.entries['api'] = {
     entry: path.join(__dirname, `./src/${entryName}/api.ts`),
-    html: false
+    html: false,
   }
 }
 

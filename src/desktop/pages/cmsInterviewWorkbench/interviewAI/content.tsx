@@ -6,42 +6,67 @@ import Icon from '@lui/icons'
 import ContentLeft from '../components/left'
 import ContentRight from '../components/right'
 import _ from 'lodash'
+
 const Home: React.FC = () => {
-  const [rightData, setRightData] = useState<any>(null)
+
+  // 图片样式
+  const containerStyle = {
+    padding: '24px',
+    background: '#eee',
+    backgroundImage: `url(${mk.getResourcePath('@module:cms-out-project/desktop/static/cms-out-images/background1.png')})`,
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover'
+  }
+  const logoStyle = {
+    width: '151px',
+    height: '24px',
+    backgroundImage: `url(${mk.getResourcePath('@module:cms-out-project/desktop/static/cms-out-images/cmsLogo.png')})`,
+    backgroundSize: '151px'
+  }
+
+
+  const [resultData, setResultData] = useState<any>()
   // 用户名(胡斐然)
   const [fdUserName, setfdUserName] = useState<any>()
+
+  const test = () => {
+    '#'
+  }
   //页面初始化
+  useEffect(() => {
+    const useElement = document.querySelector('.ele-page-layout-default') as unknown as HTMLElement
+    useElement.style.padding = '0px'
+  }, [Element])
+
   useEffect(() => {
     const strData = window.localStorage.getItem('resultData') || ''
     const resultData = JSON.parse(strData)
 
     console.log('convent接口参数=======', resultData)
-
-    const element = document.querySelector('.ele-page-layout-default') as unknown as HTMLElement
-    element.style.padding = '0px'
     setfdUserName(mk.getSysConfig().currentUser.fdName)
 
     if (!_.isEmpty(resultData)) {
-      setRightData(resultData)
+      setResultData(resultData)
     }
 
   }, [window.localStorage])
 
   return (
-    <div className='container'>
+    <div className='container' style={containerStyle}>
       <div className="header">
-        <div className="header-logo"></div>
+        <div className="header-logo" style={logoStyle}></div>
         <div className="header-avatar">
-          <div className='header-people'></div>
-          <div className='header-name'>{fdUserName}</div>
-          <div className='farme'>
-            <Icon name="iconCommon_surface_12_arrowDown" normalize />
+          <div className='header-people'>
+            <div className='header-name'>
+              {fdUserName}
+              {/* <Icon name="iconCommon_surface_12_arrowDown" normalize onClick={test} style={{ paddingLeft: '2px' }} /> */}
+            </div>
           </div>
         </div>
       </div>
       <div className='content'>
-        <ContentLeft />
-        <ContentRight data={rightData} />
+        <ContentLeft data={resultData} />
+        <ContentRight data={resultData} />
       </div>
     </div>
   )

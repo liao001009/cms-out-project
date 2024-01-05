@@ -1,7 +1,7 @@
 .container {
-  width: 100vw;
+  // width: 100vw;
   height: 100vh;
-  background-image: url("../img/background1.png");
+  background-image: url("/static/cms-out-images/background1.png");
   background-size: cover;
   background-repeat: no-repeat;
   padding: 24px 24px;
@@ -47,7 +47,7 @@
     height: 100px;
     flex-shrink: 0;
     margin-right: 24px;
-    background-image: url("../img/photo.png"), url("../img/photoBg.png");
+    background-image: url("/static/cms-out-images/photo.png"), url("/static/cms-out-images/photoBg.png");
     background-repeat: no-repeat;
     background-position: center center;
   }
@@ -81,8 +81,8 @@
       flex-wrap: wrap;
 
       .detail-item {
-        min-width: 150px;
-        margin-right: 36px;
+        min-width: 180px;
+        margin-right: 24px;
         margin-bottom: 12px;
 
         .info-label {
@@ -148,7 +148,7 @@
     margin-bottom: 14px;
 
     .title-icon {
-      background-image: url("../img/PersonalTechnologyStack.png");
+      background-image: url("/static/cms-out-images/PersonalTechnologyStack.png");
       background-repeat: no-repeat;
       background-position: center center;
 
@@ -196,7 +196,8 @@
 
 .content-left-history {
   .demo-timeline {
-    height: 425px;
+    height: 470px;
+    // height: calc(60vh - 136px);
     overflow: auto;
 
     .history-title-h1 {
@@ -260,7 +261,7 @@
     margin-bottom: 14px;
 
     .title-icon {
-      background-image: url("../img/JobResume.png");
+      background-image: url("/static/cms-out-images/JobResume.png");
       background-repeat: no-repeat;
       background-position: center center;
 
@@ -324,7 +325,7 @@
     position: relative;
 
     .header-icon {
-      background-image: url("../img/IntelligentQuestionBank.png");
+      background-image: url("/static/cms-out-images/IntelligentQuestionBank.png");
       background-repeat: no-repeat;
       background-position: center center;
       width: 26px;
@@ -445,20 +446,19 @@
   }
 
   .content-list {
-    height: 400px;
     overflow: auto;
 
     .qs-item-active {
       margin-bottom: 16px;
 
       .qs-item-question {
-        padding: 14px 16px;
+        padding: 12px 14px;
         background: #F4F5FE;
         margin-bottom: 12px;
         border-radius: 8px;
         cursor: pointer;
-        margin-bottom: 16px;
-        color: #4955F5;
+        margin-bottom: 12px;
+        // color: #4955F5;
         position: relative;
 
         div {
@@ -470,7 +470,7 @@
 
       .qs-item-answer {
         padding: 0 16px 0 36px;
-        color: #05073B;
+        color: #717070;
 
         div {
           font-weight: 400;
@@ -484,12 +484,12 @@
       margin-bottom: 16px;
 
       .qs-item-question {
-        padding: 14px 16px;
+        padding: 12px 14px;
         background: #F8F8FA;
         margin-bottom: 12px;
         border-radius: 8px;
         cursor: pointer;
-        margin-bottom: 16px;
+        margin-bottom: 12px;
 
         div {
           font-weight: 500;
@@ -500,7 +500,7 @@
 
       .qs-item-answer {
         padding: 0 16px 0 36px;
-        color: #05073B;
+        color: #717070;
         display: none;
 
         div {
@@ -514,7 +514,7 @@
 
   .refresh {
     .refreshImage {
-      padding: 0px 6px 2.5px 0px;
+      margin: 0 4px -3px 0px;
     }
 
     text-align: center;
@@ -529,6 +529,250 @@
   }
 }
 
+.content-right {
+  width: 50%;
+  height: calc(100vh - 104px);
+}
+
+.content-right-questions {
+  background: #fff;
+  border-radius: 24px;
+  height: calc(100vh - 342px);
+  margin-bottom: 16px;
+  padding: 24px;
+
+  .content-all {
+    overflow: hidden;
+    height: calc(92vh - 335px);
+  }
+
+  .content-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+    position: relative;
+
+    .header-icon {
+      font-size: 26px;
+      margin-right: 20px;
+    }
+
+    .header-title {
+      font-weight: 600px;
+      font-size: 22px;
+      line-height: 24px;
+      margin-right: 24px;
+    }
+
+    .header-sub {
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 21px;
+      /* margin-right: 556px; */
+    }
+
+    .header-open {
+      position: absolute;
+      top: 0;
+      right: 0px;
+      cursor: pointer;
+    }
+  }
+
+  .content-tabs {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    height: 42px;
+    overflow: auto;
+
+    .skill-item-actvie {
+      margin-bottom: 6px;
+      width: 100px;
+      /* width: calc(100% / 4 - 24px); */
+      /* flex: 0 0 calc(33.33% - 10px); */
+      height: 36px;
+      border: 1px;
+      background: linear-gradient(to right, #4955F5, #9587FF);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      margin-right: 12px;
+      color: #fff;
+      cursor: pointer;
+
+      span {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 21px;
+      }
+    }
+
+    .skill-item {
+      margin-bottom: 6px;
+      position: relative;
+      width: 100px;
+      /* width: calc(100% / 4 - 24px); */
+      /* flex: 0 0 calc(33.33% - 10px); */
+      height: 36px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      margin-right: 12px;
+      color: #4955F5;
+      cursor: pointer;
+      overflow: hidden;
+      /* 确保内容不会突破边框 */
+
+      span {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 21px;
+      }
+    }
+
+    .skill-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+
+    .skill-item::before {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 36' fill='none' stroke='%234955F5' stroke-width='1'%3E%3Crect x='0.5' y='0.5' width='99' height='35' rx='7.5' stroke-opacity='1'/%3E%3C/svg%3E");
+      background-size: 100% 100%;
+    }
+
+    .skill-item-other {
+      margin-bottom: 6px;
+      position: relative;
+      width: 100px;
+      height: 36px;
+      border: 1px;
+      background: #F8F8FA;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      color: #05073B;
+      cursor: pointer;
+
+      span {
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 21px;
+      }
+    }
+  }
+
+  .content-list {
+    height: 450px;
+    overflow: auto;
+    text-align: left;
+
+    .qs-item-active {
+      margin-bottom: 16px;
+
+      .qs-item-question {
+        padding: 12px 14px;
+        background: #F4F5FE;
+        margin-bottom: 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-bottom: 12px;
+        // color: #4955F5;
+        position: relative;
+
+        div {
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 21px;
+        }
+      }
+
+      .qs-item-answer {
+        padding: 0 16px 0 36px;
+        color: #717070;
+
+        div {
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 21px;
+        }
+      }
+
+      .qs-item-answer {
+        display: none;
+        /* 初始时隐藏答案 */
+      }
+
+      .qs-item-answer.answer-visible {
+        display: block;
+        /* 当选择相应的问题时显示答案 */
+      }
+    }
+
+    .qs-item {
+      margin-bottom: 16px;
+
+      .qs-item-question {
+        padding: 12px 14px;
+        background: #F8F8FA;
+        margin-bottom: 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-bottom: 12px;
+
+        div {
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 21px;
+        }
+      }
+
+      .qs-item-answer {
+        padding: 0 16px 0 36px;
+        color: #717070;
+        display: none;
+
+        div {
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 21px;
+        }
+      }
+    }
+  }
+
+  .content-reset {
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    .content-reset-icon {
+      display: inline-flex;
+      width: 16px;
+      height: 16px;
+      margin-right: 6px !important;
+    }
+
+    .content-reset-text {
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 24px;
+    }
+  }
+}
+
+
 .content-right-chatBot {
   background: #fff;
   border-radius: 24px;
@@ -541,7 +785,7 @@
   }
 
   .chatBot-icon {
-    background-image: url("../img/chatBotLogo.png");
+    background-image: url("/static/cms-out-images/chatBotLogo.png");
     // background-repeat: no-repeat;
     display: flex;
     width: 34px;
@@ -573,7 +817,7 @@
 
   .chatBot-open {
     position: absolute;
-    right: 48px;
+    right: 42px;
     cursor: pointer;
   }
 

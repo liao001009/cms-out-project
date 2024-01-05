@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Module } from '@ekp-infra/common'
 const Attachment = Module.getComponent('sys-attach', 'Attachment')
-import pdfUpload from '../img/pdfUpload.png'
+import pdfUpload from '/static/cms-out-images/pdfUpload.png'
 import '../uploadAI/content.scss'
 import { Message } from '@lui/core'
 
@@ -10,7 +10,7 @@ const getUploadValue = (values: any, type?: string) => {
   // values = (values || []).filter((v) => v?.fdBindType !== 'DELETE')
 
   let newValue
-  let isSuccess
+  // let isSuccess
   if (values) {
     newValue = (values || []).map((v: any) => {
       const extendInfo = v?.fdExtendInfo ? JSON.parse(v.fdExtendInfo) : {}
@@ -83,7 +83,7 @@ const UploadPDF: React.FC<Iprops> = (props) => {
             </div>
           </div>)
         }
-        onSuccessDocument={(v) => {
+        onSuccessDocument={() => {
           Message.success('简历上传成功')
         }}
       />

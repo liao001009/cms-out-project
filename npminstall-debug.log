@@ -3,7 +3,7 @@
   registry: 'https://registry.npm.taobao.org',
   pkgs: [
     {
-      name: '@elem/operation',
+      name: 'image-webpack',
       version: 'latest',
       type: 'tag',
       alias: undefined,
@@ -15,7 +15,7 @@
   cacheDir: null,
   env: {
     npm_config_registry: 'https://registry.npm.taobao.org',
-    npm_config_argv: '{"remain":[],"cooked":["--fix-bug-versions","--china","--userconfig=C:\\\\Users\\\\12573\\\\.cnpmrc","--disturl=https://cdn.npmmirror.com/binaries/node","--registry=https://registry.npm.taobao.org","@elem/operation"],"original":["--fix-bug-versions","--china","--userconfig=C:\\\\Users\\\\12573\\\\.cnpmrc","--disturl=https://cdn.npmmirror.com/binaries/node","--registry=https://registry.npm.taobao.org","@elem/operation"]}',
+    npm_config_argv: '{"remain":[],"cooked":["--fix-bug-versions","--china","--userconfig=C:\\\\Users\\\\12573\\\\.cnpmrc","--disturl=https://cdn.npmmirror.com/binaries/node","--registry=https://registry.npm.taobao.org","image-webpack","--save-dev"],"original":["--fix-bug-versions","--china","--userconfig=C:\\\\Users\\\\12573\\\\.cnpmrc","--disturl=https://cdn.npmmirror.com/binaries/node","--registry=https://registry.npm.taobao.org","image-webpack","--save-dev"]}',
     npm_config_user_agent: 'npminstall/7.6.1 npm/? node/v16.16.0 win32 x64',
     NODE: 'D:\\Node\\Node16.16\\node.exe',
     npm_node_execpath: 'D:\\Node\\Node16.16\\node.exe',

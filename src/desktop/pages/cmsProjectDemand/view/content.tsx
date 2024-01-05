@@ -349,7 +349,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
     // 按钮存在条件为fdProcessFlag包含3
     if (data.fdProcessFlag && !data.fdProcessFlag.includes('3')) return null
     return {
-      name: fmtMsg(':cmsProjectInterview.form.!{l5j0eriwqaq645oi9c}', ''),
+      name: fmtMsg(':cmsProjectInterview.form.!{l5j0eriwqaq645oi9c}', '外包人员评审'),
       action: () => {
         if (!staffTemplateData) {
           Message.error('请先配置模板', 1)
@@ -638,7 +638,7 @@ const Content: React.FC<IContentViewProps> = memo((props) => {
                     history={history}
                   />
                 </TabPane>
-                <TabPane tab="" key="4" >
+                <TabPane tab="评审" key="4" >
                   <CmsListView
                     apiRequest={apiStaffReviewList.listStaffReview}
                     columns={staffReviewColumns}

@@ -1,21 +1,19 @@
 /* eslint-disable react/display-name */
 import { Timeline, Radio } from '@lui/core'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import _ from 'lodash'
 // import './demo.scss'
-import {demo} from '../getDatas'
+// import { demo } from '../getDatas'
 
-const TimelineDemo = () => {
-  const [mode, setMode] = useState<'left' | 'alternate' | 'right'>('left')
-  const onChange = (e) => {
-    setMode(e.target.value)
-  }
-  const renderItem = () => {
-    demo.workExperience.forEach((item) => {
+const TimelineDemo = ({ data }) => {
+
+  const [timeArray, setTimeArray] = useState<any>()
+
+  const getInitData = async () => {
+    data.forEach((item) => {
       item.工作内容.splice(0, 0, '【工作内容】')
     })
-    console.log('demo.workExperience=====',demo.workExperience)
-
-    const timeArray = demo.workExperience.map((arr, i) => {
+    const timeArray = data.map((arr, i) => {
       return {
         key: i,
         company: arr.公司名字,
@@ -36,21 +34,36 @@ const TimelineDemo = () => {
           }))
       }
     })
-    console.log('timeArray=====',timeArray)
+    console.log('timeArray=====', timeArray)
+    setTimeArray(timeArray)
 
-    return timeArray.map((item) => {
-      return (
-        // eslint-disable-next-line react/jsx-key
-        <Timeline.Item
-          key={item.key}
-          //   color={item === '15:00' ? 'primary' : 'gray'}
-          timing={item.title}
-          //title={item.company}
-          description={item.content}
-        />
-      )
-    })
   }
+  const [mode, setMode] = useState<'left' | 'alternate' | 'right'>('left')
+  const onChange = (e) => {
+    setMode(e.target.value)
+  }
+  const renderItem = () => {
+    if (!_.isEmpty(timeArray)) {
+      return timeArray.map((item) => {
+        return (
+          // eslint-disable-next-line react/jsx-key
+          <Timeline.Item
+            key={item.key}
+            //   color={item === '15:00' ? 'primary' : 'gray'}
+            timing={item.title}
+            //title={item.company}
+            description={item.content}
+          />
+        )
+      })
+    }
+  }
+  useEffect(() => {
+    if (data) {
+      console.log('工作经历=====', data)
+      getInitData()
+    }
+  }, [data])
   return (
     <div className="demo-timeline">
       <Timeline mode={mode}>{renderItem()}</Timeline>

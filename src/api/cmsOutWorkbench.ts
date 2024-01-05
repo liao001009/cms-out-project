@@ -3,7 +3,8 @@ import { cmsHttp } from '@/utils/http'
 
 const api = {
   // 获取简历返回数据
-  convent: Api.build('/cmsOutWorkbench/convent', cmsHttp),
+  key: Api.build('/cmsOutWorkbench/convent', cmsHttp),
+  convents: Api.build('/cmsOutWorkbench/extract', cmsHttp),
 }
 
 export default api
